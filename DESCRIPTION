@@ -1,0 +1,12 @@
+Package: tximeta
+Version: 0.0.1
+Title: Import transcript abundances with automagic population of metadata
+Description: Import transcript abundances with automagic population of metadata
+Author: Michael Love
+Maintainer: Michael Love <michaelisaiahlove@gmail.com>
+License: GPL-2
+VignetteBuilder: knitr
+Imports: SummarizedExperiment
+Suggests: knitr, rmarkdown, testthat, tximport, tximportData,
+        readr (>= 0.2.2), rhdf5, rjson
+biocViews: RNASeq, Transcription, GeneExpression, DataImport
