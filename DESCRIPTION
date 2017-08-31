@@ -6,7 +6,8 @@ Author: Michael Love
 Maintainer: Michael Love <michaelisaiahlove@gmail.com>
 License: GPL-2
 VignetteBuilder: knitr
-Imports: SummarizedExperiment
-Suggests: knitr, rmarkdown, testthat, tximport, tximportData,
-        readr (>= 0.2.2), rhdf5, rjson
+Imports: tximport, SummarizedExperiment, rjson, GenomicFeatures
+Suggests: knitr, rmarkdown, testthat, tximportData,
+        readr (>= 0.2.2), rhdf5
 biocViews: RNASeq, Transcription, GeneExpression, DataImport
+RoxygenNote: 6.0.1

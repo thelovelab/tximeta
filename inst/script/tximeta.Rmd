@@ -1,0 +1,36 @@
+---
+title: tximeta
+author: "Michael Love"
+---
+
+```{r}
+library(here)
+library(readr)
+coldata <- read_tsv(here("extdata","coldata.tsv"))
+```
+
+```{r}
+coldata$files <- here("extdata","quant",coldata$run,"quant.sf.gz")
+coldata$names <- coldata$run
+```
+
+```{r}
+library(tximeta)
+se <- tximeta(coldata)
+```
+
+```{r}
+colData(se)
+```
+
+```{r}
+assayNames(se)
+```
+
+```{r}
+rowRanges(se)
+```
+
+```{r}
+str(metadata(se))
+```
