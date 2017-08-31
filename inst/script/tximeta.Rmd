@@ -1,18 +1,29 @@
 ---
-title: tximeta
+title: tximeta: Import transcript abundances with automagic population of metadata
 author: "Michael Love"
 ---
 
-```{r}
+First, to try out `tximeta` you'll need the example data.
+
+```{r eval=FALSE}
 library(here)
+dest <- here("extdata","asthma.zip")
+download.file("https://github.com/mikelove/asthma/archive/master.zip", dest)
+unzip(dest, exdir=here("extdata"))
+```
+
+```{r}
 library(readr)
 coldata <- read_tsv(here("extdata","coldata.tsv"))
 ```
 
 ```{r}
-coldata$files <- here("extdata","quant",coldata$run,"quant.sf.gz")
+coldata$files <- here("extdata","asthma-master","data","quant",
+                      coldata$run,"quant.sf.gz")
 coldata$names <- coldata$run
 ```
+
+First do a `devtools::load_all()` then this should work:
 
 ```{r}
 library(tximeta)
