@@ -49,7 +49,7 @@ unzip(dest, exdir=here("extdata"))
 The first step using `tximeta` is to read in the sample table, which
 will become the *column data*, `colData`, of the
 *SummarizedExperiment*. This table should contain all the information
-we need also to identify the quant directories. In this case, we used
+we need to identify the quant directories. In this case, we will use
 the `run` ID from SRA.
 
 ```{r}
@@ -191,7 +191,7 @@ str(metadata(se)$txdbInfo)
       or ALL gene files from Gencode)
     - Facilitate functional annotation, either with detailed
 	  vignettes/workflow or with additional functionality. E.g.:
-	  housekeeping genes, arbitrary gene sets, GTEx expressed tissues
+	  housekeeping genes, arbitrary gene sets, genes expressed in GTEx tissues
 	- liftOver is clunky and doesn't integrate with
       GenomeInfoDb. It requires user input and there's a chance to
       mis-annotate. Ideally this should all be automated with fixed choices.
