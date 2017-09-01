@@ -36,7 +36,6 @@ tximeta <- function(coldata) {
   # try to import files early, so we don't waste user time
   # with metadata magic before a tximport error
   message("importing quantifications")
-  names(txps) <- txps$tx_name
   txi <- tximport(files, type="salmon", txOut=TRUE)
 
   # now start building out metadata based on indexSeqHash
@@ -65,6 +64,7 @@ tximeta <- function(coldata) {
   
   message("generating transcript ranges")
   txps <- transcripts(txdb)
+  names(txps) <- txps$tx_name
   stopifnot(all(rownames(txi$abundance) %in% names(txps)))
   txps <- txps[rownames(txi$abundance)]
   
