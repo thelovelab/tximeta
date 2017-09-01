@@ -1,9 +1,41 @@
 ---
-title: tximeta: Import transcript abundances with automagic population of metadata
-author: "Michael Love"
+title: "tximeta: Import transcript abundances with automagic population of metadata"
+author: "Michael Love, Rob Patro"
+date: "`r format(Sys.time(), '%m/%d/%Y')`"
+output: 
+  html_document:
+    highlight: tango
+abstract: >
+  `tximeta` builds on `tximport` by performing many tedious annotation
+  and metadata munging tasks on behalf of the user, during the import
+  of transcript quantification output from Salmon or Sailfish. The
+  goal is to provide something similar to the experience of `getGEO`,
+  which brought along with the microarray expression data many
+  associated pieces of metadata, which can help prevent costly
+  bioinformatic errors.  All one needs to regenerate the appropriate
+  annotation and metadata is the quant directories output by Salmon or
+  Sailfish.  The key idea within `tximeta` is to use a hash of the
+  transcriptome, computed and stored by the `index` and `quant`
+  functions of Salmon and Sailfish as the identifying information for
+  building out rich annotations/metadata in the background, on behalf
+  of the user. This should greatly facilitate genomic workflows, where
+  the user can immediately begin overlapping their transcriptomic data
+  with other genomic datasets, as the data has been embedded within an
+  organism and genome context -- including the proper genome
+  version. We seek to reduce wasted time of bioinformatic analysts,
+  prevent costly bioinformatic mistakes, and avoid situations of
+  annotation/metadata ambiguity, when files are shared publicly or
+  among collaborators but annotation/metadata details go missing.
 ---
 
-First, to try out `tximeta` you'll need the example data.
+# Setup
+First, to try out `tximeta` you'll need the example data, which is
+contained in this GitHub repo. Here we download the whole repo as a
+ZIP file.
+
+```{r echo=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
 
 ```{r eval=FALSE}
 library(here)
@@ -12,10 +44,27 @@ download.file("https://github.com/mikelove/asthma/archive/master.zip", dest)
 unzip(dest, exdir=here("extdata"))
 ```
 
+# Analysis starts with sample table
+
+The first step using `tximeta` is to read in the sample table, which
+will become the *column data*, `colData`, of the
+*SummarizedExperiment*. This table should contain all the information
+we need also to identify the quant directories. In this case, we used
+the `run` ID from SRA.
+
 ```{r}
+library(here)
 library(readr)
 coldata <- read_tsv(here("extdata","coldata.tsv"))
+coldata
 ```
+
+`tximeta` expects at least two columns in `coldata`: 
+
+1. `files` - a pointer to the `quant.sf` files
+2. `names` - the unique names that should be used to identify samples
+
+We use `coldata$run` to build these two columns:
 
 ```{r}
 coldata$files <- here("extdata","asthma-master","data","quant",
@@ -23,25 +72,134 @@ coldata$files <- here("extdata","asthma-master","data","quant",
 coldata$names <- coldata$run
 ```
 
-First do a `devtools::load_all()` then this should work:
+```{r}
+suppressPackageStartupMessages(library(GenomicFeatures))
+suppressPackageStartupMessages(library(SummarizedExperiment))
+```
+
+# Running tximeta from a sample table
+
+(Note: first do a `devtools::load_all()` then the following should work.)
 
 ```{r}
 library(tximeta)
 se <- tximeta(coldata)
 ```
 
+# Examining SummarizedExperiment output
+
+We, of course, have our coldata from before. Note that we've removed `files`.
+
 ```{r}
 colData(se)
 ```
+
+Here we show the three matrices that were imported (note, this part
+would need updating for un-reduced inferential variance matrices).
 
 ```{r}
 assayNames(se)
 ```
 
+Thanks to `tximeta` we have automagically imported the correct ranges
+for the transcripts. 
+
 ```{r}
 rowRanges(se)
 ```
 
+We have appropriate genome information, which prevents us from making 
+bioinformatic mistakes:
+
 ```{r}
-str(metadata(se))
+seqinfo(se)
 ```
+
+# Demo: find nearest transcripts to a ChIP-seq peak
+
+Suppose we want to find overlap of the expression with binding sites
+of a transcription factor:
+
+```{r}
+library(AnnotationHub)
+ah <- AnnotationHub()
+chip <- query(ah, c("GM12878", "MEF2A", "narrowPeak"))[[1]]
+```
+
+First try, let's find the nearest transcript to a given ChIP-seq peak:
+
+```{r error=TRUE}
+nearest(chip[1], se)
+```
+
+We get an <font color="red"><b>ERROR</b></font>: all chromosomes have
+incompatibile genomes! Good! 
+The point of `tximeta` is to reduce these kind of simple bioinformatic
+mistakes that can add weeks or months of dead-end results to large
+genomics projects. 
+We can use liftover chains to get us going in the right direction,
+comparing hg38 to hg38.
+
+```{r eval=FALSE}
+url <- "http://hgdownload.cse.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz"
+file <- "hg19ToHg38.over.chain.gz"
+if (!file.exists(file)) download.file(url, file)
+system(paste0("gunzip ",file))
+```
+
+We move our ChIP-seq data to hg38:
+
+```{r}
+chip.lift <- liftOverHelper(chip, chainfile="hg19ToHg38.over.chain", to="hg38")
+```
+
+Now we can find the nearest transcript to a given ChIP-seq peak:
+
+```{r}
+nearest(chip.lift[1], se)
+assay(se)[nearest(chip.lift[1], se),,drop=FALSE]
+```
+
+Or we can take a slice of the transcriptome data that is within 1
+megabase of a given ChIP-seq peak:
+
+```{r}
+# which rows of SE in this window?
+which(overlapsAny(se, chip.lift[1] + 1e6))
+```
+
+Perhaps even more exciting, we can now automate functional annotation of
+transcriptome data using Bioconductor's annotation suite.
+
+# Metadata galore
+
+```{r}
+names(metadata(se))
+str(metadata(se)$quantInfo)
+str(metadata(se)$txomeInfo)
+str(metadata(se)$tximetaInfo)
+str(metadata(se)$txdbInfo)
+```
+
+# TODO/ideas
+
+* Big ideas
+    - Building out actual, sustainable plan for supporting as many
+      organisms and sources as possible. We can define rules which
+	  determine where the FASTA and GTF files will be based on `source` and
+	  `version` (also here I ignored something like "type", e.g. CHR
+      or ALL gene files from Gencode)
+    - Facilitate functional annotation, either with detailed
+	  vignettes/workflow or with additional functionality. E.g.:
+	  housekeeping genes, arbitrary gene sets, GTEx expressed tissues
+	- liftOver is clunky and doesn't integrate with
+      GenomeInfoDb. It requires user input and there's a chance to
+      mis-annotate. Ideally this should all be automated with fixed choices.
+* Plots and summaries
+    - Basic plots across samples: abundances, mapping rates, rich bias model parameters
+    - Time summaries: when quantified? when imported? I would love to
+      know when the library was prepared and sequenced but this seems hopeless.
+* Basic functionality
+    - Switching `rowRanges` from transcript ranges to exons-by-transcript ranges list
+    - Summarization to gene-level
+    - Support for inferential variance matrices
