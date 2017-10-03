@@ -573,7 +573,7 @@ str(metadata(se)$txdbInfo)
   housekeeping genes, arbitrary gene sets, genes expressed in GTEx tissues
 * liftOver is clunky and doesn't integrate with
   GenomeInfoDb. It requires user input and there's a chance to
-  mis-annotate. Ideally this should all be automated with fixed
+  mis-annotate. Ideally this should all be automated.
 
 ### Facilitate plots and summaries
     
