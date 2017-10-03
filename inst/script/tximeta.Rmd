@@ -6,29 +6,21 @@ output:
   html_document:
     highlight: tango
 abstract: >
-  `tximeta` builds on `tximport` by performing many tedious annotation
-  and metadata munging tasks on behalf of the user, during the import
-  of transcript quantification output from Salmon or Sailfish. The
-  goal is to provide something similar to the experience of `getGEO`,
-  which brought along with the microarray expression data many
-  associated pieces of metadata, which can help prevent costly
-  bioinformatic errors.  All one needs to regenerate the appropriate
-  annotation and metadata is the quant directories output by Salmon or
-  Sailfish.  The key idea within `tximeta` is to use a hash of the
-  transcriptome, computed and stored by the `index` and `quant`
-  functions of Salmon and Sailfish as the identifying information for
-  building out rich annotations/metadata in the background, on behalf
-  of the user. This should greatly facilitate genomic workflows, where
-  the user can immediately begin overlapping their transcriptomic data
-  with other genomic datasets, as the data has been embedded within an
-  organism and genome context -- including the proper genome
-  version. We seek to reduce wasted time of bioinformatic analysts,
-  prevent costly bioinformatic mistakes, and avoid situations of
-  annotation/metadata ambiguity, when files are shared publicly or
-  among collaborators but annotation/metadata details go missing.
+  `tximeta` performs numerous annotation and metadata gathering tasks on
+  behalf of users during the import of transcript quantifications from
+  Salmon or Sailfish into R/Bioconductor. The goal is to provide
+  something similar to the experience of `GEOquery`, which downloaded
+  microarray expression data from NCBI GEO and simultaneously brought
+  along associated pieces of metadata. Doing this automatically helps to
+  prevent costly bioinformatic errors. 
 ---
 
+# This package is in beta 
+
+[See README]()
+
 # Setup
+
 First, to try out `tximeta` you'll need the example data, which is
 contained in this GitHub repo. Here we download the whole repo as a
 ZIP file.
