@@ -1,8 +1,4 @@
-# tximeta
-
-## Import transcript quantification with automagic generation of metadata
-
-Michael Love, Rob Patro
+# tximeta: Import transcript quantification with automagic generation of metadata
 
 # Idea in diagrams
 
