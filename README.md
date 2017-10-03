@@ -4,7 +4,25 @@
 
 Michael Love, Rob Patro
 
-# Idea
+# Idea in diagrams
+
+Before `tximeta`, current versions of Salmon and Sailfish already 
+propogate a *signature* of the transcriptome sequence into the index
+and quantification directories. This can be diagrammed like so, where 
+the dotted lines represent not direct links, but possible comparisons
+that could be made based on signature comparison.
+
+![](img/quant.png)
+
+Following quantification, and even performed by a different analyst or 
+at a different institute, upon importing quantifications into 
+R/Bioconductor, the `tximeta` software would check a database of known 
+signatures, and upon finding a match, would add annotation and metadata
+to the quantifications, returning a `SummarizedExperiment` object.
+
+![](img/tximeta.png)
+
+# Idea in text
 
 `tximeta` performs numerous annotation and metadata gathering tasks on
 behalf of users during the import of transcript quantifications from
