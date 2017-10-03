@@ -1,4 +1,6 @@
-# tximeta: Import transcript abundances with automagic generation of metadata"
+# tximeta
+
+## Import transcript quantification with automagic generation of metadata
 
 Michael Love, Rob Patro
 
@@ -49,4 +51,15 @@ Scripture, Oases, etc.
 We hope that for both of these cases `tximeta` might help to assist in
 computational reproducibility of quantification, by encapsulating the
 steps need to generate the transcriptome and providing a signature for
-checking equality.
+checking the sequence is indeed the same.
+
+# Take a look at the example
+
+We have a [prototype vignette](https://github.com/mikelove/tximeta/blob/master/inst/script/tximeta.knit.md)
+for how `tximeta` would look, and some thoughts on next steps at the
+end of the document.
+
+# Feedback
+
+We'd love to hear your feedback. Please file an 
+[Issue on GitHub](https://github.com/mikelove/tximeta/issues).

@@ -1,5 +1,5 @@
 ---
-title: "tximeta: Import transcript abundances with automagic population of metadata"
+title: "tximeta: Import transcript quantification with automagic generation of metadata"
 author: "Michael Love, Rob Patro"
 date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output: 
@@ -17,7 +17,7 @@ abstract: >
 
 # This package is in beta 
 
-[See README]()
+[See README](https://github.com/mikelove/tximeta/blob/master/README.md)
 
 # Setup
 
@@ -173,25 +173,38 @@ str(metadata(se)$tximetaInfo)
 str(metadata(se)$txdbInfo)
 ```
 
-# TODO/ideas
+# Next steps
 
-* Big ideas
-    - Building out actual, sustainable plan for supporting as many
-      organisms and sources as possible. We can define rules which
-	  determine where the FASTA and GTF files will be based on `source` and
-	  `version` (also here I ignored something like "type", e.g. CHR
-      or ALL gene files from Gencode)
-    - Facilitate functional annotation, either with detailed
-	  vignettes/workflow or with additional functionality. E.g.:
-	  housekeeping genes, arbitrary gene sets, genes expressed in GTEx tissues
-	- liftOver is clunky and doesn't integrate with
-      GenomeInfoDb. It requires user input and there's a chance to
-      mis-annotate. Ideally this should all be automated with fixed choices.
-* Plots and summaries
-    - Basic plots across samples: abundances, mapping rates, rich bias model parameters
-    - Time summaries: when quantified? when imported? I would love to
-      know when the library was prepared and sequenced but this seems hopeless.
-* Basic functionality
-    - Switching `rowRanges` from transcript ranges to exons-by-transcript ranges list
-    - Summarization to gene-level
-    - Support for inferential variance matrices
+### Challenges
+
+* Building out actual, sustainable plan for supporting as many
+  organisms and sources as possible. We can define rules which
+  determine where the FASTA and GTF files will be based on `source` and
+  `version` (also here I ignored something like "type", e.g. CHR
+  or ALL gene files from Gencode)
+* Want to support computational reproducibility for "derived
+  transcriptomes" or de novo transcriptomes. See this 
+  [GitHub Issue](https://github.com/mikelove/tximeta/issues/2).
+  How can we encapsulate the steps to reproduce the generation of
+  the transcriptome from its public source, and use signature to
+  guarantee we have the same sequence.
+* Facilitate functional annotation, either with vignettes/workflow or
+  with additional functionality. E.g.: 
+  housekeeping genes, arbitrary gene sets, genes expressed in GTEx tissues
+* liftOver is clunky and doesn't integrate with
+  GenomeInfoDb. It requires user input and there's a chance to
+  mis-annotate. Ideally this should all be automated with fixed
+
+### Facilitate plots and summaries
+    
+* Basic plots across samples: abundances, mapping rates, rich bias model parameters
+* Time summaries: when quantified? when imported? I would love to
+  know when the library was prepared and sequenced but this seems hopeless.
+
+### Basic functionality
+
+* Switching `rowRanges` from transcript ranges to exons-by-transcript ranges list
+* Summarization to gene-level (where building `tx2gene` is no longer necessary)
+* As is already supported in the `tximport` release, also import inferential
+  variance matrices (Gibbs samples or bootstrap samples)
+
