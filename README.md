@@ -67,6 +67,20 @@ computational reproducibility of quantification, by encapsulating the
 steps need to generate the transcriptome and providing a signature for
 checking the sequence is indeed the same.
 
+# Feasability
+
+We plan to progammatically download and hash the cDNA sequence of as
+many transcriptomes as possible. Ideally, we could partner with
+owners of transcriptome sources and produce cDNA sequence hashes
+without downloading, although the download speed is not
+prohibitive. Downloading a human transcriptome from GENCODE takes ~5
+seconds with a download speed of ~10MB/s, unzipping takes ~1 second,
+and hashing the cDNA sequence (excluding sequence names) with
+`compute_fasta_digest` takes ~3 seconds. Therefore filling out a
+table linking the hash values to metadata for the 5 GENCODE human
+transcriptome releases from 2015-2017 can be accomplished in less than
+a minute.
+
 # Take a look at the example
 
 We have a [prototype vignette](https://github.com/mikelove/tximeta/blob/master/inst/script/tximeta.knit.md)
