@@ -51,10 +51,11 @@ missing.
 Expect that this package will change a lot in the coming months. This
 is a prototype for how automatic generation of transcriptome metadata
 from a transcriptome sequence signature might work.  Note that, as it
-is just a prototype, it only works for a single transcriptome (Gencode
-human v26), although the long term goal will be to automate signature
-generation for as many transcriptomes as possible, including different
-versions, sources, organisms, etc. 
+is only a prototype, `tximeta` currently supports only the past 5
+releases for Gencode (CHR: reference chromosomes only) and Ensembl
+(`cdna.all`), for human and mouse. The long term goal will be to
+automate signature generation for as many transcriptomes as possible,
+including different versions, sources, organisms, etc.
 
 In addition, we are very interested in solving problem cases for this
 approach, such as 
