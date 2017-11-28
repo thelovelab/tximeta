@@ -7,6 +7,7 @@
 #' \item{"files"}{character vector pointing to sample quantification files}
 #' \item{"names"}{character vector of sample names}
 #' }
+#' @param ... initial arguments passed to \code{tximport}
 #' 
 #' @return a SummarizedExperiment
 #'
@@ -15,7 +16,7 @@
 #' @importFrom AnnotationDbi loadDb saveDb
 #'
 #' @export
-tximeta <- function(coldata) {
+tximeta <- function(coldata, ...) {
 
   stopifnot(all(c("files","names") %in% names(coldata)))
 
@@ -36,9 +37,10 @@ tximeta <- function(coldata) {
   # try to import files early, so we don't waste user time
   # with metadata magic before a tximport error
   message("importing quantifications")
-  txi <- tximport(files, type="salmon", txOut=TRUE)
+  txi <- tximport(files, type="salmon", txOut=TRUE, ...)
 
   # now start building out metadata based on indexSeqHash
+  # TODO this is very temporary code obviously
   hashtable <- read.csv(here("extdata","hashtable.csv"),stringsAsFactors=FALSE)
   idx <- match(indexSeqHash, hashtable$index_seq_hash)
 
@@ -51,33 +53,39 @@ tximeta <- function(coldata) {
   message(with(hashtable[idx,,drop=FALSE],
                paste0("found matching transcriptome:\n[ ",
                       source," - ",organism," - version ",version," ]")))  
+
   gtf <- hashtable$gtf[idx]
-  txdbName <- paste0(basename(gtf),".sqlite")
-  if (!file.exists(txdbName)) {
+  txdbName <- basename(gtf)
+
+  # TODO trial use of BiocFileCache to store the TxDb sqlite's
+  bfc <- BiocFileCache(".")
+  q <- bfcquery(bfc, txdbName)
+  
+  if (bfccount(q) == 0) {
     message("building TxDb")
     txdb <- makeTxDbFromGFF(gtf)
-    saveDb(txdb, file=txdbName)
+    savepath <- bfcnew(bfc, txdbName, ext="sqlite") 
+    saveDb(txdb, file=savepath)
   } else {
-    message("loading existing TxDb")
-    txdb <- loadDb(txdbName)
+    message(paste("loading existing TxDb created:",q$create_time[1]))
+    txdb <- loadDb(bfcrpath(bfc, txdbName))
   }
   
   message("generating transcript ranges")
   txps <- transcripts(txdb)
   names(txps) <- txps$tx_name
   stopifnot(all(rownames(txi$abundance) %in% names(txps)))
+  # TODO give a warning here if there are transcripts in TxDb not in Salmon index?
   txps <- txps[rownames(txi$abundance)]
-  
+
+  # TODO need a solution that doesn't rely on UCSC for the seqlevels
+  # (this is not a good solution, just used for the prototype)
+  # what is bad: the outgoing genome is now hg38 instead of GRCh38
   message("fetching genome info")
   genome <- hashtable$genome[idx]
-  chromInfo <- fetchExtendedChromInfoFromUCSC(genome2UCSC(genome))
-  slstyle <- seqlevelsStyle(seqlevels(txps))
-  slcol <- paste0(slstyle, "_seqlevel")
-  chromInfoSub <- chromInfo[match(seqlevels(txps), chromInfo[[slcol]]),]
-  seqlengths(seqinfo(txps)) <- chromInfoSub$UCSC_seqlength
-  isCircular(seqinfo(txps)) <- chromInfoSub$circular
-  genome(seqinfo(txps)) <- genome2UCSC(genome)
-
+  ucsc_genome <- genome2UCSC(genome)
+  seqinfo(txps) <- Seqinfo(genome=ucsc_genome)[seqlevels(txps)]
+  
   # remove the files column from colData
   coldataSub <- subset(coldata, select=-files)
 
@@ -129,6 +137,7 @@ reshapeMetaInfo <- function(metaInfo) {
   out
 }
 
+# TODO obviously this will go
 genome2UCSC <- function(x) {
   if (x == "GRCh38") {
     "hg38"

@@ -1,14 +1,28 @@
 Package: tximeta
-Version: 0.0.2
+Version: 0.0.3
 Title: Import transcript abundances with automagic population of metadata
 Description: Import transcript abundances with automagic population of metadata
-Author: Michael Love
+Authors@R: c(
+    person("Michael", "Love", role = c("aut","cre")),
+    person("Rob", "Patro", role = "aut"),
+    person("Peter", "Hickey", role = "ctb"),
+    person("Charlotte", "Soneson", role = "ctb"))
 Maintainer: Michael Love <michaelisaiahlove@gmail.com>
 License: GPL-2
 VignetteBuilder: knitr
-Depends: GenomicFeatures, SummarizedExperiment
-Imports: tximport, rjson, rtracklayer
-Suggests: knitr, rmarkdown, testthat, tximportData,
-        readr (>= 0.2.2), rhdf5
+Depends: SummarizedExperiment
+Imports:
+    GenomicFeatures,
+    tximport,
+    rjson,
+    rtracklayer,
+    BiocFileCache
+Suggests:
+    knitr,
+    rmarkdown,
+    testthat,
+    tximportData,
+    readr (>= 0.2.2),
+    rhdf5
 biocViews: RNASeq, Transcription, GeneExpression, DataImport
 RoxygenNote: 6.0.1

@@ -67,6 +67,7 @@ coldata$names <- coldata$run
 ```{r}
 suppressPackageStartupMessages(library(GenomicFeatures))
 suppressPackageStartupMessages(library(SummarizedExperiment))
+suppressPackageStartupMessages(library(BiocFileCache))
 ```
 
 # Running tximeta from a sample table

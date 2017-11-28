@@ -1,7 +1,7 @@
 ---
 title: "tximeta: Import transcript quantification with automagic generation of metadata"
 author: "Michael Love, Rob Patro"
-date: "10/03/2017"
+date: "11/28/2017"
 output: 
   html_document:
     highlight: tango
@@ -46,13 +46,6 @@ the `run` ID from SRA.
 
 ```r
 library(here)
-```
-
-```
-## here() starts at /Users/love/proj/tximeta
-```
-
-```r
 library(readr)
 coldata <- read_tsv(here("extdata","coldata.tsv"))
 ```
@@ -106,6 +99,7 @@ coldata$names <- coldata$run
 ```r
 suppressPackageStartupMessages(library(GenomicFeatures))
 suppressPackageStartupMessages(library(SummarizedExperiment))
+suppressPackageStartupMessages(library(BiocFileCache))
 ```
 
 # Running tximeta from a sample table
@@ -127,119 +121,11 @@ se <- tximeta(coldata)
 ```
 
 ```
-## 1
-```
-
-```
-## 2
-```
-
-```
-## 3
-```
-
-```
-## 4
-```
-
-```
-## 5
-```
-
-```
-## 6
-```
-
-```
-## 7
-```
-
-```
-## 8
-```
-
-```
-## 9
-```
-
-```
-## 10
-```
-
-```
-## 11
-```
-
-```
-## 12
-```
-
-```
-## 13
-```
-
-```
-## 14
-```
-
-```
-## 15
-```
-
-```
-## 16
-```
-
-```
-## 17
-```
-
-```
-## 18
-```
-
-```
-## 19
-```
-
-```
-## 20
-```
-
-```
-## 21
-```
-
-```
-## 22
-```
-
-```
-## 23
-```
-
-```
-## 24
-```
-
-```
-## 
-```
-
-```
+## 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
 ## found matching transcriptome:
-## [ gencode - Homo sapiens - version 26 ]
-```
-
-```
-## loading existing TxDb
-```
-
-```
+## [ Gencode - Homo sapiens - version 26 ]
+## loading existing TxDb created: 2017-11-28 21:36:55
 ## generating transcript ranges
-```
-
-```
 ## fetching genome info
 ```
 
@@ -353,33 +239,15 @@ of a transcription factor:
 
 ```r
 library(AnnotationHub)
-```
-
-```
-## 
-## Attaching package: 'AnnotationHub'
-```
-
-```
-## The following object is masked from 'package:Biobase':
-## 
-##     cache
-```
-
-```r
 ah <- AnnotationHub()
 ```
 
 ```
-## snapshotDate(): 2017-08-31
+## snapshotDate(): 2017-10-27
 ```
 
 ```r
 chip <- query(ah, c("GM12878", "MEF2A", "narrowPeak"))[[1]]
-```
-
-```
-## require("rtracklayer")
 ```
 
 ```
@@ -423,8 +291,7 @@ chip.lift <- liftOverHelper(chip, chainfile="hg19ToHg38.over.chain", to="hg38")
 ```
 
 ```
-## Warning in .Internal(get(x, envir, mode, inherits)): closing unused
-## connection 6 (hg19ToHg38.over.chain)
+## Warning: closing unused connection 6 (hg19ToHg38.over.chain)
 ```
 
 Now we can find the nearest transcript to a given ChIP-seq peak:
@@ -525,9 +392,9 @@ str(metadata(se)$txomeInfo)
 ```
 ## List of 7
 ##  $ index_seq_hash: chr "13efe75909a197f8d30f7e17ed5f3f9f03a398b6796aa746416d74b4b6aa8aeb"
-##  $ source        : chr "gencode"
+##  $ source        : chr "Gencode"
 ##  $ organism      : chr "Homo sapiens"
-##  $ version       : int 26
+##  $ version       : chr "26"
 ##  $ genome        : chr "GRCh38"
 ##  $ fasta         : chr "ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_26/gencode.v26.transcripts.fa.gz"
 ##  $ gtf           : chr "ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_26/gencode.v26.annotation.gtf.gz"
@@ -540,8 +407,8 @@ str(metadata(se)$tximetaInfo)
 ```
 ## List of 2
 ##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1
-##   ..$ : int [1:3] 0 0 1
-##  $ importTime: POSIXct[1:1], format: "2017-09-01 15:37:05"
+##   ..$ : int [1:3] 0 0 2
+##  $ importTime: POSIXct[1:1], format: "2017-11-28 16:38:26"
 ```
 
 ```r
