@@ -1,0 +1,53 @@
+---
+title: "tximeta: Working with derived transcriptomes"
+author: "Michael Love, Rob Patro"
+date: "`r format(Sys.time(), '%m/%d/%Y')`"
+output: 
+  html_document:
+    highlight: tango
+---
+
+# This package is in beta 
+
+[See README](https://github.com/mikelove/tximeta/blob/master/README.md)
+
+# Setup
+
+First, to try out `tximeta` you'll need the example data, which is
+contained in this GitHub repo. Here we download the whole repo as a
+ZIP file.
+
+```{r echo=FALSE}
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+```{r eval=FALSE}
+library(here)
+dest <- here("extdata","crohns.zip")
+download.file("https://github.com/mikelove/crohns/archive/master.zip", dest)
+unzip(dest, exdir=here("extdata"))
+```
+
+# Trying to import quants against a derived transcriptome
+
+```{r}
+library(here)
+library(tibble)
+coldata <- tibble(sample="1",
+                  files=here("extdata","crohns-master","data","ensembl","SRR1813877","quant.sf.gz"),
+                  names="SRR1813877")
+```
+
+```{r}
+suppressPackageStartupMessages(library(GenomicFeatures))
+suppressPackageStartupMessages(library(SummarizedExperiment))
+suppressPackageStartupMessages(library(BiocFileCache))
+```
+
+
+```{r}
+se <- tximeta(coldata)
+```
+
+# Producing and storing a derived transcriptome for reproducible analysis
+

@@ -1,9 +1,9 @@
 Package: tximeta
-Version: 0.0.3
+Version: 0.0.4
 Title: Import transcript abundances with automagic population of metadata
 Description: Import transcript abundances with automagic population of metadata
 Authors@R: c(
-    person("Michael", "Love", role = c("aut","cre")),
+    person("Michael", "Love", email="michaelisaiahlove@gmail.com", role = c("aut","cre")),
     person("Rob", "Patro", role = "aut"),
     person("Peter", "Hickey", role = "ctb"),
     person("Charlotte", "Soneson", role = "ctb"))

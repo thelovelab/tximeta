@@ -23,17 +23,24 @@ tximeta <- function(coldata, ...) {
   files <- coldata$files
   names(files) <- coldata$names
 
-  # get metadata from JSON files within quant dirs
+  # remove the files column from colData
+  coldataSub <- subset(coldata, select=-files)
+
+  # tximeta metadata
+  tximetaInfo <- list(version=packageVersion("tximeta"),
+                      importTime=Sys.time())
+  
+  # get quantifier metadata from JSON files within quant dirs
   metaInfo <- lapply(files, getMetaInfo)
   indexSeqHash <- metaInfo[[1]]$index_seq_hash # first sample
-
+  
   if (length(files) > 1) {
     hashes <- sapply(metaInfo, function(x) x$index_seq_hash)
     if (!all(hashes == indexSeqHash)) {
       stop("the samples do not share the same index, and cannot be imported")
     }
   }
-
+  
   # try to import files early, so we don't waste user time
   # with metadata magic before a tximport error
   message("importing quantifications")
@@ -44,9 +51,21 @@ tximeta <- function(coldata, ...) {
   hashtable <- read.csv(here("extdata","hashtable.csv"),stringsAsFactors=FALSE)
   idx <- match(indexSeqHash, hashtable$index_seq_hash)
 
+  metaInfo <- reshapeMetaInfo(metaInfo)
+  metadata <- list(
+    quantInfo=metaInfo,
+    tximetaInfo=tximetaInfo
+  )
+  
   # did we find a match?
-  # TODO: just return the SE instead of giving error here
-  if (length(idx) == 0) stop("couldn't find metadata for the quant files")
+  if (is.na(idx)) {
+    message("couldn't find matching transcriptome, returning un-ranged SummarizedExperiment") 
+    se <- SummarizedExperiment(assays=txi[c("abundance","counts","length")],
+                               colData=coldataSub,
+                               metadata=metadata)
+    return(se)
+  }
+  
   if (length(idx) > 1) stop("found more than one matching transcriptome...problem hash database")
 
   # now we can go get the GTF to annotate the ranges
@@ -85,24 +104,12 @@ tximeta <- function(coldata, ...) {
   genome <- hashtable$genome[idx]
   ucsc_genome <- genome2UCSC(genome)
   seqinfo(txps) <- Seqinfo(genome=ucsc_genome)[seqlevels(txps)]
-  
-  # remove the files column from colData
-  coldataSub <- subset(coldata, select=-files)
 
-  # prepare metadata list
-  tximetaInfo <- list(version=packageVersion("tximeta"),
-                      importTime=Sys.time())
-
+  # add more metadata
   txdbInfo <- metadata(txdb)$value
   names(txdbInfo) <- metadata(txdb)$name
-  
-  metaInfo <- reshapeMetaInfo(metaInfo)
-  metadata <- list(
-    quantInfo=metaInfo,
-    txomeInfo=as.list(hashtable[idx,]),
-    tximetaInfo=tximetaInfo,
-    txdbInfo=txdbInfo
-  )
+  metadata$txomeInfo <- as.list(hashtable[idx,])
+  metadata$txdbInfo <- txdbInfo
   
   se <- SummarizedExperiment(assays=txi[c("abundance","counts","length")],
                              rowRanges=txps,
