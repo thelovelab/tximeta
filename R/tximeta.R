@@ -12,8 +12,12 @@
 #' @return a SummarizedExperiment
 #'
 #' @importFrom tximport tximport
-#' @importFrom rjson fromJSON
+#' @importFrom jsonlite fromJSON toJSON
 #' @importFrom AnnotationDbi loadDb saveDb
+#' @importFrom GenomicFeatures makeTxDbFromGFF transcripts
+#' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew
+#' @importFrom GenomeInfoDb Seqinfo
+#' @importFrom rtracklayer import.chain liftOver
 #'
 #' @export
 tximeta <- function(coldata, ...) {
@@ -123,7 +127,7 @@ getMetaInfo <- function(file) {
   dir <- dirname(file)
   jsonPath <- file.path(dir, "aux_info/meta_info.json")
   stopifnot(file.exists(jsonPath))
-  fromJSON(file=jsonPath)
+  fromJSON(jsonPath)
 }
 
 reshapeMetaInfo <- function(metaInfo) {

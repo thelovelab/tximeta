@@ -4,7 +4,7 @@
 \alias{tximeta}
 \title{tximeta}
 \usage{
-tximeta(coldata)
+tximeta(coldata, ...)
 }
 \arguments{
 \item{coldata}{a data.frame with at least two columns:
@@ -12,6 +12,8 @@ tximeta(coldata)
 \item{"files"}{character vector pointing to sample quantification files}
 \item{"names"}{character vector of sample names}
 }}
+
+\item{...}{initial arguments passed to \code{tximport}}
 }
 \value{
 a SummarizedExperiment

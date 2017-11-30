@@ -32,10 +32,9 @@ unzip(dest, exdir=here("extdata"))
 
 ```{r}
 library(here)
-library(tibble)
-coldata <- tibble(sample="1",
-                  files=here("extdata","crohns-master","data","ensembl","SRR1813877","quant.sf.gz"),
-                  names="SRR1813877")
+file <- here("extdata/crohns-master/data/ensembl/SRR1813877/quant.sf.gz")
+coldata <- data.frame(sample="1", files=file, names="SRR1813877",
+                      stringsAsFactors=FALSE)
 ```
 
 ```{r}
@@ -49,5 +48,64 @@ suppressPackageStartupMessages(library(BiocFileCache))
 se <- tximeta(coldata)
 ```
 
-# Producing and storing a derived transcriptome for reproducible analysis
+# Documenting derived transcriptome for reproducible analysis
+
+Clearly, for an arbitrary transcriptome used to generate the
+quantification index, which does not directly match any
+transcriptomes from known sources, there is not much that can be
+done to populate the metadata during quantification import. However,
+we can facilitate the following two cases: 
+
+1) the transcriptome was derived locally from one or more publicly
+available sources
+2) the transcriptome was derived by another group, and they have
+produced and shared an object that links their derived transcriptome
+to publicly available sources
+
+`tximeta` offers functionality to assist reproducible analysis in both
+of these cases.
+
+In the case of the quantification file above, the transcriptome was
+generated locally by downloading the Ensembl cDNA FASTA and GTF for
+Homo sapiens, version 90, and subsetting to the transcripts on the
+"standard" chromsomes: 1-22, X, Y, MT. The following code reproduces
+the production of the transcriptome from publicly available sources:
+
+```{r echo=FALSE}
+library(ensembldb)
+dbfile <- ensDbFromGtf("Homo_sapiens.GRCh38.90.gtf.gz")
+edb <- EnsDb("Homo_sapiens.GRCh38.90.sqlite")
+# this is similar to Gencode CHR (except gencode has ~150 additional transcripts in the PAR of Y)
+txps <- transcripts(edb, filter=AnnotationFilterList(SeqNameFilter(c(1:22, "X", "Y","MT"))))
+library(Biostrings)
+# this is missing some of the transcripts in the above
+seqs <- readDNAStringSet("Homo_sapiens.GRCh38.cdna.all.fa.gz")
+names(seqs) <- sub("(.*?)\\..*","\\1",names(seqs)) # split at '.'
+common <- intersect(names(txps), names(seqs)) 
+seqs.sub <- seqs[common]
+writeXStringSet(seqs.sub, filepath="Homo_sapiens.GRCh38.cdna.std.chroms.fa")
+```
+
+To make this quantification reproducible, we make a
+`derivedTxome` object which records key information about the
+source of the transcripts FASTA file, and the location of the
+transcripts relative to a genome (GTF), it also records the signature
+of the derived transcriptome that was computed by *Salmon* during the
+`index` step. By default, `derivedTxome` will write out a JSON file
+which can be shared with others, linking the signature of the index
+with the other metadata, including FASTA and GTF sources. It will
+write out to a file with the same name as the `indexDir`, but with
+a `.json` extension added.
+
+```{r}
+dt <- makeDerivedTxome(
+  indexDir="Homo_sapiens.GRCh38.cdna.std.chroms_salmon_0.8.2",
+  source="Ensembl",
+  organism="Homo sapiens",
+  version="90",
+  genome="GRCh38",
+  fasta="ftp://ftp.ensembl.org/pub/release-90/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz",
+  gtf="ftp://ftp.ensembl.org/pub/release-90/gtf/homo_sapiens/Homo_sapiens.GRCh38.90.gtf.gz"
+)
+```
 

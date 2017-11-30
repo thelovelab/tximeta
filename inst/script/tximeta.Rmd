@@ -64,12 +64,6 @@ coldata$files <- here("extdata","asthma-master","data","quant",
 coldata$names <- coldata$run
 ```
 
-```{r}
-suppressPackageStartupMessages(library(GenomicFeatures))
-suppressPackageStartupMessages(library(SummarizedExperiment))
-suppressPackageStartupMessages(library(BiocFileCache))
-```
-
 # Running tximeta from a sample table
 
 (Note: first do a `devtools::load_all()` then the following should work.)

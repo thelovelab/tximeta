@@ -14,7 +14,7 @@ Depends: SummarizedExperiment
 Imports:
     GenomicFeatures,
     tximport,
-    rjson,
+    jsonlite,
     rtracklayer,
     BiocFileCache
 Suggests:
