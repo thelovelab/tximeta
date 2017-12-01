@@ -81,6 +81,8 @@ tximeta <- function(coldata, ...) {
   txdbName <- basename(gtf)
 
   # TODO trial use of BiocFileCache to store the TxDb sqlite's
+  # later change this to the default BiocFileCache(), or figure
+  # out how users can point to their own preferred BFC locations
   bfc <- BiocFileCache(".")
   q <- bfcquery(bfc, txdbName)
   
@@ -91,7 +93,8 @@ tximeta <- function(coldata, ...) {
     saveDb(txdb, file=savepath)
   } else {
     message(paste("loading existing TxDb created:",q$create_time[1]))
-    txdb <- loadDb(bfcrpath(bfc, txdbName))
+    loadpath <- bfcrpath(bfc, txdbName)
+    txdb <- loadDb(loadpath)
   }
   
   message("generating transcript ranges")

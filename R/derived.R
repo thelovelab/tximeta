@@ -30,4 +30,11 @@ makeDerivedTxome <- function(indexDir, source, organism, version, genome, fasta,
     write(toJSON(dt, pretty=TRUE), file=filename)
   }
   dt
+  
+  ## bfc <- BiocFileCache(".")
+  ## q <- bfcquery(bfc, "derivedTxomeTable")
+  ## bfccount(q)
+  ## savepath <- bfcnew(bfc, "derivedTxomeTable") 
+  ## loadpath <- bfcrpath(bfc, "derivedTxomeTable")
+  
 }
