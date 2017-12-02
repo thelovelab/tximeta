@@ -38,13 +38,6 @@ coldata <- data.frame(sample="1", files=file, names="SRR1813877",
 ```
 
 ```{r}
-suppressPackageStartupMessages(library(GenomicFeatures))
-suppressPackageStartupMessages(library(SummarizedExperiment))
-suppressPackageStartupMessages(library(BiocFileCache))
-```
-
-
-```{r}
 se <- tximeta(coldata)
 ```
 
@@ -105,7 +98,8 @@ dt <- makeDerivedTxome(
   version="90",
   genome="GRCh38",
   fasta="ftp://ftp.ensembl.org/pub/release-90/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz",
-  gtf="ftp://ftp.ensembl.org/pub/release-90/gtf/homo_sapiens/Homo_sapiens.GRCh38.90.gtf.gz"
+  gtf="ftp://ftp.ensembl.org/pub/release-90/gtf/homo_sapiens/Homo_sapiens.GRCh38.90.gtf.gz",
+  write=FALSE
 )
 ```
 

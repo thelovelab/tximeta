@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 0.0.4
+Version: 0.0.5
 Title: Import transcript abundances with automagic population of metadata
 Description: Import transcript abundances with automagic population of metadata
 Authors@R: c(
