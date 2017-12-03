@@ -1,7 +1,7 @@
 ---
 title: "tximeta: Working with derived transcriptomes"
 author: "Michael Love, Rob Patro"
-date: "`r format(Sys.time(), '%m/%d/%Y')`"
+date: "12/02/2017"
 output: 
   html_document:
     highlight: tango
@@ -17,11 +17,10 @@ First, to try out `tximeta` you'll need the example data, which is
 contained in this GitHub repo. Here we download the whole repo as a
 ZIP file.
 
-```{r echo=FALSE}
-knitr::opts_chunk$set(cache=TRUE)
-```
 
-```{r eval=FALSE}
+
+
+```r
 library(here)
 dest <- here("extdata","crohns.zip")
 download.file("https://github.com/mikelove/crohns/archive/master.zip", dest)
@@ -30,12 +29,26 @@ unzip(dest, exdir=here("extdata"))
 
 # Trying to import quants against a derived transcriptome
 
-```{r}
+
+```r
 library(here)
 file <- here("extdata/crohns-master/data/ensembl/SRR1813877/quant.sf.gz")
 coldata <- data.frame(sample="1", files=file, names="SRR1813877",
                       stringsAsFactors=FALSE)
 se <- tximeta(coldata)
+```
+
+```
+## importing quantifications
+```
+
+```
+## reading in files with read_tsv
+```
+
+```
+## 1 
+## couldn't find matching transcriptome, returning un-ranged SummarizedExperiment
 ```
 
 # Documenting derived transcriptome for reproducible analysis
@@ -61,7 +74,8 @@ Homo sapiens, version 90, and subsetting to the transcripts on the
 "standard" chromsomes: 1-22, X, Y, MT. The following code reproduces
 the production of the transcriptome from publicly available sources:
 
-```{r eval=FALSE}
+
+```r
 library(ensembldb)
 dbfile <- ensDbFromGtf("Homo_sapiens.GRCh38.90.gtf.gz")
 edb <- EnsDb("Homo_sapiens.GRCh38.90.sqlite")
@@ -87,7 +101,8 @@ with the other metadata, including FASTA and GTF sources. It will
 write out to a file with the same name as the `indexDir`, but with
 a `.json` extension added.
 
-```{r}
+
+```r
 makeDerivedTxome(
   indexDir="Homo_sapiens.GRCh38.cdna.std.chroms_salmon_0.8.2",
   source="Ensembl",
@@ -99,18 +114,67 @@ makeDerivedTxome(
 )
 ```
 
+```
+## writing derivedTxome to Homo_sapiens.GRCh38.cdna.std.chroms_salmon_0.8.2.json
+```
+
+```
+## saving derivedTxome in bfc (first time)
+```
+
 Now it works!
 
-```{r}
+
+```r
 se <- tximeta(coldata)
+```
+
+```
+## importing quantifications
+```
+
+```
+## reading in files with read_tsv
+```
+
+```
+## 1 
+## found matching derived transcriptome:
+## [ Ensembl - Homo sapiens - version 90 ]
+## loading existing TxDb created: 2017-12-03 01:36:31
+## generating transcript ranges
+## fetching genome info
 ```
 
 Remove to make it not work from the beginning
 
-```{r}
+
+```r
 library(BiocFileCache)
 bfc <- BiocFileCache(".")
 bfcinfo(bfc)
+```
+
+```
+## # A tibble: 2 x 8
+##     rid                         rname         create_time
+##   <chr>                         <chr>               <chr>
+## 1 BFC11 Homo_sapiens.GRCh38.90.gtf.gz 2017-12-03 01:36:31
+## 2 BFC13                derivedTxomeDF 2017-12-03 01:43:26
+## # ... with 5 more variables: access_time <chr>, rpath <chr>, rtype <chr>,
+## #   fpath <chr>, last_modified_time <chr>
+```
+
+```r
 bfcremove(bfc, bfcquery(bfc, "derivedTxomeDF")$rid)
 bfcinfo(bfc)
+```
+
+```
+## # A tibble: 1 x 8
+##     rid                         rname         create_time
+##   <chr>                         <chr>               <chr>
+## 1 BFC11 Homo_sapiens.GRCh38.90.gtf.gz 2017-12-03 01:36:31
+## # ... with 5 more variables: access_time <chr>, rpath <chr>, rtype <chr>,
+## #   fpath <chr>, last_modified_time <chr>
 ```

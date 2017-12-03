@@ -29,6 +29,8 @@ makeDerivedTxome <- function(indexDir, source, organism, version, genome, fasta,
   if (write) {
     filename <- paste0(indexDir,".json")
     message(paste("writing derivedTxome to", filename))
+
+    # TODO be more careful about writing to a file (ask)
     write(toJSON(dt, pretty=TRUE), file=filename)
   }
   
@@ -56,6 +58,7 @@ makeDerivedTxome <- function(indexDir, source, organism, version, genome, fasta,
       derivedTxomeDF <- rbind(derivedTxomeDF, dt)
     }
   }
+  invisible()
 }
 
 # need a loadDerivedTxome() which will share a lot of code with the above function

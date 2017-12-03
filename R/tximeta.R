@@ -15,7 +15,7 @@
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom AnnotationDbi loadDb saveDb
 #' @importFrom GenomicFeatures makeTxDbFromGFF transcripts
-#' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew
+#' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfccount bfcrpath
 #' @importFrom GenomeInfoDb Seqinfo
 #' @importFrom rtracklayer import.chain liftOver
 #'
@@ -33,10 +33,16 @@ tximeta <- function(coldata, ...) {
   # tximeta metadata
   tximetaInfo <- list(version=packageVersion("tximeta"),
                       importTime=Sys.time())
-  
   # get quantifier metadata from JSON files within quant dirs
   metaInfo <- lapply(files, getMetaInfo)
   indexSeqHash <- metaInfo[[1]]$index_seq_hash # first sample
+  # reshape
+  metaInfo <- reshapeMetaInfo(metaInfo)
+  # start to build metadata list
+  metadata <- list(
+    quantInfo=metaInfo,
+    tximetaInfo=tximetaInfo
+  )
   
   if (length(files) > 1) {
     hashes <- sapply(metaInfo, function(x) x$index_seq_hash)
@@ -53,39 +59,54 @@ tximeta <- function(coldata, ...) {
   # now start building out metadata based on indexSeqHash
   # TODO this is very temporary code obviously
   hashtable <- read.csv(here("extdata","hashtable.csv"),stringsAsFactors=FALSE)
-  idx <- match(indexSeqHash, hashtable$index_seq_hash)
-
-  metaInfo <- reshapeMetaInfo(metaInfo)
-  metadata <- list(
-    quantInfo=metaInfo,
-    tximetaInfo=tximetaInfo
-  )
+  m <- match(indexSeqHash, hashtable$index_seq_hash)
   
-  # did we find a match?
-  if (is.na(idx)) {
-    message("couldn't find matching transcriptome, returning un-ranged SummarizedExperiment") 
-    se <- SummarizedExperiment(assays=txi[c("abundance","counts","length")],
-                               colData=coldataSub,
-                               metadata=metadata)
-    return(se)
+  # did we find a match in the extdata hash table?
+  if (!is.na(m)) {
+    # TODO match only returns 1st match anyway... need to change this code
+    if (length(m) > 1) stop("found more than one matching transcriptome...problem hash database")
+    # now we can go get the GTF to annotate the ranges
+    gtf <- hashtable$gtf[m]
+    genome <- hashtable$genome[m]
+    txomeInfo <- as.list(hashtable[m,])
+    message(with(txomeInfo,
+                 paste0("found matching transcriptome:\n[ ",
+                        source," - ",organism," - version ",version," ]")))
+  } else {
+    # TODO trial use of BiocFileCache to store the TxDb sqlite's
+    # later change this to the default BiocFileCache(), or figure
+    # out how users can point to their own preferred BFC locations
+    bfc <- BiocFileCache(".")
+    q <- bfcquery(bfc, "derivedTxomeDF")
+    stopifnot(bfccount(q) < 2)
+    foundDerived <- FALSE
+    if (bfccount(q) == 1) {
+      loadpath <- bfcrpath(bfc, "derivedTxomeDF")
+      derivedTxomeDF <- readRDS(loadpath)
+      m2 <- match(indexSeqHash, derivedTxomeDF$index_seq_hash)
+      if (!is.na(m2)) {
+        foundDerived <- TRUE
+      }
+    }
+    if (foundDerived) {
+      gtf <- derivedTxomeDF$gtf[m2]
+      genome <- derivedTxomeDF$genome[m2]
+      txomeInfo <- as.list(derivedTxomeDF[m2,])
+      message(with(txomeInfo,
+                 paste0("found matching derived transcriptome:\n[ ",
+                        source," - ",organism," - version ",version," ]")))    
+    } else {
+      message("couldn't find matching transcriptome, returning un-ranged SummarizedExperiment") 
+      se <- SummarizedExperiment(assays=txi[c("abundance","counts","length")],
+                                 colData=coldataSub,
+                                 metadata=metadata)
+      return(se)
+    }
   }
-  
-  if (length(idx) > 1) stop("found more than one matching transcriptome...problem hash database")
 
-  # now we can go get the GTF to annotate the ranges
-  message(with(hashtable[idx,,drop=FALSE],
-               paste0("found matching transcriptome:\n[ ",
-                      source," - ",organism," - version ",version," ]")))  
-
-  gtf <- hashtable$gtf[idx]
   txdbName <- basename(gtf)
 
-  # TODO trial use of BiocFileCache to store the TxDb sqlite's
-  # later change this to the default BiocFileCache(), or figure
-  # out how users can point to their own preferred BFC locations
-  bfc <- BiocFileCache(".")
-  q <- bfcquery(bfc, txdbName)
-  
+  q <- bfcquery(bfc, txdbName)  
   if (bfccount(q) == 0) {
     message("building TxDb")
     txdb <- makeTxDbFromGFF(gtf)
@@ -108,14 +129,13 @@ tximeta <- function(coldata, ...) {
   # (this is not a good solution, just used for the prototype)
   # what is bad: the outgoing genome is now hg38 instead of GRCh38
   message("fetching genome info")
-  genome <- hashtable$genome[idx]
   ucsc_genome <- genome2UCSC(genome)
   seqinfo(txps) <- Seqinfo(genome=ucsc_genome)[seqlevels(txps)]
 
   # add more metadata
   txdbInfo <- metadata(txdb)$value
   names(txdbInfo) <- metadata(txdb)$name
-  metadata$txomeInfo <- as.list(hashtable[idx,])
+  metadata$txomeInfo <- txomeInfo
   metadata$txdbInfo <- txdbInfo
   
   se <- SummarizedExperiment(assays=txi[c("abundance","counts","length")],
