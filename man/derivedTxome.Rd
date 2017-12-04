@@ -3,15 +3,19 @@
 \name{derivedTxome}
 \alias{derivedTxome}
 \alias{makeDerivedTxome}
-\title{Make and load derived transcriptomes}
+\alias{derivedTxome}
+\alias{loadDerivedTxome}
+\title{Make and load derived transcriptomes (derivedTxome)}
 \usage{
 makeDerivedTxome(indexDir, source, organism, version, genome, fasta, gtf,
   write = TRUE)
+
+loadDerivedTxome(jsonfile)
 }
 \arguments{
 \item{indexDir}{indexDir}
 
-\item{source}{source}
+\item{source}{source of transcriptome FASTA and GTF}
 
 \item{organism}{organism}
 
@@ -24,7 +28,9 @@ makeDerivedTxome(indexDir, source, organism, version, genome, fasta, gtf,
 \item{gtf}{gtf}
 
 \item{write}{should a JSON file be written out which documents the transcriptome signature and metadata}
+
+\item{jsonfile}{the path to the json file for the derivedTxome}
 }
 \description{
-Make and load derived transcriptomes
+Make and load derived transcriptomes (derivedTxome)
 }

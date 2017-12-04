@@ -15,6 +15,7 @@
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom AnnotationDbi loadDb saveDb
 #' @importFrom GenomicFeatures makeTxDbFromGFF transcripts
+#' @importFrom ensembldb ensDbFromGtf EnsDb
 #' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfccount bfcrpath
 #' @importFrom GenomeInfoDb Seqinfo
 #' @importFrom rtracklayer import.chain liftOver
@@ -35,7 +36,13 @@ tximeta <- function(coldata, ...) {
                       importTime=Sys.time())
   # get quantifier metadata from JSON files within quant dirs
   metaInfo <- lapply(files, getMetaInfo)
-  indexSeqHash <- metaInfo[[1]]$index_seq_hash # first sample
+  indexSeqHash <- metaInfo[[1]]$index_seq_hash # first sample  
+  if (length(files) > 1) {
+    hashes <- sapply(metaInfo, function(x) x$index_seq_hash)
+    if (!all(hashes == indexSeqHash)) {
+      stop("the samples do not share the same index, and cannot be imported")
+    }
+  }
   # reshape
   metaInfo <- reshapeMetaInfo(metaInfo)
   # start to build metadata list
@@ -43,13 +50,6 @@ tximeta <- function(coldata, ...) {
     quantInfo=metaInfo,
     tximetaInfo=tximetaInfo
   )
-  
-  if (length(files) > 1) {
-    hashes <- sapply(metaInfo, function(x) x$index_seq_hash)
-    if (!all(hashes == indexSeqHash)) {
-      stop("the samples do not share the same index, and cannot be imported")
-    }
-  }
   
   # try to import files early, so we don't waste user time
   # with metadata magic before a tximport error
@@ -66,8 +66,6 @@ tximeta <- function(coldata, ...) {
     # TODO match only returns 1st match anyway... need to change this code
     if (length(m) > 1) stop("found more than one matching transcriptome...problem hash database")
     # now we can go get the GTF to annotate the ranges
-    gtf <- hashtable$gtf[m]
-    genome <- hashtable$genome[m]
     txomeInfo <- as.list(hashtable[m,])
     message(with(txomeInfo,
                  paste0("found matching transcriptome:\n[ ",
@@ -89,8 +87,6 @@ tximeta <- function(coldata, ...) {
       }
     }
     if (foundDerived) {
-      gtf <- derivedTxomeDF$gtf[m2]
-      genome <- derivedTxomeDF$genome[m2]
       txomeInfo <- as.list(derivedTxomeDF[m2,])
       message(with(txomeInfo,
                  paste0("found matching derived transcriptome:\n[ ",
@@ -104,33 +100,50 @@ tximeta <- function(coldata, ...) {
     }
   }
 
-  txdbName <- basename(gtf)
+  txdbName <- basename(txomeInfo$gtf)
 
+  bfc <- BiocFileCache(".")
   q <- bfcquery(bfc, txdbName)  
   if (bfccount(q) == 0) {
-    message("building TxDb")
-    txdb <- makeTxDbFromGFF(gtf)
     savepath <- bfcnew(bfc, txdbName, ext="sqlite") 
-    saveDb(txdb, file=savepath)
+    if (txomeInfo$source == "Ensembl") {
+      message("building EnsDb with 'ensembldb' package")
+      # TODO suppress warnings here or what?
+      suppressWarnings(ensDbFromGtf(txomeInfo$gtf, outfile=savepath))
+      txdb <- EnsDb(savepath)
+    } else {
+      message("building TxDb with 'GenomicFeatures' package")
+      txdb <- makeTxDbFromGFF(txomeInfo$gtf)
+      saveDb(txdb, file=savepath)
+    }
   } else {
-    message(paste("loading existing TxDb created:",q$create_time[1]))
     loadpath <- bfcrpath(bfc, txdbName)
-    txdb <- loadDb(loadpath)
+    if (txomeInfo$source == "Ensembl") {
+      message(paste("loading existing EnsDb created:",q$create_time[1]))
+      txdb <- EnsDb(loadpath)
+    } else {
+      message(paste("loading existing TxDb created:",q$create_time[1]))
+      txdb <- loadDb(loadpath)
+    }
   }
   
   message("generating transcript ranges")
   txps <- transcripts(txdb)
   names(txps) <- txps$tx_name
   stopifnot(all(rownames(txi$abundance) %in% names(txps)))
+  
   # TODO give a warning here if there are transcripts in TxDb not in Salmon index?
+  # ...hmm, maybe not because that is now a "feature" given derivedTxomes that
+  # are a simple subset of the transcripts/genes in the source FASTA & GTF
   txps <- txps[rownames(txi$abundance)]
 
-  # TODO need a solution that doesn't rely on UCSC for the seqlevels
-  # (this is not a good solution, just used for the prototype)
-  # what is bad: the outgoing genome is now hg38 instead of GRCh38
-  message("fetching genome info")
-  ucsc_genome <- genome2UCSC(genome)
-  seqinfo(txps) <- Seqinfo(genome=ucsc_genome)[seqlevels(txps)]
+  # Ensembl already has nice seqinfo attached, if not:
+  if (txomeInfo$source != "Ensembl") {
+    # TODO can we get a solution that doesn't rely on UCSC for the seqlevels?
+    message("fetching genome info")
+    ucsc_genome <- genome2UCSC(txomeInfo$genome)
+    seqinfo(txps) <- Seqinfo(genome=ucsc_genome)[seqlevels(txps)]
+  }
 
   # add more metadata
   txdbInfo <- metadata(txdb)$value
@@ -148,7 +161,7 @@ tximeta <- function(coldata, ...) {
 
 getMetaInfo <- function(file) {
   dir <- dirname(file)
-  jsonPath <- file.path(dir, "aux_info/meta_info.json")
+  jsonPath <- file.path(dir,"aux_info","meta_info.json")
   stopifnot(file.exists(jsonPath))
   fromJSON(jsonPath)
 }

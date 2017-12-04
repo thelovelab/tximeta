@@ -1,13 +1,14 @@
-#' Make and load derived transcriptomes
+#' Make and load derived transcriptomes (derivedTxome)
 #' 
 #' @param indexDir indexDir
-#' @param source source
+#' @param source source of transcriptome FASTA and GTF
 #' @param organism organism
 #' @param version version
 #' @param genome genome
 #' @param fasta fasta 
 #' @param gtf gtf
 #' @param write should a JSON file be written out which documents the transcriptome signature and metadata
+#' @param jsonfile the path to the json file for the derivedTxome
 #'
 #' @name derivedTxome
 #' @rdname derivedTxome
@@ -16,7 +17,16 @@
 makeDerivedTxome <- function(indexDir, source, organism, version, genome, fasta, gtf, write=TRUE) {
   indexList <- fromJSON(file.path(indexDir,"header.json"))
   indexSeqHash <- indexList$value0$SeqHash
+  # here and in the data frame where we record derivedTxome's,
+  # 'index' is just the basename of the Salmon index
   index <- basename(indexDir)
+  # standardize capitalization
+  std.sources <- c("Gencode","Ensembl")
+  for (src in std.sources) {
+    if (tolower(source) == tolower(src)) {
+      source <- src
+    }
+  }
   # TODO this should be made to work for multiple fasta and GTF sources...
   dt <- list(index=index,
              index_seq_hash=indexSeqHash,
@@ -29,14 +39,23 @@ makeDerivedTxome <- function(indexDir, source, organism, version, genome, fasta,
   if (write) {
     filename <- paste0(indexDir,".json")
     message(paste("writing derivedTxome to", filename))
-
     # TODO be more careful about writing to a file (ask)
     write(toJSON(dt, pretty=TRUE), file=filename)
   }
-  
+  stashDerivedTxome(dt)
+}
+
+#' @name derivedTxome
+#' @rdname derivedTxome
+#' 
+#' @export
+loadDerivedTxome <- function(jsonfile) {
+  stashDerivedTxome(fromJSON(jsonfile))
+}
+
+stashDerivedTxome <- function(dt) {
   bfc <- BiocFileCache(".")
   q <- bfcquery(bfc, "derivedTxomeDF")
-
   if (bfccount(q) == 0) {
     message("saving derivedTxome in bfc (first time)")
     savepath <- bfcnew(bfc, "derivedTxomeDF", ext="rds")
@@ -45,8 +64,8 @@ makeDerivedTxome <- function(indexDir, source, organism, version, genome, fasta,
   } else {
     loadpath <- bfcrpath(bfc, "derivedTxomeDF")
     derivedTxomeDF <- readRDS(loadpath)
-    if (index %in% derivedTxomeDF$index) {
-      m <- match(index, derivedTxomeDF$index)
+    if (dt$index %in% derivedTxomeDF$index) {
+      m <- match(dt$index, derivedTxomeDF$index)
       if (all(data.frame(dt) == derivedTxomeDF[m,,drop=FALSE])) {
         message("derivedTxome is same as already in bfc")
       } else {
@@ -60,5 +79,3 @@ makeDerivedTxome <- function(indexDir, source, organism, version, genome, fasta,
   }
   invisible()
 }
-
-# need a loadDerivedTxome() which will share a lot of code with the above function

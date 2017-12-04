@@ -12,8 +12,9 @@ License: GPL-2
 VignetteBuilder: knitr
 Depends: SummarizedExperiment
 Imports:
-    GenomicFeatures,
     tximport,
+    GenomicFeatures,
+    ensembldb,
     jsonlite,
     rtracklayer,
     BiocFileCache

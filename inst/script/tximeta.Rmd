@@ -32,7 +32,7 @@ knitr::opts_chunk$set(cache=TRUE)
 ```{r eval=FALSE}
 library(here)
 dest <- here("extdata","asthma.zip")
-download.file("https://github.com/mikelove/asthma/archive/master.zip", dest)
+download.file("https://github.com/mikelove/asthma/archive/master.zip", dest, method="wget")
 unzip(dest, exdir=here("extdata"))
 ```
 
@@ -59,9 +59,11 @@ coldata
 We use `coldata$run` to build these two columns:
 
 ```{r}
-coldata$files <- here("extdata","asthma-master","data","quant",
+coldata$files <- here("extdata","asthma-master","data","quants",
                       coldata$run,"quant.sf.gz")
 coldata$names <- coldata$run
+all(file.exists(coldata$files))
+head(coldata$names)
 ```
 
 # Running tximeta from a sample table
@@ -73,6 +75,24 @@ library(tximeta)
 se <- tximeta(coldata)
 ```
 
+# What happened? 
+
+`tximeta` recognized the signature of the transcriptome
+that the files were quantified against, it accessed the remote GTF
+file of the transcriptome source, found and attached the transcript
+genomic ranges, and added the appropriate transcriptome and genome metadata.
+The remote GTF is only accessed once. If `tximeta` recognizes that it
+has seen this index before, it will simply use a cached version of the
+transcript metadata (this uses *BiocFileCache* and the specifics of
+the cache location may change as `tximeta` develops).
+
+We plan to create and maintain a large table of signatures for as many
+sources, organisms, versions of transcriptomes as possible. We are
+also developing support for "derived transcriptomes", where one or
+more sources for transcript sequences have been merged or
+filtered. See the `derivedTxome` vignette in this package for a
+demonstration. 
+
 # Examining SummarizedExperiment output
 
 We, of course, have our coldata from before. Note that we've removed `files`.
@@ -81,8 +101,11 @@ We, of course, have our coldata from before. Note that we've removed `files`.
 colData(se)
 ```
 
-Here we show the three matrices that were imported (note, this part
-would need updating for un-reduced inferential variance matrices).
+Here we show the three matrices that were imported. (Note: this part
+would need updating for un-reduced inferential variance matrices.) 
+(Second note: the downstream packages would need updating of their
+functions or workflows, e.g. `DESeqDataSetFromTximport` needs a little
+update to work with these *SummarizedExperiments* instead of simple lists.)
 
 ```{r}
 assayNames(se)
@@ -130,7 +153,7 @@ comparing hg38 to hg38.
 ```{r eval=FALSE}
 url <- "http://hgdownload.cse.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz"
 file <- "hg19ToHg38.over.chain.gz"
-if (!file.exists(file)) download.file(url, file)
+if (!file.exists(file)) download.file(url, file, method="wget")
 system(paste0("gunzip ",file))
 ```
 
@@ -170,32 +193,6 @@ str(metadata(se)$txdbInfo)
 
 # Next steps
 
-### Challenges
-
-* Building out actual, sustainable plan for supporting as many
-  organisms and sources as possible. We can define rules which
-  determine where the FASTA and GTF files will be based on `source` and
-  `version` (also here I ignored something like "type", e.g. CHR
-  or ALL gene files from Gencode)
-* Want to support computational reproducibility for "derived
-  transcriptomes" or de novo transcriptomes. See this 
-  [GitHub Issue](https://github.com/mikelove/tximeta/issues/2).
-  How can we encapsulate the steps to reproduce the generation of
-  the transcriptome from its public source, and use signature to
-  guarantee we have the same sequence.
-* Facilitate functional annotation, either with vignettes/workflow or
-  with additional functionality. E.g.: 
-  housekeeping genes, arbitrary gene sets, genes expressed in GTEx tissues
-* liftOver is clunky and doesn't integrate with
-  GenomeInfoDb. It requires user input and there's a chance to
-  mis-annotate. Ideally this should all be automated.
-
-### Facilitate plots and summaries
-    
-* Basic plots across samples: abundances, mapping rates, rich bias model parameters
-* Time summaries: when quantified? when imported? I would love to
-  know when the library was prepared and sequenced but this seems hopeless.
-
 ### Basic functionality
 
 * Switching `rowRanges` from transcript ranges to exons-by-transcript ranges list
@@ -203,3 +200,34 @@ str(metadata(se)$txdbInfo)
 * As is already supported in the `tximport` release, also import inferential
   variance matrices (Gibbs samples or bootstrap samples)
 
+### Facilitate plots and summaries
+    
+* Basic plots across samples: abundances, mapping rates, rich bias model parameters
+* Time summaries: when quantified? when imported? I would love to
+  know when the library was prepared and sequenced but this seems hopeless.
+
+### Challenges
+
+* Building out actual, sustainable plan for supporting as many
+  organisms and sources as possible. We can define rules which
+  determine where the FASTA and GTF files will be based on `source` and
+  `version` (also here I ignored something like "type", e.g. CHR
+  or ALL gene files from Gencode)
+* Some support already for derived transcriptomes, see `derivedTxomes`
+  vignette. Need to work more on combining multiple sources
+  (potentially meta-transcriptomes from different organisms?), and
+  also on how to approach de novo transcriptomes, and how to support
+  reproducibility there.
+* Facilitate functional annotation, either with vignettes/workflow or
+  with additional functionality. E.g.: 
+  housekeeping genes, arbitrary gene sets, genes expressed in GTEx tissues
+* liftOver is clunky and doesn't integrate with
+  GenomeInfoDb. It requires user input and there's a chance to
+  mis-annotate. Ideally this should all be automated.
+
+# Session info
+
+```{r}
+library(devtools)
+session_info()
+```

@@ -24,7 +24,7 @@ knitr::opts_chunk$set(cache=TRUE)
 ```{r eval=FALSE}
 library(here)
 dest <- here("extdata","crohns.zip")
-download.file("https://github.com/mikelove/crohns/archive/master.zip", dest)
+download.file("https://github.com/mikelove/crohns/archive/master.zip", dest, method="wget")
 unzip(dest, exdir=here("extdata"))
 ```
 
@@ -81,31 +81,47 @@ To make this quantification reproducible, we make a
 source of the transcripts FASTA file, and the location of the
 transcripts relative to a genome (GTF), it also records the signature
 of the derived transcriptome that was computed by *Salmon* during the
-`index` step. By default, `derivedTxome` will write out a JSON file
+`index` step. 
+
+By default, `derivedTxome` will write out a JSON file
 which can be shared with others, linking the signature of the index
 with the other metadata, including FASTA and GTF sources. It will
 write out to a file with the same name as the `indexDir`, but with
-a `.json` extension added.
+a `.json` extension added. This can be prevented with `write=FALSE`.
 
 ```{r}
-makeDerivedTxome(
-  indexDir="Homo_sapiens.GRCh38.cdna.std.chroms_salmon_0.8.2",
-  source="Ensembl",
-  organism="Homo sapiens",
-  version="90",
-  genome="GRCh38",
-  fasta="ftp://ftp.ensembl.org/pub/release-90/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz",
-  gtf="ftp://ftp.ensembl.org/pub/release-90/gtf/homo_sapiens/Homo_sapiens.GRCh38.90.gtf.gz"
-)
+indexDir <- "Homo_sapiens.GRCh38.cdna.std.chroms_salmon_0.8.2"
+fastaFTP <- "ftp://ftp.ensembl.org/pub/release-90/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz"
+gtfFTP <- "ftp://ftp.ensembl.org/pub/release-90/gtf/homo_sapiens/Homo_sapiens.GRCh38.90.gtf.gz"
+makeDerivedTxome(indexDir=indexDir,
+                 source="Ensembl", organism="Homo sapiens",
+                 version="90", genome="GRCh38",
+                 fasta=fastaFTP, gtf=gtfFTP)
 ```
 
-Now it works!
+After running `makeDerivedTxome`, the connection between this Salmon
+index (and its signature) with the sources is saved for persistent
+usage (this uses *BiocFileCache* and the specifics of the cache location
+may change as `tximeta` develops).
+
+With use of `tximeta` and a `derivedTxome` -- as with `tximeta` on a
+standard, un-filtered transcriptome -- the software figures out if the
+remote GTF has been accessed before, and on future calls, it will
+simply load the stashed metadata (using *BiocFileCache*).
 
 ```{r}
 se <- tximeta(coldata)
 ```
 
-Remove to make it not work from the beginning
+We can see the appropriate metadata is attached (and here, using the
+Ensembl-style notation of chromosomes, thanks to *ensembldb*).
+
+```{r}
+rowRanges(se)
+seqinfo(se)
+```
+
+# Clear derivedTxomes (only for demonstration)
 
 ```{r}
 library(BiocFileCache)
@@ -113,4 +129,46 @@ bfc <- BiocFileCache(".")
 bfcinfo(bfc)
 bfcremove(bfc, bfcquery(bfc, "derivedTxomeDF")$rid)
 bfcinfo(bfc)
+```
+
+# Loading derivedTxome JSON files
+
+If a collaborator or the Suppmentary Files for a publication 
+shares a `derivedTxomes` JSON file, we can likewise use `tximeta`
+to automatically assemble the relevant metadata. This implies that the
+other person has used `tximeta` with the function `makeDerivedTxome`
+demonstrated above, pointing to their Salmon index and to the FASTA
+and GTF source.
+
+We simply point to the JSON file and use `loadDerivedTxome` and then
+the relevant metadata is saved for persistent usage (using
+*BiocFileCache*).
+
+```{r}
+jsonfile <- "Homo_sapiens.GRCh38.cdna.std.chroms_salmon_0.8.2.json"
+loadDerivedTxome(jsonfile)
+```
+
+Again, using `tximeta` figures out whether it needs to access the
+remote GTF or not, and assembles the appropriate object on the user's
+behalf. 
+
+```{r}
+se <- tximeta(coldata)
+```
+
+# Clear derivedTxomes (only for demonstration)
+
+```{r}
+bfc <- BiocFileCache(".")
+bfcinfo(bfc)
+bfcremove(bfc, bfcquery(bfc, "derivedTxomeDF")$rid)
+bfcinfo(bfc)
+```
+
+# Session info
+
+```{r}
+library(devtools)
+session_info()
 ```

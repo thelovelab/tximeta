@@ -1,7 +1,7 @@
 ---
 title: "tximeta: Import transcript quantification with automagic generation of metadata"
 author: "Michael Love, Rob Patro"
-date: "11/28/2017"
+date: "12/04/2017"
 output: 
   html_document:
     highlight: tango
@@ -31,7 +31,7 @@ ZIP file.
 ```r
 library(here)
 dest <- here("extdata","asthma.zip")
-download.file("https://github.com/mikelove/asthma/archive/master.zip", dest)
+download.file("https://github.com/mikelove/asthma/archive/master.zip", dest, method="wget")
 unzip(dest, exdir=here("extdata"))
 ```
 
@@ -90,16 +90,23 @@ We use `coldata$run` to build these two columns:
 
 
 ```r
-coldata$files <- here("extdata","asthma-master","data","quant",
+coldata$files <- here("extdata","asthma-master","data","quants",
                       coldata$run,"quant.sf.gz")
 coldata$names <- coldata$run
+all(file.exists(coldata$files))
 ```
 
+```
+## [1] TRUE
+```
 
 ```r
-suppressPackageStartupMessages(library(GenomicFeatures))
-suppressPackageStartupMessages(library(SummarizedExperiment))
-suppressPackageStartupMessages(library(BiocFileCache))
+head(coldata$names)
+```
+
+```
+## [1] "SRR1565944" "SRR1565945" "SRR1565946" "SRR1565947" "SRR1565948"
+## [6] "SRR1565949"
 ```
 
 # Running tximeta from a sample table
@@ -124,10 +131,30 @@ se <- tximeta(coldata)
 ## 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
 ## found matching transcriptome:
 ## [ Gencode - Homo sapiens - version 26 ]
-## loading existing TxDb created: 2017-11-28 21:36:55
+## loading existing TxDb created: 2017-12-04 21:04:56
+## Loading required package: GenomicFeatures
+## Loading required package: AnnotationDbi
 ## generating transcript ranges
 ## fetching genome info
 ```
+
+# What happened? 
+
+`tximeta` recognized the signature of the transcriptome
+that the files were quantified against, it accessed the remote GTF
+file of the transcriptome source, found and attached the transcript
+genomic ranges, and added the appropriate transcriptome and genome metadata.
+The remote GTF is only accessed once. If `tximeta` recognizes that it
+has seen this index before, it will simply use a cached version of the
+transcript metadata (this uses *BiocFileCache* and the specifics of
+the cache location may change as `tximeta` develops).
+
+We plan to create and maintain a large table of signatures for as many
+sources, organisms, versions of transcriptomes as possible. We are
+also developing support for "derived transcriptomes", where one or
+more sources for transcript sequences have been merged or
+filtered. See the `derivedTxome` vignette in this package for a
+demonstration. 
 
 # Examining SummarizedExperiment output
 
@@ -155,8 +182,11 @@ colData(se)
 ## SRR1565927  SRR1565927         s14        asth       HRV16  SRR1565927
 ```
 
-Here we show the three matrices that were imported (note, this part
-would need updating for un-reduced inferential variance matrices).
+Here we show the three matrices that were imported. (Note: this part
+would need updating for un-reduced inferential variance matrices.) 
+(Second note: the downstream packages would need updating of their
+functions or workflows, e.g. `DESeqDataSetFromTximport` needs a little
+update to work with these *SummarizedExperiments* instead of simple lists.)
 
 
 ```r
@@ -251,7 +281,7 @@ chip <- query(ah, c("GM12878", "MEF2A", "narrowPeak"))[[1]]
 ```
 
 ```
-## loading from cache '/Users/love//.AnnotationHub/28040'
+## loading from cache '/home/love//.AnnotationHub/28040'
 ```
 
 First try, let's find the nearest transcript to a given ChIP-seq peak:
@@ -279,7 +309,7 @@ comparing hg38 to hg38.
 ```r
 url <- "http://hgdownload.cse.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz"
 file <- "hg19ToHg38.over.chain.gz"
-if (!file.exists(file)) download.file(url, file)
+if (!file.exists(file)) download.file(url, file, method="wget")
 system(paste0("gunzip ",file))
 ```
 
@@ -353,7 +383,7 @@ names(metadata(se))
 ```
 
 ```
-## [1] "quantInfo"   "txomeInfo"   "tximetaInfo" "txdbInfo"
+## [1] "quantInfo"   "tximetaInfo" "txomeInfo"   "txdbInfo"
 ```
 
 ```r
@@ -364,21 +394,21 @@ str(metadata(se)$quantInfo)
 ## List of 21
 ##  $ salmon_version       : chr [1:24] "0.8.2" "0.8.2" "0.8.2" "0.8.2" ...
 ##  $ samp_type            : chr [1:24] "none" "none" "none" "none" ...
-##  $ num_libraries        : num [1:24] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ num_libraries        : int [1:24] 1 1 1 1 1 1 1 1 1 1 ...
 ##  $ library_types        : chr [1:24] "IU" "IU" "IU" "IU" ...
-##  $ frag_dist_length     : num [1:24] 1001 1001 1001 1001 1001 ...
+##  $ frag_dist_length     : int [1:24] 1001 1001 1001 1001 1001 1001 1001 1001 1001 1001 ...
 ##  $ seq_bias_correct     : logi [1:24] FALSE FALSE FALSE FALSE FALSE FALSE ...
 ##  $ gc_bias_correct      : logi [1:24] FALSE FALSE FALSE FALSE FALSE FALSE ...
-##  $ num_bias_bins        : num [1:24] 4096 4096 4096 4096 4096 ...
+##  $ num_bias_bins        : int [1:24] 4096 4096 4096 4096 4096 4096 4096 4096 4096 4096 ...
 ##  $ mapping_type         : chr [1:24] "mapping" "mapping" "mapping" "mapping" ...
-##  $ num_targets          : num [1:24] 199324 199324 199324 199324 199324 ...
+##  $ num_targets          : int [1:24] 199324 199324 199324 199324 199324 199324 199324 199324 199324 199324 ...
 ##  $ serialized_eq_classes: logi [1:24] FALSE FALSE FALSE FALSE FALSE FALSE ...
-##  $ length_classes       : num [1:5, 1:24] 512 652 1007 2252 103053 ...
+##  $ length_classes       : int [1:5, 1:24] 512 652 1007 2252 103053 512 652 1007 2252 103053 ...
 ##  $ index_seq_hash       : chr "13efe75909a197f8d30f7e17ed5f3f9f03a398b6796aa746416d74b4b6aa8aeb"
 ##  $ index_name_hash      : chr "59f80b32210db10dcd68ad4f8309b691b9c236659071dd50f9410e32e374f0a9"
-##  $ num_bootstraps       : num [1:24] 0 0 0 0 0 0 0 0 0 0 ...
-##  $ num_processed        : num [1:24] 6443960 6895927 6740421 6583297 6660199 ...
-##  $ num_mapped           : num [1:24] 3352730 4172715 3433227 4108089 4428644 ...
+##  $ num_bootstraps       : int [1:24] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ num_processed        : int [1:24] 6443960 6895927 6740421 6583297 6660199 6501138 6400538 6441883 6740421 6845343 ...
+##  $ num_mapped           : int [1:24] 3352730 4172715 3433227 4108089 4428644 3711190 3331695 3411004 3446282 3887156 ...
 ##  $ percent_mapped       : num [1:24] 52 60.5 50.9 62.4 66.5 ...
 ##  $ call                 : chr [1:24] "quant" "quant" "quant" "quant" ...
 ##  $ start_time           : chr [1:24] "Wed Jun 21 10:45:14 2017" "Wed Jun 21 10:46:14 2017" "Wed Jun 21 10:47:20 2017" "Wed Jun 21 10:48:12 2017" ...
@@ -407,8 +437,8 @@ str(metadata(se)$tximetaInfo)
 ```
 ## List of 2
 ##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1
-##   ..$ : int [1:3] 0 0 2
-##  $ importTime: POSIXct[1:1], format: "2017-11-28 16:38:26"
+##   ..$ : int [1:3] 0 0 5
+##  $ importTime: POSIXct[1:1], format: "2017-12-04 16:29:57"
 ```
 
 ```r
@@ -422,32 +452,6 @@ str(metadata(se)$txdbInfo)
 
 # Next steps
 
-### Challenges
-
-* Building out actual, sustainable plan for supporting as many
-  organisms and sources as possible. We can define rules which
-  determine where the FASTA and GTF files will be based on `source` and
-  `version` (also here I ignored something like "type", e.g. CHR
-  or ALL gene files from Gencode)
-* Want to support computational reproducibility for "derived
-  transcriptomes" or de novo transcriptomes. See this 
-  [GitHub Issue](https://github.com/mikelove/tximeta/issues/2).
-  How can we encapsulate the steps to reproduce the generation of
-  the transcriptome from its public source, and use signature to
-  guarantee we have the same sequence.
-* Facilitate functional annotation, either with vignettes/workflow or
-  with additional functionality. E.g.: 
-  housekeeping genes, arbitrary gene sets, genes expressed in GTEx tissues
-* liftOver is clunky and doesn't integrate with
-  GenomeInfoDb. It requires user input and there's a chance to
-  mis-annotate. Ideally this should all be automated.
-
-### Facilitate plots and summaries
-    
-* Basic plots across samples: abundances, mapping rates, rich bias model parameters
-* Time summaries: when quantified? when imported? I would love to
-  know when the library was prepared and sequenced but this seems hopeless.
-
 ### Basic functionality
 
 * Switching `rowRanges` from transcript ranges to exons-by-transcript ranges list
@@ -455,3 +459,158 @@ str(metadata(se)$txdbInfo)
 * As is already supported in the `tximport` release, also import inferential
   variance matrices (Gibbs samples or bootstrap samples)
 
+### Facilitate plots and summaries
+    
+* Basic plots across samples: abundances, mapping rates, rich bias model parameters
+* Time summaries: when quantified? when imported? I would love to
+  know when the library was prepared and sequenced but this seems hopeless.
+
+### Challenges
+
+* Building out actual, sustainable plan for supporting as many
+  organisms and sources as possible. We can define rules which
+  determine where the FASTA and GTF files will be based on `source` and
+  `version` (also here I ignored something like "type", e.g. CHR
+  or ALL gene files from Gencode)
+* Some support already for derived transcriptomes, see `derivedTxomes`
+  vignette. Need to work more on combining multiple sources
+  (potentially meta-transcriptomes from different organisms?), and
+  also on how to approach de novo transcriptomes, and how to support
+  reproducibility there.
+* Facilitate functional annotation, either with vignettes/workflow or
+  with additional functionality. E.g.: 
+  housekeeping genes, arbitrary gene sets, genes expressed in GTEx tissues
+* liftOver is clunky and doesn't integrate with
+  GenomeInfoDb. It requires user input and there's a chance to
+  mis-annotate. Ideally this should all be automated.
+
+# Session info
+
+
+```r
+library(devtools)
+session_info()
+```
+
+```
+## Session info -------------------------------------------------------------
+```
+
+```
+##  setting  value                                             
+##  version  R Under development (unstable) (2017-05-23 r72721)
+##  system   x86_64, linux-gnu                                 
+##  ui       X11                                               
+##  language en_US                                             
+##  collate  en_US.UTF-8                                       
+##  tz       posixrules                                        
+##  date     2017-12-04
+```
+
+```
+## Packages -----------------------------------------------------------------
+```
+
+```
+##  package                     * version  date       source        
+##  AnnotationDbi               * 1.39.4   2017-10-18 Bioconductor  
+##  AnnotationFilter              1.1.9    2017-10-08 Bioconductor  
+##  AnnotationHub               * 2.9.19   2017-10-08 Bioconductor  
+##  assertthat                    0.2.0    2017-04-11 CRAN (R 3.5.0)
+##  backports                     1.1.1    2017-09-25 CRAN (R 3.5.0)
+##  base                        * 3.5.0    2017-05-24 local         
+##  bindr                         0.1      2016-11-13 CRAN (R 3.5.0)
+##  bindrcpp                    * 0.2      2017-06-17 CRAN (R 3.5.0)
+##  Biobase                     * 2.37.2   2017-05-24 Bioconductor  
+##  BiocFileCache                 1.2.0    2017-12-01 Bioconductor  
+##  BiocGenerics                * 0.23.3   2017-10-08 Bioconductor  
+##  BiocInstaller               * 1.28.0   2017-11-08 Bioconductor  
+##  BiocParallel                  1.11.11  2017-10-18 Bioconductor  
+##  biomaRt                       2.33.4   2017-10-08 Bioconductor  
+##  Biostrings                  * 2.45.4   2017-10-08 Bioconductor  
+##  bit                           1.1-12   2014-04-09 CRAN (R 3.5.0)
+##  bit64                         0.9-7    2017-05-08 CRAN (R 3.5.0)
+##  bitops                        1.0-6    2013-08-17 CRAN (R 3.5.0)
+##  blob                          1.1.0    2017-06-17 CRAN (R 3.5.0)
+##  BSgenome                    * 1.45.3   2017-10-08 Bioconductor  
+##  BSgenome.Hsapiens.UCSC.hg19 * 1.4.0    2017-09-08 Bioconductor  
+##  codetools                     0.2-15   2016-10-05 CRAN (R 3.5.0)
+##  commonmark                    1.4      2017-09-01 CRAN (R 3.5.0)
+##  compiler                      3.5.0    2017-05-24 local         
+##  crayon                        1.3.4    2017-09-16 CRAN (R 3.5.0)
+##  curl                          3.0      2017-10-06 CRAN (R 3.5.0)
+##  datasets                    * 3.5.0    2017-05-24 local         
+##  DBI                           0.7      2017-06-18 CRAN (R 3.5.0)
+##  dbplyr                        1.1.0    2017-06-27 CRAN (R 3.5.0)
+##  DelayedArray                * 0.3.21   2017-10-08 Bioconductor  
+##  devtools                    * 1.13.3   2017-08-02 CRAN (R 3.5.0)
+##  digest                        0.6.12   2017-01-27 CRAN (R 3.5.0)
+##  dplyr                         0.7.4    2017-09-28 CRAN (R 3.5.0)
+##  ensembldb                     2.1.14   2017-10-18 Bioconductor  
+##  evaluate                      0.10.1   2017-06-24 CRAN (R 3.5.0)
+##  GenomeInfoDb                * 1.13.5   2017-10-08 Bioconductor  
+##  GenomeInfoDbData              0.99.1   2017-10-08 Bioconductor  
+##  GenomicAlignments             1.13.6   2017-10-08 Bioconductor  
+##  GenomicFeatures             * 1.29.13  2017-10-18 Bioconductor  
+##  GenomicRanges               * 1.29.15  2017-10-08 Bioconductor  
+##  glue                          1.1.1    2017-06-21 CRAN (R 3.5.0)
+##  graphics                    * 3.5.0    2017-05-24 local         
+##  grDevices                   * 3.5.0    2017-05-24 local         
+##  grid                          3.5.0    2017-05-24 local         
+##  here                        * 0.1      2017-05-28 CRAN (R 3.5.0)
+##  hms                           0.3      2016-11-22 CRAN (R 3.5.0)
+##  htmltools                     0.3.6    2017-04-28 CRAN (R 3.5.0)
+##  httpuv                        1.3.5    2017-07-04 CRAN (R 3.5.0)
+##  httr                          1.3.1    2017-08-20 CRAN (R 3.5.0)
+##  interactiveDisplayBase        1.15.0   2017-08-12 Bioconductor  
+##  IRanges                     * 2.11.19  2017-10-18 Bioconductor  
+##  jsonlite                      1.5      2017-06-01 CRAN (R 3.5.0)
+##  knitr                         1.17     2017-08-10 CRAN (R 3.5.0)
+##  lattice                       0.20-35  2017-03-25 CRAN (R 3.5.0)
+##  lazyeval                      0.2.0    2016-06-12 CRAN (R 3.5.0)
+##  magrittr                    * 1.5      2014-11-22 CRAN (R 3.5.0)
+##  Matrix                        1.2-11   2017-08-16 CRAN (R 3.5.0)
+##  matrixStats                 * 0.52.2   2017-04-14 CRAN (R 3.5.0)
+##  memoise                       1.1.0    2017-04-21 CRAN (R 3.5.0)
+##  methods                     * 3.5.0    2017-05-24 local         
+##  mime                          0.5      2016-07-07 CRAN (R 3.5.0)
+##  parallel                    * 3.5.0    2017-05-24 local         
+##  pkgconfig                     2.0.1    2017-03-21 CRAN (R 3.5.0)
+##  prettyunits                   1.0.2    2015-07-13 CRAN (R 3.5.0)
+##  progress                      1.1.2    2016-12-14 CRAN (R 3.5.0)
+##  ProtGenerics                  1.9.1    2017-10-08 Bioconductor  
+##  R6                            2.2.2    2017-06-17 CRAN (R 3.5.0)
+##  rappdirs                      0.3.1    2016-03-28 CRAN (R 3.5.0)
+##  Rcpp                          0.12.13  2017-09-28 CRAN (R 3.5.0)
+##  RCurl                         1.95-4.8 2016-03-01 CRAN (R 3.5.0)
+##  readr                       * 1.1.1    2017-05-16 CRAN (R 3.5.0)
+##  rjson                         0.2.15   2014-11-03 CRAN (R 3.5.0)
+##  rlang                         0.1.2    2017-08-09 CRAN (R 3.5.0)
+##  rmarkdown                   * 1.6      2017-06-15 CRAN (R 3.5.0)
+##  roxygen2                      6.0.1    2017-02-06 CRAN (R 3.5.0)
+##  rprojroot                     1.2      2017-01-16 CRAN (R 3.5.0)
+##  Rsamtools                     1.29.1   2017-10-08 Bioconductor  
+##  RSQLite                       2.0      2017-06-19 CRAN (R 3.5.0)
+##  rstudioapi                    0.7      2017-09-07 CRAN (R 3.5.0)
+##  rtracklayer                 * 1.37.3   2017-10-08 Bioconductor  
+##  S4Vectors                   * 0.15.14  2017-10-18 Bioconductor  
+##  shiny                         1.0.5    2017-08-23 CRAN (R 3.5.0)
+##  stats                       * 3.5.0    2017-05-24 local         
+##  stats4                      * 3.5.0    2017-05-24 local         
+##  stringi                       1.1.5    2017-04-07 CRAN (R 3.5.0)
+##  stringr                       1.2.0    2017-02-18 CRAN (R 3.5.0)
+##  SummarizedExperiment        * 1.7.10   2017-10-08 Bioconductor  
+##  testthat                    * 1.0.2    2016-04-23 CRAN (R 3.5.0)
+##  tibble                        1.3.4    2017-08-22 CRAN (R 3.5.0)
+##  tools                         3.5.0    2017-05-24 local         
+##  tximeta                     * 0.0.5    <NA>       Bioconductor  
+##  tximport                      1.5.1    2017-10-08 Bioconductor  
+##  utils                       * 3.5.0    2017-05-24 local         
+##  withr                         2.0.0    2017-07-28 CRAN (R 3.5.0)
+##  XML                           3.98-1.9 2017-06-19 CRAN (R 3.5.0)
+##  xml2                          1.1.1    2017-01-24 CRAN (R 3.5.0)
+##  xtable                        1.8-2    2016-02-05 CRAN (R 3.5.0)
+##  XVector                     * 0.17.1   2017-10-08 Bioconductor  
+##  yaml                          2.1.14   2016-11-12 CRAN (R 3.5.0)
+##  zlibbioc                      1.23.0   2017-05-24 Bioconductor
+```
