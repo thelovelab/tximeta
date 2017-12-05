@@ -1,7 +1,7 @@
 ---
 title: "tximeta: Working with derived transcriptomes"
 author: "Michael Love, Rob Patro"
-date: "12/04/2017"
+date: "12/05/2017"
 output: 
   html_document:
     highlight: tango
@@ -62,7 +62,7 @@ we can facilitate the following two cases:
 1) the transcriptome was derived locally from one or more publicly
 available sources
 2) the transcriptome was derived by another group, and they have
-produced and shared an object that links their derived transcriptome
+produced and shared a file that links their derived transcriptome
 to publicly available sources
 
 `tximeta` offers functionality to assist reproducible analysis in both
@@ -91,7 +91,7 @@ writeXStringSet(seqs.sub, filepath="Homo_sapiens.GRCh38.cdna.std.chroms.fa")
 ```
 
 To make this quantification reproducible, we make a
-`derivedTxome` object which records key information about the
+`derivedTxome` which records key information about the
 source of the transcripts FASTA file, and the location of the
 transcripts relative to a genome (GTF), it also records the signature
 of the derived transcriptome that was computed by *Salmon* during the
@@ -264,7 +264,7 @@ bfcinfo(bfc)
 # Loading derivedTxome JSON files
 
 If a collaborator or the Suppmentary Files for a publication 
-shares a `derivedTxomes` JSON file, we can likewise use `tximeta`
+shares a `derivedTxome` JSON file, we can likewise use `tximeta`
 to automatically assemble the relevant metadata. This implies that the
 other person has used `tximeta` with the function `makeDerivedTxome`
 demonstrated above, pointing to their Salmon index and to the FASTA
