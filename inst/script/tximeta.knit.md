@@ -1,7 +1,7 @@
 ---
 title: "tximeta: Import transcript quantification with automagic generation of metadata"
 author: "Michael Love, Rob Patro"
-date: "12/04/2017"
+date: "12/05/2017"
 output: 
   html_document:
     highlight: tango
@@ -261,7 +261,77 @@ seqinfo(se)
 ##   chrM          16569       TRUE   hg38
 ```
 
-# Demo: find nearest transcripts to a ChIP-seq peak
+# Easy summarization to gene-level
+
+Because the SummarizedExperiment maintains all the metadata of its
+creation, it also keeps a pointer to the necessary database for
+summarizing transcript-level quantifications and bias corrections to
+the gene-level. If necessary, `summarizeToGene` can pull down the
+remote source for summarization, but given that we've already built a
+TxDb once, it simply loads the stashed version.
+
+
+```r
+gse <- summarizeToGene(se)
+```
+
+```
+## loading existing TxDb created: 2017-12-04 21:04:56
+```
+
+```
+## obtaining transcript-to-gene mapping from TxDb
+```
+
+```
+## summarizing abundance
+```
+
+```
+## summarizing counts
+```
+
+```
+## summarizing length
+```
+
+```r
+rowRanges(gse)
+```
+
+```
+## GRanges object with 58219 ranges and 1 metadata column:
+##                      seqnames                 ranges strand |
+##                         <Rle>              <IRanges>  <Rle> |
+##   ENSG00000000003.14     chrX [100627109, 100639991]      - |
+##    ENSG00000000005.5     chrX [100584802, 100599885]      + |
+##   ENSG00000000419.12    chr20 [ 50934867,  50958555]      - |
+##   ENSG00000000457.13     chr1 [169849631, 169894267]      - |
+##   ENSG00000000460.16     chr1 [169662007, 169854080]      + |
+##                  ...      ...                    ...    ... .
+##    ENSG00000284592.1     chr1 [157203604, 157205062]      - |
+##    ENSG00000284594.1    chr11 [  1880045,   1880147]      + |
+##    ENSG00000284595.1    chr17 [ 75498548,  75498628]      + |
+##    ENSG00000284596.1     chr7 [102471469, 102471531]      + |
+##    ENSG00000284600.1     chr2 [  1795525,   1811526]      + |
+##                                 gene_id
+##                             <character>
+##   ENSG00000000003.14 ENSG00000000003.14
+##    ENSG00000000005.5  ENSG00000000005.5
+##   ENSG00000000419.12 ENSG00000000419.12
+##   ENSG00000000457.13 ENSG00000000457.13
+##   ENSG00000000460.16 ENSG00000000460.16
+##                  ...                ...
+##    ENSG00000284592.1  ENSG00000284592.1
+##    ENSG00000284594.1  ENSG00000284594.1
+##    ENSG00000284595.1  ENSG00000284595.1
+##    ENSG00000284596.1  ENSG00000284596.1
+##    ENSG00000284600.1  ENSG00000284600.1
+##   -------
+##   seqinfo: 25 sequences (1 circular) from an unspecified genome; no seqlengths
+```
+
+# Find nearest transcripts to a ChIP-seq peak
 
 Suppose we want to find overlap of the expression with binding sites
 of a transcription factor:
@@ -321,7 +391,8 @@ chip.lift <- liftOverHelper(chip, chainfile="hg19ToHg38.over.chain", to="hg38")
 ```
 
 ```
-## Warning: closing unused connection 6 (hg19ToHg38.over.chain)
+## Warning in .Internal(exists(x, envir, mode, inherits)): closing unused
+## connection 6 (hg19ToHg38.over.chain)
 ```
 
 Now we can find the nearest transcript to a given ChIP-seq peak:
@@ -454,8 +525,8 @@ str(metadata(se)$txdbInfo)
 
 ### Basic functionality
 
-* Switching `rowRanges` from transcript ranges to exons-by-transcript ranges list
-* Summarization to gene-level (where building `tx2gene` is no longer necessary)
+* Switching `rowRanges` from transcript ranges to exons-by-transcript
+  ranges list, or from gene ranges to exons-by-gene ranges list.
 * As is already supported in the `tximport` release, also import inferential
   variance matrices (Gibbs samples or bootstrap samples)
 
@@ -467,6 +538,9 @@ str(metadata(se)$txdbInfo)
 
 ### Challenges
 
+* Figuring out when and how to ask where the user wants to keep the
+  BiocFileCache, and how to store this choice for persistent use of
+  `tximeta` across R sessions and users.
 * Building out actual, sustainable plan for supporting as many
   organisms and sources as possible. We can define rules which
   determine where the FASTA and GTF files will be based on `source` and
@@ -480,8 +554,8 @@ str(metadata(se)$txdbInfo)
 * Facilitate functional annotation, either with vignettes/workflow or
   with additional functionality. E.g.: 
   housekeeping genes, arbitrary gene sets, genes expressed in GTEx tissues
-* liftOver is clunky and doesn't integrate with
-  GenomeInfoDb. It requires user input and there's a chance to
+* `liftOver` is clunky and doesn't integrate with
+  *GenomeInfoDb*. It requires user input and there's a chance to
   mis-annotate. Ideally this should all be automated.
 
 # Session info
@@ -504,7 +578,7 @@ session_info()
 ##  language en_US                                             
 ##  collate  en_US.UTF-8                                       
 ##  tz       posixrules                                        
-##  date     2017-12-04
+##  date     2017-12-05
 ```
 
 ```
@@ -543,6 +617,7 @@ session_info()
 ##  DBI                           0.7      2017-06-18 CRAN (R 3.5.0)
 ##  dbplyr                        1.1.0    2017-06-27 CRAN (R 3.5.0)
 ##  DelayedArray                * 0.3.21   2017-10-08 Bioconductor  
+##  desc                          1.1.1    2017-08-03 CRAN (R 3.5.0)
 ##  devtools                    * 1.13.3   2017-08-02 CRAN (R 3.5.0)
 ##  digest                        0.6.12   2017-01-27 CRAN (R 3.5.0)
 ##  dplyr                         0.7.4    2017-09-28 CRAN (R 3.5.0)
@@ -591,7 +666,6 @@ session_info()
 ##  rprojroot                     1.2      2017-01-16 CRAN (R 3.5.0)
 ##  Rsamtools                     1.29.1   2017-10-08 Bioconductor  
 ##  RSQLite                       2.0      2017-06-19 CRAN (R 3.5.0)
-##  rstudioapi                    0.7      2017-09-07 CRAN (R 3.5.0)
 ##  rtracklayer                 * 1.37.3   2017-10-08 Bioconductor  
 ##  S4Vectors                   * 0.15.14  2017-10-18 Bioconductor  
 ##  shiny                         1.0.5    2017-08-23 CRAN (R 3.5.0)
@@ -604,7 +678,7 @@ session_info()
 ##  tibble                        1.3.4    2017-08-22 CRAN (R 3.5.0)
 ##  tools                         3.5.0    2017-05-24 local         
 ##  tximeta                     * 0.0.5    <NA>       Bioconductor  
-##  tximport                      1.5.1    2017-10-08 Bioconductor  
+##  tximport                    * 1.5.1    2017-10-08 Bioconductor  
 ##  utils                       * 3.5.0    2017-05-24 local         
 ##  withr                         2.0.0    2017-07-28 CRAN (R 3.5.0)
 ##  XML                           3.98-1.9 2017-06-19 CRAN (R 3.5.0)

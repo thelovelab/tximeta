@@ -125,7 +125,21 @@ bioinformatic mistakes:
 seqinfo(se)
 ```
 
-# Demo: find nearest transcripts to a ChIP-seq peak
+# Easy summarization to gene-level
+
+Because the SummarizedExperiment maintains all the metadata of its
+creation, it also keeps a pointer to the necessary database for
+summarizing transcript-level quantifications and bias corrections to
+the gene-level. If necessary, `summarizeToGene` can pull down the
+remote source for summarization, but given that we've already built a
+TxDb once, it simply loads the stashed version.
+
+```{r}
+gse <- summarizeToGene(se)
+rowRanges(gse)
+```
+
+# Find nearest transcripts to a ChIP-seq peak
 
 Suppose we want to find overlap of the expression with binding sites
 of a transcription factor:
@@ -195,8 +209,8 @@ str(metadata(se)$txdbInfo)
 
 ### Basic functionality
 
-* Switching `rowRanges` from transcript ranges to exons-by-transcript ranges list
-* Summarization to gene-level (where building `tx2gene` is no longer necessary)
+* Switching `rowRanges` from transcript ranges to exons-by-transcript
+  ranges list, or from gene ranges to exons-by-gene ranges list.
 * As is already supported in the `tximport` release, also import inferential
   variance matrices (Gibbs samples or bootstrap samples)
 
@@ -208,6 +222,9 @@ str(metadata(se)$txdbInfo)
 
 ### Challenges
 
+* Figuring out when and how to ask where the user wants to keep the
+  BiocFileCache, and how to store this choice for persistent use of
+  `tximeta` across R sessions and users.
 * Building out actual, sustainable plan for supporting as many
   organisms and sources as possible. We can define rules which
   determine where the FASTA and GTF files will be based on `source` and
@@ -221,8 +238,8 @@ str(metadata(se)$txdbInfo)
 * Facilitate functional annotation, either with vignettes/workflow or
   with additional functionality. E.g.: 
   housekeeping genes, arbitrary gene sets, genes expressed in GTEx tissues
-* liftOver is clunky and doesn't integrate with
-  GenomeInfoDb. It requires user input and there's a chance to
+* `liftOver` is clunky and doesn't integrate with
+  *GenomeInfoDb*. It requires user input and there's a chance to
   mis-annotate. Ideally this should all be automated.
 
 # Session info

@@ -11,7 +11,7 @@
 #' 
 #' @return a SummarizedExperiment
 #'
-#' @importFrom tximport tximport
+#' @importFrom tximport tximport summarizeToGene
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom AnnotationDbi loadDb saveDb
 #' @importFrom GenomicFeatures makeTxDbFromGFF transcripts
@@ -50,82 +50,25 @@ tximeta <- function(coldata, ...) {
     quantInfo=metaInfo,
     tximetaInfo=tximetaInfo
   )
-  
   # try to import files early, so we don't waste user time
   # with metadata magic before a tximport error
   message("importing quantifications")
   txi <- tximport(files, type="salmon", txOut=TRUE, ...)
 
-  # now start building out metadata based on indexSeqHash
-  # TODO this is very temporary code obviously
-  hashtable <- read.csv(here("extdata","hashtable.csv"),stringsAsFactors=FALSE)
-  m <- match(indexSeqHash, hashtable$index_seq_hash)
-  
-  # did we find a match in the extdata hash table?
-  if (!is.na(m)) {
-    # TODO match only returns 1st match anyway... need to change this code
-    if (length(m) > 1) stop("found more than one matching transcriptome...problem hash database")
-    # now we can go get the GTF to annotate the ranges
-    txomeInfo <- as.list(hashtable[m,])
-    message(with(txomeInfo,
-                 paste0("found matching transcriptome:\n[ ",
-                        source," - ",organism," - version ",version," ]")))
-  } else {
-    # TODO trial use of BiocFileCache to store the TxDb sqlite's
-    # later change this to the default BiocFileCache(), or figure
-    # out how users can point to their own preferred BFC locations
-    bfc <- BiocFileCache(".")
-    q <- bfcquery(bfc, "derivedTxomeDF")
-    stopifnot(bfccount(q) < 2)
-    foundDerived <- FALSE
-    if (bfccount(q) == 1) {
-      loadpath <- bfcrpath(bfc, "derivedTxomeDF")
-      derivedTxomeDF <- readRDS(loadpath)
-      m2 <- match(indexSeqHash, derivedTxomeDF$index_seq_hash)
-      if (!is.na(m2)) {
-        foundDerived <- TRUE
-      }
-    }
-    if (foundDerived) {
-      txomeInfo <- as.list(derivedTxomeDF[m2,])
-      message(with(txomeInfo,
-                 paste0("found matching derived transcriptome:\n[ ",
-                        source," - ",organism," - version ",version," ]")))    
-    } else {
-      message("couldn't find matching transcriptome, returning un-ranged SummarizedExperiment") 
-      se <- SummarizedExperiment(assays=txi[c("abundance","counts","length")],
-                                 colData=coldataSub,
-                                 metadata=metadata)
-      return(se)
-    }
+  # TODO need to store "countsFromAbundance" value in outgoing 'se'
+
+  # try and find a matching txome
+  txomeInfo <- getTxomeInfo(indexSeqHash)
+  if (is.null(txomeInfo)) {
+    message("couldn't find matching transcriptome, returning un-ranged SummarizedExperiment") 
+    se <- SummarizedExperiment(assays=txi[c("abundance","counts","length")],
+                               colData=coldataSub,
+                               metadata=metadata)
+    return(se)
   }
 
-  txdbName <- basename(txomeInfo$gtf)
-
-  bfc <- BiocFileCache(".")
-  q <- bfcquery(bfc, txdbName)  
-  if (bfccount(q) == 0) {
-    savepath <- bfcnew(bfc, txdbName, ext="sqlite") 
-    if (txomeInfo$source == "Ensembl") {
-      message("building EnsDb with 'ensembldb' package")
-      # TODO suppress warnings here or what?
-      suppressWarnings(ensDbFromGtf(txomeInfo$gtf, outfile=savepath))
-      txdb <- EnsDb(savepath)
-    } else {
-      message("building TxDb with 'GenomicFeatures' package")
-      txdb <- makeTxDbFromGFF(txomeInfo$gtf)
-      saveDb(txdb, file=savepath)
-    }
-  } else {
-    loadpath <- bfcrpath(bfc, txdbName)
-    if (txomeInfo$source == "Ensembl") {
-      message(paste("loading existing EnsDb created:",q$create_time[1]))
-      txdb <- EnsDb(loadpath)
-    } else {
-      message(paste("loading existing TxDb created:",q$create_time[1]))
-      txdb <- loadDb(loadpath)
-    }
-  }
+  # go build or load a TxDb from the gtf
+  txdb <- getTxDb(txomeInfo)
   
   message("generating transcript ranges")
   txps <- transcripts(txdb)
@@ -213,3 +156,67 @@ liftOverHelper <- function(ranges, chainfile, to) {
   genome(out) <- to
   out
 }
+
+getTxomeInfo <- function(indexSeqHash) {
+  # now start building out metadata based on indexSeqHash
+  # TODO this is very temporary code obviously
+  hashtable <- read.csv(here("extdata","hashtable.csv"),stringsAsFactors=FALSE)
+  m <- match(indexSeqHash, hashtable$index_seq_hash)
+  if (!is.na(m)) {
+    # now we can go get the GTF to annotate the ranges
+    txomeInfo <- as.list(hashtable[m,])
+    message(with(txomeInfo,
+                 paste0("found matching transcriptome:\n[ ",
+                        source," - ",organism," - version ",version," ]")))
+    return(txomeInfo)
+  } 
+  # TODO trial use of BiocFileCache to store the TxDb sqlite's
+  # later change this to the default BiocFileCache(), or figure
+  # out how users can point to their own preferred BFC locations
+  bfc <- BiocFileCache(".")
+  q <- bfcquery(bfc, "derivedTxomeDF")
+  stopifnot(bfccount(q) < 2)
+  if (bfccount(q) == 1) {
+    loadpath <- bfcrpath(bfc, "derivedTxomeDF")
+    derivedTxomeDF <- readRDS(loadpath)
+    m2 <- match(indexSeqHash, derivedTxomeDF$index_seq_hash)
+    if (!is.na(m2)) {
+      txomeInfo <- as.list(derivedTxomeDF[m2,])
+      message(with(txomeInfo,
+                   paste0("found matching derived transcriptome:\n[ ",
+                          source," - ",organism," - version ",version," ]")))    
+      return(txomeInfo)
+    }
+  }
+  return(NULL)
+}
+
+getTxDb <- function(txomeInfo) {
+  txdbName <- basename(txomeInfo$gtf)  
+  bfc <- BiocFileCache(".")
+  q <- bfcquery(bfc, txdbName)  
+  if (bfccount(q) == 0) {
+    savepath <- bfcnew(bfc, txdbName, ext="sqlite") 
+    if (txomeInfo$source == "Ensembl") {
+      message("building EnsDb with 'ensembldb' package")
+      # TODO suppress warnings here or what?
+      suppressWarnings(ensDbFromGtf(txomeInfo$gtf, outfile=savepath))
+      txdb <- EnsDb(savepath)
+    } else {
+      message("building TxDb with 'GenomicFeatures' package")
+      txdb <- makeTxDbFromGFF(txomeInfo$gtf)
+      saveDb(txdb, file=savepath)
+    }
+  } else {
+    loadpath <- bfcrpath(bfc, txdbName)
+    if (txomeInfo$source == "Ensembl") {
+      message(paste("loading existing EnsDb created:",q$create_time[1]))
+      txdb <- EnsDb(loadpath)
+    } else {
+      message(paste("loading existing TxDb created:",q$create_time[1]))
+      txdb <- loadDb(loadpath)
+    }
+  }
+  txdb
+}
+
