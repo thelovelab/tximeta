@@ -139,6 +139,45 @@ gse <- summarizeToGene(se)
 rowRanges(gse)
 ```
 
+# Add different identifiers
+
+We would like to add support to easily map transcript or gene
+identifiers from one annotation to another. This is just a prototype
+function, but we show how we can easily add alternate IDs given that we
+know the organism and the source of the transcriptome. (This function
+currently only works for Gencode and Ensembl gene or transcript IDs,
+but could be extended to work for arbitrary sources.)
+
+```{r}
+gse <- addIds(gse, "SYMBOL")
+mcols(gse)[1:10,]
+```
+
+# Run a differential expression analysis
+
+The following code chunk demonstrates how to build a *DESeqDataSet*
+and begin a differential expression analysis. Likely we would
+simplify these steps with a convenience function either in *tximeta*
+or in *DESeq2*.
+
+```{r}
+suppressPackageStartupMessages(library(DESeq2))
+gse.int <- gse
+assayNames(gse.int)
+# converting estimated counts to integer
+assay(gse.int) <- round(assay(gse.int))
+mode(assay(gse.int)) <- "integer"
+# rename the "length" assay to "avgTxLength"
+# DESeq2 will then use this matrix for calculating bias offsets
+assayNames(gse.int)[3] <- "avgTxLength"
+# turn the treatment variable into a factor
+gse.int$treatment <- factor(gse.int$treatment)
+# make a DESeqDataSet
+dds <- DESeqDataSet(gse.int, ~treatment)
+dds <- estimateSizeFactors(dds)
+# ... and so on
+```
+
 # Find nearest transcripts to a ChIP-seq peak
 
 Suppose we want to find overlap of the expression with binding sites

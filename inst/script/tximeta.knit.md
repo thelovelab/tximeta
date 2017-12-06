@@ -1,7 +1,7 @@
 ---
 title: "tximeta: Import transcript quantification with automagic generation of metadata"
 author: "Michael Love, Rob Patro"
-date: "12/05/2017"
+date: "12/06/2017"
 output: 
   html_document:
     highlight: tango
@@ -131,9 +131,7 @@ se <- tximeta(coldata)
 ## 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 
 ## found matching transcriptome:
 ## [ Gencode - Homo sapiens - version 26 ]
-## loading existing TxDb created: 2017-12-04 21:04:56
-## Loading required package: GenomicFeatures
-## Loading required package: AnnotationDbi
+## loading existing TxDb created: 2017-11-28 21:36:55
 ## generating transcript ranges
 ## fetching genome info
 ```
@@ -194,7 +192,7 @@ assayNames(se)
 ```
 
 ```
-## [1] "abundance" "counts"    "length"
+## [1] "counts"    "abundance" "length"
 ```
 
 Thanks to `tximeta` we have automagically imported the correct ranges
@@ -276,7 +274,7 @@ gse <- summarizeToGene(se)
 ```
 
 ```
-## loading existing TxDb created: 2017-12-04 21:04:56
+## loading existing TxDb created: 2017-11-28 21:36:55
 ```
 
 ```
@@ -331,6 +329,84 @@ rowRanges(gse)
 ##   seqinfo: 25 sequences (1 circular) from an unspecified genome; no seqlengths
 ```
 
+# Add different identifiers
+
+We would like to add support to easily map transcript or gene
+identifiers from one annotation to another. This is just a prototype
+function, but we show how we can easily add alternate IDs given that we
+know the organism and the source of the transcriptome. (This function
+currently only works for Gencode and Ensembl gene or transcript IDs,
+but could be extended to work for arbitrary sources.)
+
+
+```r
+gse <- addIds(gse, "SYMBOL")
+```
+
+```
+## mapping to new IDs using 'Homo.sapiens' data package
+```
+
+```r
+mcols(gse)[1:10,]
+```
+
+```
+## DataFrame with 10 rows and 2 columns
+##               gene_id      SYMBOL
+##           <character> <character>
+## 1  ENSG00000000003.14      TSPAN6
+## 2   ENSG00000000005.5        TNMD
+## 3  ENSG00000000419.12        DPM1
+## 4  ENSG00000000457.13       SCYL3
+## 5  ENSG00000000460.16    C1orf112
+## 6  ENSG00000000938.12         FGR
+## 7  ENSG00000000971.15         CFH
+## 8  ENSG00000001036.13       FUCA2
+## 9  ENSG00000001084.10        GCLC
+## 10 ENSG00000001167.14        NFYA
+```
+
+# Run a differential expression analysis
+
+The following code chunk demonstrates how to build a *DESeqDataSet*
+and begin a differential expression analysis. Likely we would
+simplify these steps with a convenience function either in *tximeta*
+or in *DESeq2*.
+
+
+```r
+suppressPackageStartupMessages(library(DESeq2))
+gse.int <- gse
+assayNames(gse.int)
+```
+
+```
+## [1] "counts"    "abundance" "length"
+```
+
+```r
+# converting estimated counts to integer
+assay(gse.int) <- round(assay(gse.int))
+mode(assay(gse.int)) <- "integer"
+# rename the "length" assay to "avgTxLength"
+# DESeq2 will then use this matrix for calculating bias offsets
+assayNames(gse.int)[3] <- "avgTxLength"
+# turn the treatment variable into a factor
+gse.int$treatment <- factor(gse.int$treatment)
+# make a DESeqDataSet
+dds <- DESeqDataSet(gse.int, ~treatment)
+dds <- estimateSizeFactors(dds)
+```
+
+```
+## using 'avgTxLength' from assays(dds), correcting for library size
+```
+
+```r
+# ... and so on
+```
+
 # Find nearest transcripts to a ChIP-seq peak
 
 Suppose we want to find overlap of the expression with binding sites
@@ -351,7 +427,7 @@ chip <- query(ah, c("GM12878", "MEF2A", "narrowPeak"))[[1]]
 ```
 
 ```
-## loading from cache '/home/love//.AnnotationHub/28040'
+## loading from cache '/Users/love//.AnnotationHub/28040'
 ```
 
 First try, let's find the nearest transcript to a given ChIP-seq peak:
@@ -391,8 +467,8 @@ chip.lift <- liftOverHelper(chip, chainfile="hg19ToHg38.over.chain", to="hg38")
 ```
 
 ```
-## Warning in .Internal(exists(x, envir, mode, inherits)): closing unused
-## connection 6 (hg19ToHg38.over.chain)
+## Warning in var %in% extra[[i]]: closing unused connection 6
+## (hg19ToHg38.over.chain)
 ```
 
 Now we can find the nearest transcript to a given ChIP-seq peak:
@@ -414,11 +490,11 @@ assay(se)[nearest(chip.lift[1], se),,drop=FALSE]
 ##                   SRR1565944 SRR1565945 SRR1565946 SRR1565947 SRR1565948
 ## ENST00000379350.5          0          0          0          0          0
 ##                   SRR1565949 SRR1565943 SRR1565939 SRR1565940 SRR1565942
-## ENST00000379350.5          0          0          0  0.0975893          0
+## ENST00000379350.5          0          0          0          2          0
 ##                   SRR1565941 SRR1565938 SRR1565932 SRR1565933 SRR1565934
-## ENST00000379350.5  0.0493117          0          0          0          0
+## ENST00000379350.5          1          0          0          0          0
 ##                   SRR1565935 SRR1565936 SRR1565937 SRR1565928 SRR1565926
-## ENST00000379350.5          0          0  0.0879775          0          0
+## ENST00000379350.5          0          0          2          0          0
 ##                   SRR1565931 SRR1565930 SRR1565929 SRR1565927
 ## ENST00000379350.5          0          0          0          0
 ```
@@ -509,7 +585,7 @@ str(metadata(se)$tximetaInfo)
 ## List of 2
 ##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1
 ##   ..$ : int [1:3] 0 0 5
-##  $ importTime: POSIXct[1:1], format: "2017-12-04 16:29:57"
+##  $ importTime: POSIXct[1:1], format: "2017-12-06 10:31:07"
 ```
 
 ```r
@@ -572,13 +648,13 @@ session_info()
 
 ```
 ##  setting  value                                             
-##  version  R Under development (unstable) (2017-05-23 r72721)
-##  system   x86_64, linux-gnu                                 
+##  version  R Under development (unstable) (2017-08-07 r73058)
+##  system   x86_64, darwin15.6.0                              
 ##  ui       X11                                               
-##  language en_US                                             
+##  language (EN)                                              
 ##  collate  en_US.UTF-8                                       
-##  tz       posixrules                                        
-##  date     2017-12-05
+##  tz       America/New_York                                  
+##  date     2017-12-06
 ```
 
 ```
@@ -586,105 +662,112 @@ session_info()
 ```
 
 ```
-##  package                     * version  date       source        
-##  AnnotationDbi               * 1.39.4   2017-10-18 Bioconductor  
-##  AnnotationFilter              1.1.9    2017-10-08 Bioconductor  
-##  AnnotationHub               * 2.9.19   2017-10-08 Bioconductor  
-##  assertthat                    0.2.0    2017-04-11 CRAN (R 3.5.0)
-##  backports                     1.1.1    2017-09-25 CRAN (R 3.5.0)
-##  base                        * 3.5.0    2017-05-24 local         
-##  bindr                         0.1      2016-11-13 CRAN (R 3.5.0)
-##  bindrcpp                    * 0.2      2017-06-17 CRAN (R 3.5.0)
-##  Biobase                     * 2.37.2   2017-05-24 Bioconductor  
-##  BiocFileCache                 1.2.0    2017-12-01 Bioconductor  
-##  BiocGenerics                * 0.23.3   2017-10-08 Bioconductor  
-##  BiocInstaller               * 1.28.0   2017-11-08 Bioconductor  
-##  BiocParallel                  1.11.11  2017-10-18 Bioconductor  
-##  biomaRt                       2.33.4   2017-10-08 Bioconductor  
-##  Biostrings                  * 2.45.4   2017-10-08 Bioconductor  
-##  bit                           1.1-12   2014-04-09 CRAN (R 3.5.0)
-##  bit64                         0.9-7    2017-05-08 CRAN (R 3.5.0)
-##  bitops                        1.0-6    2013-08-17 CRAN (R 3.5.0)
-##  blob                          1.1.0    2017-06-17 CRAN (R 3.5.0)
-##  BSgenome                    * 1.45.3   2017-10-08 Bioconductor  
-##  BSgenome.Hsapiens.UCSC.hg19 * 1.4.0    2017-09-08 Bioconductor  
-##  codetools                     0.2-15   2016-10-05 CRAN (R 3.5.0)
-##  commonmark                    1.4      2017-09-01 CRAN (R 3.5.0)
-##  compiler                      3.5.0    2017-05-24 local         
-##  crayon                        1.3.4    2017-09-16 CRAN (R 3.5.0)
-##  curl                          3.0      2017-10-06 CRAN (R 3.5.0)
-##  datasets                    * 3.5.0    2017-05-24 local         
-##  DBI                           0.7      2017-06-18 CRAN (R 3.5.0)
-##  dbplyr                        1.1.0    2017-06-27 CRAN (R 3.5.0)
-##  DelayedArray                * 0.3.21   2017-10-08 Bioconductor  
-##  desc                          1.1.1    2017-08-03 CRAN (R 3.5.0)
-##  devtools                    * 1.13.3   2017-08-02 CRAN (R 3.5.0)
-##  digest                        0.6.12   2017-01-27 CRAN (R 3.5.0)
-##  dplyr                         0.7.4    2017-09-28 CRAN (R 3.5.0)
-##  ensembldb                     2.1.14   2017-10-18 Bioconductor  
-##  evaluate                      0.10.1   2017-06-24 CRAN (R 3.5.0)
-##  GenomeInfoDb                * 1.13.5   2017-10-08 Bioconductor  
-##  GenomeInfoDbData              0.99.1   2017-10-08 Bioconductor  
-##  GenomicAlignments             1.13.6   2017-10-08 Bioconductor  
-##  GenomicFeatures             * 1.29.13  2017-10-18 Bioconductor  
-##  GenomicRanges               * 1.29.15  2017-10-08 Bioconductor  
-##  glue                          1.1.1    2017-06-21 CRAN (R 3.5.0)
-##  graphics                    * 3.5.0    2017-05-24 local         
-##  grDevices                   * 3.5.0    2017-05-24 local         
-##  grid                          3.5.0    2017-05-24 local         
-##  here                        * 0.1      2017-05-28 CRAN (R 3.5.0)
-##  hms                           0.3      2016-11-22 CRAN (R 3.5.0)
-##  htmltools                     0.3.6    2017-04-28 CRAN (R 3.5.0)
-##  httpuv                        1.3.5    2017-07-04 CRAN (R 3.5.0)
-##  httr                          1.3.1    2017-08-20 CRAN (R 3.5.0)
-##  interactiveDisplayBase        1.15.0   2017-08-12 Bioconductor  
-##  IRanges                     * 2.11.19  2017-10-18 Bioconductor  
-##  jsonlite                      1.5      2017-06-01 CRAN (R 3.5.0)
-##  knitr                         1.17     2017-08-10 CRAN (R 3.5.0)
-##  lattice                       0.20-35  2017-03-25 CRAN (R 3.5.0)
-##  lazyeval                      0.2.0    2016-06-12 CRAN (R 3.5.0)
-##  magrittr                    * 1.5      2014-11-22 CRAN (R 3.5.0)
-##  Matrix                        1.2-11   2017-08-16 CRAN (R 3.5.0)
-##  matrixStats                 * 0.52.2   2017-04-14 CRAN (R 3.5.0)
-##  memoise                       1.1.0    2017-04-21 CRAN (R 3.5.0)
-##  methods                     * 3.5.0    2017-05-24 local         
-##  mime                          0.5      2016-07-07 CRAN (R 3.5.0)
-##  parallel                    * 3.5.0    2017-05-24 local         
-##  pkgconfig                     2.0.1    2017-03-21 CRAN (R 3.5.0)
-##  prettyunits                   1.0.2    2015-07-13 CRAN (R 3.5.0)
-##  progress                      1.1.2    2016-12-14 CRAN (R 3.5.0)
-##  ProtGenerics                  1.9.1    2017-10-08 Bioconductor  
-##  R6                            2.2.2    2017-06-17 CRAN (R 3.5.0)
-##  rappdirs                      0.3.1    2016-03-28 CRAN (R 3.5.0)
-##  Rcpp                          0.12.13  2017-09-28 CRAN (R 3.5.0)
-##  RCurl                         1.95-4.8 2016-03-01 CRAN (R 3.5.0)
-##  readr                       * 1.1.1    2017-05-16 CRAN (R 3.5.0)
-##  rjson                         0.2.15   2014-11-03 CRAN (R 3.5.0)
-##  rlang                         0.1.2    2017-08-09 CRAN (R 3.5.0)
-##  rmarkdown                   * 1.6      2017-06-15 CRAN (R 3.5.0)
-##  roxygen2                      6.0.1    2017-02-06 CRAN (R 3.5.0)
-##  rprojroot                     1.2      2017-01-16 CRAN (R 3.5.0)
-##  Rsamtools                     1.29.1   2017-10-08 Bioconductor  
-##  RSQLite                       2.0      2017-06-19 CRAN (R 3.5.0)
-##  rtracklayer                 * 1.37.3   2017-10-08 Bioconductor  
-##  S4Vectors                   * 0.15.14  2017-10-18 Bioconductor  
-##  shiny                         1.0.5    2017-08-23 CRAN (R 3.5.0)
-##  stats                       * 3.5.0    2017-05-24 local         
-##  stats4                      * 3.5.0    2017-05-24 local         
-##  stringi                       1.1.5    2017-04-07 CRAN (R 3.5.0)
-##  stringr                       1.2.0    2017-02-18 CRAN (R 3.5.0)
-##  SummarizedExperiment        * 1.7.10   2017-10-08 Bioconductor  
-##  testthat                    * 1.0.2    2016-04-23 CRAN (R 3.5.0)
-##  tibble                        1.3.4    2017-08-22 CRAN (R 3.5.0)
-##  tools                         3.5.0    2017-05-24 local         
-##  tximeta                     * 0.0.5    <NA>       Bioconductor  
-##  tximport                    * 1.5.1    2017-10-08 Bioconductor  
-##  utils                       * 3.5.0    2017-05-24 local         
-##  withr                         2.0.0    2017-07-28 CRAN (R 3.5.0)
-##  XML                           3.98-1.9 2017-06-19 CRAN (R 3.5.0)
-##  xml2                          1.1.1    2017-01-24 CRAN (R 3.5.0)
-##  xtable                        1.8-2    2016-02-05 CRAN (R 3.5.0)
-##  XVector                     * 0.17.1   2017-10-08 Bioconductor  
-##  yaml                          2.1.14   2016-11-12 CRAN (R 3.5.0)
-##  zlibbioc                      1.23.0   2017-05-24 Bioconductor
+##  package                           * version  date       source        
+##  AnnotationDbi                     * 1.39.3   2017-09-11 Bioconductor  
+##  AnnotationFilter                    1.1.9    2017-09-18 Bioconductor  
+##  AnnotationHub                     * 2.9.19   2017-10-06 Bioconductor  
+##  assertthat                          0.2.0    2017-04-11 CRAN (R 3.5.0)
+##  backports                           1.1.1    2017-09-25 CRAN (R 3.5.0)
+##  base                              * 3.5.0    2017-08-07 local         
+##  bindr                               0.1      2016-11-13 CRAN (R 3.5.0)
+##  bindrcpp                          * 0.2      2017-06-17 CRAN (R 3.5.0)
+##  Biobase                           * 2.37.2   2017-08-08 Bioconductor  
+##  BiocFileCache                     * 1.1.17   2017-10-06 Bioconductor  
+##  BiocGenerics                      * 0.23.2   2017-10-06 Bioconductor  
+##  BiocInstaller                     * 1.28.0   2017-11-07 Bioconductor  
+##  BiocParallel                        1.11.9   2017-10-06 Bioconductor  
+##  biomaRt                             2.33.4   2017-08-08 Bioconductor  
+##  Biostrings                          2.45.4   2017-09-11 Bioconductor  
+##  bit                                 1.1-12   2014-04-09 CRAN (R 3.5.0)
+##  bit64                               0.9-7    2017-05-08 CRAN (R 3.5.0)
+##  bitops                              1.0-6    2013-08-17 CRAN (R 3.5.0)
+##  blob                                1.1.0    2017-06-17 CRAN (R 3.5.0)
+##  BSgenome                            1.45.3   2017-09-18 Bioconductor  
+##  codetools                           0.2-15   2016-10-05 CRAN (R 3.5.0)
+##  commonmark                          1.4      2017-09-01 CRAN (R 3.5.0)
+##  compiler                            3.5.0    2017-08-07 local         
+##  crayon                              1.3.4    2017-09-16 CRAN (R 3.5.0)
+##  curl                                3.0      2017-10-06 CRAN (R 3.5.0)
+##  datasets                          * 3.5.0    2017-08-07 local         
+##  DBI                                 0.7      2017-06-18 CRAN (R 3.5.0)
+##  dbplyr                            * 1.1.0    2017-06-27 CRAN (R 3.5.0)
+##  DelayedArray                      * 0.3.21   2017-10-06 Bioconductor  
+##  desc                                1.1.1    2017-08-03 CRAN (R 3.5.0)
+##  devtools                          * 1.13.3   2017-08-02 CRAN (R 3.5.0)
+##  digest                              0.6.12   2017-01-27 CRAN (R 3.5.0)
+##  dplyr                               0.7.4    2017-09-28 CRAN (R 3.5.0)
+##  ensembldb                           2.1.13   2017-10-06 Bioconductor  
+##  evaluate                            0.10.1   2017-06-24 CRAN (R 3.5.0)
+##  GenomeInfoDb                      * 1.13.5   2017-10-06 Bioconductor  
+##  GenomeInfoDbData                    0.99.1   2017-08-08 Bioconductor  
+##  GenomicAlignments                   1.13.6   2017-09-18 Bioconductor  
+##  GenomicFeatures                   * 1.29.11  2017-10-06 Bioconductor  
+##  GenomicRanges                     * 1.29.15  2017-10-06 Bioconductor  
+##  glue                                1.1.1    2017-06-21 CRAN (R 3.5.0)
+##  GO.db                             * 3.4.1    2017-08-17 Bioconductor  
+##  graph                               1.55.0   2017-08-22 Bioconductor  
+##  graphics                          * 3.5.0    2017-08-07 local         
+##  grDevices                         * 3.5.0    2017-08-07 local         
+##  grid                                3.5.0    2017-08-07 local         
+##  here                              * 0.1      2017-05-28 CRAN (R 3.5.0)
+##  hms                                 0.3      2016-11-22 CRAN (R 3.5.0)
+##  Homo.sapiens                      * 1.3.1    2017-12-06 Bioconductor  
+##  htmltools                           0.3.6    2017-04-28 CRAN (R 3.5.0)
+##  httpuv                              1.3.5    2017-07-04 CRAN (R 3.5.0)
+##  httr                                1.3.1    2017-08-20 CRAN (R 3.5.0)
+##  interactiveDisplayBase              1.15.0   2017-08-09 Bioconductor  
+##  IRanges                           * 2.11.18  2017-10-06 Bioconductor  
+##  jsonlite                            1.5      2017-06-01 CRAN (R 3.5.0)
+##  knitr                               1.17     2017-08-10 CRAN (R 3.5.0)
+##  lattice                             0.20-35  2017-03-25 CRAN (R 3.5.0)
+##  lazyeval                            0.2.0    2016-06-12 CRAN (R 3.5.0)
+##  magrittr                            1.5      2014-11-22 CRAN (R 3.5.0)
+##  Matrix                              1.2-11   2017-08-16 CRAN (R 3.5.0)
+##  matrixStats                       * 0.52.2   2017-04-14 CRAN (R 3.5.0)
+##  memoise                             1.1.0    2017-04-21 CRAN (R 3.5.0)
+##  methods                           * 3.5.0    2017-08-07 local         
+##  mime                                0.5      2016-07-07 CRAN (R 3.5.0)
+##  org.Hs.eg.db                      * 3.4.1    2017-09-07 Bioconductor  
+##  OrganismDbi                       * 1.19.0   2017-09-07 Bioconductor  
+##  parallel                          * 3.5.0    2017-08-07 local         
+##  pkgconfig                           2.0.1    2017-03-21 CRAN (R 3.5.0)
+##  prettyunits                         1.0.2    2015-07-13 CRAN (R 3.5.0)
+##  progress                            1.1.2    2016-12-14 CRAN (R 3.5.0)
+##  ProtGenerics                        1.9.1    2017-10-06 Bioconductor  
+##  R6                                  2.2.2    2017-06-17 CRAN (R 3.5.0)
+##  rappdirs                            0.3.1    2016-03-28 CRAN (R 3.5.0)
+##  RBGL                                1.53.0   2017-08-22 Bioconductor  
+##  Rcpp                                0.12.13  2017-09-28 CRAN (R 3.5.0)
+##  RCurl                               1.95-4.8 2016-03-01 CRAN (R 3.5.0)
+##  readr                             * 1.1.1    2017-05-16 CRAN (R 3.5.0)
+##  rjson                               0.2.15   2014-11-03 CRAN (R 3.5.0)
+##  rlang                               0.1.2    2017-08-09 CRAN (R 3.5.0)
+##  rmarkdown                         * 1.6      2017-06-15 CRAN (R 3.5.0)
+##  roxygen2                            6.0.1    2017-02-06 CRAN (R 3.5.0)
+##  rprojroot                           1.2      2017-01-16 CRAN (R 3.5.0)
+##  Rsamtools                           1.29.1   2017-09-11 Bioconductor  
+##  RSQLite                             2.0      2017-06-19 CRAN (R 3.5.0)
+##  rstudioapi                          0.7      2017-09-07 CRAN (R 3.5.0)
+##  rtracklayer                       * 1.37.3   2017-08-08 Bioconductor  
+##  S4Vectors                         * 0.15.11  2017-10-06 Bioconductor  
+##  shiny                               1.0.5    2017-08-23 CRAN (R 3.5.0)
+##  stats                             * 3.5.0    2017-08-07 local         
+##  stats4                            * 3.5.0    2017-08-07 local         
+##  stringi                             1.1.5    2017-04-07 CRAN (R 3.5.0)
+##  stringr                             1.2.0    2017-02-18 CRAN (R 3.5.0)
+##  SummarizedExperiment              * 1.7.10   2017-10-06 Bioconductor  
+##  testthat                          * 1.0.2    2016-04-23 CRAN (R 3.5.0)
+##  tibble                              1.3.4    2017-08-22 CRAN (R 3.5.0)
+##  tools                               3.5.0    2017-08-07 local         
+##  TxDb.Hsapiens.UCSC.hg19.knownGene * 3.2.2    2017-08-22 Bioconductor  
+##  tximeta                           * 0.0.5    <NA>       Bioconductor  
+##  tximport                            1.5.1    2017-10-06 Bioconductor  
+##  utils                             * 3.5.0    2017-08-07 local         
+##  withr                               2.0.0    2017-07-28 CRAN (R 3.5.0)
+##  XML                                 3.98-1.9 2017-06-19 CRAN (R 3.5.0)
+##  xml2                                1.1.1    2017-01-24 CRAN (R 3.5.0)
+##  xtable                              1.8-2    2016-02-05 CRAN (R 3.5.0)
+##  XVector                             0.17.1   2017-09-11 Bioconductor  
+##  yaml                                2.1.14   2016-11-12 CRAN (R 3.5.0)
+##  zlibbioc                            1.23.0   2017-08-08 Bioconductor
 ```

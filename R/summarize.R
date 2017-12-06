@@ -19,7 +19,7 @@ summarizeToGene <- function(se) {
   txi.gene <- tximport::summarizeToGene(txi, tx2gene)
   g <- genes(txdb)
   stopifnot(all(rownames(txi.gene$counts) == names(g)))
-  gse <- SummarizedExperiment(assays=txi.gene[c("abundance","counts","length")],
+  gse <- SummarizedExperiment(assays=txi.gene[c("counts","abundance","length")],
                               rowRanges=g,
                               colData=colData(se),
                               metadata=metadata(se))

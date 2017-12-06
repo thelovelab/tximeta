@@ -61,7 +61,7 @@ tximeta <- function(coldata, ...) {
   txomeInfo <- getTxomeInfo(indexSeqHash)
   if (is.null(txomeInfo)) {
     message("couldn't find matching transcriptome, returning un-ranged SummarizedExperiment") 
-    se <- SummarizedExperiment(assays=txi[c("abundance","counts","length")],
+    se <- SummarizedExperiment(assays=txi[c("counts","abundance","length")],
                                colData=coldataSub,
                                metadata=metadata)
     return(se)
@@ -94,7 +94,7 @@ tximeta <- function(coldata, ...) {
   metadata$txomeInfo <- txomeInfo
   metadata$txdbInfo <- txdbInfo
   
-  se <- SummarizedExperiment(assays=txi[c("abundance","counts","length")],
+  se <- SummarizedExperiment(assays=txi[c("counts","abundance","length")],
                              rowRanges=txps,
                              colData=coldataSub,
                              metadata=metadata)
