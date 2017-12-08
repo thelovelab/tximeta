@@ -54,7 +54,8 @@ loadDerivedTxome <- function(jsonfile) {
 }
 
 stashDerivedTxome <- function(dt) {
-  bfc <- BiocFileCache(".")
+  bfcloc <- getBFCLoc()
+  bfc <- BiocFileCache(bfcloc)
   q <- bfcquery(bfc, "derivedTxomeDF")
   if (bfccount(q) == 0) {
     message("saving derivedTxome in bfc (first time)")

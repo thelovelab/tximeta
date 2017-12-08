@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 0.0.5
+Version: 0.0.6
 Title: Import transcript abundances with automagic population of metadata
 Description: Import transcript abundances with automagic population of metadata
 Authors@R: c(
@@ -17,7 +17,8 @@ Imports:
     ensembldb,
     jsonlite,
     rtracklayer,
-    BiocFileCache
+    BiocFileCache,
+    rappdirs
 Suggests:
     knitr,
     rmarkdown,
