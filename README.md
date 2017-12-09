@@ -82,6 +82,35 @@ table linking the hash values to metadata for the 5 GENCODE human
 transcriptome releases from 2015-2017 can be accomplished in less than
 a minute.
 
+# Where the transcript databases are stored
+
+`tximeta` makes use of the Bioconductor *TxDb* object, which can be
+saved and re-loaded from an `sqlite` file. These are saved in a
+specific location using the *BiocFileCache* package. Since these
+*TxDb* saved objects can be ~100 Mb, we want to make sure the user is
+OK with these being saved to a given location. Also we want to allow
+for the situation that multiple users share a *BiocFileCache*
+location, such that any *TxDb* objects or *derivedTxome* information
+can be shared, reducing unnecessary downloads or emails asking about
+the provenance of the transcriptome for a given set of quantification
+files.
+
+We use the following logic to specify the location of the
+*BiocFileCache* used by `tximeta`:
+
+* If run **non-interactively**, `tximeta` uses a temporary directory.
+* If run **interactively**, and a location has not been previously
+  saved, the user is prompted if she wants to use (1) the default directory
+  or a (2) temporary directory.
+    - If (1), then use the default directory, and save this choice.
+    - If (2), then use a temporary directory for the rest of this R session,
+      and ask again next R session.
+* The prompt above also mentions that a specific function can be used to
+manually set the directory at any time point.
+* The default directory is given by `rappdirs::user_cache_dir("BiocFileCache")`.
+* The choice of the BiocFileCache directory that `tximeta` should use is
+stored in `rappdirs::user_cache_dir("tximeta")`.
+
 # Take a look at the example
 
 We have a [prototype vignette](https://github.com/mikelove/tximeta/blob/master/inst/script/tximeta.knit.md)
