@@ -220,13 +220,8 @@ getTxDb <- function(txomeInfo) {
   txdb
 }
 
-#' Set the directory of the BiocFileCache used by tximeta
-#'
-#' Running this function will ask the user to specify a
-#' BiocFileCache directory for accessing and saving TxDb sqlite files.
-#'
-#' @return nothing, this function is run for its side effects
-#'
+#' @rdname getTximetaBFC
+#' 
 #' @export
 setTximetaBFC <- function() {
   message("Which BiocFileCache directory should tximeta use? (press Enter to cancel)")
@@ -235,13 +230,37 @@ setTximetaBFC <- function() {
   bfclocFile <- file.path(tximetaDir, "bfcloc.txt")
   if (!file.exists(tximetaDir)) dir.create(tximetaDir)
   write(bfcloc, file=bfclocFile)
-  invisible()
+  bfcloc
+}
+
+#' Get or set the directory of the BiocFileCache used by tximeta
+#'
+#' Running \code{getTximetaBFC} will report the saved directory,
+#' if it has been determined, or will return NULL.
+#' Running \code{setTximetaBFC} will ask the user to specify a
+#' BiocFileCache directory for accessing and saving TxDb sqlite files.
+#'
+#' @return the directory of the BiocFileCache used by tximeta
+#'
+#' @rdname getTximetaBFC
+#' 
+#' @export
+getTximetaBFC <- function() {
+  tximetaDir <- user_cache_dir("tximeta")
+  bfclocFile <- file.path(tximetaDir, "bfcloc.txt")
+  if (!file.exists(bfclocFile)) {
+    message("tximeta's BiocFileCache location has not yet been set")
+    NULL
+  } else {
+    scan(bfclocFile, what="char", quiet=TRUE)
+  }
 }
 
 getBFCLoc <- function() {
+  defaultDir <- user_cache_dir(appname="BiocFileCache")
   prompt <- paste("",
   "tximeta needs a BiocFileCache directory to access and save TxDb objects.",
-  paste("Do you wish to use the default directory:",defaultDir,"?"),
+  paste0("Do you wish to use the default directory: '",defaultDir,"'?"),
   "If not, a temporary directory that is specific to this R session will be used.","",
   "You can always change this directory later by running: setTximetaBFC()",
   "Or enter [0] to exit and set this directory manually now.",
@@ -250,11 +269,10 @@ getBFCLoc <- function() {
   # this file tells us which BFC dir has been previously chosen use with tximeta
   tximetaDir <- user_cache_dir("tximeta")
   bfclocFile <- file.path(tximetaDir, "bfcloc.txt")
-  if (!file.exists(bfcloc.file)) {
-    defaultDir <- user_cache_dir(appname="BiocFileCache")
+  if (!file.exists(bfclocFile)) {
     if (interactive()) {
       ans <- menu(c("Yes (use default)", "No (use temp)"), title=prompt)
-      if (ans == 0) stop("No choice made at this time")
+      if (ans == 0) stop("no BiocFileCache directory choice made at this time")
       if (ans == 1) {
         bfcloc <- defaultDir
       } else {
@@ -266,7 +284,7 @@ getBFCLoc <- function() {
       bfcloc <- tempdir()
     }
   } else {
-    bfcloc <- scan(bfclocFile, what="char")
+    bfcloc <- scan(bfclocFile, what="char", quiet=TRUE)
   }
   bfcloc
 }
