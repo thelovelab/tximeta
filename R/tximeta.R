@@ -276,6 +276,7 @@ getBFCLoc <- function() {
       if (ans == 1) {
         bfcloc <- defaultDir
       } else {
+        # TODO bug here: temp dir is saved...
         bfcloc <- tempdir()
       }
       if (!file.exists(tximetaDir)) dir.create(tximetaDir)
