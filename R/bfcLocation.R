@@ -4,10 +4,8 @@
 setTximetaBFC <- function() {
   message("Which BiocFileCache directory should tximeta use? (press Enter to cancel)")
   bfcloc <- file.choose()
-  tximetaDir <- user_cache_dir("tximeta")
-  bfclocFile <- file.path(tximetaDir, "bfcloc.txt")
-  if (!file.exists(tximetaDir)) dir.create(tximetaDir)
-  write(bfcloc, file=bfclocFile)
+  bfclocFile <- bfclocFile()
+  writeBFCLocFile(bfcloc)
   bfcloc
 }
 
@@ -24,14 +22,28 @@ setTximetaBFC <- function() {
 #' 
 #' @export
 getTximetaBFC <- function() {
-  tximetaDir <- user_cache_dir("tximeta")
-  bfclocFile <- file.path(tximetaDir, "bfcloc.txt")
+  bfclocFile <- bfclocFile()
   if (!file.exists(bfclocFile)) {
     message("tximeta's BiocFileCache location has not yet been set")
     NULL
   } else {
-    scan(bfclocFile, what="char", quiet=TRUE)
+    readBFCLocFile(bfclocFile)
   }
+}
+
+bfclocFile <- function() {
+  tximetaDir <- user_cache_dir("tximeta")
+  file.path(tximetaDir, "bfcloc.json")
+}
+
+writeBFCLocFile <- function(bfcloc) {
+  tximetaDir <- user_cache_dir("tximeta")
+  if (!file.exists(tximetaDir)) dir.create(tximetaDir)
+  write(toJSON(bfcloc, pretty=TRUE), file=bfclocFile)
+}
+
+readBFCLocFile <- function(bfclocFile) {
+  fromJSON(bfclocFile)
 }
 
 # an internal function for getting the BFC location
@@ -47,32 +59,41 @@ getBFCLoc <- function() {
   "Or enter [0] to exit and set this directory manually now.",
   sep="\n")
   
+  bfclocFile <- bfclocFile()
+  
   # this file tells us which BFC dir has been previously chosen use with tximeta
-  tximetaDir <- user_cache_dir("tximeta")
-  bfclocFile <- file.path(tximetaDir, "bfcloc.txt")
   if (!file.exists(bfclocFile)) {
     if (interactive()) {
-      
+
       # exception: temp dir already specified as BFC location in this session
       if (file.exists(file.path(tempdir(),"BiocFileCache.sqlite"))) {
         bfcloc <- tempdir()
         return(bfcloc)
       }
       
+      # otherwise ask user:
       ans <- menu(c("Yes (use default)", "No (use temp)"), title=prompt)
       if (ans == 0) stop("no BiocFileCache directory choice made at this time")
+
+      # user wants to use default dir:
       if (ans == 1) {
         bfcloc <- defaultDir
-        if (!file.exists(tximetaDir)) dir.create(tximetaDir)
-        write(bfcloc, file=bfclocFile)
-      } else {
+        writeBFCLocFile(bfcloc)
+        
+        # user wants to use temp dir:
+      } else if (ans == 2) {
         bfcloc <- tempdir()
       }
+      
+      # not interactive, use temp dir:
     } else {
       bfcloc <- tempdir()
     }
+    
+    # file already exists, read BFC loc:
   } else {
-    bfcloc <- scan(bfclocFile, what="char", quiet=TRUE)
+    bfcloc <- readBFCLocFile(bfclocFile)
   }
+  
   bfcloc
 }
