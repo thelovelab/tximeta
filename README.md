@@ -108,8 +108,8 @@ We use the following logic to specify the location of the
 * The prompt above also mentions that a specific function can be used to
   manually set the directory at any time point.
 * The default directory is given by `rappdirs::user_cache_dir("BiocFileCache")`.
-* The choice of the BiocFileCache directory that `tximeta` should use is
-  stored in a JSON file here `rappdirs::user_cache_dir("tximeta")`.
+* The choice itself of the BiocFileCache directory that `tximeta` should use is
+  saved in a JSON file here `rappdirs::user_cache_dir("tximeta")`.
 
 # Take a look at the example
 
