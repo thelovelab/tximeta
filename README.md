@@ -100,7 +100,7 @@ library(tximeta)
 se <- tximport(coldata)
 # write out the assay data
 for (a in assayNames(se)) {
-  write.csv(se[[a]], file=paste(a,".csv"))
+  write.csv(assays(se)[[a]], file=paste(a,".csv"))
 }
 # write out the genomic ranges to BED file
 library(rtracklayer)
