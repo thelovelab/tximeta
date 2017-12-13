@@ -152,7 +152,7 @@ We have a [prototype vignette](https://github.com/mikelove/tximeta/blob/master/i
 for how `tximeta` would look, and some thoughts on next steps at the
 end of the document. 
 
-Also see how we are thinking to work with [derived transcriptomes](https://github.com/mikelove/tximeta/issues/2).
+Also see how we are thinking to work with [derived transcriptomes](https://github.com/mikelove/tximeta/blob/master/inst/script/derivedTxome.knit.md).
 
 # Feedback
 
