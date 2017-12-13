@@ -97,7 +97,7 @@ multiple files. An simple example of such a script is:
 ```{r}
 coldata <- read.csv("coldata.csv")
 library(tximeta)
-se <- tximport(coldata)
+se <- tximeta(coldata)
 # write out the assay data
 for (a in assayNames(se)) {
   write.csv(assays(se)[[a]], file=paste0(a,".csv"))
