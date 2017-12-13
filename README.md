@@ -92,7 +92,7 @@ commands into an R script which can be called from command line, using
 [Rscript](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rscript.html).
 This will create a `SummarizedExperiment` object with relevant
 metadata, then deconstruct the object and print its contents into
-multiple files. An simple example of such a script is: 
+multiple files. A simple example of such a script is: 
 
 ```{r}
 coldata <- read.csv("coldata.csv")
