@@ -82,6 +82,41 @@ table linking the hash values to metadata for the 5 GENCODE human
 transcriptome releases from 2015-2017 can be accomplished in less than
 a minute.
 
+# Do I have to use R?
+
+Much of the power of `tximeta` leverages the rich data objects,
+annotation resources, and genomic range manipulation methods of the
+Bioconductor project, which is built on the R programming
+environment. However, it is possible to wrap up the relevant `tximeta`
+commands into an R script which can be called from command line, using
+[Rscript](https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rscript.html).
+This will create a `SummarizedExperiment` object with relevant
+metadata, then deconstruct the object and print its contents into
+multiple files. An simple example of such a script is: 
+
+```{r}
+coldata <- read.csv("coldata.csv")
+library(tximeta)
+se <- tximport(coldata)
+# write out the assay data
+for (a in assayNames(se)) {
+  write.csv(se[[a]], file=paste(a,".csv"))
+}
+# write out the genomic ranges to BED file
+library(rtracklayer)
+export(rowRanges(se), con="rowRanges.bed")
+# write out metadata about genomic ranges
+write.csv(as.data.frame(seqinfo(se)), file="seqInfo.csv")
+# write out metadata about the transcriptome
+write.csv(as.data.frame(metadata(se)$txomeInfo), file="txomeInfo.csv")
+```
+
+This script could be run with the following command line call:
+
+```
+Rscript tximeta.R
+```
+
 # Where the transcript databases are stored
 
 `tximeta` makes use of the Bioconductor *TxDb* object, which can be
