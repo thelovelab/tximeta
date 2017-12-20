@@ -1,8 +1,13 @@
-#' Summarize transcript-level quantification to gene-level
+#' Summarize transcript-level quantifications to gene-level
 #'
-#' @param se a SummarizedExperiment
+#' This function uses the tximport package to summarize counts,
+#' abundances and effective lengths from transcript-level to gene-level.
+#' It automatically will access the relevant TxDb (by either finding it
+#' in the BiocFileCache or by building it from an ftp location).
 #'
-#' @return a SummarizedExperiment
+#' @param se a SummarizedExperiment produced by \code{tximeta}
+#'
+#' @return a SummarizedExperiment with summarized quantifications
 #'
 #' @export
 summarizeToGene <- function(se) {

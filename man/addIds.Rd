@@ -9,11 +9,12 @@ addIds(se, column)
 \arguments{
 \item{se}{the SummarizedExperiment}
 
-\item{column}{the name of the new ID to add}
+\item{column}{the name of the new ID to add (a \code{column} of the OrgDB)}
 }
 \value{
 a SummarizedExperiment
 }
 \description{
-For now this just works with SummarizedExperiments with Ensembl gene or transcript IDs
+For now this just works with SummarizedExperiments
+with Ensembl gene or transcript IDs.
 }

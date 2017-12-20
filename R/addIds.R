@@ -1,9 +1,10 @@
 #' Add IDs to rowRanges of a SummarizedExperiment
 #'
-#' For now this just works with SummarizedExperiments with Ensembl gene or transcript IDs
+#' For now this just works with SummarizedExperiments
+#' with Ensembl gene or transcript IDs.
 #' 
 #' @param se the SummarizedExperiment
-#' @param column the name of the new ID to add
+#' @param column the name of the new ID to add (a \code{column} of the OrgDB)
 #'
 #' @return a SummarizedExperiment
 #'

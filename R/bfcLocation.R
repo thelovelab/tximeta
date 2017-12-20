@@ -1,14 +1,3 @@
-#' @rdname getTximetaBFC
-#' 
-#' @export
-setTximetaBFC <- function() {
-  message("Which BiocFileCache directory should tximeta use? (press Enter to cancel)")
-  bfcloc <- file.choose()
-  bfclocFile <- bfclocFile()
-  writeBFCLocFile(bfcloc)
-  bfcloc
-}
-
 #' Get or set the directory of the BiocFileCache used by tximeta
 #'
 #' Running \code{getTximetaBFC} will report the saved directory,
@@ -17,6 +6,7 @@ setTximetaBFC <- function() {
 #' BiocFileCache directory for accessing and saving TxDb sqlite files.
 #'
 #' @return the directory of the BiocFileCache used by tximeta
+#' (or nothing, in the case of \code{setTximetaBFC})
 #'
 #' @rdname getTximetaBFC
 #' 
@@ -30,6 +20,19 @@ getTximetaBFC <- function() {
     readBFCLocFile(bfclocFile)
   }
 }
+
+#' @rdname getTximetaBFC
+#' 
+#' @export
+setTximetaBFC <- function() {
+  message("Which BiocFileCache directory should tximeta use? (press Enter to cancel)")
+  bfcloc <- file.choose()
+  bfclocFile <- bfclocFile()
+  writeBFCLocFile(bfcloc)
+  invisible()
+}
+
+# not exported:
 
 bfclocFile <- function() {
   tximetaDir <- user_cache_dir("tximeta")

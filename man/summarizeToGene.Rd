@@ -2,16 +2,19 @@
 % Please edit documentation in R/summarize.R
 \name{summarizeToGene}
 \alias{summarizeToGene}
-\title{Summarize transcript-level quantification to gene-level}
+\title{Summarize transcript-level quantifications to gene-level}
 \usage{
 summarizeToGene(se)
 }
 \arguments{
-\item{se}{a SummarizedExperiment}
+\item{se}{a SummarizedExperiment produced by \code{tximeta}}
 }
 \value{
-a SummarizedExperiment
+a SummarizedExperiment with summarized quantifications
 }
 \description{
-Summarize transcript-level quantification to gene-level
+This function uses the tximport package to summarize counts,
+abundances and effective lengths from transcript-level to gene-level.
+It automatically will access the relevant TxDb (by either finding it
+in the BiocFileCache or by building it from an ftp location).
 }

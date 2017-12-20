@@ -5,7 +5,7 @@
 \alias{makeDerivedTxome}
 \alias{derivedTxome}
 \alias{loadDerivedTxome}
-\title{Make and load derived transcriptomes (derivedTxome)}
+\title{Make and load derived transcriptomes ("derivedTxome")}
 \usage{
 makeDerivedTxome(indexDir, source, organism, version, genome, fasta, gtf,
   write = TRUE)
@@ -13,24 +13,26 @@ makeDerivedTxome(indexDir, source, organism, version, genome, fasta, gtf,
 loadDerivedTxome(jsonfile)
 }
 \arguments{
-\item{indexDir}{indexDir}
+\item{indexDir}{the path to the Salmon or Sailfish index}
 
-\item{source}{source of transcriptome FASTA and GTF}
+\item{source}{the source of transcriptome (e.g. "Gencode" or "Ensembl")}
 
-\item{organism}{organism}
+\item{organism}{organism (e.g. "Homo sapiens")}
 
-\item{version}{version}
+\item{version}{version (e.g. "27")}
 
-\item{genome}{genome}
+\item{genome}{genome (e.g. "GRCh38")}
 
-\item{fasta}{fasta}
+\item{fasta}{FTP location for the FASTA sequence (of which the index is a subset)}
 
-\item{gtf}{gtf}
+\item{gtf}{FTP location for the GTF file (of which the index is a subset)}
 
-\item{write}{should a JSON file be written out which documents the transcriptome signature and metadata}
+\item{write}{should a JSON file be written out
+which documents the transcriptome signature and metadata? (default is TRUE)}
 
-\item{jsonfile}{the path to the json file for the derivedTxome}
+\item{jsonfile}{(for \code{loadDerivedTxome})
+the path to the json file for the derivedTxome}
 }
 \description{
-Make and load derived transcriptomes (derivedTxome)
+For now, for details please see the vignette \code{inst/script/derived.Rmd}
 }

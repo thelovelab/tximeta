@@ -1,6 +1,28 @@
-#' tximeta
+#' tximeta: Import transcript abundances with automagic population of metadata
 #'
-#' tximeta is magic
+#' \code{tximeta} leverages the hash signature of the Salmon or Sailfish index,
+#' in addition to a number of core Bioconductor packages (GenomicFeatures,
+#' ensembldb, GenomeInfoDb, BiocFileCache) to automatically populate metadata
+#' for the user, without additional effort from the user. Note that this package
+#' is in "beta" / under development.
+#'
+#' \code{tximeta} checks the hash signature of the index against a database
+#' of known transcriptomes (this database under construction) or a locally stored
+#' \code{derivedTxome} (see \code{link{makeDerivedTxome}}), and then will
+#' automatically populate, e.g. the transcript locations, the transcriptome version,
+#' the genome with correct chromosome lengths, etc. It allows for automatic
+#' and correct summarization of transcript-level quantifications to the gene-level
+#' via \code{\link{summarizeToGene}} without the need to manually build
+#' a \code{tx2gene} table.
+#'
+#' \code{tximeta} on the first run will ask where the BiocFileCache for
+#' this package should be kept, either using a default location or a temporary
+#' directory. At any point, the user can specify a location using
+#' \code{\link{setTximetaBFC}} and this choice will be saved for future sessions.
+#' Multiple users can point to the same BiocFileCache, such that
+#' transcript databases (TxDb) associated with certain Salmon or Sailfish indices
+#' and \code{derivedTxomes} can be accessed by different users without additional
+#' effort or time spent downloading/building the relevant TxDb.
 #'
 #' @param coldata a data.frame with at least two columns:
 #' \itemize{
@@ -9,8 +31,12 @@
 #' }
 #' @param ... initial arguments passed to \code{tximport}
 #' 
-#' @return a SummarizedExperiment
+#' @return a SummarizedExperiment with metadata on the \code{rowRanges}.
+#' (if the hash signature in the Salmon or Sailfish index does not match
+#' any known transcriptomes, or any locally saved \code{derivedTxome},
+#' \code{tximeta} will just return a non-ranged SummarizedExperiment)
 #'
+#' @importFrom SummarizedExperiment SummarizedExperiment
 #' @importFrom tximport tximport summarizeToGene
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom AnnotationDbi loadDb saveDb

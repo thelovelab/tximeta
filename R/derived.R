@@ -1,20 +1,25 @@
-#' Make and load derived transcriptomes (derivedTxome)
+#' Make and load derived transcriptomes ("derivedTxome")
+#'
+#' For now, for details please see the vignette \code{inst/script/derived.Rmd}
 #' 
-#' @param indexDir indexDir
-#' @param source source of transcriptome FASTA and GTF
-#' @param organism organism
-#' @param version version
-#' @param genome genome
-#' @param fasta fasta 
-#' @param gtf gtf
-#' @param write should a JSON file be written out which documents the transcriptome signature and metadata
-#' @param jsonfile the path to the json file for the derivedTxome
+#' @param indexDir the path to the Salmon or Sailfish index
+#' @param source the source of transcriptome (e.g. "Gencode" or "Ensembl")
+#' @param organism organism (e.g. "Homo sapiens")
+#' @param version version (e.g. "27")
+#' @param genome genome (e.g. "GRCh38")
+#' @param fasta FTP location for the FASTA sequence (of which the index is a subset)
+#' @param gtf FTP location for the GTF file (of which the index is a subset)
+#' @param write should a JSON file be written out
+#' which documents the transcriptome signature and metadata? (default is TRUE)
+#' @param jsonfile (for \code{loadDerivedTxome})
+#' the path to the json file for the derivedTxome
 #'
 #' @name derivedTxome
 #' @rdname derivedTxome
 #' 
 #' @export
-makeDerivedTxome <- function(indexDir, source, organism, version, genome, fasta, gtf, write=TRUE) {
+makeDerivedTxome <- function(indexDir, source, organism, version,
+                             genome, fasta, gtf, write=TRUE) {
   indexList <- fromJSON(file.path(indexDir,"header.json"))
   indexSeqHash <- indexList$value0$SeqHash
   # here and in the data frame where we record derivedTxome's,

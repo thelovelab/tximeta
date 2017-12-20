@@ -1,7 +1,7 @@
 Package: tximeta
-Version: 0.0.8
+Version: 0.0.9
 Title: Import transcript abundances with automagic population of metadata
-Description: Import transcript abundances with automagic population of metadata
+Description: Import transcript abundances with automagic population of metadata.
 Authors@R: c(
     person("Michael", "Love", email="michaelisaiahlove@gmail.com", role = c("aut","cre")),
     person("Rob", "Patro", role = "aut"),
@@ -13,11 +13,13 @@ VignetteBuilder: knitr
 Depends: SummarizedExperiment
 Imports:
     tximport,
+    jsonlite,
+    AnnotationDbi,
     GenomicFeatures,
     ensembldb,
-    jsonlite,
-    rtracklayer,
     BiocFileCache,
+    GenomeInfoDb,
+    rtracklayer,
     rappdirs
 Suggests:
     knitr,
