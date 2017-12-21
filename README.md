@@ -4,19 +4,26 @@
 
 # Idea in diagrams
 
-Before `tximeta`, current versions of Salmon and Sailfish already 
-propogate a *signature* of the transcriptome sequence into the index
-and quantification directories. This can be diagrammed like so, where 
-the dotted lines represent not direct links, but possible comparisons
-that could be made based on signature.
+Current versions of Salmon and Sailfish propogate a *signature* of the
+transcriptome sequence into the index and quantification
+directories. This can be diagrammed like so, where the dotted lines
+represent not direct links, but possible comparisons that could be
+made based on signature. The signature is a SHA256 hash of the
+transcriptome cDNA sequence, excluding transcript identifiers.
 
 ![](img/quant.png)
 
-Following quantification, and even performed by a different analyst or 
-at a different institute, when importing quantifications into 
-R/Bioconductor, the `tximeta` software would check a database of known 
-signatures, and upon finding a match, would add annotation and metadata
-to the quantifications, returning a `SummarizedExperiment` object.
+Following quantification, and even performed by a different analyst or
+at a different institute, when importing quantifications into
+R/Bioconductor, `tximeta` checks a local database of known
+transcriptome signatures, and upon finding a match, automatically adds
+annotation and metadata to the quantifications, returning a
+`SummarizedExperiment` object. Examples of metadata include transcript
+locations, transcript and genome source and version, appropriate
+chromosome lengths, etc. This ensures computational reproducibility by
+attaching critical annotation information to the data object, such
+that exact quantifications can be reproduced from raw data (all
+software versions are also attached to the data object).
 
 ![](img/tximeta.png)
 
@@ -33,7 +40,7 @@ is the `quant` directory output from Salmon (version >= 0.8.1) or
 Sailfish. 
 
 The key idea within `tximeta` is to store a *signature* of
-the transcriptome sequence itself using a hash function, computed and
+the transcriptome sequence itself using the SHA256 hash, computed and
 stored by the `index` and `quant` functions of Salmon and
 Sailfish. This signature acts as the identifying information for later
 building out rich annotations and metadata in the background, on
@@ -69,6 +76,9 @@ We hope that for both of these cases `tximeta` might help to assist in
 computational reproducibility of quantification, by encapsulating the
 steps need to generate the transcriptome and providing a signature for
 checking the sequence is indeed the same.
+
+This vignette demonstrates how we are thinking to work with 
+[derived transcriptomes](https://github.com/mikelove/tximeta/blob/master/inst/script/derivedTxome.knit.md).
 
 # Feasability
 
