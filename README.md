@@ -1,4 +1,4 @@
-# tximeta: Transcript quantification import with rich metadata
+## tximeta: Transcript quantification import with rich metadata
 
 ![](https://travis-ci.org/mikelove/tximeta.svg?branch=master)
 
