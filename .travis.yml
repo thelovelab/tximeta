@@ -1,3 +1,4 @@
 language: r
 r: bioc-release
 cache: packages
+sudo: false
