@@ -14,13 +14,15 @@ Depends: SummarizedExperiment
 Imports:
     tximport,
     jsonlite,
+    S4Vectors,
     AnnotationDbi,
     GenomicFeatures,
     ensembldb,
     BiocFileCache,
     GenomeInfoDb,
     rtracklayer,
-    rappdirs
+    rappdirs,
+    utils
 Suggests:
     knitr,
     rmarkdown,

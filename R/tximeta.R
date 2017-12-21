@@ -36,16 +36,18 @@
 #' any known transcriptomes, or any locally saved \code{derivedTxome},
 #' \code{tximeta} will just return a non-ranged SummarizedExperiment)
 #'
-#' @importFrom SummarizedExperiment SummarizedExperiment
+#' @importFrom SummarizedExperiment SummarizedExperiment assays colData
+#' @importFrom S4Vectors metadata mcols mcols<-
 #' @importFrom tximport tximport summarizeToGene
 #' @importFrom jsonlite fromJSON toJSON
-#' @importFrom AnnotationDbi loadDb saveDb
-#' @importFrom GenomicFeatures makeTxDbFromGFF transcripts
+#' @importFrom AnnotationDbi loadDb saveDb select keys mapIds
+#' @importFrom GenomicFeatures makeTxDbFromGFF transcripts genes
 #' @importFrom ensembldb ensDbFromGtf EnsDb
 #' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfccount bfcrpath
-#' @importFrom GenomeInfoDb Seqinfo
+#' @importFrom GenomeInfoDb Seqinfo genome<- seqinfo<- seqlevels
 #' @importFrom rtracklayer import.chain liftOver
 #' @importFrom rappdirs user_cache_dir
+#' @importFrom utils menu packageVersion read.csv
 #'
 #' @export
 tximeta <- function(coldata, ...) {
@@ -187,7 +189,9 @@ liftOverHelper <- function(ranges, chainfile, to) {
 getTxomeInfo <- function(indexSeqHash) {
   # now start building out metadata based on indexSeqHash
   # TODO this is very temporary code obviously
-  hashtable <- read.csv(here("extdata","hashtable.csv"),stringsAsFactors=FALSE)
+  # best this would be an external data package
+  hashfile <- file.path(system.file("extdata",package="tximeta"),"hashtable.csv")
+  hashtable <- read.csv(hashfile,stringsAsFactors=FALSE)
   m <- match(indexSeqHash, hashtable$index_seq_hash)
   if (!is.na(m)) {
     # now we can go get the GTF to annotate the ranges
