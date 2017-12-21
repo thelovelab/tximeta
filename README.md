@@ -1,5 +1,7 @@
 # tximeta: Import transcript quantification with automagic generation of metadata
 
+![](https://travis-ci.org/mikelove/tximeta.svg?branch=master)
+
 # Idea in diagrams
 
 Before `tximeta`, current versions of Salmon and Sailfish already 
