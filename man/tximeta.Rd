@@ -46,4 +46,7 @@ Multiple users can point to the same BiocFileCache, such that
 transcript databases (TxDb) associated with certain Salmon or Sailfish indices
 and \code{derivedTxomes} can be accessed by different users without additional
 effort or time spent downloading/building the relevant TxDb.
+If the BiocFileCache location is not the default one in the user directory,
+then \code{tximeta} will set the permissions to \code{666} so that
+multiple users can read and write.
 }

@@ -26,7 +26,7 @@ getTximetaBFC <- function() {
 #' @export
 setTximetaBFC <- function() {
   message("Which BiocFileCache directory should tximeta use? (press Enter to cancel)")
-  bfcloc <- file.choose()
+  bfcloc <- file.choose()  
   bfclocFile <- bfclocFile()
   writeBFCLocFile(bfcloc)
   invisible()
@@ -62,7 +62,8 @@ getBFCLoc <- function() {
   "You can always change this directory later by running: setTximetaBFC()",
   "Or enter [0] to exit and set this directory manually now.",
   sep="\n")
-  
+
+  # this is the JSON file where we store the location of the tximeta BiocFileCache
   bfclocFile <- bfclocFile()
   
   # this file tells us which BFC dir has been previously chosen use with tximeta

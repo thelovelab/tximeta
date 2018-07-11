@@ -23,6 +23,9 @@
 #' transcript databases (TxDb) associated with certain Salmon or Sailfish indices
 #' and \code{derivedTxomes} can be accessed by different users without additional
 #' effort or time spent downloading/building the relevant TxDb.
+#' If the BiocFileCache location is not the default one in the user directory,
+#' then \code{tximeta} will set the permissions to \code{666} so that
+#' multiple users can read and write.
 #'
 #' @param coldata a data.frame with at least two columns:
 #' \itemize{
@@ -224,6 +227,14 @@ getTxDb <- function(txomeInfo) {
   txdbName <- basename(txomeInfo$gtf)
   bfcloc <- getBFCLoc()
   bfc <- BiocFileCache(bfcloc)
+  # want to enable multiple users to read/write to the tximeta BiocFileCache
+  # this should perhaps only happen when the bfloc is not the user-based location
+  if (bfcloc != user_cache_dir(appname="BiocFileCache")) {
+    bfcSqlite <- file.path(bfcloc, "BiocFileCache.sqlite")
+    if (file.info(bfcSqlite)$mode != "666") {
+      Sys.chmod(paths=bfcSqlite, mode="666", use_umask=FALSE)
+    }
+  }
   q <- bfcquery(bfc, txdbName)  
   if (bfccount(q) == 0) {
     savepath <- bfcnew(bfc, txdbName, ext="sqlite") 

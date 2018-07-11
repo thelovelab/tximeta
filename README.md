@@ -134,13 +134,17 @@ Rscript tximeta.R
 `tximeta` makes use of the Bioconductor *TxDb* object, which can be
 saved and re-loaded from an `sqlite` file. These are saved in a
 specific location using the *BiocFileCache* package. Since these
-*TxDb* saved objects can be ~100 Mb, we want to make sure the user is
-OK with these being saved to a given location. Also we want to allow
+*TxDb* saved objects (sqlite databases) can be ~100 Mb, we want to
+make sure the user is OK with these being saved to a given location. 
+Also we want to allow
 for the situation that multiple users share a *BiocFileCache*
 location, such that any *TxDb* objects or *derivedTxome* information
 can be shared, reducing unnecessary downloads or emails asking about
 the provenance of the transcriptome for a given set of quantification
-files.
+files. In order to allow that multiple users can read and write to the
+same location, if it is not the default BiocFileCache location in the
+user's home directory, *tximeta* will set the permissions to `666` if
+they are not already. 
 
 We use the following logic to specify the location of the
 *BiocFileCache* used by `tximeta`:
