@@ -141,10 +141,17 @@ for the situation that multiple users share a *BiocFileCache*
 location, such that any *TxDb* objects or *derivedTxome* information
 can be shared, reducing unnecessary downloads or emails asking about
 the provenance of the transcriptome for a given set of quantification
-files. In order to allow that multiple users can read and write to the
-same location, if it is not the default BiocFileCache location in the
-user's home directory, *tximeta* will set the permissions to `666` if
-they are not already. 
+files. 
+
+In order to allow that multiple users can read and write to the
+same location, it is recommended to set the BiocFileCache directory to
+have group write permissions (g+w). Unless the location is in the
+user's home directory, *tximeta* will set the permissions of the
+BiocFileCache sqlite file to `664` (user and group: read and write,
+other: read). For use of *tximeta* across multiple groups, it is
+recommended to create a new UNIX group that encompasses multiple
+groups and assign the *tximeta* BiocFileCache location to this new
+group. 
 
 We use the following logic to specify the location of the
 *BiocFileCache* used by `tximeta`:

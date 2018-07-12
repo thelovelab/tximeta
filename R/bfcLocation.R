@@ -29,6 +29,7 @@ setTximetaBFC <- function() {
   bfcloc <- file.choose()  
   bfclocFile <- bfclocFile()
   writeBFCLocFile(bfcloc)
+  message("For group use, set the permissions of this directory to allow group write (g+w)")
   invisible()
 }
 
