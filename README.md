@@ -77,8 +77,8 @@ computational reproducibility of quantification, by encapsulating the
 steps need to generate the transcriptome and providing a signature for
 checking the sequence is indeed the same.
 
-This vignette demonstrates how we are thinking to work with 
-[derived transcriptomes](https://github.com/mikelove/tximeta/blob/master/inst/script/derivedTxome.knit.md).
+The *derivedTxome* vignette demonstrates how we are thinking to work with 
+derived transcriptomes.
 
 # Feasability
 
@@ -171,11 +171,11 @@ We use the following logic to specify the location of the
 
 # Take a look at the example
 
-We have a [prototype vignette](https://github.com/mikelove/tximeta/blob/master/inst/script/tximeta.knit.md)
-for how `tximeta` would look, and some thoughts on next steps at the
-end of the document. 
+We have a *tximeta* vignette for how `tximeta` would look, and some
+thoughts on next steps at the end of the document. 
 
-Also see how we are thinking to work with [derived transcriptomes](https://github.com/mikelove/tximeta/blob/master/inst/script/derivedTxome.knit.md).
+Also see the *derivedTxome* vignette for examples of how we are
+thinking to work with derived transcriptomes. 
 
 # Feedback
 
