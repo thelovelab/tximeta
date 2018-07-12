@@ -1,7 +1,7 @@
 ---
 title: "tximeta: Working with derived transcriptomes"
 author: "Michael Love, Rob Patro"
-date: "12/05/2017"
+date: "07/12/2018"
 output: 
   html_document:
     highlight: tango
@@ -11,30 +11,31 @@ output:
 
 [See README](https://github.com/mikelove/tximeta/blob/master/README.md)
 
-# Setup
 
-First, to try out `tximeta` you'll need the example data, which is
-contained in this GitHub repo. Here we download the whole repo as a
-ZIP file.
-
-
-
-
-```r
-library(here)
-dest <- here("extdata","crohns.zip")
-download.file("https://github.com/mikelove/crohns/archive/master.zip", dest, method="wget")
-unzip(dest, exdir=here("extdata"))
-```
 
 # Trying to import quants against a derived transcriptome
 
 
 ```r
-library(here)
-file <- here("extdata/crohns-master/data/ensembl/SRR1813877/quant.sf.gz")
-coldata <- data.frame(sample="1", files=file, names="SRR1813877",
+dir <- system.file("extdata/derivedTxome/ERR188297", package="tximportData")
+file <- file.path(dir, "quant.sf.gz")
+file.exists(file)
+```
+
+```
+## [1] TRUE
+```
+
+```r
+coldata <- data.frame(files=file, names="SRR188297", sample="1",
                       stringsAsFactors=FALSE)
+```
+
+(Note: first do a `devtools::load_all()` then the following should work.)
+
+
+```r
+library(tximeta)
 se <- tximeta(coldata)
 ```
 
@@ -69,25 +70,24 @@ to publicly available sources
 of these cases.
 
 In the case of the quantification file above, the transcriptome was
-generated locally by downloading the Ensembl cDNA FASTA and GTF for
-Homo sapiens, version 90, and subsetting to the transcripts on the
-"standard" chromsomes: 1-22, X, Y, MT. The following code reproduces
-the production of the transcriptome from publicly available sources:
+generated locally by downloading the Ensembl cDNA FASTA for
+Homo sapiens, version 87, and subsetting to the transcripts on the
+"standard" chromsomes: 1-22, X, Y, MT. The following un-evaluated code
+chunk reproduces the production of the transcriptome from publicly
+available sources.
 
 
 ```r
-library(ensembldb)
-dbfile <- ensDbFromGtf("Homo_sapiens.GRCh38.90.gtf.gz")
-edb <- EnsDb("Homo_sapiens.GRCh38.90.sqlite")
-# this is similar to Gencode CHR (except gencode has ~150 additional transcripts in the PAR of Y)
-txps <- transcripts(edb, filter=AnnotationFilterList(SeqNameFilter(c(1:22, "X", "Y","MT"))))
 library(Biostrings)
-# this is missing some of the transcripts in the above
-seqs <- readDNAStringSet("Homo_sapiens.GRCh38.cdna.all.fa.gz")
-names(seqs) <- sub("(.*?)\\..*","\\1",names(seqs)) # split at '.'
-common <- intersect(names(txps), names(seqs)) 
-seqs.sub <- seqs[common]
-writeXStringSet(seqs.sub, filepath="Homo_sapiens.GRCh38.cdna.std.chroms.fa")
+# Ensembl version 87
+# ftp://ftp.ensembl.org/pub/release-87/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz
+fa <- readDNAStringSet("Homo_sapiens.GRCh38.cdna.all.fa.gz")
+chrs <- sapply(strsplit(sub(".* chromosome:GRCh38:(.*?) .*","\\1",names(fa)), ":"), `[`, 1)
+chr.levels <- unique(sort(chrs))
+idx <- chrs %in% c(1:22,"MT","X","Y")
+sum(idx)
+fa.sub <- fa[idx]
+writeXStringSet(fa.sub, file="Homo_sapiens.GRCh38.cdna.std.chroms.fa")
 ```
 
 To make this quantification reproducible, we make a
@@ -105,17 +105,19 @@ a `.json` extension added. This can be prevented with `write=FALSE`.
 
 
 ```r
-indexDir <- "Homo_sapiens.GRCh38.cdna.std.chroms_salmon_0.8.2"
-fastaFTP <- "ftp://ftp.ensembl.org/pub/release-90/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz"
-gtfFTP <- "ftp://ftp.ensembl.org/pub/release-90/gtf/homo_sapiens/Homo_sapiens.GRCh38.90.gtf.gz"
+dir <- system.file("extdata", package="tximeta")
+indexDir <- file.path(dir, "Homo_sapiens.GRCh38.cdna.v87.std.chroms_salmon_0.8.1")
+fastaFTP <- "ftp://ftp.ensembl.org/pub/release-87/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz"
+#gtfFTP <- "ftp://ftp.ensembl.org/pub/release-87/gtf/homo_sapiens/Homo_sapiens.GRCh38.87.gtf.gz"
+gtfFTP <- file.path(dir,"Homo_sapiens.GRCh38.87.gtf.gz")
 makeDerivedTxome(indexDir=indexDir,
                  source="Ensembl", organism="Homo sapiens",
-                 version="90", genome="GRCh38",
+                 version="87", genome="GRCh38",
                  fasta=fastaFTP, gtf=gtfFTP)
 ```
 
 ```
-## writing derivedTxome to Homo_sapiens.GRCh38.cdna.std.chroms_salmon_0.8.2.json
+## writing derivedTxome to /Users/love/proj/tximeta/inst/extdata/Homo_sapiens.GRCh38.cdna.v87.std.chroms_salmon_0.8.1.json
 ```
 
 ```
@@ -148,8 +150,8 @@ se <- tximeta(coldata)
 ```
 ## 1 
 ## found matching derived transcriptome:
-## [ Ensembl - Homo sapiens - version 90 ]
-## loading existing EnsDb created: 2017-12-04 20:17:48
+## [ Ensembl - Homo sapiens - version 87 ]
+## loading existing EnsDb created: 2018-07-12 12:49:51
 ## generating transcript ranges
 ```
 
@@ -162,46 +164,46 @@ rowRanges(se)
 ```
 
 ```
-## GRanges object with 164776 ranges and 6 metadata columns:
-##                   seqnames               ranges strand |           tx_id
-##                      <Rle>            <IRanges>  <Rle> |     <character>
-##   ENST00000456328        1       [11869, 14409]      + | ENST00000456328
-##   ENST00000450305        1       [12010, 13670]      + | ENST00000450305
-##   ENST00000488147        1       [14404, 29570]      - | ENST00000488147
-##   ENST00000606857        1       [52473, 53312]      + | ENST00000606857
-##   ENST00000642116        1       [57598, 64116]      + | ENST00000642116
-##               ...      ...                  ...    ... .             ...
-##   ENST00000420810        Y [26549425, 26549743]      + | ENST00000420810
-##   ENST00000456738        Y [26586642, 26591601]      - | ENST00000456738
-##   ENST00000435945        Y [26594851, 26634652]      - | ENST00000435945
-##   ENST00000435741        Y [26626520, 26627159]      - | ENST00000435741
-##   ENST00000431853        Y [56855244, 56855488]      + | ENST00000431853
-##                                           tx_biotype tx_cds_seq_start
-##                                          <character>        <integer>
-##   ENST00000456328               processed_transcript             <NA>
-##   ENST00000450305 transcribed_unprocessed_pseudogene             <NA>
-##   ENST00000488147             unprocessed_pseudogene             <NA>
-##   ENST00000606857             unprocessed_pseudogene             <NA>
-##   ENST00000642116               processed_transcript             <NA>
-##               ...                                ...              ...
-##   ENST00000420810               processed_pseudogene             <NA>
-##   ENST00000456738             unprocessed_pseudogene             <NA>
-##   ENST00000435945             unprocessed_pseudogene             <NA>
-##   ENST00000435741               processed_pseudogene             <NA>
-##   ENST00000431853               processed_pseudogene             <NA>
-##                   tx_cds_seq_end         gene_id         tx_name
-##                        <integer>     <character>     <character>
-##   ENST00000456328           <NA> ENSG00000223972 ENST00000456328
-##   ENST00000450305           <NA> ENSG00000223972 ENST00000450305
-##   ENST00000488147           <NA> ENSG00000227232 ENST00000488147
-##   ENST00000606857           <NA> ENSG00000268020 ENST00000606857
-##   ENST00000642116           <NA> ENSG00000240361 ENST00000642116
-##               ...            ...             ...             ...
-##   ENST00000420810           <NA> ENSG00000224240 ENST00000420810
-##   ENST00000456738           <NA> ENSG00000227629 ENST00000456738
-##   ENST00000435945           <NA> ENSG00000237917 ENST00000435945
-##   ENST00000435741           <NA> ENSG00000231514 ENST00000435741
-##   ENST00000431853           <NA> ENSG00000235857 ENST00000431853
+## GRanges object with 162995 ranges and 6 metadata columns:
+##                   seqnames              ranges strand |           tx_id
+##                      <Rle>           <IRanges>  <Rle> |     <character>
+##   ENST00000448914       14   22449113-22449125      + | ENST00000448914
+##   ENST00000632684        7 142786213-142786224      + | ENST00000632684
+##   ENST00000434970       14   22439007-22439015      + | ENST00000434970
+##   ENST00000415118       14   22438547-22438554      + | ENST00000415118
+##   ENST00000603693       15   21011451-21011469      - | ENST00000603693
+##               ...      ...                 ...    ... .             ...
+##   ENST00000454398        6   33131216-33143325      - | ENST00000454398
+##   ENST00000457676       19   43303171-43304523      - | ENST00000457676
+##   ENST00000457750        3 195614947-195620233      + | ENST00000457750
+##   ENST00000520423        8   43539973-43540927      + | ENST00000520423
+##   ENST00000523715        8   46549089-46550802      + | ENST00000523715
+##                               tx_biotype tx_cds_seq_start tx_cds_seq_end
+##                              <character>        <integer>      <integer>
+##   ENST00000448914              TR_D_gene         22449113       22449125
+##   ENST00000632684              TR_D_gene        142786213      142786224
+##   ENST00000434970              TR_D_gene         22439007       22439015
+##   ENST00000415118              TR_D_gene         22438547       22438554
+##   ENST00000603693              IG_D_gene         21011451       21011469
+##               ...                    ...              ...            ...
+##   ENST00000454398 unprocessed_pseudogene             <NA>           <NA>
+##   ENST00000457676 unprocessed_pseudogene             <NA>           <NA>
+##   ENST00000457750 unprocessed_pseudogene             <NA>           <NA>
+##   ENST00000520423 unprocessed_pseudogene             <NA>           <NA>
+##   ENST00000523715 unprocessed_pseudogene             <NA>           <NA>
+##                           gene_id         tx_name
+##                       <character>     <character>
+##   ENST00000448914 ENSG00000228985 ENST00000448914
+##   ENST00000632684 ENSG00000282431 ENST00000632684
+##   ENST00000434970 ENSG00000237235 ENST00000434970
+##   ENST00000415118 ENSG00000223997 ENST00000415118
+##   ENST00000603693 ENSG00000270451 ENST00000603693
+##               ...             ...             ...
+##   ENST00000454398 ENSG00000237398 ENST00000454398
+##   ENST00000457676 ENSG00000230681 ENST00000457676
+##   ENST00000457750 ENSG00000224769 ENST00000457750
+##   ENST00000520423 ENSG00000253748 ENST00000520423
+##   ENST00000523715 ENSG00000253425 ENST00000523715
 ##   -------
 ##   seqinfo: 47 sequences from GRCh38 genome
 ```
@@ -231,19 +233,18 @@ seqinfo(se)
 
 ```r
 library(BiocFileCache)
-bfc <- BiocFileCache(".")
+bfc <- BiocFileCache()
 bfcinfo(bfc)
 ```
 
 ```
-## # A tibble: 3 x 8
-##     rid                         rname         create_time
-##   <chr>                         <chr>               <chr>
-## 1 BFC20 Homo_sapiens.GRCh38.90.gtf.gz 2017-12-04 20:17:48
-## 2 BFC22 gencode.v26.annotation.gtf.gz 2017-12-04 21:04:56
-## 3 BFC23                derivedTxomeDF 2017-12-04 21:41:22
-## # ... with 5 more variables: access_time <chr>, rpath <chr>, rtype <chr>,
-## #   fpath <chr>, last_modified_time <chr>
+## # A tibble: 3 x 10
+##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
+##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
+## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
+## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
+## 3 BFC9  deriv… 2018-07-12… 2018-07-12… /User… rela… 67f6…               NA
+## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
 ```r
@@ -252,13 +253,12 @@ bfcinfo(bfc)
 ```
 
 ```
-## # A tibble: 2 x 8
-##     rid                         rname         create_time
-##   <chr>                         <chr>               <chr>
-## 1 BFC20 Homo_sapiens.GRCh38.90.gtf.gz 2017-12-04 20:17:48
-## 2 BFC22 gencode.v26.annotation.gtf.gz 2017-12-04 21:04:56
-## # ... with 5 more variables: access_time <chr>, rpath <chr>, rtype <chr>,
-## #   fpath <chr>, last_modified_time <chr>
+## # A tibble: 2 x 10
+##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
+##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
+## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
+## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
+## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
 # Loading derivedTxome JSON files
@@ -276,8 +276,9 @@ the relevant metadata is saved for persistent usage (using
 
 
 ```r
-jsonfile <- "Homo_sapiens.GRCh38.cdna.std.chroms_salmon_0.8.2.json"
-loadDerivedTxome(jsonfile)
+dir <- system.file("extdata", package="tximeta")
+jsonFile <- file.path(dir, "Homo_sapiens.GRCh38.cdna.v87.std.chroms_salmon_0.8.1.json")
+loadDerivedTxome(jsonFile)
 ```
 
 ```
@@ -304,8 +305,8 @@ se <- tximeta(coldata)
 ```
 ## 1 
 ## found matching derived transcriptome:
-## [ Ensembl - Homo sapiens - version 90 ]
-## loading existing EnsDb created: 2017-12-04 20:17:48
+## [ Ensembl - Homo sapiens - version 87 ]
+## loading existing EnsDb created: 2018-07-12 12:49:51
 ## generating transcript ranges
 ```
 
@@ -313,19 +314,18 @@ se <- tximeta(coldata)
 
 
 ```r
-bfc <- BiocFileCache(".")
+bfc <- BiocFileCache()
 bfcinfo(bfc)
 ```
 
 ```
-## # A tibble: 3 x 8
-##     rid                         rname         create_time
-##   <chr>                         <chr>               <chr>
-## 1 BFC20 Homo_sapiens.GRCh38.90.gtf.gz 2017-12-04 20:17:48
-## 2 BFC22 gencode.v26.annotation.gtf.gz 2017-12-04 21:04:56
-## 3 BFC24                derivedTxomeDF 2017-12-04 21:41:58
-## # ... with 5 more variables: access_time <chr>, rpath <chr>, rtype <chr>,
-## #   fpath <chr>, last_modified_time <chr>
+## # A tibble: 3 x 10
+##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
+##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
+## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
+## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
+## 3 BFC10 deriv… 2018-07-12… 2018-07-12… /User… rela… 67f1…               NA
+## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
 ```r
@@ -334,13 +334,12 @@ bfcinfo(bfc)
 ```
 
 ```
-## # A tibble: 2 x 8
-##     rid                         rname         create_time
-##   <chr>                         <chr>               <chr>
-## 1 BFC20 Homo_sapiens.GRCh38.90.gtf.gz 2017-12-04 20:17:48
-## 2 BFC22 gencode.v26.annotation.gtf.gz 2017-12-04 21:04:56
-## # ... with 5 more variables: access_time <chr>, rpath <chr>, rtype <chr>,
-## #   fpath <chr>, last_modified_time <chr>
+## # A tibble: 2 x 10
+##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
+##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
+## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
+## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
+## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
 # Session info
@@ -356,14 +355,14 @@ session_info()
 ```
 
 ```
-##  setting  value                                             
-##  version  R Under development (unstable) (2017-05-23 r72721)
-##  system   x86_64, linux-gnu                                 
-##  ui       X11                                               
-##  language en_US                                             
-##  collate  en_US.UTF-8                                       
-##  tz       posixrules                                        
-##  date     2017-12-04
+##  setting  value                       
+##  version  R version 3.5.0 (2018-04-23)
+##  system   x86_64, darwin15.6.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_US.UTF-8                 
+##  tz       Europe/Rome                 
+##  date     2018-07-12
 ```
 
 ```
@@ -371,106 +370,100 @@ session_info()
 ```
 
 ```
-##  package                     * version  date       source        
-##  AnnotationDbi               * 1.39.4   2017-10-18 Bioconductor  
-##  AnnotationFilter              1.1.9    2017-10-08 Bioconductor  
-##  AnnotationHub               * 2.9.19   2017-10-08 Bioconductor  
-##  assertthat                    0.2.0    2017-04-11 CRAN (R 3.5.0)
-##  backports                     1.1.1    2017-09-25 CRAN (R 3.5.0)
-##  base                        * 3.5.0    2017-05-24 local         
-##  bindr                         0.1      2016-11-13 CRAN (R 3.5.0)
-##  bindrcpp                    * 0.2      2017-06-17 CRAN (R 3.5.0)
-##  Biobase                     * 2.37.2   2017-05-24 Bioconductor  
-##  BiocFileCache               * 1.2.0    2017-12-01 Bioconductor  
-##  BiocGenerics                * 0.23.3   2017-10-08 Bioconductor  
-##  BiocInstaller               * 1.28.0   2017-11-08 Bioconductor  
-##  BiocParallel                  1.11.11  2017-10-18 Bioconductor  
-##  biomaRt                       2.33.4   2017-10-08 Bioconductor  
-##  Biostrings                  * 2.45.4   2017-10-08 Bioconductor  
-##  bit                           1.1-12   2014-04-09 CRAN (R 3.5.0)
-##  bit64                         0.9-7    2017-05-08 CRAN (R 3.5.0)
-##  bitops                        1.0-6    2013-08-17 CRAN (R 3.5.0)
-##  blob                          1.1.0    2017-06-17 CRAN (R 3.5.0)
-##  BSgenome                    * 1.45.3   2017-10-08 Bioconductor  
-##  BSgenome.Hsapiens.UCSC.hg19 * 1.4.0    2017-09-08 Bioconductor  
-##  codetools                     0.2-15   2016-10-05 CRAN (R 3.5.0)
-##  commonmark                    1.4      2017-09-01 CRAN (R 3.5.0)
-##  compiler                      3.5.0    2017-05-24 local         
-##  crayon                        1.3.4    2017-09-16 CRAN (R 3.5.0)
-##  curl                          3.0      2017-10-06 CRAN (R 3.5.0)
-##  datasets                    * 3.5.0    2017-05-24 local         
-##  DBI                           0.7      2017-06-18 CRAN (R 3.5.0)
-##  dbplyr                      * 1.1.0    2017-06-27 CRAN (R 3.5.0)
-##  DelayedArray                * 0.3.21   2017-10-08 Bioconductor  
-##  desc                          1.1.1    2017-08-03 CRAN (R 3.5.0)
-##  devtools                    * 1.13.3   2017-08-02 CRAN (R 3.5.0)
-##  digest                        0.6.12   2017-01-27 CRAN (R 3.5.0)
-##  dplyr                         0.7.4    2017-09-28 CRAN (R 3.5.0)
-##  ensembldb                     2.1.14   2017-10-18 Bioconductor  
-##  evaluate                      0.10.1   2017-06-24 CRAN (R 3.5.0)
-##  GenomeInfoDb                * 1.13.5   2017-10-08 Bioconductor  
-##  GenomeInfoDbData              0.99.1   2017-10-08 Bioconductor  
-##  GenomicAlignments             1.13.6   2017-10-08 Bioconductor  
-##  GenomicFeatures             * 1.29.13  2017-10-18 Bioconductor  
-##  GenomicRanges               * 1.29.15  2017-10-08 Bioconductor  
-##  glue                          1.1.1    2017-06-21 CRAN (R 3.5.0)
-##  graphics                    * 3.5.0    2017-05-24 local         
-##  grDevices                   * 3.5.0    2017-05-24 local         
-##  grid                          3.5.0    2017-05-24 local         
-##  here                        * 0.1      2017-05-28 CRAN (R 3.5.0)
-##  hms                           0.3      2016-11-22 CRAN (R 3.5.0)
-##  htmltools                     0.3.6    2017-04-28 CRAN (R 3.5.0)
-##  httpuv                        1.3.5    2017-07-04 CRAN (R 3.5.0)
-##  httr                          1.3.1    2017-08-20 CRAN (R 3.5.0)
-##  interactiveDisplayBase        1.15.0   2017-08-12 Bioconductor  
-##  IRanges                     * 2.11.19  2017-10-18 Bioconductor  
-##  jsonlite                      1.5      2017-06-01 CRAN (R 3.5.0)
-##  knitr                         1.17     2017-08-10 CRAN (R 3.5.0)
-##  lattice                       0.20-35  2017-03-25 CRAN (R 3.5.0)
-##  lazyeval                      0.2.0    2016-06-12 CRAN (R 3.5.0)
-##  magrittr                    * 1.5      2014-11-22 CRAN (R 3.5.0)
-##  Matrix                        1.2-11   2017-08-16 CRAN (R 3.5.0)
-##  matrixStats                 * 0.52.2   2017-04-14 CRAN (R 3.5.0)
-##  memoise                       1.1.0    2017-04-21 CRAN (R 3.5.0)
-##  methods                     * 3.5.0    2017-05-24 local         
-##  mime                          0.5      2016-07-07 CRAN (R 3.5.0)
-##  parallel                    * 3.5.0    2017-05-24 local         
-##  pkgconfig                     2.0.1    2017-03-21 CRAN (R 3.5.0)
-##  prettyunits                   1.0.2    2015-07-13 CRAN (R 3.5.0)
-##  progress                      1.1.2    2016-12-14 CRAN (R 3.5.0)
-##  ProtGenerics                  1.9.1    2017-10-08 Bioconductor  
-##  R6                            2.2.2    2017-06-17 CRAN (R 3.5.0)
-##  rappdirs                      0.3.1    2016-03-28 CRAN (R 3.5.0)
-##  Rcpp                          0.12.13  2017-09-28 CRAN (R 3.5.0)
-##  RCurl                         1.95-4.8 2016-03-01 CRAN (R 3.5.0)
-##  readr                       * 1.1.1    2017-05-16 CRAN (R 3.5.0)
-##  rjson                         0.2.15   2014-11-03 CRAN (R 3.5.0)
-##  rlang                         0.1.2    2017-08-09 CRAN (R 3.5.0)
-##  rmarkdown                   * 1.6      2017-06-15 CRAN (R 3.5.0)
-##  roxygen2                      6.0.1    2017-02-06 CRAN (R 3.5.0)
-##  rprojroot                     1.2      2017-01-16 CRAN (R 3.5.0)
-##  Rsamtools                     1.29.1   2017-10-08 Bioconductor  
-##  RSQLite                       2.0      2017-06-19 CRAN (R 3.5.0)
-##  rstudioapi                    0.7      2017-09-07 CRAN (R 3.5.0)
-##  rtracklayer                 * 1.37.3   2017-10-08 Bioconductor  
-##  S4Vectors                   * 0.15.14  2017-10-18 Bioconductor  
-##  shiny                         1.0.5    2017-08-23 CRAN (R 3.5.0)
-##  stats                       * 3.5.0    2017-05-24 local         
-##  stats4                      * 3.5.0    2017-05-24 local         
-##  stringi                       1.1.5    2017-04-07 CRAN (R 3.5.0)
-##  stringr                       1.2.0    2017-02-18 CRAN (R 3.5.0)
-##  SummarizedExperiment        * 1.7.10   2017-10-08 Bioconductor  
-##  testthat                    * 1.0.2    2016-04-23 CRAN (R 3.5.0)
-##  tibble                        1.3.4    2017-08-22 CRAN (R 3.5.0)
-##  tools                         3.5.0    2017-05-24 local         
-##  tximeta                     * 0.0.5    <NA>       Bioconductor  
-##  tximport                      1.5.1    2017-10-08 Bioconductor  
-##  utils                       * 3.5.0    2017-05-24 local         
-##  withr                         2.0.0    2017-07-28 CRAN (R 3.5.0)
-##  XML                           3.98-1.9 2017-06-19 CRAN (R 3.5.0)
-##  xml2                          1.1.1    2017-01-24 CRAN (R 3.5.0)
-##  xtable                        1.8-2    2016-02-05 CRAN (R 3.5.0)
-##  XVector                     * 0.17.1   2017-10-08 Bioconductor  
-##  yaml                          2.1.14   2016-11-12 CRAN (R 3.5.0)
-##  zlibbioc                      1.23.0   2017-05-24 Bioconductor
+##  package              * version   date       source         
+##  AnnotationDbi        * 1.42.1    2018-05-08 Bioconductor   
+##  AnnotationFilter     * 1.4.0     2018-05-01 Bioconductor   
+##  assertthat             0.2.0     2017-04-11 CRAN (R 3.5.0) 
+##  backports              1.1.2     2017-12-13 cran (@1.1.2)  
+##  base                 * 3.5.0     2018-04-24 local          
+##  bindr                  0.1.1     2018-03-13 CRAN (R 3.5.0) 
+##  bindrcpp             * 0.2.2     2018-03-29 CRAN (R 3.5.0) 
+##  Biobase              * 2.40.0    2018-05-01 Bioconductor   
+##  BiocFileCache        * 1.4.0     2018-05-01 Bioconductor   
+##  BiocGenerics         * 0.26.0    2018-05-01 Bioconductor   
+##  BiocInstaller        * 1.30.0    2018-05-04 Bioconductor   
+##  BiocParallel         * 1.14.1    2018-05-06 Bioconductor   
+##  biomaRt                2.36.1    2018-05-24 Bioconductor   
+##  Biostrings           * 2.48.0    2018-05-01 Bioconductor   
+##  bit                    1.1-14    2018-05-29 CRAN (R 3.5.0) 
+##  bit64                  0.9-7     2017-05-08 CRAN (R 3.5.0) 
+##  bitops                 1.0-6     2013-08-17 CRAN (R 3.5.0) 
+##  blob                   1.1.1     2018-03-25 CRAN (R 3.5.0) 
+##  cli                    1.0.0     2017-11-05 CRAN (R 3.5.0) 
+##  codetools              0.2-15    2016-10-05 CRAN (R 3.5.0) 
+##  commonmark             1.5       2018-04-28 CRAN (R 3.5.0) 
+##  compiler               3.5.0     2018-04-24 local          
+##  crayon                 1.3.4     2017-09-16 CRAN (R 3.5.0) 
+##  curl                   3.2       2018-03-28 CRAN (R 3.5.0) 
+##  datasets             * 3.5.0     2018-04-24 local          
+##  DBI                    1.0.0     2018-05-02 CRAN (R 3.5.0) 
+##  dbplyr               * 1.2.1     2018-02-19 CRAN (R 3.5.0) 
+##  DelayedArray         * 0.6.1     2018-06-15 Bioconductor   
+##  desc                   1.2.0     2018-05-01 CRAN (R 3.5.0) 
+##  devtools             * 1.13.6    2018-06-27 CRAN (R 3.5.0) 
+##  digest                 0.6.15    2018-01-28 cran (@0.6.15) 
+##  dplyr                  0.7.5     2018-05-19 cran (@0.7.5)  
+##  ensembldb            * 2.4.1     2018-05-07 Bioconductor   
+##  evaluate               0.10.1    2017-06-24 CRAN (R 3.5.0) 
+##  GenomeInfoDb         * 1.16.0    2018-05-01 Bioconductor   
+##  GenomeInfoDbData       1.1.0     2018-01-10 Bioconductor   
+##  GenomicAlignments      1.16.0    2018-05-01 Bioconductor   
+##  GenomicFeatures      * 1.32.0    2018-05-01 Bioconductor   
+##  GenomicRanges        * 1.32.3    2018-05-16 Bioconductor   
+##  glue                   1.2.0     2017-10-29 CRAN (R 3.5.0) 
+##  graphics             * 3.5.0     2018-04-24 local          
+##  grDevices            * 3.5.0     2018-04-24 local          
+##  grid                   3.5.0     2018-04-24 local          
+##  hms                    0.4.2     2018-03-10 CRAN (R 3.5.0) 
+##  htmltools              0.3.6     2017-04-28 CRAN (R 3.5.0) 
+##  httr                   1.3.1     2017-08-20 CRAN (R 3.5.0) 
+##  IRanges              * 2.14.10   2018-05-16 Bioconductor   
+##  jsonlite               1.5       2017-06-01 CRAN (R 3.5.0) 
+##  knitr                  1.20      2018-02-20 CRAN (R 3.5.0) 
+##  lattice                0.20-35   2017-03-25 CRAN (R 3.5.0) 
+##  lazyeval               0.2.1     2017-10-29 CRAN (R 3.5.0) 
+##  magrittr               1.5       2014-11-22 CRAN (R 3.5.0) 
+##  Matrix                 1.2-14    2018-04-13 CRAN (R 3.5.0) 
+##  matrixStats          * 0.53.1    2018-02-11 CRAN (R 3.5.0) 
+##  memoise                1.1.0     2017-04-21 CRAN (R 3.5.0) 
+##  methods              * 3.5.0     2018-04-24 local          
+##  parallel             * 3.5.0     2018-04-24 local          
+##  pillar                 1.2.3     2018-05-25 CRAN (R 3.5.0) 
+##  pkgconfig              2.0.1     2017-03-21 CRAN (R 3.5.0) 
+##  prettyunits            1.0.2     2015-07-13 CRAN (R 3.5.0) 
+##  progress               1.2.0     2018-06-14 CRAN (R 3.5.0) 
+##  ProtGenerics           1.12.0    2018-05-01 Bioconductor   
+##  purrr                  0.2.5     2018-05-29 cran (@0.2.5)  
+##  R6                     2.2.2     2017-06-17 CRAN (R 3.5.0) 
+##  rappdirs               0.3.1     2016-03-28 CRAN (R 3.5.0) 
+##  Rcpp                   0.12.17   2018-05-18 cran (@0.12.17)
+##  RCurl                  1.95-4.10 2018-01-04 CRAN (R 3.5.0) 
+##  readr                  1.1.1     2017-05-16 CRAN (R 3.5.0) 
+##  rlang                  0.2.1     2018-05-30 cran (@0.2.1)  
+##  rmarkdown            * 1.9       2018-03-01 CRAN (R 3.5.0) 
+##  roxygen2               6.0.1     2017-02-06 CRAN (R 3.5.0) 
+##  rprojroot              1.3-2     2018-01-03 cran (@1.3-2)  
+##  Rsamtools              1.32.2    2018-07-03 Bioconductor   
+##  RSQLite                2.1.1     2018-05-06 CRAN (R 3.5.0) 
+##  rtracklayer            1.40.2    2018-05-08 Bioconductor   
+##  S4Vectors            * 0.18.3    2018-06-08 Bioconductor   
+##  stats                * 3.5.0     2018-04-24 local          
+##  stats4               * 3.5.0     2018-04-24 local          
+##  stringi                1.2.3     2018-06-12 CRAN (R 3.5.0) 
+##  stringr                1.3.1     2018-05-10 CRAN (R 3.5.0) 
+##  SummarizedExperiment * 1.10.1    2018-05-11 Bioconductor   
+##  testthat             * 2.0.0     2017-12-13 CRAN (R 3.5.0) 
+##  tibble                 1.4.2     2018-01-22 CRAN (R 3.5.0) 
+##  tidyselect             0.2.4     2018-02-26 CRAN (R 3.5.0) 
+##  tools                  3.5.0     2018-04-24 local          
+##  tximeta              * 0.0.10    <NA>       Bioconductor   
+##  tximport             * 1.8.0     2018-05-01 Bioconductor   
+##  utf8                   1.1.4     2018-05-24 CRAN (R 3.5.0) 
+##  utils                * 3.5.0     2018-04-24 local          
+##  withr                  2.1.2     2018-03-15 CRAN (R 3.5.0) 
+##  XML                    3.98-1.11 2018-04-16 CRAN (R 3.5.0) 
+##  xml2                   1.2.0     2018-01-24 CRAN (R 3.5.0) 
+##  XVector              * 0.20.0    2018-05-01 Bioconductor   
+##  yaml                   2.1.19    2018-05-01 CRAN (R 3.5.0) 
+##  zlibbioc               1.26.0    2018-05-01 Bioconductor
 ```

@@ -10,7 +10,7 @@
 makeDerivedTxome(indexDir, source, organism, version, genome, fasta, gtf,
   write = TRUE)
 
-loadDerivedTxome(jsonfile)
+loadDerivedTxome(jsonFile)
 }
 \arguments{
 \item{indexDir}{the path to the Salmon or Sailfish index}
@@ -30,7 +30,7 @@ loadDerivedTxome(jsonfile)
 \item{write}{should a JSON file be written out
 which documents the transcriptome signature and metadata? (default is TRUE)}
 
-\item{jsonfile}{(for \code{loadDerivedTxome})
+\item{jsonFile}{(for \code{loadDerivedTxome})
 the path to the json file for the derivedTxome}
 }
 \description{

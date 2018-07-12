@@ -11,7 +11,7 @@
 #' @param gtf FTP location for the GTF file (of which the index is a subset)
 #' @param write should a JSON file be written out
 #' which documents the transcriptome signature and metadata? (default is TRUE)
-#' @param jsonfile (for \code{loadDerivedTxome})
+#' @param jsonFile (for \code{loadDerivedTxome})
 #' the path to the json file for the derivedTxome
 #'
 #' @name derivedTxome
@@ -54,8 +54,8 @@ makeDerivedTxome <- function(indexDir, source, organism, version,
 #' @rdname derivedTxome
 #' 
 #' @export
-loadDerivedTxome <- function(jsonfile) {
-  stashDerivedTxome(fromJSON(jsonfile))
+loadDerivedTxome <- function(jsonFile) {
+  stashDerivedTxome(fromJSON(jsonFile))
 }
 
 stashDerivedTxome <- function(dt) {

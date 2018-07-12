@@ -61,7 +61,7 @@ tximeta <- function(coldata, ...) {
   
   stopifnot(all(c("files","names") %in% names(coldata)))
 
-  files <- coldata$files
+  files <- as.character(coldata$files)
   names(files) <- coldata$names
 
   # remove the files column from colData
@@ -109,6 +109,16 @@ tximeta <- function(coldata, ...) {
   message("generating transcript ranges")
   txps <- transcripts(txdb)
   names(txps) <- txps$tx_name
+
+  # TODO temporary hack: Ensembl FASTA has versions, Ensembl GTF it is not in the txname
+  # meanwhile Gencode GTF puts the version in the name
+  if (txomeInfo$source == "Ensembl") {
+    txId <- sub("\\..*", "", rownames(txi$abundance))
+    rownames(txi$abundance) <- txId
+    rownames(txi$counts) <- txId
+    rownames(txi$length) <- txId
+  }
+  
   stopifnot(all(rownames(txi$abundance) %in% names(txps)))
   
   # TODO give a warning here if there are transcripts in TxDb not in Salmon index?

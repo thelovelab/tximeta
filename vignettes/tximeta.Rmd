@@ -19,21 +19,8 @@ abstract: >
 
 [See README](https://github.com/mikelove/tximeta/blob/master/README.md)
 
-# Setup
-
-First, to try out `tximeta` you'll need the example data, which is
-contained in this GitHub repo. Here we download the whole repo as a
-ZIP file.
-
 ```{r echo=FALSE}
 knitr::opts_chunk$set(cache=TRUE)
-```
-
-```{r eval=FALSE}
-library(here)
-dest <- here("extdata","asthma.zip")
-download.file("https://github.com/mikelove/asthma/archive/master.zip", dest, method="wget")
-unzip(dest, exdir=here("extdata"))
 ```
 
 # Analysis starts with sample table
@@ -41,13 +28,19 @@ unzip(dest, exdir=here("extdata"))
 The first step using `tximeta` is to read in the sample table, which
 will become the *column data*, `colData`, of the
 *SummarizedExperiment*. This table should contain all the information
-we need to identify the quant directories. In this case, we will use
-the `run` ID from SRA.
+we need to identify the quant directories. Here we will use the
+*Salmon* quantification files in the *tximportData* package to
+demonstrate the usage of `tximeta`. We do not have a sample table, so
+we construct one in R, but it is recommended to keep a sample table as
+a CSV or TSV file while working on a project.
 
 ```{r}
-library(here)
-library(readr)
-coldata <- read_tsv(here("extdata","coldata.tsv"))
+dir <- system.file("extdata/salmon", package="tximportData")
+ids <- list.files(dir)
+# here gzipped, normally these are not
+files <- file.path(dir, ids, "quant.sf.gz") 
+file.exists(files)
+coldata <- data.frame(files, names=ids, population="TSI", stringsAsFactors=FALSE)
 coldata
 ```
 
@@ -56,23 +49,13 @@ coldata
 1. `files` - a pointer to the `quant.sf` files
 2. `names` - the unique names that should be used to identify samples
 
-We use `coldata$run` to build these two columns:
-
-```{r}
-coldata$files <- here("extdata","asthma-master","data","quants",
-                      coldata$run,"quant.sf.gz")
-coldata$names <- coldata$run
-all(file.exists(coldata$files))
-head(coldata$names)
-```
-
 # Running tximeta from a sample table
 
 (Note: first do a `devtools::load_all()` then the following should work.)
 
 ```{r}
 library(tximeta)
-se <- tximeta(coldata[1:3,])
+se <- tximeta(coldata)
 ```
 
 # What happened? 
@@ -145,10 +128,11 @@ We would like to add support to easily map transcript or gene
 identifiers from one annotation to another. This is just a prototype
 function, but we show how we can easily add alternate IDs given that we
 know the organism and the source of the transcriptome. (This function
-currently only works for Gencode and Ensembl gene or transcript IDs,
-but could be extended to work for arbitrary sources.)
+currently only works for Gencode and Ensembl gene or transcript IDs
+for human, but could be extended to work for arbitrary sources.)
 
 ```{r}
+library(Homo.sapiens)
 gse <- addIds(gse, "SYMBOL")
 mcols(gse)[1:10,]
 ```
@@ -162,18 +146,16 @@ or in *DESeq2*.
 
 ```{r}
 suppressPackageStartupMessages(library(DESeq2))
-gse.int <- gse
-assayNames(gse.int)
-# converting estimated counts to integer
-assay(gse.int) <- round(assay(gse.int))
-mode(assay(gse.int)) <- "integer"
+gse2 <- gse
+assayNames(gse2)
+# rounding counts
+assay(gse2) <- round(assay(gse2))
 # rename the "length" assay to "avgTxLength"
 # DESeq2 will then use this matrix for calculating bias offsets
-assayNames(gse.int)[3] <- "avgTxLength"
-# turn the treatment variable into a factor
-gse.int$treatment <- factor(gse.int$treatment)
-# make a DESeqDataSet
-dds <- DESeqDataSet(gse.int, ~treatment)
+assayNames(gse2)[3] <- "avgTxLength"
+# make a DESeqDataSet, here there is no factor
+# to divide the samples so we use ~1
+dds <- DESeqDataSet(gse2, ~1)
 dds <- estimateSizeFactors(dds)
 # ... and so on
 ```
@@ -201,19 +183,23 @@ The point of `tximeta` is to reduce these kind of simple bioinformatic
 mistakes that can add weeks or months of dead-end results to large
 genomics projects. 
 We can use liftover chains to get us going in the right direction,
-comparing hg38 to hg38.
+comparing hg38 to hg38 (this code chunk un-evaluated).
 
 ```{r eval=FALSE}
 url <- "http://hgdownload.cse.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz"
 file <- "hg19ToHg38.over.chain.gz"
 if (!file.exists(file)) download.file(url, file, method="wget")
-system(paste0("gunzip ",file))
+system(paste("gunzip ",file))
+```
+
+```{r}
+chainfile <- system.file("extdata/hg19ToHg38.over.chain", package="tximeta")
 ```
 
 We move our ChIP-seq data to hg38:
 
 ```{r}
-chip.lift <- liftOverHelper(chip, chainfile="hg19ToHg38.over.chain", to="hg38")
+chip.lift <- liftOverHelper(chip, chainfile=chainfile, to="hg38")
 ```
 
 Now we can find the nearest transcript to a given ChIP-seq peak:
@@ -223,12 +209,12 @@ nearest(chip.lift[1], se)
 assay(se)[nearest(chip.lift[1], se),,drop=FALSE]
 ```
 
-Or we can take a slice of the transcriptome data that is within 1
-megabase of a given ChIP-seq peak:
+Or we can take a slice of the transcriptome data that is within 10 kb
+of a given ChIP-seq peak:
 
 ```{r}
 # which rows of SE in this window?
-which(overlapsAny(se, chip.lift[1] + 1e6))
+which(overlapsAny(se, chip.lift[1] + 1e4))
 ```
 
 Perhaps even more exciting, we can now automate functional annotation of

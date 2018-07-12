@@ -11,31 +11,25 @@ output:
 
 [See README](https://github.com/mikelove/tximeta/blob/master/README.md)
 
-# Setup
-
-First, to try out `tximeta` you'll need the example data, which is
-contained in this GitHub repo. Here we download the whole repo as a
-ZIP file.
-
 ```{r echo=FALSE}
 knitr::opts_chunk$set(cache=TRUE)
-```
-
-```{r eval=FALSE}
-library(here)
-dest <- here("extdata","crohns.zip")
-download.file("https://github.com/mikelove/crohns/archive/master.zip", dest, method="wget")
-unzip(dest, exdir=here("extdata"))
 ```
 
 # Trying to import quants against a derived transcriptome
 
 ```{r}
-library(here)
-file <- here("extdata/crohns-master/data/ensembl/SRR1813877/quant.sf.gz")
-coldata <- data.frame(sample="1", files=file, names="SRR1813877",
+dir <- system.file("extdata/derivedTxome/ERR188297", package="tximportData")
+file <- file.path(dir, "quant.sf.gz")
+file.exists(file)
+coldata <- data.frame(files=file, names="SRR188297", sample="1",
                       stringsAsFactors=FALSE)
-se <- tximeta(coldata[1:3,])
+```
+
+(Note: first do a `devtools::load_all()` then the following should work.)
+
+```{r}
+library(tximeta)
+se <- tximeta(coldata)
 ```
 
 # Documenting derived transcriptome for reproducible analysis
@@ -56,24 +50,23 @@ to publicly available sources
 of these cases.
 
 In the case of the quantification file above, the transcriptome was
-generated locally by downloading the Ensembl cDNA FASTA and GTF for
-Homo sapiens, version 90, and subsetting to the transcripts on the
-"standard" chromsomes: 1-22, X, Y, MT. The following code reproduces
-the production of the transcriptome from publicly available sources:
+generated locally by downloading the Ensembl cDNA FASTA for
+Homo sapiens, version 87, and subsetting to the transcripts on the
+"standard" chromsomes: 1-22, X, Y, MT. The following un-evaluated code
+chunk reproduces the production of the transcriptome from publicly
+available sources.
 
 ```{r eval=FALSE}
-library(ensembldb)
-dbfile <- ensDbFromGtf("Homo_sapiens.GRCh38.90.gtf.gz")
-edb <- EnsDb("Homo_sapiens.GRCh38.90.sqlite")
-# this is similar to Gencode CHR (except gencode has ~150 additional transcripts in the PAR of Y)
-txps <- transcripts(edb, filter=AnnotationFilterList(SeqNameFilter(c(1:22, "X", "Y","MT"))))
 library(Biostrings)
-# this is missing some of the transcripts in the above
-seqs <- readDNAStringSet("Homo_sapiens.GRCh38.cdna.all.fa.gz")
-names(seqs) <- sub("(.*?)\\..*","\\1",names(seqs)) # split at '.'
-common <- intersect(names(txps), names(seqs)) 
-seqs.sub <- seqs[common]
-writeXStringSet(seqs.sub, filepath="Homo_sapiens.GRCh38.cdna.std.chroms.fa")
+# Ensembl version 87
+# ftp://ftp.ensembl.org/pub/release-87/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz
+fa <- readDNAStringSet("Homo_sapiens.GRCh38.cdna.all.fa.gz")
+chrs <- sapply(strsplit(sub(".* chromosome:GRCh38:(.*?) .*","\\1",names(fa)), ":"), `[`, 1)
+chr.levels <- unique(sort(chrs))
+idx <- chrs %in% c(1:22,"MT","X","Y")
+sum(idx)
+fa.sub <- fa[idx]
+writeXStringSet(fa.sub, file="Homo_sapiens.GRCh38.cdna.std.chroms.fa")
 ```
 
 To make this quantification reproducible, we make a
@@ -90,12 +83,14 @@ write out to a file with the same name as the `indexDir`, but with
 a `.json` extension added. This can be prevented with `write=FALSE`.
 
 ```{r}
-indexDir <- "Homo_sapiens.GRCh38.cdna.std.chroms_salmon_0.8.2"
-fastaFTP <- "ftp://ftp.ensembl.org/pub/release-90/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz"
-gtfFTP <- "ftp://ftp.ensembl.org/pub/release-90/gtf/homo_sapiens/Homo_sapiens.GRCh38.90.gtf.gz"
+dir <- system.file("extdata", package="tximeta")
+indexDir <- file.path(dir, "Homo_sapiens.GRCh38.cdna.v87.std.chroms_salmon_0.8.1")
+fastaFTP <- "ftp://ftp.ensembl.org/pub/release-87/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz"
+#gtfFTP <- "ftp://ftp.ensembl.org/pub/release-87/gtf/homo_sapiens/Homo_sapiens.GRCh38.87.gtf.gz"
+gtfFTP <- file.path(dir,"Homo_sapiens.GRCh38.87.gtf.gz")
 makeDerivedTxome(indexDir=indexDir,
                  source="Ensembl", organism="Homo sapiens",
-                 version="90", genome="GRCh38",
+                 version="87", genome="GRCh38",
                  fasta=fastaFTP, gtf=gtfFTP)
 ```
 
@@ -110,7 +105,7 @@ remote GTF has been accessed before, and on future calls, it will
 simply load the stashed metadata (using *BiocFileCache*).
 
 ```{r}
-se <- tximeta(coldata[1:3,])
+se <- tximeta(coldata)
 ```
 
 We can see the appropriate metadata is attached (and here, using the
@@ -145,8 +140,9 @@ the relevant metadata is saved for persistent usage (using
 *BiocFileCache*).
 
 ```{r}
-jsonfile <- "Homo_sapiens.GRCh38.cdna.std.chroms_salmon_0.8.2.json"
-loadDerivedTxome(jsonfile)
+dir <- system.file("extdata", package="tximeta")
+jsonFile <- file.path(dir, "Homo_sapiens.GRCh38.cdna.v87.std.chroms_salmon_0.8.1.json")
+loadDerivedTxome(jsonFile)
 ```
 
 Again, using `tximeta` figures out whether it needs to access the
@@ -154,7 +150,7 @@ remote GTF or not, and assembles the appropriate object on the user's
 behalf. 
 
 ```{r}
-se <- tximeta(coldata[1:3,])
+se <- tximeta(coldata)
 ```
 
 # Clear derivedTxomes (only for demonstration)
