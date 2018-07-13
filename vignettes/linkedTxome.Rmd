@@ -1,5 +1,5 @@
 ---
-title: "tximeta: Working with derived transcriptomes"
+title: "tximeta: Working with linked transcriptomes"
 author: "Michael Love, Rob Patro"
 date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output: 
@@ -15,7 +15,7 @@ output:
 knitr::opts_chunk$set(cache=TRUE)
 ```
 
-# Trying to import quants against a derived transcriptome
+# Trying to import quants against a linked transcriptome
 
 ```{r}
 dir <- system.file("extdata/salmon_dm/SRR1197474", package="tximportData")
@@ -32,7 +32,7 @@ library(tximeta)
 se <- tximeta(coldata)
 ```
 
-# Documenting derived transcriptome for reproducible analysis
+# Documenting linked transcriptome for reproducible analysis
 
 Clearly, for an arbitrary transcriptome used to generate the
 quantification index, which does not directly match any
@@ -40,10 +40,10 @@ transcriptomes from known sources, there is not much that can be
 done to populate the metadata during quantification import. However,
 we can facilitate the following two cases: 
 
-1) the transcriptome was derived locally from one or more publicly
+1) the transcriptome was linked locally from one or more publicly
 available sources
-2) the transcriptome was derived by another group, and they have
-produced and shared a file that links their derived transcriptome
+2) the transcriptome was linked by another group, and they have
+produced and shared a file that links their linked transcriptome
 to publicly available sources
 
 `tximeta` offers functionality to assist reproducible analysis in both
@@ -72,13 +72,13 @@ writeXStringSet(fa.sub, file="Homo_sapiens.GRCh38.cdna.std.chroms.fa")
 ```
 
 To make this quantification reproducible, we make a
-`derivedTxome` which records key information about the
+`linkedTxome` which records key information about the
 source of the transcripts FASTA file, and the location of the
 transcripts relative to a genome (GTF), it also records the signature
-of the derived transcriptome that was computed by *Salmon* during the
+of the linked transcriptome that was computed by *Salmon* during the
 `index` step. 
 
-By default, `derivedTxome` will write out a JSON file
+By default, `linkedTxome` will write out a JSON file
 which can be shared with others, linking the signature of the index
 with the other metadata, including FASTA and GTF sources. It will
 write out to a file with the same name as the `indexDir`, but with
@@ -94,19 +94,19 @@ dir2 <- system.file("extdata/salmon_dm", package="tximportData")
 gtfFTP <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
 tmp <- tempdir()
 jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
-makeDerivedTxome(indexDir=indexDir,
+makeLinkedTxome(indexDir=indexDir,
                  source="Ensembl", organism="Drosophila melanogaster",
                  version="92", genome="BDGP6",
                  fasta=fastaFTP, gtf=gtfFTP,
                  jsonFile=jsonFile)
 ```
 
-After running `makeDerivedTxome`, the connection between this Salmon
+After running `makeLinkedTxome`, the connection between this Salmon
 index (and its signature) with the sources is saved for persistent
 usage (this uses *BiocFileCache* and the specifics of the cache location
 may change as `tximeta` develops).
 
-With use of `tximeta` and a `derivedTxome` -- as with `tximeta` on a
+With use of `tximeta` and a `linkedTxome` -- as with `tximeta` on a
 standard, un-filtered transcriptome -- the software figures out if the
 remote GTF has been accessed before, and on future calls, it will
 simply load the stashed metadata (using *BiocFileCache*).
@@ -123,33 +123,33 @@ rowRanges(se)
 seqinfo(se)
 ```
 
-# Clear derivedTxomes (only for demonstration)
+# Clear linkedTxomes (only for demonstration)
 
 ```{r}
 library(BiocFileCache)
 bfc <- BiocFileCache()
 bfcinfo(bfc)
-bfcremove(bfc, bfcquery(bfc, "derivedTxomeDF")$rid)
+bfcremove(bfc, bfcquery(bfc, "linkedTxomeDF")$rid)
 bfcinfo(bfc)
 ```
 
-# Loading derivedTxome JSON files
+# Loading linkedTxome JSON files
 
 If a collaborator or the Suppmentary Files for a publication 
-shares a `derivedTxome` JSON file, we can likewise use `tximeta`
+shares a `linkedTxome` JSON file, we can likewise use `tximeta`
 to automatically assemble the relevant metadata. This implies that the
-other person has used `tximeta` with the function `makeDerivedTxome`
+other person has used `tximeta` with the function `makeLinkedTxome`
 demonstrated above, pointing to their Salmon index and to the FASTA
 and GTF source.
 
-We simply point to the JSON file and use `loadDerivedTxome` and then
+We simply point to the JSON file and use `loadLinkedTxome` and then
 the relevant metadata is saved for persistent usage (using
 *BiocFileCache*).
 
 ```{r}
 dir <- tempdir()
 jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
-loadDerivedTxome(jsonFile)
+loadLinkedTxome(jsonFile)
 ```
 
 Again, using `tximeta` figures out whether it needs to access the
@@ -160,12 +160,12 @@ behalf.
 se <- tximeta(coldata)
 ```
 
-# Clear derivedTxomes (only for demonstration)
+# Clear linkedTxomes (only for demonstration)
 
 ```{r}
 bfc <- BiocFileCache()
 bfcinfo(bfc)
-bfcremove(bfc, bfcquery(bfc, "derivedTxomeDF")$rid)
+bfcremove(bfc, bfcquery(bfc, "linkedTxomeDF")$rid)
 bfcinfo(bfc)
 ```
 

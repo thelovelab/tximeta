@@ -8,7 +8,7 @@
 #'
 #' \code{tximeta} checks the hash signature of the index against a database
 #' of known transcriptomes (this database under construction) or a locally stored
-#' \code{derivedTxome} (see \code{link{makeDerivedTxome}}), and then will
+#' \code{linkedTxome} (see \code{link{makeLinkedTxome}}), and then will
 #' automatically populate, e.g. the transcript locations, the transcriptome version,
 #' the genome with correct chromosome lengths, etc. It allows for automatic
 #' and correct summarization of transcript-level quantifications to the gene-level
@@ -21,7 +21,7 @@
 #' \code{\link{setTximetaBFC}} and this choice will be saved for future sessions.
 #' Multiple users can point to the same BiocFileCache, such that
 #' transcript databases (TxDb) associated with certain Salmon or Sailfish indices
-#' and \code{derivedTxomes} can be accessed by different users without additional
+#' and \code{linkedTxomes} can be accessed by different users without additional
 #' effort or time spent downloading/building the relevant TxDb.
 #'
 #' In order to allow that multiple users can read and write to the
@@ -37,7 +37,7 @@
 #' 
 #' @return a SummarizedExperiment with metadata on the \code{rowRanges}.
 #' (if the hash signature in the Salmon or Sailfish index does not match
-#' any known transcriptomes, or any locally saved \code{derivedTxome},
+#' any known transcriptomes, or any locally saved \code{linkedTxome},
 #' \code{tximeta} will just return a non-ranged SummarizedExperiment)
 #'
 #' @importFrom SummarizedExperiment SummarizedExperiment assays colData
@@ -48,6 +48,7 @@
 #' @importFrom GenomicFeatures makeTxDbFromGFF transcripts genes
 #' @importFrom ensembldb ensDbFromGtf EnsDb
 #' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfccount bfcrpath
+#' @importFrom tibble tibble
 #' @importFrom GenomeInfoDb Seqinfo genome<- seqinfo<- seqlevels
 #' @importFrom rtracklayer import.chain liftOver
 #' @importFrom rappdirs user_cache_dir
@@ -138,7 +139,7 @@ tximeta <- function(coldata, ...) {
   }
   
   # TODO give a warning here if there are transcripts in TxDb not in Salmon index?
-  # ...hmm, maybe not because that is now a "feature" given derivedTxomes that
+  # ...hmm, maybe not because that is now a "feature" given linkedTxomes that
   # are a simple subset of the transcripts/genes in the source FASTA & GTF
   txps <- txps[rownames(txi$abundance)]
 
@@ -236,16 +237,16 @@ getTxomeInfo <- function(indexSeqHash) {
   }
   bfcloc <- getBFCLoc()
   bfc <- BiocFileCache(bfcloc)
-  q <- bfcquery(bfc, "derivedTxomeDF")
+  q <- bfcquery(bfc, "linkedTxomeTbl")
   stopifnot(bfccount(q) < 2)
   if (bfccount(q) == 1) {
-    loadpath <- bfcrpath(bfc, "derivedTxomeDF")
-    derivedTxomeDF <- readRDS(loadpath)
-    m2 <- match(indexSeqHash, derivedTxomeDF$index_seq_hash)
+    loadpath <- bfcrpath(bfc, "linkedTxomeTbl")
+    linkedTxomeTbl <- readRDS(loadpath)
+    m2 <- match(indexSeqHash, linkedTxomeTbl$index_seq_hash)
     if (!is.na(m2)) {
-      txomeInfo <- as.list(derivedTxomeDF[m2,])
+      txomeInfo <- as.list(linkedTxomeTbl[m2,])
       message(with(txomeInfo,
-                   paste0("found matching derived transcriptome:\n[ ",
+                   paste0("found matching linked transcriptome:\n[ ",
                           source," - ",organism," - version ",version," ]")))    
       return(txomeInfo)
     }

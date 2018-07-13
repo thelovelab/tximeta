@@ -71,9 +71,9 @@ the cache location may change as `tximeta` develops).
 
 We plan to create and maintain a large table of signatures for as many
 sources, organisms, versions of transcriptomes as possible. We are
-also developing support for "derived transcriptomes", where one or
+also developing support for "linked transcriptomes", where one or
 more sources for transcript sequences have been merged or
-filtered. See the `derivedTxome` vignette in this package for a
+filtered. See the `linkedTxome` vignette in this package for a
 demonstration. 
 
 # Examining SummarizedExperiment output
@@ -252,7 +252,7 @@ str(metadata(se)$txdbInfo)
   determine where the FASTA and GTF files will be based on `source` and
   `version` (also here I ignored something like "type", e.g. CHR
   or ALL gene files from Gencode)
-* Some support already for derived transcriptomes, see `derivedTxomes`
+* Some support already for linked transcriptomes, see `linkedTxomes`
   vignette. Need to work more on combining multiple sources
   (potentially meta-transcriptomes from different organisms?), and
   also on how to approach de novo transcriptomes, and how to support

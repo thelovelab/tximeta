@@ -1,6 +1,6 @@
-#' Make and load derived transcriptomes ("derivedTxome")
+#' Make and load linked transcriptomes ("linkedTxome")
 #'
-#' For now, for details please see the vignette \code{inst/script/derived.Rmd}
+#' For now, for details please see the vignette \code{inst/script/linked.Rmd}
 #' 
 #' @param indexDir the path to the Salmon or Sailfish index
 #' @param source the source of transcriptome (e.g. "Gencode" or "Ensembl")
@@ -11,17 +11,17 @@
 #' @param gtf FTP location for the GTF file (of which the index is a subset)
 #' @param write should a JSON file be written out
 #' which documents the transcriptome signature and metadata? (default is TRUE)
-#' @param jsonFile the path to the json file for the derivedTxome
+#' @param jsonFile the path to the json file for the linkedTxome
 #'
-#' @name derivedTxome
-#' @rdname derivedTxome
+#' @name linkedTxome
+#' @rdname linkedTxome
 #' 
 #' @export
-makeDerivedTxome <- function(indexDir, source, organism, version,
+makeLinkedTxome <- function(indexDir, source, organism, version,
                              genome, fasta, gtf, write=TRUE, jsonFile) {
   indexList <- fromJSON(file.path(indexDir,"header.json"))
   indexSeqHash <- indexList$value0$SeqHash
-  # here and in the data frame where we record derivedTxome's,
+  # here and in the data frame where we record linkedTxome's,
   # 'index' is just the basename of the Salmon index
   index <- basename(indexDir)
   # standardize capitalization
@@ -44,46 +44,46 @@ makeDerivedTxome <- function(indexDir, source, organism, version,
     if (missing(jsonFile)) {
       jsonFile <- paste0(indexDir,".json")
     }
-    message(paste("writing derivedTxome to", jsonFile))
+    message(paste("writing linkedTxome to", jsonFile))
     # TODO be more careful about writing to a file (ask)
     write(toJSON(dt, pretty=TRUE), file=jsonFile)
   }
-  stashDerivedTxome(dt)
+  stashLinkedTxome(dt)
 }
 
-#' @name derivedTxome
-#' @rdname derivedTxome
+#' @name linkedTxome
+#' @rdname linkedTxome
 #' 
 #' @export
-loadDerivedTxome <- function(jsonFile) {
-  stashDerivedTxome(do.call(tibble, fromJSON(jsonFile)))
+loadLinkedTxome <- function(jsonFile) {
+  stashLinkedTxome(do.call(tibble, fromJSON(jsonFile)))
 }
 
-stashDerivedTxome <- function(dt) {
+stashLinkedTxome <- function(dt) {
   stopifnot(is(dt, "tbl"))
   bfcloc <- getBFCLoc()
   bfc <- BiocFileCache(bfcloc)
-  q <- bfcquery(bfc, "derivedTxomeDF")
+  q <- bfcquery(bfc, "linkedTxomeTbl")
   if (bfccount(q) == 0) {
-    message("saving derivedTxome in bfc (first time)")
-    savepath <- bfcnew(bfc, "derivedTxomeDF", ext="rds")
-    derivedTxomeDF <- dt
-    saveRDS(derivedTxomeDF, file=savepath)
+    message("saving linkedTxome in bfc (first time)")
+    savepath <- bfcnew(bfc, "linkedTxomeTbl", ext="rds")
+    linkedTxomeTbl <- dt
+    saveRDS(linkedTxomeTbl, file=savepath)
   } else {
-    loadpath <- bfcrpath(bfc, "derivedTxomeDF")
-    derivedTxomeDF <- readRDS(loadpath)
-    if (dt$index %in% derivedTxomeDF$index) {
-      m <- match(dt$index, derivedTxomeDF$index)
+    loadpath <- bfcrpath(bfc, "linkedTxomeTbl")
+    linkedTxomeTbl <- readRDS(loadpath)
+    if (dt$index %in% linkedTxomeTbl$index) {
+      m <- match(dt$index, linkedTxomeTbl$index)
       stopifnot(length(m) == 1)
-      if (all(mapply(all.equal, dt, derivedTxomeDF[m,]))) {
-        message("derivedTxome is same as already in bfc")
+      if (all(mapply(all.equal, dt, linkedTxomeTbl[m,]))) {
+        message("linkedTxome is same as already in bfc")
       } else {
-        message("derivedTxome was different than one in bfc, replacing")
-        derivedTxomeDF[m,] <- dt
+        message("linkedTxome was different than one in bfc, replacing")
+        linkedTxomeTbl[m,] <- dt
       }
     } else {
-      message("saving derivedTxome in bfc")
-      derivedTxomeDF <- rbind(derivedTxomeDF, dt)
+      message("saving linkedTxome in bfc")
+      linkedTxomeTbl <- rbind(linkedTxomeTbl, dt)
     }
   }
   invisible()

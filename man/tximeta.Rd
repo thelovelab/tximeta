@@ -18,7 +18,7 @@ tximeta(coldata, ...)
 \value{
 a SummarizedExperiment with metadata on the \code{rowRanges}.
 (if the hash signature in the Salmon or Sailfish index does not match
-any known transcriptomes, or any locally saved \code{derivedTxome},
+any known transcriptomes, or any locally saved \code{linkedTxome},
 \code{tximeta} will just return a non-ranged SummarizedExperiment)
 }
 \description{
@@ -31,7 +31,7 @@ is in "beta" / under development.
 \details{
 \code{tximeta} checks the hash signature of the index against a database
 of known transcriptomes (this database under construction) or a locally stored
-\code{derivedTxome} (see \code{link{makeDerivedTxome}}), and then will
+\code{linkedTxome} (see \code{link{makeLinkedTxome}}), and then will
 automatically populate, e.g. the transcript locations, the transcriptome version,
 the genome with correct chromosome lengths, etc. It allows for automatic
 and correct summarization of transcript-level quantifications to the gene-level
@@ -44,7 +44,7 @@ directory. At any point, the user can specify a location using
 \code{\link{setTximetaBFC}} and this choice will be saved for future sessions.
 Multiple users can point to the same BiocFileCache, such that
 transcript databases (TxDb) associated with certain Salmon or Sailfish indices
-and \code{derivedTxomes} can be accessed by different users without additional
+and \code{linkedTxomes} can be accessed by different users without additional
 effort or time spent downloading/building the relevant TxDb.
 
 In order to allow that multiple users can read and write to the
