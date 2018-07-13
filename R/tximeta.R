@@ -25,11 +25,8 @@
 #' effort or time spent downloading/building the relevant TxDb.
 #'
 #' In order to allow that multiple users can read and write to the
-#' same location, it is recommended to set the BiocFileCache directory to
-#' have group write permissions (g+w). Unless the location is in the
-#' user's home directory, \code{tximeta} will set the permissions of the
-#' BiocFileCache sqlite file to 664 (user and group: read and write,
-#' other: read).
+#' same location, one should set the BiocFileCache directory to
+#' have group write permissions (g+w).
 #'
 #' @param coldata a data.frame with at least two columns:
 #' \itemize{
@@ -60,10 +57,14 @@
 tximeta <- function(coldata, ...) {
   
   stopifnot(all(c("files","names") %in% names(coldata)))
-
+  
   files <- as.character(coldata$files)
   names(files) <- coldata$names
 
+  if (!all(file.exists(files))) {
+    stop("the files do not exist at the location specified by 'coldata$files'")
+  }
+  
   # remove the files column from colData
   coldataSub <- subset(coldata, select=-files)
 
@@ -118,8 +119,23 @@ tximeta <- function(coldata, ...) {
     rownames(txi$counts) <- txId
     rownames(txi$length) <- txId
   }
-  
-  stopifnot(all(rownames(txi$abundance) %in% names(txps)))
+
+  txi.nms <- rownames(txi$abundance)
+  txps.missing <- !txi.nms %in% names(txps)
+  if (!all(txi.nms %in% names(txps))) {
+    if (all(!txi.nms %in% names(txps))) {
+      stop("none of the transcripts in the quantification files are in the GTF")
+    } else {
+      # TODO what to do here, GTF is missing some txps in FASTA for Ensembl
+      warning(paste("missing some transcripts!
+",sum(txps.missing), "out of", nrow(txi$abundance),
+"are missing from the GTF and dropped from SummarizedExperiment output"))
+      # TODO what about other matrices?
+      for (mat in c("abundance","counts","length")) {
+        txi[[mat]] <- txi[[mat]][!txps.missing,,drop=FALSE]
+      }
+    }
+  }
   
   # TODO give a warning here if there are transcripts in TxDb not in Salmon index?
   # ...hmm, maybe not because that is now a "feature" given derivedTxomes that
@@ -241,20 +257,16 @@ getTxDb <- function(txomeInfo) {
   txdbName <- basename(txomeInfo$gtf)
   bfcloc <- getBFCLoc()
   bfc <- BiocFileCache(bfcloc)
-  # want to enable multiple users to read/write to the tximeta BiocFileCache
-  # this should perhaps only happen when the bfloc is not the user-based location
-  if (bfcloc != user_cache_dir(appname="BiocFileCache")) {
-    bfcSqlite <- file.path(bfcloc, "BiocFileCache.sqlite")
-    if (file.info(bfcSqlite)$mode != "664") {
-      Sys.chmod(paths=bfcSqlite, mode="664", use_umask=FALSE)
-    }
-  }
-  q <- bfcquery(bfc, txdbName)  
+  q <- bfcquery(bfc, txdbName)
   if (bfccount(q) == 0) {
-    savepath <- bfcnew(bfc, txdbName, ext="sqlite") 
+    # TODO what if there are multiple GTF files?
+    stopifnot(length(txomeInfo$gtf) == 1)
+    savepath <- bfcnew(bfc, txdbName, ext="sqlite")
     if (txomeInfo$source == "Ensembl") {
+      # TODO here we pass FTP locations to the EnsDb/TxDb builders
+      # should we instead be using 'fpath' in BiocFileCache?
       message("building EnsDb with 'ensembldb' package")
-      # TODO suppress warnings here or what?
+      # TODO suppress warnings here from GTF construction?
       suppressWarnings(ensDbFromGtf(txomeInfo$gtf, outfile=savepath))
       txdb <- EnsDb(savepath)
     } else {

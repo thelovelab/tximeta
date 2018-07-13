@@ -1,7 +1,7 @@
 ---
 title: "tximeta: Working with derived transcriptomes"
 author: "Michael Love, Rob Patro"
-date: "07/12/2018"
+date: "07/13/2018"
 output: 
   html_document:
     highlight: tango
@@ -17,7 +17,7 @@ output:
 
 
 ```r
-dir <- system.file("extdata/derivedTxome/ERR188297", package="tximportData")
+dir <- system.file("extdata/salmon_dm/SRR1197474", package="tximportData")
 file <- file.path(dir, "quant.sf.gz")
 file.exists(file)
 ```
@@ -27,7 +27,7 @@ file.exists(file)
 ```
 
 ```r
-coldata <- data.frame(files=file, names="SRR188297", sample="1",
+coldata <- data.frame(files=file, names="SRR1197474", sample="1",
                       stringsAsFactors=FALSE)
 ```
 
@@ -76,6 +76,8 @@ Homo sapiens, version 87, and subsetting to the transcripts on the
 chunk reproduces the production of the transcriptome from publicly
 available sources.
 
+TODO fix this to be Drosophila
+
 
 ```r
 library(Biostrings)
@@ -106,18 +108,23 @@ a `.json` extension added. This can be prevented with `write=FALSE`.
 
 ```r
 dir <- system.file("extdata", package="tximeta")
-indexDir <- file.path(dir, "Homo_sapiens.GRCh38.cdna.v87.std.chroms_salmon_0.8.1")
-fastaFTP <- "ftp://ftp.ensembl.org/pub/release-87/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz"
-#gtfFTP <- "ftp://ftp.ensembl.org/pub/release-87/gtf/homo_sapiens/Homo_sapiens.GRCh38.87.gtf.gz"
-gtfFTP <- file.path(dir,"Homo_sapiens.GRCh38.87.gtf.gz")
+indexDir <- file.path(dir, "Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2")
+fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz",
+              "ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.ncrna.fa.gz")
+#gtfFTP <- "ftp://ftp.ensembl.org/pub/release-92/gtf/drosophila_melanogaster/Drosophila_melanogaster.BDGP6.92.gtf.gz"
+dir2 <- system.file("extdata/salmon_dm", package="tximportData")
+gtfFTP <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
+tmp <- tempdir()
+jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
 makeDerivedTxome(indexDir=indexDir,
-                 source="Ensembl", organism="Homo sapiens",
-                 version="87", genome="GRCh38",
-                 fasta=fastaFTP, gtf=gtfFTP)
+                 source="Ensembl", organism="Drosophila melanogaster",
+                 version="92", genome="BDGP6",
+                 fasta=fastaFTP, gtf=gtfFTP,
+                 jsonFile=jsonFile)
 ```
 
 ```
-## writing derivedTxome to /Users/love/proj/tximeta/inst/extdata/Homo_sapiens.GRCh38.cdna.v87.std.chroms_salmon_0.8.1.json
+## writing derivedTxome to /var/folders/kd/xns8y9c51sz668rrjn0bvlqh0000gn/T//RtmpAdlxaV/Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2.json
 ```
 
 ```
@@ -150,9 +157,24 @@ se <- tximeta(coldata)
 ```
 ## 1 
 ## found matching derived transcriptome:
-## [ Ensembl - Homo sapiens - version 87 ]
-## loading existing EnsDb created: 2018-07-12 12:49:51
+## [ Ensembl - Drosophila melanogaster - version 92 ]
+## loading existing EnsDb created: 2018-07-13 12:18:35
 ## generating transcript ranges
+```
+
+```
+## Warning in valid.GenomicRanges.seqinfo(x, suggest.trim = TRUE): GRanges object contains 1 out-of-bound range located on sequence
+##   mitochondrion_genome. Note that ranges located on a sequence whose
+##   length is unknown (NA) or on a circular sequence are not
+##   considered out-of-bound (use seqlengths() and isCircular() to get
+##   the lengths and circularity flags of the underlying sequences).
+##   You can use trim() to trim these ranges. See
+##   ?`trim,GenomicRanges-method` for more information.
+```
+
+```
+## Warning in tximeta(coldata): missing some transcripts!
+##  9 out of 33681 are missing from the GTF and dropped from SummarizedExperiment output
 ```
 
 We can see the appropriate metadata is attached (and here, using the
@@ -164,48 +186,48 @@ rowRanges(se)
 ```
 
 ```
-## GRanges object with 162995 ranges and 6 metadata columns:
-##                   seqnames              ranges strand |           tx_id
-##                      <Rle>           <IRanges>  <Rle> |     <character>
-##   ENST00000448914       14   22449113-22449125      + | ENST00000448914
-##   ENST00000632684        7 142786213-142786224      + | ENST00000632684
-##   ENST00000434970       14   22439007-22439015      + | ENST00000434970
-##   ENST00000415118       14   22438547-22438554      + | ENST00000415118
-##   ENST00000603693       15   21011451-21011469      - | ENST00000603693
-##               ...      ...                 ...    ... .             ...
-##   ENST00000454398        6   33131216-33143325      - | ENST00000454398
-##   ENST00000457676       19   43303171-43304523      - | ENST00000457676
-##   ENST00000457750        3 195614947-195620233      + | ENST00000457750
-##   ENST00000520423        8   43539973-43540927      + | ENST00000520423
-##   ENST00000523715        8   46549089-46550802      + | ENST00000523715
-##                               tx_biotype tx_cds_seq_start tx_cds_seq_end
-##                              <character>        <integer>      <integer>
-##   ENST00000448914              TR_D_gene         22449113       22449125
-##   ENST00000632684              TR_D_gene        142786213      142786224
-##   ENST00000434970              TR_D_gene         22439007       22439015
-##   ENST00000415118              TR_D_gene         22438547       22438554
-##   ENST00000603693              IG_D_gene         21011451       21011469
-##               ...                    ...              ...            ...
-##   ENST00000454398 unprocessed_pseudogene             <NA>           <NA>
-##   ENST00000457676 unprocessed_pseudogene             <NA>           <NA>
-##   ENST00000457750 unprocessed_pseudogene             <NA>           <NA>
-##   ENST00000520423 unprocessed_pseudogene             <NA>           <NA>
-##   ENST00000523715 unprocessed_pseudogene             <NA>           <NA>
-##                           gene_id         tx_name
-##                       <character>     <character>
-##   ENST00000448914 ENSG00000228985 ENST00000448914
-##   ENST00000632684 ENSG00000282431 ENST00000632684
-##   ENST00000434970 ENSG00000237235 ENST00000434970
-##   ENST00000415118 ENSG00000223997 ENST00000415118
-##   ENST00000603693 ENSG00000270451 ENST00000603693
-##               ...             ...             ...
-##   ENST00000454398 ENSG00000237398 ENST00000454398
-##   ENST00000457676 ENSG00000230681 ENST00000457676
-##   ENST00000457750 ENSG00000224769 ENST00000457750
-##   ENST00000520423 ENSG00000253748 ENST00000520423
-##   ENST00000523715 ENSG00000253425 ENST00000523715
+## GRanges object with 33672 ranges and 6 metadata columns:
+##               seqnames            ranges strand |       tx_id
+##                  <Rle>         <IRanges>  <Rle> | <character>
+##   FBtr0075502       3L 15808322-15808883      + | FBtr0075502
+##   FBtr0300738       3R   5783105-5787336      + | FBtr0300738
+##   FBtr0300739       3R   5781762-5787336      + | FBtr0300739
+##   FBtr0300737       3R   5781762-5787336      + | FBtr0300737
+##   FBtr0300736       3R   5783105-5787336      + | FBtr0300736
+##           ...      ...               ...    ... .         ...
+##   FBtr0086850       2R 17701229-17701297      + | FBtr0086850
+##   FBtr0113576       3R   5596201-5596340      - | FBtr0113576
+##   FBtr0076635       3L   8601948-8602031      + | FBtr0076635
+##   FBtr0309760       3L     891250-891475      + | FBtr0309760
+##   FBtr0113549       2L 20419932-20420065      + | FBtr0113549
+##                   tx_biotype tx_cds_seq_start tx_cds_seq_end     gene_id
+##                  <character>        <integer>      <integer> <character>
+##   FBtr0075502 protein_coding         15808418       15808716 FBgn0036531
+##   FBtr0300738 protein_coding          5783217        5787117 FBgn0037375
+##   FBtr0300739 protein_coding          5781900        5787117 FBgn0037375
+##   FBtr0300737 protein_coding          5781900        5787117 FBgn0037375
+##   FBtr0300736 protein_coding          5783217        5787117 FBgn0037375
+##           ...            ...              ...            ...         ...
+##   FBtr0086850         snoRNA             <NA>           <NA> FBgn0063388
+##   FBtr0113576         snoRNA             <NA>           <NA> FBgn0082961
+##   FBtr0076635         snoRNA             <NA>           <NA> FBgn0060291
+##   FBtr0309760         snoRNA             <NA>           <NA> FBgn0263461
+##   FBtr0113549         snoRNA             <NA>           <NA> FBgn0083032
+##                   tx_name
+##               <character>
+##   FBtr0075502 FBtr0075502
+##   FBtr0300738 FBtr0300738
+##   FBtr0300739 FBtr0300739
+##   FBtr0300737 FBtr0300737
+##   FBtr0300736 FBtr0300736
+##           ...         ...
+##   FBtr0086850 FBtr0086850
+##   FBtr0113576 FBtr0113576
+##   FBtr0076635 FBtr0076635
+##   FBtr0309760 FBtr0309760
+##   FBtr0113549 FBtr0113549
 ##   -------
-##   seqinfo: 47 sequences from GRCh38 genome
+##   seqinfo: 25 sequences from BDGP6 genome
 ```
 
 ```r
@@ -213,19 +235,19 @@ seqinfo(se)
 ```
 
 ```
-## Seqinfo object with 47 sequences from GRCh38 genome:
-##   seqnames   seqlengths isCircular genome
-##   1           248956422       <NA> GRCh38
-##   10          133797422       <NA> GRCh38
-##   11          135086622       <NA> GRCh38
-##   12          133275309       <NA> GRCh38
-##   13          114364328       <NA> GRCh38
-##   ...               ...        ...    ...
-##   KI270744.1     168472       <NA> GRCh38
-##   KI270750.1     148850       <NA> GRCh38
-##   MT              16569       <NA> GRCh38
-##   X           156040895       <NA> GRCh38
-##   Y            57227415       <NA> GRCh38
+## Seqinfo object with 25 sequences from BDGP6 genome:
+##   seqnames             seqlengths isCircular genome
+##   211000022278279           12714       <NA>  BDGP6
+##   211000022278436            2815       <NA>  BDGP6
+##   211000022278449            1947       <NA>  BDGP6
+##   211000022278760            1144       <NA>  BDGP6
+##   211000022279165            1118       <NA>  BDGP6
+##   ...                         ...        ...    ...
+##   Unmapped_Scaffold_8       88768       <NA>  BDGP6
+##   X                      23542271       <NA>  BDGP6
+##   Y                       3667352       <NA>  BDGP6
+##   mitochondrion_genome      19517       <NA>  BDGP6
+##   rDNA                      76973       <NA>  BDGP6
 ```
 
 # Clear derivedTxomes (only for demonstration)
@@ -238,12 +260,13 @@ bfcinfo(bfc)
 ```
 
 ```
-## # A tibble: 3 x 10
+## # A tibble: 4 x 10
 ##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
 ## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
 ## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
-## 3 BFC9  deriv… 2018-07-12… 2018-07-12… /User… rela… 67f6…               NA
+## 3 BFC13 Droso… 2018-07-13… 2018-07-13… /User… rela… 2742…               NA
+## 4 BFC17 deriv… 2018-07-13… 2018-07-13… /User… rela… 2742…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -253,11 +276,12 @@ bfcinfo(bfc)
 ```
 
 ```
-## # A tibble: 2 x 10
+## # A tibble: 3 x 10
 ##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
 ## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
 ## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
+## 3 BFC13 Droso… 2018-07-13… 2018-07-13… /User… rela… 2742…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -276,8 +300,8 @@ the relevant metadata is saved for persistent usage (using
 
 
 ```r
-dir <- system.file("extdata", package="tximeta")
-jsonFile <- file.path(dir, "Homo_sapiens.GRCh38.cdna.v87.std.chroms_salmon_0.8.1.json")
+dir <- tempdir()
+jsonFile <- file.path(dir, "Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2.json")
 loadDerivedTxome(jsonFile)
 ```
 
@@ -305,9 +329,24 @@ se <- tximeta(coldata)
 ```
 ## 1 
 ## found matching derived transcriptome:
-## [ Ensembl - Homo sapiens - version 87 ]
-## loading existing EnsDb created: 2018-07-12 12:49:51
+## [ Ensembl - Drosophila melanogaster - version 92 ]
+## loading existing EnsDb created: 2018-07-13 12:18:35
 ## generating transcript ranges
+```
+
+```
+## Warning in valid.GenomicRanges.seqinfo(x, suggest.trim = TRUE): GRanges object contains 1 out-of-bound range located on sequence
+##   mitochondrion_genome. Note that ranges located on a sequence whose
+##   length is unknown (NA) or on a circular sequence are not
+##   considered out-of-bound (use seqlengths() and isCircular() to get
+##   the lengths and circularity flags of the underlying sequences).
+##   You can use trim() to trim these ranges. See
+##   ?`trim,GenomicRanges-method` for more information.
+```
+
+```
+## Warning in tximeta(coldata): missing some transcripts!
+##  9 out of 33681 are missing from the GTF and dropped from SummarizedExperiment output
 ```
 
 # Clear derivedTxomes (only for demonstration)
@@ -319,12 +358,13 @@ bfcinfo(bfc)
 ```
 
 ```
-## # A tibble: 3 x 10
+## # A tibble: 4 x 10
 ##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
 ## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
 ## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
-## 3 BFC10 deriv… 2018-07-12… 2018-07-12… /User… rela… 67f1…               NA
+## 3 BFC13 Droso… 2018-07-13… 2018-07-13… /User… rela… 2742…               NA
+## 4 BFC18 deriv… 2018-07-13… 2018-07-13… /User… rela… 2742…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -334,11 +374,12 @@ bfcinfo(bfc)
 ```
 
 ```
-## # A tibble: 2 x 10
+## # A tibble: 3 x 10
 ##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
 ## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
 ## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
+## 3 BFC13 Droso… 2018-07-13… 2018-07-13… /User… rela… 2742…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -362,7 +403,7 @@ session_info()
 ##  language (EN)                        
 ##  collate  en_US.UTF-8                 
 ##  tz       Europe/Rome                 
-##  date     2018-07-12
+##  date     2018-07-13
 ```
 
 ```
@@ -418,7 +459,7 @@ session_info()
 ##  htmltools              0.3.6     2017-04-28 CRAN (R 3.5.0) 
 ##  httr                   1.3.1     2017-08-20 CRAN (R 3.5.0) 
 ##  IRanges              * 2.14.10   2018-05-16 Bioconductor   
-##  jsonlite               1.5       2017-06-01 CRAN (R 3.5.0) 
+##  jsonlite             * 1.5       2017-06-01 CRAN (R 3.5.0) 
 ##  knitr                  1.20      2018-02-20 CRAN (R 3.5.0) 
 ##  lattice                0.20-35   2017-03-25 CRAN (R 3.5.0) 
 ##  lazyeval               0.2.1     2017-10-29 CRAN (R 3.5.0) 
@@ -445,6 +486,7 @@ session_info()
 ##  rprojroot              1.3-2     2018-01-03 cran (@1.3-2)  
 ##  Rsamtools              1.32.2    2018-07-03 Bioconductor   
 ##  RSQLite                2.1.1     2018-05-06 CRAN (R 3.5.0) 
+##  rstudioapi             0.7       2017-09-07 CRAN (R 3.5.0) 
 ##  rtracklayer            1.40.2    2018-05-08 Bioconductor   
 ##  S4Vectors            * 0.18.3    2018-06-08 Bioconductor   
 ##  stats                * 3.5.0     2018-04-24 local          
@@ -453,10 +495,10 @@ session_info()
 ##  stringr                1.3.1     2018-05-10 CRAN (R 3.5.0) 
 ##  SummarizedExperiment * 1.10.1    2018-05-11 Bioconductor   
 ##  testthat             * 2.0.0     2017-12-13 CRAN (R 3.5.0) 
-##  tibble                 1.4.2     2018-01-22 CRAN (R 3.5.0) 
+##  tibble               * 1.4.2     2018-01-22 CRAN (R 3.5.0) 
 ##  tidyselect             0.2.4     2018-02-26 CRAN (R 3.5.0) 
 ##  tools                  3.5.0     2018-04-24 local          
-##  tximeta              * 0.0.10    <NA>       Bioconductor   
+##  tximeta              * 0.0.11    <NA>       Bioconductor   
 ##  tximport             * 1.8.0     2018-05-01 Bioconductor   
 ##  utf8                   1.1.4     2018-05-24 CRAN (R 3.5.0) 
 ##  utils                * 3.5.0     2018-04-24 local          

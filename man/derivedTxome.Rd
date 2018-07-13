@@ -8,7 +8,7 @@
 \title{Make and load derived transcriptomes ("derivedTxome")}
 \usage{
 makeDerivedTxome(indexDir, source, organism, version, genome, fasta, gtf,
-  write = TRUE)
+  write = TRUE, jsonFile)
 
 loadDerivedTxome(jsonFile)
 }
@@ -30,8 +30,7 @@ loadDerivedTxome(jsonFile)
 \item{write}{should a JSON file be written out
 which documents the transcriptome signature and metadata? (default is TRUE)}
 
-\item{jsonFile}{(for \code{loadDerivedTxome})
-the path to the json file for the derivedTxome}
+\item{jsonFile}{the path to the json file for the derivedTxome}
 }
 \description{
 For now, for details please see the vignette \code{inst/script/derived.Rmd}

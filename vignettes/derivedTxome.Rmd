@@ -18,10 +18,10 @@ knitr::opts_chunk$set(cache=TRUE)
 # Trying to import quants against a derived transcriptome
 
 ```{r}
-dir <- system.file("extdata/derivedTxome/ERR188297", package="tximportData")
+dir <- system.file("extdata/salmon_dm/SRR1197474", package="tximportData")
 file <- file.path(dir, "quant.sf.gz")
 file.exists(file)
-coldata <- data.frame(files=file, names="SRR188297", sample="1",
+coldata <- data.frame(files=file, names="SRR1197474", sample="1",
                       stringsAsFactors=FALSE)
 ```
 
@@ -56,6 +56,8 @@ Homo sapiens, version 87, and subsetting to the transcripts on the
 chunk reproduces the production of the transcriptome from publicly
 available sources.
 
+TODO fix this to be Drosophila
+
 ```{r eval=FALSE}
 library(Biostrings)
 # Ensembl version 87
@@ -84,14 +86,19 @@ a `.json` extension added. This can be prevented with `write=FALSE`.
 
 ```{r}
 dir <- system.file("extdata", package="tximeta")
-indexDir <- file.path(dir, "Homo_sapiens.GRCh38.cdna.v87.std.chroms_salmon_0.8.1")
-fastaFTP <- "ftp://ftp.ensembl.org/pub/release-87/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz"
-#gtfFTP <- "ftp://ftp.ensembl.org/pub/release-87/gtf/homo_sapiens/Homo_sapiens.GRCh38.87.gtf.gz"
-gtfFTP <- file.path(dir,"Homo_sapiens.GRCh38.87.gtf.gz")
+indexDir <- file.path(dir, "Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2")
+fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz",
+              "ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.ncrna.fa.gz")
+#gtfFTP <- "ftp://ftp.ensembl.org/pub/release-92/gtf/drosophila_melanogaster/Drosophila_melanogaster.BDGP6.92.gtf.gz"
+dir2 <- system.file("extdata/salmon_dm", package="tximportData")
+gtfFTP <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
+tmp <- tempdir()
+jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
 makeDerivedTxome(indexDir=indexDir,
-                 source="Ensembl", organism="Homo sapiens",
-                 version="87", genome="GRCh38",
-                 fasta=fastaFTP, gtf=gtfFTP)
+                 source="Ensembl", organism="Drosophila melanogaster",
+                 version="92", genome="BDGP6",
+                 fasta=fastaFTP, gtf=gtfFTP,
+                 jsonFile=jsonFile)
 ```
 
 After running `makeDerivedTxome`, the connection between this Salmon
@@ -140,8 +147,8 @@ the relevant metadata is saved for persistent usage (using
 *BiocFileCache*).
 
 ```{r}
-dir <- system.file("extdata", package="tximeta")
-jsonFile <- file.path(dir, "Homo_sapiens.GRCh38.cdna.v87.std.chroms_salmon_0.8.1.json")
+dir <- tempdir()
+jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
 loadDerivedTxome(jsonFile)
 ```
 

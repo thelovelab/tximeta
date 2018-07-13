@@ -19,6 +19,7 @@ Imports:
     GenomicFeatures,
     ensembldb,
     BiocFileCache,
+    tibble,
     GenomeInfoDb,
     rtracklayer,
     rappdirs,
