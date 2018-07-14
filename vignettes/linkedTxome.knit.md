@@ -1,6 +1,6 @@
 ---
 title: "tximeta: Working with linked transcriptomes"
-author: "Michael Love, Rob Patro"
+author: "Michael Love, Rob Patro, Charlotte Soneson, Peter Hickey"
 date: "07/14/2018"
 output: 
   html_document:
@@ -100,7 +100,9 @@ First we specify the path where the *Salmon* index is located.
 
 **Note**: typically you would not use `system.file` to find this
 directory, but simply define `indexDir` to be the path of the
-*Salmon* directory on your machine.
+*Salmon* directory on your machine. Here we use `system.file` because
+we have included parts of a *Salmon* index directory in the *tximeta*
+package itself for demonstration of functionality in this vignette.
 
 
 ```r
@@ -118,9 +120,11 @@ fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaste
 #gtfFTP <- "ftp://ftp.ensembl.org/pub/release-92/gtf/drosophila_melanogaster/Drosophila_melanogaster.BDGP6.92.gtf.gz"
 ```
 
-Instead of the above location for the GTF file, we specify a location
-within an R package. Again, this use of `system.file` is specific to
-this vignette and would not be used in a typical workflow.
+Instead of the above commented-out FTP location for the GTF file, we
+specify a location within an R package. This step is just to avoid
+downloading from a remote FTP during vignette building. This use of
+`system.file` to point to a file in an R package is specific to this
+vignette and would not be used in a typical workflow.
 
 
 ```r
@@ -150,7 +154,7 @@ makeLinkedTxome(indexDir=indexDir,
 ```
 
 ```
-## writing linkedTxome to /var/folders/kd/xns8y9c51sz668rrjn0bvlqh0000gn/T//RtmpNm1jRE/Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2.json
+## writing linkedTxome to /var/folders/kd/xns8y9c51sz668rrjn0bvlqh0000gn/T//Rtmpj6yQ9O/Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2.json
 ```
 
 ```
@@ -167,7 +171,9 @@ remote GTF has been accessed before, and on future calls, it will
 simply load the pre-computed metadata and transcript ranges.
 
 Note the warning that 9 of the transcripts are missing from the GTF
-file and so are dropped from the final output.
+file and so are dropped from the final output. This is a problem
+coming from the annotation source, and not easily avoided by
+`tximeta`. 
 
 
 ```r
@@ -186,34 +192,12 @@ se <- tximeta(coldata)
 ## 1 
 ## found matching linked transcriptome:
 ## [ Ensembl - Drosophila melanogaster - version 92 ]
-## building EnsDb with 'ensembldb' package
-## Importing GTF file ... OK
-## Processing metadata ... OK
-## Processing genes ... 
-##  Attribute availability:
-##   o gene_id ... OK
-##   o gene_name ... OK
-##   o entrezid ... Nope
-##   o gene_biotype ... OK
-## OK
-## Processing transcripts ... 
-##  Attribute availability:
-##   o transcript_id ... OK
-##   o gene_id ... OK
-##   o transcript_biotype ... OK
-## OK
-## Processing exons ... OK
-## Processing chromosomes ... Fetch seqlengths from ensembl ... OK
-## Generating index ... OK
-##   -------------
-## Verifying validity of the information in the database:
-## Checking transcripts ... OK
-## Checking exons ... OK
+## loading existing EnsDb created: 2018-07-14 14:45:15
 ## generating transcript ranges
 ```
 
 ```
-## Warning in tximeta(coldata): missing some transcripts!
+## Warning in checkTxi2Txps(txi, txps): missing some transcripts!
 ##  9 out of 33681 are missing from the GTF and dropped from SummarizedExperiment output
 ```
 
@@ -290,10 +274,10 @@ seqinfo(se)
 ##   rDNA                      76973       <NA>  BDGP6
 ```
 
-# Clear *linkedTxome*'s (only for demonstration)
+# Clear *linkedTxomes*
 
 The following code removes the table with information about the
-*linkedTxome*'s. This is just for demonstration, so that we can show
+*linkedTxomes*. This is just for demonstration, so that we can show
 how to load a JSON file below. 
 
 
@@ -310,8 +294,8 @@ bfcinfo(bfc)
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
 ## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
 ## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
-## 3 BFC22 linke… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
-## 4 BFC23 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
+## 3 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
+## 4 BFC33 linke… 2018-07-14… 2018-07-14… /User… rela… 36b5…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -326,11 +310,11 @@ bfcinfo(bfc)
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
 ## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
 ## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
-## 3 BFC23 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
+## 3 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
-# Loading linkedTxome JSON files
+# Loading *linkedTxome* JSON files
 
 If a collaborator or the Suppmentary Files for a publication shares a
 `linkedTxome` JSON file, we can likewise use `tximeta` to
@@ -374,16 +358,16 @@ se <- tximeta(coldata)
 ## 1 
 ## found matching linked transcriptome:
 ## [ Ensembl - Drosophila melanogaster - version 92 ]
-## loading existing EnsDb created: 2018-07-14 14:12:39
+## loading existing EnsDb created: 2018-07-14 14:45:15
 ## generating transcript ranges
 ```
 
 ```
-## Warning in tximeta(coldata): missing some transcripts!
+## Warning in checkTxi2Txps(txi, txps): missing some transcripts!
 ##  9 out of 33681 are missing from the GTF and dropped from SummarizedExperiment output
 ```
 
-# Clear *linkedTxome*'s
+# Clear *linkedTxomes*
 
 
 ```r
@@ -398,8 +382,8 @@ bfcinfo(bfc)
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
 ## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
 ## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
-## 3 BFC23 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
-## 4 BFC24 linke… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
+## 3 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
+## 4 BFC34 linke… 2018-07-14… 2018-07-14… /User… rela… 36b5…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -414,7 +398,7 @@ bfcinfo(bfc)
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
 ## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
 ## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
-## 3 BFC23 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
+## 3 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -447,8 +431,8 @@ session_info()
 
 ```
 ##  package              * version   date       source         
-##  AnnotationDbi        * 1.42.1    2018-05-08 Bioconductor   
-##  AnnotationFilter     * 1.4.0     2018-05-01 Bioconductor   
+##  AnnotationDbi          1.42.1    2018-05-08 Bioconductor   
+##  AnnotationFilter       1.4.0     2018-05-01 Bioconductor   
 ##  assertthat             0.2.0     2017-04-11 CRAN (R 3.5.0) 
 ##  backports              1.1.2     2017-12-13 cran (@1.1.2)  
 ##  base                 * 3.5.0     2018-04-24 local          
@@ -478,12 +462,12 @@ session_info()
 ##  devtools             * 1.13.6    2018-06-27 CRAN (R 3.5.0) 
 ##  digest                 0.6.15    2018-01-28 cran (@0.6.15) 
 ##  dplyr                  0.7.5     2018-05-19 cran (@0.7.5)  
-##  ensembldb            * 2.4.1     2018-05-07 Bioconductor   
+##  ensembldb              2.4.1     2018-05-07 Bioconductor   
 ##  evaluate               0.10.1    2017-06-24 CRAN (R 3.5.0) 
 ##  GenomeInfoDb         * 1.16.0    2018-05-01 Bioconductor   
 ##  GenomeInfoDbData       1.1.0     2018-01-10 Bioconductor   
 ##  GenomicAlignments      1.16.0    2018-05-01 Bioconductor   
-##  GenomicFeatures      * 1.32.0    2018-05-01 Bioconductor   
+##  GenomicFeatures        1.32.0    2018-05-01 Bioconductor   
 ##  GenomicRanges        * 1.32.3    2018-05-16 Bioconductor   
 ##  glue                   1.2.0     2017-10-29 CRAN (R 3.5.0) 
 ##  graphics             * 3.5.0     2018-04-24 local          
@@ -531,7 +515,7 @@ session_info()
 ##  tibble                 1.4.2     2018-01-22 CRAN (R 3.5.0) 
 ##  tidyselect             0.2.4     2018-02-26 CRAN (R 3.5.0) 
 ##  tools                  3.5.0     2018-04-24 local          
-##  tximeta              * 0.0.12    <NA>       Bioconductor   
+##  tximeta              * 0.0.14    <NA>       Bioconductor   
 ##  tximport               1.8.0     2018-05-01 Bioconductor   
 ##  utf8                   1.1.4     2018-05-24 CRAN (R 3.5.0) 
 ##  utils                * 3.5.0     2018-04-24 local          

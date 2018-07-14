@@ -1,7 +1,8 @@
 Package: tximeta
-Version: 0.0.13
-Title: Import transcript abundances with automagic population of metadata
-Description: Import transcript abundances with automagic population of metadata.
+Version: 0.0.14
+Title: Transcript Quantification Import with Automatic Metadata
+Description: Transcript quantification import from Salmon with
+    automatic population of transcript metadata and ranges.
 Authors@R: c(
     person("Michael", "Love", email="michaelisaiahlove@gmail.com", role = c("aut","cre")),
     person("Rob", "Patro", role = "aut"),

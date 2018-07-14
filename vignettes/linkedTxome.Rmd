@@ -1,6 +1,6 @@
 ---
 title: "tximeta: Working with linked transcriptomes"
-author: "Michael Love, Rob Patro"
+author: "Michael Love, Rob Patro, Charlotte Soneson, Peter Hickey"
 date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output: 
   html_document:
@@ -80,7 +80,9 @@ First we specify the path where the *Salmon* index is located.
 
 **Note**: typically you would not use `system.file` to find this
 directory, but simply define `indexDir` to be the path of the
-*Salmon* directory on your machine.
+*Salmon* directory on your machine. Here we use `system.file` because
+we have included parts of a *Salmon* index directory in the *tximeta*
+package itself for demonstration of functionality in this vignette.
 
 ```{r}
 dir <- system.file("extdata", package="tximeta")
@@ -96,9 +98,11 @@ fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaste
 #gtfFTP <- "ftp://ftp.ensembl.org/pub/release-92/gtf/drosophila_melanogaster/Drosophila_melanogaster.BDGP6.92.gtf.gz"
 ```
 
-Instead of the above location for the GTF file, we specify a location
-within an R package. Again, this use of `system.file` is specific to
-this vignette and would not be used in a typical workflow.
+Instead of the above commented-out FTP location for the GTF file, we
+specify a location within an R package. This step is just to avoid
+downloading from a remote FTP during vignette building. This use of
+`system.file` to point to a file in an R package is specific to this
+vignette and would not be used in a typical workflow.
 
 ```{r}
 dir2 <- system.file("extdata/salmon_dm", package="tximportData")
@@ -135,7 +139,9 @@ remote GTF has been accessed before, and on future calls, it will
 simply load the pre-computed metadata and transcript ranges.
 
 Note the warning that 9 of the transcripts are missing from the GTF
-file and so are dropped from the final output.
+file and so are dropped from the final output. This is a problem
+coming from the annotation source, and not easily avoided by
+`tximeta`. 
 
 ```{r}
 se <- tximeta(coldata)
@@ -149,10 +155,10 @@ rowRanges(se)
 seqinfo(se)
 ```
 
-# Clear *linkedTxome*'s (only for demonstration)
+# Clear *linkedTxomes*
 
 The following code removes the table with information about the
-*linkedTxome*'s. This is just for demonstration, so that we can show
+*linkedTxomes*. This is just for demonstration, so that we can show
 how to load a JSON file below. 
 
 ```{r}
@@ -164,7 +170,7 @@ bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 bfcinfo(bfc)
 ```
 
-# Loading linkedTxome JSON files
+# Loading *linkedTxome* JSON files
 
 If a collaborator or the Suppmentary Files for a publication shares a
 `linkedTxome` JSON file, we can likewise use `tximeta` to
@@ -190,7 +196,7 @@ behalf.
 se <- tximeta(coldata)
 ```
 
-# Clear *linkedTxome*'s
+# Clear *linkedTxomes*
 
 ```{r}
 bfcloc <- getTximetaBFC()

@@ -1,6 +1,6 @@
 ---
-title: "tximeta: Import transcript quantification with automagic generation of metadata"
-author: "Michael Love, Rob Patro"
+title: "tximeta: transcript quantification import with automatic metadata"
+author: "Michael Love, Rob Patro, Charlotte Soneson, Peter Hickey"
 date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output: 
   html_document:
@@ -85,13 +85,15 @@ se <- tximeta(coldata)
 were quantified against, it accessed the GTF file of the transcriptome
 source, found and attached the transcript ranges, and added the
 appropriate transcriptome and genome metadata.  A remote GTF is only
-downloaded once, and a local or remote GTF is only computed into a
-*TxDb* once: if `tximeta` recognizes that it has seen this index
-before, it will simply use a cached version of the transcript
-metadata and ranges.
+downloaded once, and a local or remote GTF is only parsed to build a
+*TxDb* once: if `tximeta` recognizes that it has seen this *Salmon*
+index before, it will use a cached version of the transcript metadata
+and ranges.
 
-Note the warning that 9 of the transcripts are missing from the GTF
-file and so are dropped from the final output.
+Note the warning above that 9 of the transcripts are missing from the
+GTF file and so are dropped from the final output. This is a problem
+coming from the annotation source, and not easily avoided by
+`tximeta`. 
 
 We plan to create and maintain a large table of signatures for as many
 sources, organisms, versions of transcriptomes as possible. We are
@@ -119,8 +121,7 @@ update to work with these *SummarizedExperiments* instead of simple lists.)
 assayNames(se)
 ```
 
-Thanks to `tximeta` we have automagically imported the correct ranges
-for the transcripts. 
+`tximeta` has imported the correct ranges for the transcripts:
 
 ```{r}
 rowRanges(se)
@@ -158,8 +159,8 @@ but could be extended to work for arbitrary sources.)
 
 ```{r}
 library(org.Dm.eg.db)
-gse <- addIds(gse, "SYMBOL", gene=TRUE)
-mcols(gse)[1:10,]
+gse <- addIds(gse, "REFSEQ", gene=TRUE)
+mcols(gse)
 ```
 
 # Run a differential expression analysis
@@ -178,74 +179,16 @@ assay(gse2) <- round(assay(gse2))
 # rename the "length" assay to "avgTxLength"
 # DESeq2 will then use this matrix for calculating bias offsets
 assayNames(gse2)[3] <- "avgTxLength"
-# make a DESeqDataSet, here there is no factor
-# to divide the samples so we use ~1
+# here there is a single sample so we use ~1
 dds <- DESeqDataSet(gse2, ~1)
 dds <- estimateSizeFactors(dds)
 # ... and so on
 ```
 
-# Find nearest transcripts to a ChIP-seq peak
-
-Suppose we want to find overlap of the expression with binding sites
-of a transcription factor:
-
-```{r}
-library(AnnotationHub)
-ah <- AnnotationHub()
-chip <- query(ah, c("GM12878", "MEF2A", "narrowPeak"))[[1]]
-```
-
-First try, let's find the nearest transcript to a given ChIP-seq peak:
-
-```{r error=TRUE}
-nearest(chip[1], se)
-```
-
-We get an <font color="red"><b>ERROR</b></font>: all chromosomes have
-incompatibile genomes! Good! 
-The point of `tximeta` is to reduce these kind of simple bioinformatic
-mistakes that can add weeks or months of dead-end results to large
-genomics projects. 
-We can use liftover chains to get us going in the right direction,
-comparing hg38 to hg38 (this code chunk un-evaluated).
-
-```{r eval=FALSE}
-url <- "http://hgdownload.cse.ucsc.edu/goldenPath/hg19/liftOver/hg19ToHg38.over.chain.gz"
-file <- "hg19ToHg38.over.chain.gz"
-if (!file.exists(file)) download.file(url, file, method="wget")
-system(paste("gunzip ",file))
-```
-
-```{r}
-chainfile <- system.file("extdata/hg19ToHg38.over.chain", package="tximeta")
-```
-
-We move our ChIP-seq data to hg38:
-
-```{r}
-chip.lift <- liftOverHelper(chip, chainfile=chainfile, to="hg38")
-```
-
-Now we can find the nearest transcript to a given ChIP-seq peak:
-
-```{r}
-nearest(chip.lift[1], se)
-assay(se)[nearest(chip.lift[1], se),,drop=FALSE]
-```
-
-Or we can take a slice of the transcriptome data that is within 10 kb
-of a given ChIP-seq peak:
-
-```{r}
-# which rows of SE in this window?
-which(overlapsAny(se, chip.lift[1] + 1e4))
-```
-
-Perhaps even more exciting, we can now automate functional annotation of
-transcriptome data using Bioconductor's annotation suite.
-
 # Metadata galore
+
+The following information is attached to the *SummarizedExperiment* by
+`tximeta`: 
 
 ```{r}
 names(metadata(se))
@@ -255,13 +198,20 @@ str(metadata(se)$tximetaInfo)
 str(metadata(se)$txdbInfo)
 ```
 
+```{r echo=FALSE}
+# remove the linkedTxome
+bfcloc <- getTximetaBFC()
+bfc <- BiocFileCache(bfcloc)
+bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
+```
+
 # Next steps
 
 ### Basic functionality
 
 * Switching `rowRanges` from transcript ranges to exons-by-transcript
   ranges list, or from gene ranges to exons-by-gene ranges list.
-* As is already supported in the `tximport` release, also import inferential
+* As is already supported in `tximport`, also import inferential
   variance matrices (Gibbs samples or bootstrap samples)
 
 ### Facilitate plots and summaries
