@@ -53,6 +53,7 @@
 #' @importFrom rtracklayer import.chain liftOver
 #' @importFrom rappdirs user_cache_dir
 #' @importFrom utils menu packageVersion read.csv
+#' @importFrom methods is
 #'
 #' @export
 tximeta <- function(coldata, ...) {
@@ -76,7 +77,7 @@ tximeta <- function(coldata, ...) {
   metaInfo <- lapply(files, getMetaInfo)
   indexSeqHash <- metaInfo[[1]]$index_seq_hash # first sample  
   if (length(files) > 1) {
-    hashes <- sapply(metaInfo, function(x) x$index_seq_hash)
+    hashes <- vapply(metaInfo, function(x) x$index_seq_hash)
     if (!all(hashes == indexSeqHash)) {
       stop("the samples do not share the same index, and cannot be imported")
     }
@@ -164,7 +165,7 @@ getMetaInfo <- function(file) {
 reshapeMetaInfo <- function(metaInfo) {
   unionTags <- unique(unlist(lapply(metaInfo, names)))
   out <- lapply(unionTags, function(t) {
-    sapply(seq_along(metaInfo), function(i) {
+    vapply(seq_along(metaInfo), function(i) {
       metaInfo[[i]][[t]]
     })
   })
@@ -224,9 +225,8 @@ getTxomeInfo <- function(indexSeqHash) {
     m <- match(indexSeqHash, linkedTxomeTbl$index_seq_hash)
     if (!is.na(m)) {
       txomeInfo <- as.list(linkedTxomeTbl[m,])
-      message(with(txomeInfo,
-                   paste0("found matching linked transcriptome:\n[ ",
-                          source," - ",organism," - version ",version," ]")))    
+      message(paste0("found matching linked transcriptome:\n[ ",
+                     source," - ",txomeInfo$organism," - version ",txomeInfo$version," ]"))
       return(txomeInfo)
     }
   }
@@ -240,9 +240,8 @@ getTxomeInfo <- function(indexSeqHash) {
   if (!is.na(m)) {
     # now we can go get the GTF to annotate the ranges
     txomeInfo <- as.list(hashtable[m,])
-    message(with(txomeInfo,
-                 paste0("found matching transcriptome:\n[ ",
-                        source," - ",organism," - version ",version," ]")))
+    message(paste0("found matching transcriptome:\n[ ",
+                   source," - ",txomeInfo$organism," - version ",txomeInfo$version," ]"))
     return(txomeInfo)
   }
   
@@ -260,8 +259,6 @@ getTxDb <- function(txomeInfo) {
   if (bfccount(q) == 0) {
     savepath <- bfcnew(bfc, txdbName, ext="sqlite")
     if (txomeInfo$source == "Ensembl") {
-      # TODO here we pass FTP locations to the EnsDb/TxDb builders
-      # should we instead be using 'fpath' in BiocFileCache?
       message("building EnsDb with 'ensembldb' package")
       # TODO suppress warnings here from GTF construction?
       suppressWarnings(ensDbFromGtf(txomeInfo$gtf, outfile=savepath))
@@ -295,7 +292,7 @@ checkTxi2Txps <- function(txi, txps) {
       warning(paste("missing some transcripts!
 ",sum(txps.missing), "out of", nrow(txi$counts),
 "are missing from the GTF and dropped from SummarizedExperiment output"))
-      # TODO what about other matrices?
+      # TODO what about other matrices (inferential variance, etc.)?
       for (mat in c("abundance","counts","length")) {
         txi[[mat]] <- txi[[mat]][!txps.missing,,drop=FALSE]
       }

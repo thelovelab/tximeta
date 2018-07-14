@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 0.0.14
+Version: 0.0.15
 Title: Transcript Quantification Import with Automatic Metadata
 Description: Transcript quantification import from Salmon with
     automatic population of transcript metadata and ranges.
@@ -24,14 +24,14 @@ Imports:
     GenomeInfoDb,
     rtracklayer,
     rappdirs,
-    utils
+    utils,
+    methods
 Suggests:
     knitr,
     rmarkdown,
     testthat,
     tximportData,
-    readr (>= 0.2.2),
-    rhdf5,
     org.Dm.eg.db
-biocViews: RNASeq, Transcription, GeneExpression, DataImport
+biocViews: Annotation, DataImport, Preprocessing,
+    RNASeq, Transcriptomics, Transcription, GeneExpression
 RoxygenNote: 6.0.1

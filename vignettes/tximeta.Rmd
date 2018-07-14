@@ -3,7 +3,7 @@ title: "tximeta: transcript quantification import with automatic metadata"
 author: "Michael Love, Rob Patro, Charlotte Soneson, Peter Hickey"
 date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output: 
-  html_document:
+  rmarkdown::html_document:
     highlight: tango
 abstract: >
   `tximeta` performs numerous annotation and metadata gathering tasks on
@@ -11,6 +11,10 @@ abstract: >
   *Salmon* or *Sailfish* into R/Bioconductor. Transcript ranges and
   metadata are added automatically, facilitating combining multiple
   genomic datasets and helping to prevent bioinformatic errors.
+vignette: |
+  %\VignetteIndexEntry{Transcript quantification import with automatic metadata}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r echo=FALSE}

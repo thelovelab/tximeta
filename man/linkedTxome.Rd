@@ -32,6 +32,9 @@ which documents the transcriptome signature and metadata? (default is TRUE)}
 
 \item{jsonFile}{the path to the json file for the linkedTxome}
 }
+\value{
+nothing, the function is run for its side effects
+}
 \description{
 For now, for details please see the vignette \code{inst/script/linked.Rmd}
 }

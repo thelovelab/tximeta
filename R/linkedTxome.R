@@ -13,6 +13,8 @@
 #' which documents the transcriptome signature and metadata? (default is TRUE)
 #' @param jsonFile the path to the json file for the linkedTxome
 #'
+#' @return nothing, the function is run for its side effects
+#' 
 #' @name linkedTxome
 #' @rdname linkedTxome
 #' 
@@ -31,7 +33,8 @@ makeLinkedTxome <- function(indexDir, source, organism, version,
       source <- src
     }
   }
-  dt <- tibble(index=index,
+  # a single-row tibble for the linkedTxomeTbl
+  lt <- tibble(index=index,
                index_seq_hash=indexSeqHash,
                source=source,
                organism=organism,
@@ -39,16 +42,16 @@ makeLinkedTxome <- function(indexDir, source, organism, version,
                genome=genome,
                fasta=list(fasta),
                gtf=gtf)
-  stopifnot(nrow(dt) == 1)
+  stopifnot(nrow(lt) == 1)
   if (write) {
     if (missing(jsonFile)) {
       jsonFile <- paste0(indexDir,".json")
     }
     message(paste("writing linkedTxome to", jsonFile))
     # TODO be more careful about writing to a file (ask)
-    write(toJSON(dt, pretty=TRUE), file=jsonFile)
+    write(toJSON(lt, pretty=TRUE), file=jsonFile)
   }
-  stashLinkedTxome(dt)
+  stashLinkedTxome(lt)
 }
 
 #' @name linkedTxome
@@ -59,31 +62,32 @@ loadLinkedTxome <- function(jsonFile) {
   stashLinkedTxome(do.call(tibble, fromJSON(jsonFile)))
 }
 
-stashLinkedTxome <- function(dt) {
-  stopifnot(is(dt, "tbl"))
+stashLinkedTxome <- function(lt) {
+  # lt is a single-row tibble for the linkedTxomeTbl
+  stopifnot(is(lt, "tbl"))
   bfcloc <- getBFCLoc()
   bfc <- BiocFileCache(bfcloc)
   q <- bfcquery(bfc, "linkedTxomeTbl")
   if (bfccount(q) == 0) {
     message("saving linkedTxome in bfc (first time)")
     savepath <- bfcnew(bfc, "linkedTxomeTbl", ext="rds")
-    linkedTxomeTbl <- dt
+    linkedTxomeTbl <- lt
     saveRDS(linkedTxomeTbl, file=savepath)
   } else {
     loadpath <- bfcrpath(bfc, "linkedTxomeTbl")
     linkedTxomeTbl <- readRDS(loadpath)
-    if (dt$index %in% linkedTxomeTbl$index) {
-      m <- match(dt$index, linkedTxomeTbl$index)
+    if (lt$index %in% linkedTxomeTbl$index) {
+      m <- match(lt$index, linkedTxomeTbl$index)
       stopifnot(length(m) == 1)
-      if (all(mapply(all.equal, dt, linkedTxomeTbl[m,]))) {
+      if (all(mapply(all.equal, lt, linkedTxomeTbl[m,]))) {
         message("linkedTxome is same as already in bfc")
       } else {
         message("linkedTxome was different than one in bfc, replacing")
-        linkedTxomeTbl[m,] <- dt
+        linkedTxomeTbl[m,] <- lt
       }
     } else {
       message("saving linkedTxome in bfc")
-      linkedTxomeTbl <- rbind(linkedTxomeTbl, dt)
+      linkedTxomeTbl <- rbind(linkedTxomeTbl, lt)
     }
   }
   invisible()

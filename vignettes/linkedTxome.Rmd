@@ -3,8 +3,21 @@ title: "tximeta: Working with linked transcriptomes"
 author: "Michael Love, Rob Patro, Charlotte Soneson, Peter Hickey"
 date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output: 
-  html_document:
+  rmarkdown::html_document:
     highlight: tango
+abstract: >
+  `tximeta` automatically imports relevant metadata when the
+  transcriptome matches a known source, but also facilitates the
+  linking of transcriptomes used as for a *Salmon* index with relevant
+  public sources. The linking is important in the case that the
+  transcript sequence no longer matches a known source (combined or
+  filtered FASTA files), or if the source is not known to
+  `tximeta`. Here we demonstrate how to make a *linkedTxome* and how
+  to share and load a *linkedTxome*.
+vignette: |
+  %\VignetteIndexEntry{Working with linked transcriptomes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r echo=FALSE}
