@@ -8,16 +8,10 @@ output:
 abstract: >
   `tximeta` performs numerous annotation and metadata gathering tasks on
   behalf of users during the import of transcript quantifications from
-  Salmon or Sailfish into R/Bioconductor. The goal is to provide
-  something similar to the experience of `GEOquery`, which downloaded
-  microarray expression data from NCBI GEO and simultaneously brought
-  along associated pieces of metadata. Doing this automatically helps to
-  prevent costly bioinformatic errors. 
+  *Salmon* or *Sailfish* into R/Bioconductor. Transcript ranges and
+  metadata are added automatically, facilitating combining multiple
+  genomic datasets and helping to prevent bioinformatic errors.
 ---
-
-# This package is in beta 
-
-[See README](https://github.com/mikelove/tximeta/blob/master/README.md)
 
 ```{r echo=FALSE}
 knitr::opts_chunk$set(cache=TRUE)
@@ -26,21 +20,21 @@ knitr::opts_chunk$set(cache=TRUE)
 # Analysis starts with sample table
 
 The first step using `tximeta` is to read in the sample table, which
-will become the *column data*, `colData`, of the
-*SummarizedExperiment*. This table should contain all the information
-we need to identify the quant directories. Here we will use the
-*Salmon* quantification files in the *tximportData* package to
-demonstrate the usage of `tximeta`. We do not have a sample table, so
-we construct one in R, but it is recommended to keep a sample table as
-a CSV or TSV file while working on a project.
+will become the *column data*, `colData`, of the final object,
+a *SummarizedExperiment*. The sample table should contain all the
+information we need to identify the *Salmon* quantification
+directories. Here we will use a *Salmon* quantification file in the
+*tximportData* package to demonstrate the usage of `tximeta`. We do
+not have a sample table, so we construct one in R. It is recommended
+to keep a sample table as a CSV or TSV file while working on an
+RNA-seq project with multiple samples.
 
 ```{r}
-dir <- system.file("extdata/salmon", package="tximportData")
-ids <- list.files(dir)
+dir <- system.file("extdata/salmon_dm", package="tximportData")
 # here gzipped, normally these are not
-files <- file.path(dir, ids, "quant.sf.gz") 
+files <- file.path(dir, "SRR1197474_cdna", "quant.sf.gz") 
 file.exists(files)
-coldata <- data.frame(files, names=ids, population="TSI", stringsAsFactors=FALSE)
+coldata <- data.frame(files, names="SRR1197474", condition="A", stringsAsFactors=FALSE)
 coldata
 ```
 
@@ -51,7 +45,34 @@ coldata
 
 # Running tximeta from a sample table
 
-(Note: first do a `devtools::load_all()` then the following should work.)
+Normally, we would just run `tximeta` like so:
+
+```{r eval=FALSE}
+library(tximeta)
+se <- tximeta(coldata)
+```
+
+However, to avoid downloading remote GTF files during this vignette, we
+will point to a GTF file saved locally (in the *tximportData*
+package). We link the transcriptome of the *Salmon* index to its
+locally saved GTF. This following code is therefore not recommended
+for a typically workflow, but is particular to the vignette code.
+
+```{r}
+dir <- system.file("extdata", package="tximeta")
+indexDir <- file.path(dir, "Drosophila_melanogaster.BDGP6.cdna.v92_salmon_0.10.2")
+fastaFTP <- "ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz"
+dir2 <- system.file("extdata/salmon_dm", package="tximportData")
+gtfPath <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
+makeLinkedTxome(indexDir=indexDir,
+                source="Ensembl",
+                organism="Drosophila melanogaster",
+                version="92",
+                genome="BDGP6",
+                fasta=fastaFTP,
+                gtf=gtfPath,
+                write=FALSE)
+```
 
 ```{r}
 library(tximeta)
@@ -60,21 +81,25 @@ se <- tximeta(coldata)
 
 # What happened? 
 
-`tximeta` recognized the signature of the transcriptome
-that the files were quantified against, it accessed the remote GTF
-file of the transcriptome source, found and attached the transcript
-genomic ranges, and added the appropriate transcriptome and genome metadata.
-The remote GTF is only accessed once. If `tximeta` recognizes that it
-has seen this index before, it will simply use a cached version of the
-transcript metadata (this uses *BiocFileCache* and the specifics of
-the cache location may change as `tximeta` develops).
+`tximeta` recognized the signature of the transcriptome that the files
+were quantified against, it accessed the GTF file of the transcriptome
+source, found and attached the transcript ranges, and added the
+appropriate transcriptome and genome metadata.  A remote GTF is only
+downloaded once, and a local or remote GTF is only computed into a
+*TxDb* once: if `tximeta` recognizes that it has seen this index
+before, it will simply use a cached version of the transcript
+metadata and ranges.
+
+Note the warning that 9 of the transcripts are missing from the GTF
+file and so are dropped from the final output.
 
 We plan to create and maintain a large table of signatures for as many
 sources, organisms, versions of transcriptomes as possible. We are
-also developing support for "linked transcriptomes", where one or
-more sources for transcript sequences have been merged or
+also developing support for *linked transcriptomes*, where one or
+more sources for transcript sequences have been combined or
 filtered. See the `linkedTxome` vignette in this package for a
-demonstration. 
+demonstration. (The *makeLinkedTxome* function was used above to avoid
+downloading the GTF during the vignette building process.)
 
 # Examining SummarizedExperiment output
 
@@ -129,11 +154,11 @@ identifiers from one annotation to another. This is just a prototype
 function, but we show how we can easily add alternate IDs given that we
 know the organism and the source of the transcriptome. (This function
 currently only works for Gencode and Ensembl gene or transcript IDs
-for human, but could be extended to work for arbitrary sources.)
+but could be extended to work for arbitrary sources.)
 
 ```{r}
-library(Homo.sapiens)
-gse <- addIds(gse, "SYMBOL")
+library(org.Dm.eg.db)
+gse <- addIds(gse, "SYMBOL", gene=TRUE)
 mcols(gse)[1:10,]
 ```
 

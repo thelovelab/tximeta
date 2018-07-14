@@ -109,39 +109,27 @@ tximeta <- function(coldata, ...) {
   txdb <- getTxDb(txomeInfo)
   
   message("generating transcript ranges")
-  txps <- transcripts(txdb)
+  # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
+  suppressWarnings({
+    txps <- transcripts(txdb)
+  })
   names(txps) <- txps$tx_name
 
   # TODO temporary hack: Ensembl FASTA has versions, Ensembl GTF it is not in the txname
   # meanwhile Gencode GTF puts the version in the name
   if (txomeInfo$source == "Ensembl") {
-    txId <- sub("\\..*", "", rownames(txi$abundance))
+    txId <- sub("\\..*", "", rownames(txi$counts))
     rownames(txi$abundance) <- txId
     rownames(txi$counts) <- txId
     rownames(txi$length) <- txId
   }
 
-  txi.nms <- rownames(txi$abundance)
-  txps.missing <- !txi.nms %in% names(txps)
-  if (!all(txi.nms %in% names(txps))) {
-    if (all(!txi.nms %in% names(txps))) {
-      stop("none of the transcripts in the quantification files are in the GTF")
-    } else {
-      # TODO what to do here, GTF is missing some txps in FASTA for Ensembl
-      warning(paste("missing some transcripts!
-",sum(txps.missing), "out of", nrow(txi$abundance),
-"are missing from the GTF and dropped from SummarizedExperiment output"))
-      # TODO what about other matrices?
-      for (mat in c("abundance","counts","length")) {
-        txi[[mat]] <- txi[[mat]][!txps.missing,,drop=FALSE]
-      }
-    }
-  }
+  txi <- checkTxi2Txps(txi, txps)
   
   # TODO give a warning here if there are transcripts in TxDb not in Salmon index?
   # ...hmm, maybe not because that is now a "feature" given linkedTxomes that
   # are a simple subset of the transcripts/genes in the source FASTA & GTF
-  txps <- txps[rownames(txi$abundance)]
+  txps <- txps[rownames(txi$counts)]
 
   # Ensembl already has nice seqinfo attached, if not:
   if (txomeInfo$source != "Ensembl") {
@@ -156,7 +144,8 @@ tximeta <- function(coldata, ...) {
   names(txdbInfo) <- metadata(txdb)$name
   metadata$txomeInfo <- txomeInfo
   metadata$txdbInfo <- txdbInfo
-  
+
+  # put 'counts' in front to facilitate DESeqDataSet construction
   se <- SummarizedExperiment(assays=txi[c("counts","abundance","length")],
                              rowRanges=txps,
                              colData=coldataSub,
@@ -222,6 +211,27 @@ liftOverHelper <- function(ranges, chainfile, to) {
 
 getTxomeInfo <- function(indexSeqHash) {
   # now start building out metadata based on indexSeqHash
+
+  # first try linkedTxomes
+  bfcloc <- getBFCLoc()
+  bfc <- BiocFileCache(bfcloc)
+  q <- bfcquery(bfc, "linkedTxomeTbl")
+  # there should only be one such entry in the tximeta bfc
+  stopifnot(bfccount(q) < 2)
+  if (bfccount(q) == 1) {
+    loadpath <- bfcrpath(bfc, "linkedTxomeTbl")
+    linkedTxomeTbl <- readRDS(loadpath)
+    m <- match(indexSeqHash, linkedTxomeTbl$index_seq_hash)
+    if (!is.na(m)) {
+      txomeInfo <- as.list(linkedTxomeTbl[m,])
+      message(with(txomeInfo,
+                   paste0("found matching linked transcriptome:\n[ ",
+                          source," - ",organism," - version ",version," ]")))    
+      return(txomeInfo)
+    }
+  }
+
+  # if not in linkedTxomes try the pre-computed hashtable...
   # TODO this is very temporary code obviously
   # best this would be an external data package
   hashfile <- file.path(system.file("extdata",package="tximeta"),"hashtable.csv")
@@ -235,33 +245,19 @@ getTxomeInfo <- function(indexSeqHash) {
                         source," - ",organism," - version ",version," ]")))
     return(txomeInfo)
   }
-  bfcloc <- getBFCLoc()
-  bfc <- BiocFileCache(bfcloc)
-  q <- bfcquery(bfc, "linkedTxomeTbl")
-  stopifnot(bfccount(q) < 2)
-  if (bfccount(q) == 1) {
-    loadpath <- bfcrpath(bfc, "linkedTxomeTbl")
-    linkedTxomeTbl <- readRDS(loadpath)
-    m2 <- match(indexSeqHash, linkedTxomeTbl$index_seq_hash)
-    if (!is.na(m2)) {
-      txomeInfo <- as.list(linkedTxomeTbl[m2,])
-      message(with(txomeInfo,
-                   paste0("found matching linked transcriptome:\n[ ",
-                          source," - ",organism," - version ",version," ]")))    
-      return(txomeInfo)
-    }
-  }
+  
   return(NULL)
 }
 
 getTxDb <- function(txomeInfo) {
+  # TODO what if there are multiple GTF files?
+  stopifnot(length(txomeInfo$gtf) == 1)
+  stopifnot(txomeInfo$gtf != "")
   txdbName <- basename(txomeInfo$gtf)
   bfcloc <- getBFCLoc()
   bfc <- BiocFileCache(bfcloc)
   q <- bfcquery(bfc, txdbName)
   if (bfccount(q) == 0) {
-    # TODO what if there are multiple GTF files?
-    stopifnot(length(txomeInfo$gtf) == 1)
     savepath <- bfcnew(bfc, txdbName, ext="sqlite")
     if (txomeInfo$source == "Ensembl") {
       # TODO here we pass FTP locations to the EnsDb/TxDb builders
@@ -288,3 +284,22 @@ getTxDb <- function(txomeInfo) {
   txdb
 }
 
+checkTxi2Txps <- function(txi, txps) {
+  txi.nms <- rownames(txi$counts)
+  txps.missing <- !txi.nms %in% names(txps)
+  if (!all(txi.nms %in% names(txps))) {
+    if (all(!txi.nms %in% names(txps))) {
+      stop("none of the transcripts in the quantification files are in the GTF")
+    } else {
+      # TODO what to do here, GTF is missing some txps in FASTA for Ensembl
+      warning(paste("missing some transcripts!
+",sum(txps.missing), "out of", nrow(txi$counts),
+"are missing from the GTF and dropped from SummarizedExperiment output"))
+      # TODO what about other matrices?
+      for (mat in c("abundance","counts","length")) {
+        txi[[mat]] <- txi[[mat]][!txps.missing,,drop=FALSE]
+      }
+    }
+  }
+  txi
+}

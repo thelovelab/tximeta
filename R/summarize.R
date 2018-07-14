@@ -22,8 +22,17 @@ summarizeToGene <- function(se) {
     countsFromAbundance="no"
   )
   txi.gene <- tximport::summarizeToGene(txi, tx2gene)
-  g <- genes(txdb)
-  stopifnot(all(rownames(txi.gene$counts) == names(g)))
+
+  # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
+  suppressWarnings({ g <- genes(txdb) })
+
+  # here do the same check/subset but with gene-level txi matrices and gene ranges
+  txi.gene <- checkTxi2Txps(txi.gene, g)
+
+  # TODO give a warning here if there are genes in TxDb not in Salmon index?
+  g <- g[rownames(txi.gene$counts)]
+
+  # put 'counts' in front to facilitate DESeqDataSet construction
   gse <- SummarizedExperiment(assays=txi.gene[c("counts","abundance","length")],
                               rowRanges=g,
                               colData=colData(se),

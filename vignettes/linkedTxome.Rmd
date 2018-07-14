@@ -7,15 +7,15 @@ output:
     highlight: tango
 ---
 
-# This package is in beta 
-
-[See README](https://github.com/mikelove/tximeta/blob/master/README.md)
-
 ```{r echo=FALSE}
 knitr::opts_chunk$set(cache=TRUE)
 ```
 
-# Trying to import quants against a linked transcriptome
+# Trying to import quantification files with an unknown transcriptome
+
+Here we point to *Salmon* quantification files which were quantified
+against a transcriptome combining two Ensembl FASTA files: the cDNA
+and the non-coding transcripts for *Drosophila melanogaster*.
 
 ```{r}
 dir <- system.file("extdata/salmon_dm/SRR1197474", package="tximportData")
@@ -25,147 +25,178 @@ coldata <- data.frame(files=file, names="SRR1197474", sample="1",
                       stringsAsFactors=FALSE)
 ```
 
-(Note: first do a `devtools::load_all()` then the following should work.)
+Trying to import the files gives a message that `tximeta` couldn't find
+a matching transcriptome, so it returns an un-ranged
+*SummarizedExperiment*. 
 
 ```{r}
-library(tximeta)
+suppressPackageStartupMessages(library(tximeta))
 se <- tximeta(coldata)
 ```
 
 # Documenting linked transcriptome for reproducible analysis
 
-Clearly, for an arbitrary transcriptome used to generate the
-quantification index, which does not directly match any
-transcriptomes from known sources, there is not much that can be
-done to populate the metadata during quantification import. However,
-we can facilitate the following two cases: 
+If the transcriptome used to generate the *Salmon* index does not
+match any transcriptomes from known sources (e.g. from combining or filtering
+known transcriptome files), there is not much that can be done to
+automatically populate the metadata during quantification
+import. However, we can facilitate the following two cases: 
 
-1) the transcriptome was linked locally from one or more publicly
-available sources
-2) the transcriptome was linked by another group, and they have
-produced and shared a file that links their linked transcriptome
-to publicly available sources
+1) the transcriptome was created locally and has been linked to its
+public source(s) 
+2) the transcriptome was produced by another group, and
+they have produced and shared a file that links the transcriptome to
+public source(s)
 
 `tximeta` offers functionality to assist reproducible analysis in both
 of these cases.
 
 In the case of the quantification file above, the transcriptome was
-generated locally by downloading the Ensembl cDNA FASTA for
-Homo sapiens, version 87, and subsetting to the transcripts on the
-"standard" chromsomes: 1-22, X, Y, MT. The following un-evaluated code
-chunk reproduces the production of the transcriptome from publicly
-available sources.
+generated locally by downloading and combining the Ensembl cDNA and
+non-coding FASTA files *Drosophila melanogaster*, version 92. The
+following un-evaluated command line code chunk reproduces the
+production of the transcriptome from publicly available sources.
 
-TODO fix this to be Drosophila
-
-```{r eval=FALSE}
-library(Biostrings)
-# Ensembl version 87
-# ftp://ftp.ensembl.org/pub/release-87/fasta/homo_sapiens/cdna/Homo_sapiens.GRCh38.cdna.all.fa.gz
-fa <- readDNAStringSet("Homo_sapiens.GRCh38.cdna.all.fa.gz")
-chrs <- sapply(strsplit(sub(".* chromosome:GRCh38:(.*?) .*","\\1",names(fa)), ":"), `[`, 1)
-chr.levels <- unique(sort(chrs))
-idx <- chrs %in% c(1:22,"MT","X","Y")
-sum(idx)
-fa.sub <- fa[idx]
-writeXStringSet(fa.sub, file="Homo_sapiens.GRCh38.cdna.std.chroms.fa")
+```
+wget ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz 
+wget ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.ncrna.fa.gz
+cat Drosophila_melanogaster.BDGP6.cdna.all.fa.gz Drosophila_melanogaster.BDGP6.ncrna.fa.gz > Drosophila_melanogaster.BDGP6.v92.fa.gz
 ```
 
-To make this quantification reproducible, we make a
-`linkedTxome` which records key information about the
-source of the transcripts FASTA file, and the location of the
-transcripts relative to a genome (GTF), it also records the signature
-of the linked transcriptome that was computed by *Salmon* during the
-`index` step. 
+To make this quantification reproducible, we make a `linkedTxome`
+which records key information about the sources of the transcript
+FASTA files, and the location of the relevant GTF file. It also
+records the signature of the transcriptome that was computed by
+*Salmon* during the `index` step.
 
-By default, `linkedTxome` will write out a JSON file
-which can be shared with others, linking the signature of the index
-with the other metadata, including FASTA and GTF sources. It will
-write out to a file with the same name as the `indexDir`, but with
-a `.json` extension added. This can be prevented with `write=FALSE`.
+By default, `linkedTxome` will write out a JSON file which can be
+shared with others, linking the signature of the index with the other
+metadata, including FASTA and GTF sources. By default, it will write
+out to a file with the same name as the `indexDir`, but with a `.json`
+extension added. This can be prevented with `write=FALSE`, and the
+file location can be changed with `jsonFile`.
+
+First we specify the path where the *Salmon* index is located. 
+
+**Note**: typically you would not use `system.file` to find this
+directory, but simply define `indexDir` to be the path of the
+*Salmon* directory on your machine.
 
 ```{r}
 dir <- system.file("extdata", package="tximeta")
 indexDir <- file.path(dir, "Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2")
+```
+
+Now we provide the location of the FASTA files and the GTF file for
+this transcriptome.
+
+```{r}
 fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz",
               "ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.ncrna.fa.gz")
 #gtfFTP <- "ftp://ftp.ensembl.org/pub/release-92/gtf/drosophila_melanogaster/Drosophila_melanogaster.BDGP6.92.gtf.gz"
+```
+
+Instead of the above location for the GTF file, we specify a location
+within an R package. Again, this use of `system.file` is specific to
+this vignette and would not be used in a typical workflow.
+
+```{r}
 dir2 <- system.file("extdata/salmon_dm", package="tximportData")
-gtfFTP <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
+gtfPath <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
+```
+
+Finally, we create a *linkedTxome*. In this vignette, we point to a
+temporary directory, but a more typical workflow would just write the
+JSON file to the same location as the *Salmon* index by not specifying
+`jsonFile`.
+
+`makeLinkedTxome` performs two operation: (1) it creates a new entry in
+an internal table that links the transcriptome used in the *Salmon*
+index to its sources, and (2) it creates a JSON file such that this
+*linkedTxome* can be shared.
+
+```{r}
 tmp <- tempdir()
 jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
 makeLinkedTxome(indexDir=indexDir,
                  source="Ensembl", organism="Drosophila melanogaster",
                  version="92", genome="BDGP6",
-                 fasta=fastaFTP, gtf=gtfFTP,
+                 fasta=fastaFTP, gtf=gtfPath,
                  jsonFile=jsonFile)
 ```
 
-After running `makeLinkedTxome`, the connection between this Salmon
+After running `makeLinkedTxome`, the connection between this *Salmon*
 index (and its signature) with the sources is saved for persistent
-usage (this uses *BiocFileCache* and the specifics of the cache location
-may change as `tximeta` develops).
+usage.
 
 With use of `tximeta` and a `linkedTxome` -- as with `tximeta` on a
 standard, un-filtered transcriptome -- the software figures out if the
 remote GTF has been accessed before, and on future calls, it will
-simply load the stashed metadata (using *BiocFileCache*).
+simply load the pre-computed metadata and transcript ranges.
+
+Note the warning that 9 of the transcripts are missing from the GTF
+file and so are dropped from the final output.
 
 ```{r}
 se <- tximeta(coldata)
 ```
 
-We can see the appropriate metadata is attached (and here, using the
-Ensembl-style notation of chromosomes, thanks to *ensembldb*).
+We can see that the appropriate metadata and transcript ranges are
+attached.
 
 ```{r}
 rowRanges(se)
 seqinfo(se)
 ```
 
-# Clear linkedTxomes (only for demonstration)
+# Clear *linkedTxome*'s (only for demonstration)
+
+The following code removes the table with information about the
+*linkedTxome*'s. This is just for demonstration, so that we can show
+how to load a JSON file below. 
 
 ```{r}
 library(BiocFileCache)
-bfc <- BiocFileCache()
+bfcloc <- getTximetaBFC()
+bfc <- BiocFileCache(bfcloc)
 bfcinfo(bfc)
-bfcremove(bfc, bfcquery(bfc, "linkedTxomeDF")$rid)
+bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 bfcinfo(bfc)
 ```
 
 # Loading linkedTxome JSON files
 
-If a collaborator or the Suppmentary Files for a publication 
-shares a `linkedTxome` JSON file, we can likewise use `tximeta`
-to automatically assemble the relevant metadata. This implies that the
-other person has used `tximeta` with the function `makeLinkedTxome`
-demonstrated above, pointing to their Salmon index and to the FASTA
-and GTF source.
+If a collaborator or the Suppmentary Files for a publication shares a
+`linkedTxome` JSON file, we can likewise use `tximeta` to
+automatically assemble the relevant metadata and transcript
+ranges. This implies that the other person has used `tximeta` with the
+function `makeLinkedTxome` demonstrated above, pointing to their
+*Salmon* index and to the FASTA and GTF source.
 
-We simply point to the JSON file and use `loadLinkedTxome` and then
-the relevant metadata is saved for persistent usage (using
-*BiocFileCache*).
+We point to the JSON file and use `loadLinkedTxome` and then the
+relevant metadata is saved for persistent usage. In this case, we
+saved the JSON file in a temporary directory.
 
 ```{r}
-dir <- tempdir()
 jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
 loadLinkedTxome(jsonFile)
 ```
 
 Again, using `tximeta` figures out whether it needs to access the
 remote GTF or not, and assembles the appropriate object on the user's
-behalf. 
+behalf.
 
 ```{r}
 se <- tximeta(coldata)
 ```
 
-# Clear linkedTxomes (only for demonstration)
+# Clear *linkedTxome*'s
 
 ```{r}
-bfc <- BiocFileCache()
+bfcloc <- getTximetaBFC()
+bfc <- BiocFileCache(bfcloc)
 bfcinfo(bfc)
-bfcremove(bfc, bfcquery(bfc, "linkedTxomeDF")$rid)
+bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 bfcinfo(bfc)
 ```
 

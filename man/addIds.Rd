@@ -4,12 +4,14 @@
 \alias{addIds}
 \title{Add IDs to rowRanges of a SummarizedExperiment}
 \usage{
-addIds(se, column)
+addIds(se, column, gene = FALSE)
 }
 \arguments{
 \item{se}{the SummarizedExperiment}
 
-\item{column}{the name of the new ID to add (a \code{column} of the OrgDB)}
+\item{column}{the name of the new ID to add (a \code{column} of the org database)}
+
+\item{gene}{logical, whether the rows are genes or transcripts (default is FALSE)}
 }
 \value{
 a SummarizedExperiment

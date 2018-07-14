@@ -4,20 +4,22 @@
 #' with Ensembl gene or transcript IDs.
 #' 
 #' @param se the SummarizedExperiment
-#' @param column the name of the new ID to add (a \code{column} of the OrgDB)
+#' @param column the name of the new ID to add (a \code{column} of the org database)
+#' @param gene logical, whether the rows are genes or transcripts (default is FALSE)
 #'
 #' @return a SummarizedExperiment
 #'
 #' @export
-addIds <- function(se, column) {
+addIds <- function(se, column, gene=FALSE) {
   # here a hack, for now this is just a prototype for ENSEMBL genes or txps
   stopifnot(metadata(se)$txomeInfo$source %in% c("Gencode","Ensembl"))
-  isGene <- substr(rownames(se)[1],1,4) == "ENSG"
-  orgpkg.name <- sub(" ",".",metadata(se)$txomeInfo$organism)
+  orgpkg.name <- paste0("org.",
+                        sub("(.).* (.).*","\\1\\2",metadata(se)$txomeInfo$organism),
+                        ".eg.db")
   stopifnot(requireNamespace(orgpkg.name, quietly=TRUE))
   orgpkg <- get(orgpkg.name)
   message(paste0("mapping to new IDs using '", orgpkg.name, "' data package"))
-  keytype <- if (isGene) "ENSEMBL" else "ENSEMBLTRANS"
+  keytype <- if (gene) "ENSEMBL" else "ENSEMBLTRANS"
   suppressMessages({newIds <- mapIds(orgpkg, sub("\\..*","", rownames(se)),
                                      column, keytype)})
   mcols(se)[[column]] <- newIds

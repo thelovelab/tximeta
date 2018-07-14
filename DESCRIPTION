@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 0.0.12
+Version: 0.0.13
 Title: Import transcript abundances with automagic population of metadata
 Description: Import transcript abundances with automagic population of metadata.
 Authors@R: c(
@@ -30,6 +30,7 @@ Suggests:
     testthat,
     tximportData,
     readr (>= 0.2.2),
-    rhdf5
+    rhdf5,
+    org.Dm.eg.db
 biocViews: RNASeq, Transcription, GeneExpression, DataImport
 RoxygenNote: 6.0.1
