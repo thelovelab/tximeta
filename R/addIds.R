@@ -13,7 +13,11 @@
 #'
 #' example(tximeta)
 #' library(org.Dm.eg.db)
-#' se <- addIds(se, "REFSEQ", gene=FALSE)
+#' # normally:
+#' # se <- addIds(se, "REFSEQ", gene=FALSE)
+#' 
+#' # for speed we just subset to the first 10 rows:
+#' se.sub <- addIds(se[1:10,], "REFSEQ", gene=FALSE)
 #' 
 #' @export
 addIds <- function(se, column, gene=FALSE) {
