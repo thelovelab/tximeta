@@ -24,7 +24,7 @@ vignette: |
 knitr::opts_chunk$set(cache=TRUE)
 ```
 
-# Trying to import quantification files with an unknown transcriptome
+# Quantification files with an unknown transcriptome
 
 Here we point to *Salmon* quantification files which were quantified
 against a transcriptome combining two Ensembl FASTA files: the cDNA
@@ -47,7 +47,7 @@ suppressPackageStartupMessages(library(tximeta))
 se <- tximeta(coldata)
 ```
 
-# Documenting linked transcriptome for reproducible analysis
+# Linked transcriptome for reproducible analysis
 
 If the transcriptome used to generate the *Salmon* index does not
 match any transcriptomes from known sources (e.g. from combining or filtering
@@ -146,10 +146,11 @@ After running `makeLinkedTxome`, the connection between this *Salmon*
 index (and its signature) with the sources is saved for persistent
 usage.
 
-With use of `tximeta` and a `linkedTxome` -- as with `tximeta` on a
-standard, un-filtered transcriptome -- the software figures out if the
-remote GTF has been accessed before, and on future calls, it will
-simply load the pre-computed metadata and transcript ranges.
+With use of `tximeta` and a *linkedTxome* -- as with `tximeta` on a
+known, un-filtered, un-combined transcriptome -- the software
+figures out if the remote GTF has been accessed and compiled into a
+*TxDb* before, and on future calls, it will simply load the
+pre-computed metadata and transcript ranges.
 
 Note the warning that 9 of the transcripts are missing from the GTF
 file and so are dropped from the final output. This is a problem
@@ -193,7 +194,7 @@ If a collaborator or the Suppmentary Files for a publication shares a
 automatically assemble the relevant metadata and transcript
 ranges. This implies that the other person has used `tximeta` with the
 function `makeLinkedTxome` demonstrated above, pointing to their
-*Salmon* index and to the FASTA and GTF source.
+*Salmon* index and to the FASTA and GTF source(s).
 
 We point to the JSON file and use `loadLinkedTxome` and then the
 relevant metadata is saved for persistent usage. In this case, we
