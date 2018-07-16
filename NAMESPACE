@@ -2,7 +2,6 @@
 
 export(addIds)
 export(getTximetaBFC)
-export(liftOverHelper)
 export(loadLinkedTxome)
 export(makeLinkedTxome)
 export(setTximetaBFC)

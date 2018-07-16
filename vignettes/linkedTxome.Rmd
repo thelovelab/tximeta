@@ -122,10 +122,10 @@ dir2 <- system.file("extdata/salmon_dm", package="tximportData")
 gtfPath <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
 ```
 
-Finally, we create a *linkedTxome*. In this vignette, we point to a
-temporary directory, but a more typical workflow would just write the
-JSON file to the same location as the *Salmon* index by not specifying
-`jsonFile`.
+Finally, we create a *linkedTxome*.  In this vignette, we point to a
+temporary directory for the JSON file, but a more typical workflow
+would write the JSON file to the same location as the *Salmon* index
+by not specifying `jsonFile`.
 
 `makeLinkedTxome` performs two operation: (1) it creates a new entry in
 an internal table that links the transcriptome used in the *Salmon*
@@ -173,6 +173,9 @@ seqinfo(se)
 The following code removes the table with information about the
 *linkedTxomes*. This is just for demonstration, so that we can show
 how to load a JSON file below. 
+
+**Note:** Running this code will clear information about any
+*linkedTxomes* on your machine.
 
 ```{r}
 library(BiocFileCache)

@@ -1,9 +1,9 @@
 ---
 title: "tximeta: transcript quantification import with automatic metadata"
 author: "Michael Love, Rob Patro, Charlotte Soneson, Peter Hickey"
-date: "07/14/2018"
+date: "07/16/2018"
 output: 
-  html_document:
+  rmarkdown::html_document:
     highlight: tango
 abstract: >
   `tximeta` performs numerous annotation and metadata gathering tasks on
@@ -11,6 +11,10 @@ abstract: >
   *Salmon* or *Sailfish* into R/Bioconductor. Transcript ranges and
   metadata are added automatically, facilitating combining multiple
   genomic datasets and helping to prevent bioinformatic errors.
+vignette: |
+  %\VignetteIndexEntry{Transcript quantification import with automatic metadata}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 
@@ -69,7 +73,9 @@ se <- tximeta(coldata)
 However, to avoid downloading remote GTF files during this vignette, we
 will point to a GTF file saved locally (in the *tximportData*
 package). We link the transcriptome of the *Salmon* index to its
-locally saved GTF. This following code is therefore not recommended
+locally saved GTF. 
+
+This following code is therefore not recommended
 for a typically workflow, but is particular to the vignette code.
 
 

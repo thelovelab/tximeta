@@ -18,3 +18,9 @@ abundances and effective lengths from transcript-level to gene-level.
 It automatically will access the relevant TxDb (by either finding it
 in the BiocFileCache or by building it from an ftp location).
 }
+\examples{
+
+example(tximeta)
+gse <- summarizeToGene(se)
+
+}

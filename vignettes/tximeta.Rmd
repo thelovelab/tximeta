@@ -59,7 +59,9 @@ se <- tximeta(coldata)
 However, to avoid downloading remote GTF files during this vignette, we
 will point to a GTF file saved locally (in the *tximportData*
 package). We link the transcriptome of the *Salmon* index to its
-locally saved GTF. This following code is therefore not recommended
+locally saved GTF. 
+
+This following code is therefore not recommended
 for a typically workflow, but is particular to the vignette code.
 
 ```{r}

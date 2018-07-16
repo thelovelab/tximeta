@@ -5,10 +5,23 @@
 #' Running \code{setTximetaBFC} will ask the user to specify a
 #' BiocFileCache directory for accessing and saving TxDb sqlite files.
 #'
+#' @param dir the location for tximeta's BiocFileCache. can be missing
+#' in which case the function will call \code{file.choose} for choosing
+#' location interactively
+#' 
 #' @return the directory of the BiocFileCache used by tximeta
 #' (or nothing, in the case of \code{setTximetaBFC})
 #'
 #' @rdname getTximetaBFC
+#'
+#' @examples
+#'
+#' # getting the BiocFileCache used by tximeta
+#' # (may not be set, which uses BiocFileCache default or temp directory)
+#' getTximetaBFC()
+#'
+#' # don't want to actually change user settings so this is not run:
+#' # setTximetaBFC()
 #' 
 #' @export
 getTximetaBFC <- function() {
@@ -24,9 +37,13 @@ getTximetaBFC <- function() {
 #' @rdname getTximetaBFC
 #' 
 #' @export
-setTximetaBFC <- function() {
-  message("Which BiocFileCache directory should tximeta use? (press Enter to cancel)")
-  bfcloc <- file.choose()  
+setTximetaBFC <- function(dir) {
+  if (missing(dir)) {
+    message("Which BiocFileCache directory should tximeta use? (press Enter to cancel)")
+    bfcloc <- file.choose()
+  } else {
+    bfcloc <- dir
+  }
   bfclocFile <- bfclocFile()
   writeBFCLocFile(bfcloc)
   message("For group use, set the permissions of this directory to allow group write (g+w)")
@@ -35,6 +52,9 @@ setTximetaBFC <- function() {
 
 # not exported:
 
+# functions to read or edit the BiocFileCache location for tximeta (bfcloc)
+# this information is stored in the 'tximeta' default user_cache_dir
+# under a file 'bfcloc.json'
 bfclocFile <- function() {
   tximetaDir <- user_cache_dir("tximeta")
   file.path(tximetaDir, "bfcloc.json")
@@ -52,7 +72,8 @@ readBFCLocFile <- function(bfclocFile) {
 }
 
 # an internal function for getting the BFC location
-# (above functions are user-facing for getting/setting)
+# the logic here depends on whether a location has been set before,
+# and whether tximport is being run interactively or not
 getBFCLoc <- function() {
   defaultDir <- user_cache_dir(appname="BiocFileCache")
 

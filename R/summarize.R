@@ -9,8 +9,16 @@
 #'
 #' @return a SummarizedExperiment with summarized quantifications
 #'
+#' @examples
+#'
+#' example(tximeta)
+#' gse <- summarizeToGene(se)
+#' 
 #' @export
 summarizeToGene <- function(se) {
+
+  # TODO make `summarizeToGene` a generic in tximport
+
   txdb <- getTxDb(metadata(se)$txomeInfo)
   message("obtaining transcript-to-gene mapping from TxDb")
   # TODO fix this next line of code for EnsDb

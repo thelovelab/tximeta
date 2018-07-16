@@ -51,3 +51,31 @@ In order to allow that multiple users can read and write to the
 same location, one should set the BiocFileCache directory to
 have group write permissions (g+w).
 }
+\examples{
+
+# point to a Salmon quantification file:
+dir <- system.file("extdata/salmon_dm", package="tximportData")
+files <- file.path(dir, "SRR1197474_cdna", "quant.sf.gz") 
+coldata <- data.frame(files, names="SRR1197474", condition="A", stringsAsFactors=FALSE)
+
+# normally we would just run the following which would download the appropriate metadata
+# se <- tximeta(coldata)
+
+# for this example, we instead point to a local path where the GTF can be found
+# by making a linkedTxome:
+dir <- system.file("extdata", package="tximeta")
+indexDir <- file.path(dir, "Drosophila_melanogaster.BDGP6.cdna.v92_salmon_0.10.2")
+fastaFTP <- "ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz"
+dir2 <- system.file("extdata/salmon_dm", package="tximportData")
+gtfPath <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
+makeLinkedTxome(indexDir=indexDir, source="Ensembl", organism="Drosophila melanogaster",
+                version="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
+se <- tximeta(coldata)
+
+# to clear the entire linkedTxome table
+# (don't run unless you want to clear this table!)
+# bfcloc <- getTximetaBFC()
+# bfc <- BiocFileCache(bfcloc)
+# bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
+
+}

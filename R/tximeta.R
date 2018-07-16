@@ -40,6 +40,33 @@
 #' any known transcriptomes, or any locally saved \code{linkedTxome},
 #' \code{tximeta} will just return a non-ranged SummarizedExperiment)
 #'
+#' @examples
+#'
+#' # point to a Salmon quantification file:
+#' dir <- system.file("extdata/salmon_dm", package="tximportData")
+#' files <- file.path(dir, "SRR1197474_cdna", "quant.sf.gz") 
+#' coldata <- data.frame(files, names="SRR1197474", condition="A", stringsAsFactors=FALSE)
+#'
+#' # normally we would just run the following which would download the appropriate metadata
+#' # se <- tximeta(coldata)
+#'
+#' # for this example, we instead point to a local path where the GTF can be found
+#' # by making a linkedTxome:
+#' dir <- system.file("extdata", package="tximeta")
+#' indexDir <- file.path(dir, "Drosophila_melanogaster.BDGP6.cdna.v92_salmon_0.10.2")
+#' fastaFTP <- "ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz"
+#' dir2 <- system.file("extdata/salmon_dm", package="tximportData")
+#' gtfPath <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
+#' makeLinkedTxome(indexDir=indexDir, source="Ensembl", organism="Drosophila melanogaster",
+#'                 version="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
+#' se <- tximeta(coldata)
+#'
+#' # to clear the entire linkedTxome table
+#' # (don't run unless you want to clear this table!)
+#' # bfcloc <- getTximetaBFC()
+#' # bfc <- BiocFileCache(bfcloc)
+#' # bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
+#'
 #' @importFrom SummarizedExperiment SummarizedExperiment assays colData
 #' @importFrom S4Vectors metadata mcols mcols<-
 #' @importFrom tximport tximport summarizeToGene
@@ -155,6 +182,7 @@ tximeta <- function(coldata, ...) {
   
 }
 
+# read metadata files from Salmon directory
 getMetaInfo <- function(file) {
   dir <- dirname(file)
   jsonPath <- file.path(dir,"aux_info","meta_info.json")
@@ -162,10 +190,11 @@ getMetaInfo <- function(file) {
   fromJSON(jsonPath)
 }
 
+# reshape metadata info from Salmon
 reshapeMetaInfo <- function(metaInfo) {
   unionTags <- unique(unlist(lapply(metaInfo, names)))
   out <- lapply(unionTags, function(t) {
-    vapply(seq_along(metaInfo), function(i) {
+    sapply(seq_along(metaInfo), function(i) {
       metaInfo[[i]][[t]]
     })
   })
@@ -180,7 +209,9 @@ reshapeMetaInfo <- function(metaInfo) {
   out
 }
 
-# TODO obviously this will go
+# temporary function to map from GRCh38 to hg38 to allow easy
+# comparison with UCSC objects from AnnotationHub...
+# TODO obviously this will have to go/be rethought
 genome2UCSC <- function(x) {
   if (x == "GRCh38") {
     "hg38"
@@ -189,31 +220,10 @@ genome2UCSC <- function(x) {
   }
 }
 
-#' Slightly less ugly liftOver functionality
-#'
-#' This includes the unlist and genome assignment
-#' that needs to happen after liftOver
-#'
-#' @param ranges the incoming GRanges
-#' @param chainfile a character vector pointing to a liftover chain file
-#' @param to the name of the new genome
-#'
-#' @return a lifted GRanges
-#'
-#' @importFrom rtracklayer liftOver
-#' 
-#' @export
-liftOverHelper <- function(ranges, chainfile, to) {
-  chain <- import.chain(chainfile)
-  out <- unlist(liftOver(ranges, chain))
-  genome(out) <- to
-  out
-}
-
+# build out metadata based on indexSeqHash
 getTxomeInfo <- function(indexSeqHash) {
-  # now start building out metadata based on indexSeqHash
 
-  # first try linkedTxomes
+  # first try to find any linkedTxomes in the linkedTxomeTbl
   bfcloc <- getBFCLoc()
   bfc <- BiocFileCache(bfcloc)
   q <- bfcquery(bfc, "linkedTxomeTbl")
@@ -226,7 +236,7 @@ getTxomeInfo <- function(indexSeqHash) {
     if (!is.na(m)) {
       txomeInfo <- as.list(linkedTxomeTbl[m,])
       message(paste0("found matching linked transcriptome:\n[ ",
-                     source," - ",txomeInfo$organism," - version ",txomeInfo$version," ]"))
+                     txomeInfo$source," - ",txomeInfo$organism," - version ",txomeInfo$version," ]"))
       return(txomeInfo)
     }
   }
@@ -241,13 +251,14 @@ getTxomeInfo <- function(indexSeqHash) {
     # now we can go get the GTF to annotate the ranges
     txomeInfo <- as.list(hashtable[m,])
     message(paste0("found matching transcriptome:\n[ ",
-                   source," - ",txomeInfo$organism," - version ",txomeInfo$version," ]"))
+                   txomeInfo$source," - ",txomeInfo$organism," - version ",txomeInfo$version," ]"))
     return(txomeInfo)
   }
   
   return(NULL)
 }
 
+# build or load a TxDb for the dataset
 getTxDb <- function(txomeInfo) {
   # TODO what if there are multiple GTF files?
   stopifnot(length(txomeInfo$gtf) == 1)
@@ -281,6 +292,9 @@ getTxDb <- function(txomeInfo) {
   txdb
 }
 
+# check to see if there are any missing transcripts not available
+# for the rows of the tximport matrices. if so, give warning and subset
+# (or error if all are missing)
 checkTxi2Txps <- function(txi, txps) {
   txi.nms <- rownames(txi$counts)
   txps.missing <- !txi.nms %in% names(txps)
