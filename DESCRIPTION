@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 0.0.18
+Version: 0.0.19
 Title: Transcript Quantification Import with Automatic Metadata
 Description: Transcript quantification import from Salmon with
     automatic population of metadata and transcript ranges.

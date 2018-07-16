@@ -20,10 +20,6 @@ vignette: |
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r echo=FALSE}
-knitr::opts_chunk$set(cache=TRUE)
-```
-
 # Quantification files with an unknown transcriptome
 
 Here we point to *Salmon* quantification files which were quantified

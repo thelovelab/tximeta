@@ -17,10 +17,6 @@ vignette: |
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r echo=FALSE}
-knitr::opts_chunk$set(cache=TRUE)
-```
-
 # Analysis starts with sample table
 
 The first step using `tximeta` is to read in the sample table, which
