@@ -176,7 +176,11 @@ how to load a JSON file below.
 
 ```{r}
 library(BiocFileCache)
-bfcloc <- getTximetaBFC()
+if (interactive()) {
+  bfcloc <- getTximetaBFC()
+} else {
+  bfcloc <- tempdir()
+}
 bfc <- BiocFileCache(bfcloc)
 bfcinfo(bfc)
 bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
@@ -212,7 +216,11 @@ se <- tximeta(coldata)
 # Clear *linkedTxomes*
 
 ```{r}
-bfcloc <- getTximetaBFC()
+if (interactive()) {
+  bfcloc <- getTximetaBFC()
+} else {
+  bfcloc <- tempdir()
+}
 bfc <- BiocFileCache(bfcloc)
 bfcinfo(bfc)
 bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
