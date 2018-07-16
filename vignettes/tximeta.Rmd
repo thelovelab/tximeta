@@ -201,8 +201,13 @@ str(metadata(se)$txdbInfo)
 ```
 
 ```{r echo=FALSE}
-# remove the linkedTxome
-bfcloc <- getTximetaBFC()
+# remove the linkedTxome information table made above.
+# careful: only run if you really want to remove the linkedTxomeTbl!
+if (interactive()) {
+  bfcloc <- getTximetaBFC()
+} else {
+  bfcloc <- tempdir()
+}
 bfc <- BiocFileCache(bfcloc)
 bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 ```
