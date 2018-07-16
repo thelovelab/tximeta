@@ -1,7 +1,5 @@
 ## tximeta: Transcript quantification import with rich metadata
 
-![](https://travis-ci.org/mikelove/tximeta.svg?branch=master)
-
 # Idea in diagrams
 
 Current versions of Salmon and Sailfish propogate a *signature* of the
