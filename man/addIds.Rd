@@ -24,6 +24,6 @@ with Ensembl gene or transcript IDs.
 
 example(tximeta)
 library(org.Dm.eg.db)
-gse <- addIds(gse, "REFSEQ", gene=FALSE)
+se <- addIds(se, "REFSEQ", gene=FALSE)
 
 }

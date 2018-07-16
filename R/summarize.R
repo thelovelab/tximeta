@@ -12,7 +12,7 @@
 #' @examples
 #'
 #' example(tximeta)
-#' se <- summarizeToGene(se)
+#' gse <- summarizeToGene(se)
 #' 
 #' @export
 summarizeToGene <- function(se) {
