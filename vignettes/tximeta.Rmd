@@ -8,8 +8,8 @@ output:
 abstract: >
   `tximeta` performs numerous annotation and metadata gathering tasks on
   behalf of users during the import of transcript quantifications from
-  *Salmon* or *Sailfish* into R/Bioconductor. Transcript ranges and
-  metadata are added automatically, facilitating combining multiple
+  *Salmon* or *Sailfish* into R/Bioconductor. Metadata and transcript
+  ranges are added automatically, facilitating combining multiple
   genomic datasets and helping to prevent bioinformatic errors.
 vignette: |
   %\VignetteIndexEntry{Transcript quantification import with automatic metadata}
@@ -93,8 +93,8 @@ source, found and attached the transcript ranges, and added the
 appropriate transcriptome and genome metadata.  A remote GTF is only
 downloaded once, and a local or remote GTF is only parsed to build a
 *TxDb* once: if `tximeta` recognizes that it has seen this *Salmon*
-index before, it will use a cached version of the transcript metadata
-and ranges.
+index before, it will use a cached version of the metadata and
+transcript ranges. 
 
 Note the warning above that 9 of the transcripts are missing from the
 GTF file and so are dropped from the final output. This is a problem

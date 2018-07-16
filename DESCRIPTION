@@ -1,8 +1,11 @@
 Package: tximeta
-Version: 0.0.17
+Version: 0.0.18
 Title: Transcript Quantification Import with Automatic Metadata
 Description: Transcript quantification import from Salmon with
-    automatic population of transcript metadata and ranges.
+    automatic population of metadata and transcript ranges.
+    Filtered, combined, or de novo transcriptomes can be linked
+    to the appropriate sources with linkedTxomes and shared for
+    reproducible analyses.
 Authors@R: c(
     person("Michael", "Love", email="michaelisaiahlove@gmail.com", role = c("aut","cre")),
     person("Rob", "Patro", role = "aut"),
