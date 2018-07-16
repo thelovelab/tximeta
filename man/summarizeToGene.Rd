@@ -21,6 +21,6 @@ in the BiocFileCache or by building it from an ftp location).
 \examples{
 
 example(tximeta)
-gse <- summarizeToGene(se)
+se <- summarizeToGene(se)
 
 }
