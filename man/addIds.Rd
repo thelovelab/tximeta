@@ -20,14 +20,3 @@ a SummarizedExperiment
 For now this just works with SummarizedExperiments
 with Ensembl gene or transcript IDs.
 }
-\examples{
-
-example(tximeta)
-library(org.Dm.eg.db)
-# normally:
-# se <- addIds(se, "REFSEQ", gene=FALSE)
-
-# for speed we just subset to the first 10 rows:
-se.sub <- addIds(se[1:10,], "REFSEQ", gene=FALSE)
-
-}

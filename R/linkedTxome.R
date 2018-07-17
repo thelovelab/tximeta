@@ -124,6 +124,7 @@ stashLinkedTxome <- function(lt) {
       message("saving linkedTxome in bfc")
       linkedTxomeTbl <- rbind(linkedTxomeTbl, lt)
     }
+    saveRDS(linkedTxomeTbl, file=loadpath)
   }
   invisible()
 }
