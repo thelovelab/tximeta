@@ -18,5 +18,6 @@ a SummarizedExperiment
 }
 \description{
 For now this just works with SummarizedExperiments
-with Ensembl gene or transcript IDs.
+with Ensembl gene or transcript IDs. See example
+of usage in tximeta vignette.
 }

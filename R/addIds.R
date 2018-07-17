@@ -1,7 +1,8 @@
 #' Add IDs to rowRanges of a SummarizedExperiment
 #'
 #' For now this just works with SummarizedExperiments
-#' with Ensembl gene or transcript IDs.
+#' with Ensembl gene or transcript IDs. See example
+#' of usage in tximeta vignette.
 #' 
 #' @param se the SummarizedExperiment
 #' @param column the name of the new ID to add (a \code{column} of the org database)

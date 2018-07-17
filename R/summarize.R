@@ -14,10 +14,6 @@
 #' example(tximeta)
 #' gse <- summarizeToGene(se)
 #'
-#' # for speed benefit, also include addIds() example here:
-#' library(org.Dm.eg.db)
-#' gse <- addIds(gse, "REFSEQ", gene=TRUE)
-#' 
 #' @export
 summarizeToGene <- function(se) {
 
