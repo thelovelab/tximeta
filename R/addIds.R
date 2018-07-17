@@ -10,6 +10,12 @@
 #'
 #' @return a SummarizedExperiment
 #'
+#' @examples
+#'
+#' example(tximeta)
+#' library(org.Dm.eg.db)	
+#' se <- addIds(se, "REFSEQ", gene=FALSE)
+#' 
 #' @export
 addIds <- function(se, column, gene=FALSE) {
   # here a hack, for now this is just a prototype for ENSEMBL genes or txps

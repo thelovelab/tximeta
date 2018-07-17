@@ -1,5 +1,5 @@
 context("tximeta")
-test_that("tximeta gives errors", {
+test_that("tximeta works as expected", {
 
   dir <- system.file("extdata/salmon_dm", package="tximportData")
   files <- file.path(dir, "SRR1197474_cdna", "quant.sf.gz") 
@@ -13,7 +13,7 @@ test_that("tximeta gives errors", {
   gtfPath <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
   makeLinkedTxome(indexDir=indexDir, source="Ensembl", organism="Drosophila melanogaster",
                   version="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
-  
+
   se <- tximeta(coldata)
 
 })

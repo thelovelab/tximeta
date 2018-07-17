@@ -21,3 +21,10 @@ For now this just works with SummarizedExperiments
 with Ensembl gene or transcript IDs. See example
 of usage in tximeta vignette.
 }
+\examples{
+
+example(tximeta)
+library(org.Dm.eg.db)	
+se <- addIds(se, "REFSEQ", gene=FALSE)
+
+}

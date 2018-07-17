@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 0.99.3
+Version: 0.99.4
 Title: Transcript Quantification Import with Automatic Metadata
 Description: Transcript quantification import from Salmon with
     automatic population of metadata and transcript ranges.
@@ -14,8 +14,8 @@ Authors@R: c(
 Maintainer: Michael Love <michaelisaiahlove@gmail.com>
 License: GPL-2
 VignetteBuilder: knitr
-Depends: SummarizedExperiment
 Imports:
+    SummarizedExperiment,
     tximport,
     jsonlite,
     S4Vectors,
@@ -25,7 +25,6 @@ Imports:
     BiocFileCache,
     tibble,
     GenomeInfoDb,
-    rtracklayer,
     rappdirs,
     utils,
     methods

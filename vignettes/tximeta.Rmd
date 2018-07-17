@@ -52,13 +52,13 @@ library(tximeta)
 se <- tximeta(coldata)
 ```
 
-However, to avoid downloading remote GTF files during this vignette, we
-will point to a GTF file saved locally (in the *tximportData*
+However, to avoid downloading remote GTF files during this vignette,
+we will point to a GTF file saved locally (in the *tximportData*
 package). We link the transcriptome of the *Salmon* index to its
-locally saved GTF. 
-
-This following code is therefore not recommended
-for a typically workflow, but is particular to the vignette code.
+locally saved GTF. The standard recommended usage of `tximeta` would
+be the code chunk above, or to specify a remote GTF source, not a
+local one. This following code is therefore not recommended for a
+typically workflow, but is particular to the vignette code.
 
 ```{r}
 dir <- system.file("extdata", package="tximeta")
@@ -111,6 +111,7 @@ downloading the GTF during the vignette building process.)
 We, of course, have our coldata from before. Note that we've removed `files`.
 
 ```{r}
+library(SummarizedExperiment)
 colData(se)
 ```
 
@@ -276,11 +277,11 @@ file location can be changed with `jsonFile`.
 
 First we specify the path where the *Salmon* index is located. 
 
-**Note**: typically you would not use `system.file` to find this
-directory, but simply define `indexDir` to be the path of the
-*Salmon* directory on your machine. Here we use `system.file` because
-we have included parts of a *Salmon* index directory in the *tximeta*
-package itself for demonstration of functionality in this vignette.
+Typically you would not use `system.file` to find this directory, but
+simply define `indexDir` to be the path of the *Salmon* directory on
+your machine. Here we use `system.file` because we have included parts
+of a *Salmon* index directory in the *tximeta* package itself for
+demonstration of functionality in this vignette.
 
 ```{r}
 dir <- system.file("extdata", package="tximeta")
@@ -288,7 +289,8 @@ indexDir <- file.path(dir, "Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2")
 ```
 
 Now we provide the location of the FASTA files and the GTF file for
-this transcriptome.
+this transcriptome. The recommended usage of `tximeta` would be to
+specify a remote GTF source, as seen in the commented-out line below:
 
 ```{r}
 fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz",
@@ -356,12 +358,13 @@ seqinfo(se)
 
 # Clear *linkedTxomes*
 
-The following code removes the table with information about the
+The following code removes the entire table with information about the
 *linkedTxomes*. This is just for demonstration, so that we can show
-how to load a JSON file below. 
+how to load a JSON file below.
 
-**Note:** Running this code will clear information about any
-*linkedTxomes* on your machine.
+**Note:** Running this code will clear any information about
+*linkedTxomes*. Don't run this unless you really want to clear this
+table!
 
 ```{r}
 library(BiocFileCache)
@@ -403,6 +406,14 @@ se <- tximeta(coldata)
 ```
 
 # Clear *linkedTxomes*
+
+Finally, we clear the *linkedTxomes* table again so that the above
+examples will work. This is just for the vignette code and not part of
+a typical workflow.
+
+**Note:** Running this code will clear any information about
+*linkedTxomes*. Don't run this unless you really want to clear this
+table!
 
 ```{r}
 if (interactive()) {

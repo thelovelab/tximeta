@@ -77,7 +77,6 @@
 #' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfccount bfcrpath
 #' @importFrom tibble tibble
 #' @importFrom GenomeInfoDb Seqinfo genome<- seqinfo<- seqlevels
-#' @importFrom rtracklayer import.chain liftOver
 #' @importFrom rappdirs user_cache_dir
 #' @importFrom utils menu packageVersion read.csv
 #' @importFrom methods is
@@ -268,6 +267,8 @@ getTxDb <- function(txomeInfo) {
   bfc <- BiocFileCache(bfcloc)
   q <- bfcquery(bfc, txdbName)
   if (bfccount(q) == 0) {
+    # TODO this next line already creates an entry,
+    # but will need to clean up if the TxDb below fails
     savepath <- bfcnew(bfc, txdbName, ext="sqlite")
     if (txomeInfo$source == "Ensembl") {
       message("building EnsDb with 'ensembldb' package")

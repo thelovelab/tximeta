@@ -42,6 +42,7 @@ setTximetaBFC <- function(dir) {
     message("Which BiocFileCache directory should tximeta use? (press Enter to cancel)")
     bfcloc <- file.choose()
   } else {
+    stopifnot(is(dir, "character"))
     bfcloc <- dir
   }
   bfclocFile <- bfclocFile()
