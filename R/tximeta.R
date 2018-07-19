@@ -103,7 +103,7 @@ tximeta <- function(coldata, ...) {
   metaInfo <- lapply(files, getMetaInfo)
   indexSeqHash <- metaInfo[[1]]$index_seq_hash # first sample  
   if (length(files) > 1) {
-    hashes <- vapply(metaInfo, function(x) x$index_seq_hash)
+    hashes <- sapply(metaInfo, function(x) x$index_seq_hash)
     if (!all(hashes == indexSeqHash)) {
       stop("the samples do not share the same index, and cannot be imported")
     }

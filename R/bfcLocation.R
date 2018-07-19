@@ -39,7 +39,7 @@ getTximetaBFC <- function() {
 #' @export
 setTximetaBFC <- function(dir) {
   if (missing(dir)) {
-    message("Which BiocFileCache directory should tximeta use? (press Enter to cancel)")
+    message("which BiocFileCache directory should tximeta use? (press Enter to cancel)")
     bfcloc <- file.choose()
   } else {
     stopifnot(is(dir, "character"))
@@ -47,7 +47,7 @@ setTximetaBFC <- function(dir) {
   }
   bfclocFile <- bfclocFile()
   writeBFCLocFile(bfcloc)
-  message("For group use, set the permissions of this directory to allow group write (g+w)")
+  message("for group use, set the permissions of this directory to allow group write (g+w)")
   invisible()
 }
 
