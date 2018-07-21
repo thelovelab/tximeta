@@ -20,6 +20,8 @@
 addIds <- function(se, column, gene=FALSE) {
   # here a hack, for now this is just a prototype for ENSEMBL genes or txps
   stopifnot(metadata(se)$txomeInfo$source %in% c("Gencode","Ensembl"))
+  # TODO probably should switch from org.Hs.eg.db to the
+  # OrgDb packages obtained through AnnotationHub?
   orgpkg.name <- paste0("org.",
                         sub("(.).* (.).*","\\1\\2",metadata(se)$txomeInfo$organism),
                         ".eg.db")
