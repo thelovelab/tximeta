@@ -161,6 +161,7 @@ tximeta <- function(coldata, ...) {
   # Ensembl already has nice seqinfo attached, if not:
   if (txomeInfo$source != "Ensembl") {
     # TODO can we get a solution that doesn't rely on UCSC for the seqlevels?
+    # this produces an error if not connected to internet
     message("fetching genome info")
     ucsc_genome <- genome2UCSC(txomeInfo$genome)
     seqinfo(txps) <- Seqinfo(genome=ucsc_genome)[seqlevels(txps)]
