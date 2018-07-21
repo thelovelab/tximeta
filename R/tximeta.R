@@ -268,8 +268,8 @@ getTxDb <- function(txomeInfo) {
   q <- bfcquery(bfc, txdbName)
   if (bfccount(q) == 0) {
     # TODO this next line already creates an entry,
-    # but will need to clean up if the TxDb below fails
-    savepath <- bfcnew(bfc, txdbName, ext="sqlite")
+    # but will need to clean up if the TxDb construction below fails
+    savepath <- bfcnew(bfc, txdbName, ext=".sqlite")
     if (txomeInfo$source == "Ensembl") {
       message("building EnsDb with 'ensembldb' package")
       # TODO suppress warnings here from GTF construction?
