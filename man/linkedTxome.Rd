@@ -7,7 +7,7 @@
 \alias{loadLinkedTxome}
 \title{Make and load linked transcriptomes ("linkedTxome")}
 \usage{
-makeLinkedTxome(indexDir, source, organism, version, genome, fasta, gtf,
+makeLinkedTxome(indexDir, source, organism, release, genome, fasta, gtf,
   write = TRUE, jsonFile)
 
 loadLinkedTxome(jsonFile)
@@ -19,7 +19,7 @@ loadLinkedTxome(jsonFile)
 
 \item{organism}{organism (e.g. "Homo sapiens")}
 
-\item{version}{version (e.g. "27")}
+\item{release}{release number (e.g. "27")}
 
 \item{genome}{genome (e.g. "GRCh38")}
 
@@ -64,7 +64,7 @@ gtfPath <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
 
 # now create a linkedTxome, linking the Salmon index to its FASTA and GTF sources
 makeLinkedTxome(indexDir=indexDir, source="Ensembl", organism="Drosophila melanogaster",
-                version="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
+                release="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
 
 # to clear the entire linkedTxome table
 # (don't run unless you want to clear this table!)

@@ -1,7 +1,7 @@
 ---
 title: "tximeta: transcript quantification import with automatic metadata"
 author: "Michael Love, Rob Patro, Charlotte Soneson, Peter Hickey"
-date: "07/17/2018"
+date: "07/22/2018"
 output: 
   rmarkdown::html_document:
     highlight: tango
@@ -68,13 +68,13 @@ library(tximeta)
 se <- tximeta(coldata)
 ```
 
-However, to avoid downloading remote GTF files during this vignette, we
-will point to a GTF file saved locally (in the *tximportData*
+However, to avoid downloading remote GTF files during this vignette,
+we will point to a GTF file saved locally (in the *tximportData*
 package). We link the transcriptome of the *Salmon* index to its
-locally saved GTF. 
-
-This following code is therefore not recommended
-for a typically workflow, but is particular to the vignette code.
+locally saved GTF. The standard recommended usage of `tximeta` would
+be the code chunk above, or to specify a remote GTF source, not a
+local one. This following code is therefore not recommended for a
+typically workflow, but is particular to the vignette code.
 
 
 ```r
@@ -87,7 +87,7 @@ suppressPackageStartupMessages(library(tximeta))
 makeLinkedTxome(indexDir=indexDir,
                 source="Ensembl",
                 organism="Drosophila melanogaster",
-                version="92",
+                release="92",
                 genome="BDGP6",
                 fasta=fastaFTP,
                 gtf=gtfPath,
@@ -115,7 +115,7 @@ se <- tximeta(coldata)
 ```
 ## 1 
 ## found matching linked transcriptome:
-## [ Ensembl - Drosophila melanogaster - version 92 ]
+## [ Ensembl - Drosophila melanogaster - release 92 ]
 ## loading existing EnsDb created: 2018-07-14 14:45:15
 ## generating transcript ranges
 ```
@@ -142,7 +142,7 @@ coming from the annotation source, and not easily avoided by
 `tximeta`. 
 
 We plan to create and maintain a large table of signatures for as many
-sources, organisms, versions of transcriptomes as possible. We are
+sources, organisms, releases of transcriptomes as possible. We are
 also developing support for *linked transcriptomes*, where one or
 more sources for transcript sequences have been combined or
 filtered. See the `linkedTxome` vignette in this package for a
@@ -155,6 +155,7 @@ We, of course, have our coldata from before. Note that we've removed `files`.
 
 
 ```r
+suppressPackageStartupMessages(library(SummarizedExperiment))
 colData(se)
 ```
 
@@ -338,17 +339,6 @@ but could be extended to work for arbitrary sources.)
 
 ```r
 library(org.Dm.eg.db)
-```
-
-```
-## Loading required package: AnnotationDbi
-```
-
-```
-## 
-```
-
-```r
 gse <- addIds(gse, "REFSEQ", gene=TRUE)
 ```
 
@@ -496,7 +486,7 @@ str(metadata(se)$txomeInfo)
 ##  $ index_seq_hash: chr "b41ea9ba9c81e2cad7cfa49e4bf9ee67dd297dc0b9ff40bdb1142699f00c8f7d"
 ##  $ source        : chr "Ensembl"
 ##  $ organism      : chr "Drosophila melanogaster"
-##  $ version       : chr "92"
+##  $ release       : chr "92"
 ##  $ genome        : chr "BDGP6"
 ##  $ fasta         :List of 1
 ##   ..$ : chr "ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz"
@@ -510,8 +500,8 @@ str(metadata(se)$tximetaInfo)
 ```
 ## List of 2
 ##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1
-##   ..$ : int [1:3] 0 99 2
-##  $ importTime: POSIXct[1:1], format: "2018-07-17 08:55:15"
+##   ..$ : int [1:3] 0 99 6
+##  $ importTime: POSIXct[1:1], format: "2018-07-22 07:42:43"
 ```
 
 ```r
@@ -595,7 +585,7 @@ of these cases.
 
 In the case of the quantification file above, the transcriptome was
 generated locally by downloading and combining the Ensembl cDNA and
-non-coding FASTA files *Drosophila melanogaster*, version 92. The
+non-coding FASTA files *Drosophila melanogaster*, release 92. The
 following un-evaluated command line code chunk reproduces the
 production of the transcriptome from publicly available sources.
 
@@ -620,11 +610,11 @@ file location can be changed with `jsonFile`.
 
 First we specify the path where the *Salmon* index is located. 
 
-**Note**: typically you would not use `system.file` to find this
-directory, but simply define `indexDir` to be the path of the
-*Salmon* directory on your machine. Here we use `system.file` because
-we have included parts of a *Salmon* index directory in the *tximeta*
-package itself for demonstration of functionality in this vignette.
+Typically you would not use `system.file` to find this directory, but
+simply define `indexDir` to be the path of the *Salmon* directory on
+your machine. Here we use `system.file` because we have included parts
+of a *Salmon* index directory in the *tximeta* package itself for
+demonstration of functionality in this vignette.
 
 
 ```r
@@ -633,7 +623,8 @@ indexDir <- file.path(dir, "Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2")
 ```
 
 Now we provide the location of the FASTA files and the GTF file for
-this transcriptome.
+this transcriptome. The recommended usage of `tximeta` would be to
+specify a remote GTF source, as seen in the commented-out line below:
 
 
 ```r
@@ -670,13 +661,13 @@ tmp <- tempdir()
 jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
 makeLinkedTxome(indexDir=indexDir,
                 source="Ensembl", organism="Drosophila melanogaster",
-                version="92", genome="BDGP6",
+                release="92", genome="BDGP6",
                 fasta=fastaFTP, gtf=gtfPath,
                 jsonFile=jsonFile)
 ```
 
 ```
-## writing linkedTxome to /var/folders/kd/xns8y9c51sz668rrjn0bvlqh0000gn/T//Rtmp3JyG8V/Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2.json
+## writing linkedTxome to /var/folders/kd/xns8y9c51sz668rrjn0bvlqh0000gn/T//Rtmp7XCj6Q/Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2.json
 ```
 
 ```
@@ -714,7 +705,7 @@ se <- tximeta(coldata)
 ```
 ## 1 
 ## found matching linked transcriptome:
-## [ Ensembl - Drosophila melanogaster - version 92 ]
+## [ Ensembl - Drosophila melanogaster - release 92 ]
 ## loading existing EnsDb created: 2018-07-14 14:45:15
 ## generating transcript ranges
 ```
@@ -799,12 +790,13 @@ seqinfo(se)
 
 # Clear *linkedTxomes*
 
-The following code removes the table with information about the
+The following code removes the entire table with information about the
 *linkedTxomes*. This is just for demonstration, so that we can show
-how to load a JSON file below. 
+how to load a JSON file below.
 
-**Note:** Running this code will clear information about any
-*linkedTxomes* on your machine.
+**Note:** Running this code will clear any information about
+*linkedTxomes*. Don't run this unless you really want to clear this
+table!
 
 
 ```r
@@ -819,13 +811,12 @@ bfcinfo(bfc)
 ```
 
 ```
-## # A tibble: 4 x 10
+## # A tibble: 3 x 10
 ##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
-## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
-## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
-## 3 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
-## 4 BFC38 linke… 2018-07-17… 2018-07-17… /User… rela… 6f48…               NA
+## 1 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
+## 2 BFC41 genco… 2018-07-19… 2018-07-19… /User… rela… bf40…               NA
+## 3 BFC46 linke… 2018-07-22… 2018-07-22… /User… rela… 9c3d…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -835,12 +826,11 @@ bfcinfo(bfc)
 ```
 
 ```
-## # A tibble: 3 x 10
+## # A tibble: 2 x 10
 ##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
-## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
-## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
-## 3 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
+## 1 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
+## 2 BFC41 genco… 2018-07-19… 2018-07-19… /User… rela… bf40…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -887,7 +877,7 @@ se <- tximeta(coldata)
 ```
 ## 1 
 ## found matching linked transcriptome:
-## [ Ensembl - Drosophila melanogaster - version 92 ]
+## [ Ensembl - Drosophila melanogaster - release 92 ]
 ## loading existing EnsDb created: 2018-07-14 14:45:15
 ## generating transcript ranges
 ```
@@ -898,6 +888,14 @@ se <- tximeta(coldata)
 ```
 
 # Clear *linkedTxomes*
+
+Finally, we clear the *linkedTxomes* table again so that the above
+examples will work. This is just for the vignette code and not part of
+a typical workflow.
+
+**Note:** Running this code will clear any information about
+*linkedTxomes*. Don't run this unless you really want to clear this
+table!
 
 
 ```r
@@ -911,13 +909,12 @@ bfcinfo(bfc)
 ```
 
 ```
-## # A tibble: 4 x 10
+## # A tibble: 3 x 10
 ##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
-## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
-## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
-## 3 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
-## 4 BFC39 linke… 2018-07-17… 2018-07-17… /User… rela… 6f48…               NA
+## 1 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
+## 2 BFC41 genco… 2018-07-19… 2018-07-19… /User… rela… bf40…               NA
+## 3 BFC47 linke… 2018-07-22… 2018-07-22… /User… rela… 9c33…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -927,12 +924,11 @@ bfcinfo(bfc)
 ```
 
 ```
-## # A tibble: 3 x 10
+## # A tibble: 2 x 10
 ##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
-## 1 BFC6  Homo_… 2018-07-12… 2018-07-12… /User… rela… 67f2…               NA
-## 2 BFC7  genco… 2018-07-12… 2018-07-12… /User… rela… 67f7…               NA
-## 3 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
+## 1 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
+## 2 BFC41 genco… 2018-07-19… 2018-07-19… /User… rela… bf40…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -956,7 +952,7 @@ bfcinfo(bfc)
 * Building out actual, sustainable plan for supporting as many
   organisms and sources as possible. We can define rules which
   determine where the FASTA and GTF files will be based on `source` and
-  `version` (also here I ignored something like "type", e.g. CHR
+  `release` (also here we ignored something like "type", e.g. CHR
   or ALL gene files from Gencode)
 * Some support already for linked transcriptomes, see `linkedTxomes`
   vignette. Need to work more on combining multiple sources
@@ -989,8 +985,8 @@ session_info()
 ##  ui       X11                                               
 ##  language (EN)                                              
 ##  collate  en_US.UTF-8                                       
-##  tz       Europe/Rome                                       
-##  date     2018-07-17
+##  tz       America/New_York                                  
+##  date     2018-07-22
 ```
 
 ```
@@ -1110,7 +1106,7 @@ session_info()
 ##  tibble                 1.4.2     2018-01-22 CRAN (R 3.6.0)
 ##  tidyselect             0.2.4     2018-02-26 CRAN (R 3.6.0)
 ##  tools                  3.6.0     2018-05-15 local         
-##  tximeta              * 0.99.2    2018-07-17 Bioconductor  
+##  tximeta              * 0.99.6    2018-07-22 Bioconductor  
 ##  tximport               1.9.8     2018-07-11 cran (@1.9.8) 
 ##  utf8                   1.1.4     2018-05-24 CRAN (R 3.6.0)
 ##  utils                * 3.6.0     2018-05-15 local         

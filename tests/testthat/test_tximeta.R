@@ -12,7 +12,7 @@ test_that("tximeta works as expected", {
   dir2 <- system.file("extdata/salmon_dm", package="tximportData")
   gtfPath <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
   makeLinkedTxome(indexDir=indexDir, source="Ensembl", organism="Drosophila melanogaster",
-                  version="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
+                  release="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
 
   se <- tximeta(coldata)
 

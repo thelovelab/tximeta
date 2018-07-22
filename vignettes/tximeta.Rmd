@@ -70,7 +70,7 @@ suppressPackageStartupMessages(library(tximeta))
 makeLinkedTxome(indexDir=indexDir,
                 source="Ensembl",
                 organism="Drosophila melanogaster",
-                version="92",
+                release="92",
                 genome="BDGP6",
                 fasta=fastaFTP,
                 gtf=gtfPath,
@@ -99,7 +99,7 @@ coming from the annotation source, and not easily avoided by
 `tximeta`. 
 
 We plan to create and maintain a large table of signatures for as many
-sources, organisms, versions of transcriptomes as possible. We are
+sources, organisms, releases of transcriptomes as possible. We are
 also developing support for *linked transcriptomes*, where one or
 more sources for transcript sequences have been combined or
 filtered. See the `linkedTxome` vignette in this package for a
@@ -111,7 +111,7 @@ downloading the GTF during the vignette building process.)
 We, of course, have our coldata from before. Note that we've removed `files`.
 
 ```{r}
-library(SummarizedExperiment)
+suppressPackageStartupMessages(library(SummarizedExperiment))
 colData(se)
 ```
 
@@ -252,7 +252,7 @@ of these cases.
 
 In the case of the quantification file above, the transcriptome was
 generated locally by downloading and combining the Ensembl cDNA and
-non-coding FASTA files *Drosophila melanogaster*, version 92. The
+non-coding FASTA files *Drosophila melanogaster*, release 92. The
 following un-evaluated command line code chunk reproduces the
 production of the transcriptome from publicly available sources.
 
@@ -324,7 +324,7 @@ tmp <- tempdir()
 jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
 makeLinkedTxome(indexDir=indexDir,
                 source="Ensembl", organism="Drosophila melanogaster",
-                version="92", genome="BDGP6",
+                release="92", genome="BDGP6",
                 fasta=fastaFTP, gtf=gtfPath,
                 jsonFile=jsonFile)
 ```
@@ -447,7 +447,7 @@ bfcinfo(bfc)
 * Building out actual, sustainable plan for supporting as many
   organisms and sources as possible. We can define rules which
   determine where the FASTA and GTF files will be based on `source` and
-  `version` (also here I ignored something like "type", e.g. CHR
+  `release` (also here we ignored something like "type", e.g. CHR
   or ALL gene files from Gencode)
 * Some support already for linked transcriptomes, see `linkedTxomes`
   vignette. Need to work more on combining multiple sources

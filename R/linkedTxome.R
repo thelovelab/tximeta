@@ -5,7 +5,7 @@
 #' @param indexDir the path to the Salmon or Sailfish index
 #' @param source the source of transcriptome (e.g. "Gencode" or "Ensembl")
 #' @param organism organism (e.g. "Homo sapiens")
-#' @param version version (e.g. "27")
+#' @param release release number (e.g. "27")
 #' @param genome genome (e.g. "GRCh38")
 #' @param fasta FTP location for the FASTA sequence (of which the index is a subset)
 #' @param gtf FTP location for the GTF file (of which the index is a subset)
@@ -44,7 +44,7 @@
 #'
 #' # now create a linkedTxome, linking the Salmon index to its FASTA and GTF sources
 #' makeLinkedTxome(indexDir=indexDir, source="Ensembl", organism="Drosophila melanogaster",
-#'                 version="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
+#'                 release="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
 #'
 #' # to clear the entire linkedTxome table
 #' # (don't run unless you want to clear this table!)
@@ -53,7 +53,7 @@
 #' # bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 #' 
 #' @export
-makeLinkedTxome <- function(indexDir, source, organism, version,
+makeLinkedTxome <- function(indexDir, source, organism, release,
                              genome, fasta, gtf, write=TRUE, jsonFile) {
   indexList <- fromJSON(file.path(indexDir,"header.json"))
   indexSeqHash <- indexList$value0$SeqHash
@@ -72,7 +72,7 @@ makeLinkedTxome <- function(indexDir, source, organism, version,
                index_seq_hash=indexSeqHash,
                source=source,
                organism=organism,
-               version=version,
+               release=release,
                genome=genome,
                fasta=list(fasta),
                gtf=gtf)

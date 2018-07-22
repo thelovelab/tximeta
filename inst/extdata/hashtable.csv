@@ -1,4 +1,4 @@
-index_seq_hash,source,organism,version,genome,fasta,gtf
+index_seq_hash,source,organism,release,genome,fasta,gtf
 3ab58accda62508d37ad42327fa285cc5575bc6e26ebc354e643cc2345c0fd0b,Gencode,Homo sapiens,28,GRCh38,ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_28/gencode.v28.transcripts.fa.gz,ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_28/gencode.v28.annotation.gtf.gz
 0acbb6919651beb0182512f492e9936c43dd7c0d189df41c402fbd4fc556f460,Gencode,Homo sapiens,27,GRCh38,ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_27/gencode.v27.transcripts.fa.gz,ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_27/gencode.v27.annotation.gtf.gz
 13efe75909a197f8d30f7e17ed5f3f9f03a398b6796aa746416d74b4b6aa8aeb,Gencode,Homo sapiens,26,GRCh38,ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_26/gencode.v26.transcripts.fa.gz,ftp://ftp.sanger.ac.uk/pub/gencode/Gencode_human/release_26/gencode.v26.annotation.gtf.gz

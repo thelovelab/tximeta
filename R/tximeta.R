@@ -9,7 +9,7 @@
 #' \code{tximeta} checks the hash signature of the index against a database
 #' of known transcriptomes (this database under construction) or a locally stored
 #' \code{linkedTxome} (see \code{link{makeLinkedTxome}}), and then will
-#' automatically populate, e.g. the transcript locations, the transcriptome version,
+#' automatically populate, e.g. the transcript locations, the transcriptome release,
 #' the genome with correct chromosome lengths, etc. It allows for automatic
 #' and correct summarization of transcript-level quantifications to the gene-level
 #' via \code{\link{summarizeToGene}} without the need to manually build
@@ -58,7 +58,7 @@
 #' dir2 <- system.file("extdata/salmon_dm", package="tximportData")
 #' gtfPath <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
 #' makeLinkedTxome(indexDir=indexDir, source="Ensembl", organism="Drosophila melanogaster",
-#'                 version="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
+#'                 release="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
 #' se <- tximeta(coldata)
 #'
 #' # to clear the entire linkedTxome table
@@ -142,7 +142,7 @@ tximeta <- function(coldata, ...) {
   })
   names(txps) <- txps$tx_name
 
-  # TODO temporary hack: Ensembl FASTA has versions, Ensembl GTF it is not in the txname
+  # TODO temporary hack: Ensembl FASTA has txp version, Ensembl GTF it is not in the txname
   # meanwhile Gencode GTF puts the version in the name
   if (txomeInfo$source == "Ensembl") {
     txId <- sub("\\..*", "", rownames(txi$counts))
@@ -236,7 +236,7 @@ getTxomeInfo <- function(indexSeqHash) {
     if (!is.na(m)) {
       txomeInfo <- as.list(linkedTxomeTbl[m,])
       message(paste0("found matching linked transcriptome:\n[ ",
-                     txomeInfo$source," - ",txomeInfo$organism," - version ",txomeInfo$version," ]"))
+                     txomeInfo$source," - ",txomeInfo$organism," - release ",txomeInfo$release," ]"))
       return(txomeInfo)
     }
   }
@@ -251,7 +251,7 @@ getTxomeInfo <- function(indexSeqHash) {
     # now we can go get the GTF to annotate the ranges
     txomeInfo <- as.list(hashtable[m,])
     message(paste0("found matching transcriptome:\n[ ",
-                   txomeInfo$source," - ",txomeInfo$organism," - version ",txomeInfo$version," ]"))
+                   txomeInfo$source," - ",txomeInfo$organism," - release ",txomeInfo$release," ]"))
     return(txomeInfo)
   }
   
