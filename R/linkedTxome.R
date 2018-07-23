@@ -105,7 +105,7 @@ stashLinkedTxome <- function(lt) {
   q <- bfcquery(bfc, "linkedTxomeTbl")
   if (bfccount(q) == 0) {
     message("saving linkedTxome in bfc (first time)")
-    savepath <- bfcnew(bfc, "linkedTxomeTbl", ext="rds")
+    savepath <- bfcnew(bfc, "linkedTxomeTbl", ext=".rds")
     linkedTxomeTbl <- lt
     saveRDS(linkedTxomeTbl, file=savepath)
   } else {
