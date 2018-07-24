@@ -232,6 +232,7 @@ getTxomeInfo <- function(indexSeqHash) {
   if (bfccount(q) == 1) {
     loadpath <- bfcrpath(bfc, "linkedTxomeTbl")
     linkedTxomeTbl <- readRDS(loadpath)
+    # TODO come up with a better column than 'index_seq_hash' to deal with SHA-256 and SHA-512...
     m <- match(indexSeqHash, linkedTxomeTbl$index_seq_hash)
     if (!is.na(m)) {
       txomeInfo <- as.list(linkedTxomeTbl[m,])
@@ -242,10 +243,12 @@ getTxomeInfo <- function(indexSeqHash) {
   }
 
   # if not in linkedTxomes try the pre-computed hashtable...
+
   # TODO this is very temporary code obviously
   # best this would be an external data package
   hashfile <- file.path(system.file("extdata",package="tximeta"),"hashtable.csv")
   hashtable <- read.csv(hashfile,stringsAsFactors=FALSE)
+  # TODO come up with a better column than 'index_seq_hash' to deal with SHA-256 and SHA-512...
   m <- match(indexSeqHash, hashtable$index_seq_hash)
   if (!is.na(m)) {
     # now we can go get the GTF to annotate the ranges
@@ -268,8 +271,10 @@ getTxDb <- function(txomeInfo) {
   bfc <- BiocFileCache(bfcloc)
   q <- bfcquery(bfc, txdbName)
   if (bfccount(q) == 0) {
-    # TODO this next line already creates an entry,
+    # TODO: this next line already creates an entry,
     # but will need to clean up if the TxDb construction below fails
+    # TODO: naming the BiocFileCache entry as the basename of the GTF is not a great idea, 
+    # Gencode and Ensembl have release numbers in the GTF, but RefSeq it may break 
     savepath <- bfcnew(bfc, txdbName, ext=".sqlite")
     if (txomeInfo$source == "Ensembl") {
       message("building EnsDb with 'ensembldb' package")
