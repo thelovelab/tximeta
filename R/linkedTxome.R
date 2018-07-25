@@ -54,8 +54,9 @@
 #' 
 #' @export
 makeLinkedTxome <- function(indexDir, source, organism, release,
-                             genome, fasta, gtf, write=TRUE, jsonFile) {
+                            genome, fasta, gtf, write=TRUE, jsonFile) {
   indexList <- fromJSON(file.path(indexDir,"header.json"))
+  # Salmon's SHA-256 hash of the index is called "SeqHash" in the index JSON
   indexSeqHash <- indexList$value0$SeqHash
   # here and in the data frame where we record linkedTxome's,
   # 'index' is just the basename of the Salmon index
@@ -69,13 +70,13 @@ makeLinkedTxome <- function(indexDir, source, organism, release,
   }
   # a single-row tibble for the linkedTxomeTbl
   lt <- tibble(index=index,
-               index_seq_hash=indexSeqHash,
                source=source,
                organism=organism,
                release=release,
                genome=genome,
                fasta=list(fasta),
-               gtf=gtf)
+               gtf=gtf,
+               sha256=indexSeqHash)
   stopifnot(nrow(lt) == 1)
   if (write) {
     if (missing(jsonFile)) {

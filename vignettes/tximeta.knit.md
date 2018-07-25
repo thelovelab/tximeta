@@ -1,7 +1,7 @@
 ---
 title: "tximeta: transcript quantification import with automatic metadata"
 author: "Michael Love, Rob Patro, Charlotte Soneson, Peter Hickey"
-date: "07/22/2018"
+date: "07/25/2018"
 output: 
   rmarkdown::html_document:
     highlight: tango
@@ -116,7 +116,7 @@ se <- tximeta(coldata)
 ## 1 
 ## found matching linked transcriptome:
 ## [ Ensembl - Drosophila melanogaster - release 92 ]
-## loading existing EnsDb created: 2018-07-14 14:45:15
+## loading existing EnsDb created: 2018-07-23 20:11:48
 ## generating transcript ranges
 ```
 
@@ -272,7 +272,7 @@ gse <- summarizeToGene(se)
 ```
 
 ```
-## loading existing EnsDb created: 2018-07-14 14:45:15
+## loading existing EnsDb created: 2018-07-23 20:11:48
 ```
 
 ```
@@ -339,6 +339,17 @@ but could be extended to work for arbitrary sources.)
 
 ```r
 library(org.Dm.eg.db)
+```
+
+```
+## Loading required package: AnnotationDbi
+```
+
+```
+## 
+```
+
+```r
 gse <- addIds(gse, "REFSEQ", gene=TRUE)
 ```
 
@@ -482,15 +493,15 @@ str(metadata(se)$txomeInfo)
 
 ```
 ## List of 8
-##  $ index         : chr "Drosophila_melanogaster.BDGP6.cdna.v92_salmon_0.10.2"
-##  $ index_seq_hash: chr "b41ea9ba9c81e2cad7cfa49e4bf9ee67dd297dc0b9ff40bdb1142699f00c8f7d"
-##  $ source        : chr "Ensembl"
-##  $ organism      : chr "Drosophila melanogaster"
-##  $ release       : chr "92"
-##  $ genome        : chr "BDGP6"
-##  $ fasta         :List of 1
+##  $ index   : chr "Drosophila_melanogaster.BDGP6.cdna.v92_salmon_0.10.2"
+##  $ source  : chr "Ensembl"
+##  $ organism: chr "Drosophila melanogaster"
+##  $ release : chr "92"
+##  $ genome  : chr "BDGP6"
+##  $ fasta   :List of 1
 ##   ..$ : chr "ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz"
-##  $ gtf           : chr "/Users/love/bin/R/library/tximportData/extdata/salmon_dm/Drosophila_melanogaster.BDGP6.92.gtf.gz"
+##  $ gtf     : chr "/Users/love/bin/R/library/tximportData/extdata/salmon_dm/Drosophila_melanogaster.BDGP6.92.gtf.gz"
+##  $ sha256  : chr "b41ea9ba9c81e2cad7cfa49e4bf9ee67dd297dc0b9ff40bdb1142699f00c8f7d"
 ```
 
 ```r
@@ -500,8 +511,8 @@ str(metadata(se)$tximetaInfo)
 ```
 ## List of 2
 ##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1
-##   ..$ : int [1:3] 0 99 6
-##  $ importTime: POSIXct[1:1], format: "2018-07-22 07:42:43"
+##   ..$ : int [1:3] 0 99 7
+##  $ importTime: POSIXct[1:1], format: "2018-07-25 14:29:35"
 ```
 
 ```r
@@ -667,7 +678,7 @@ makeLinkedTxome(indexDir=indexDir,
 ```
 
 ```
-## writing linkedTxome to /var/folders/kd/xns8y9c51sz668rrjn0bvlqh0000gn/T//Rtmp7XCj6Q/Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2.json
+## writing linkedTxome to /var/folders/kd/xns8y9c51sz668rrjn0bvlqh0000gn/T//RtmpGOoE4x/Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2.json
 ```
 
 ```
@@ -706,7 +717,7 @@ se <- tximeta(coldata)
 ## 1 
 ## found matching linked transcriptome:
 ## [ Ensembl - Drosophila melanogaster - release 92 ]
-## loading existing EnsDb created: 2018-07-14 14:45:15
+## loading existing EnsDb created: 2018-07-23 20:11:48
 ## generating transcript ranges
 ```
 
@@ -814,9 +825,9 @@ bfcinfo(bfc)
 ## # A tibble: 3 x 10
 ##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
-## 1 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
-## 2 BFC41 genco… 2018-07-19… 2018-07-19… /User… rela… bf40…               NA
-## 3 BFC46 linke… 2018-07-22… 2018-07-22… /User… rela… 9c3d…               NA
+## 1 BFC1  genco… 2018-07-23… 2018-07-23… /User… rela… 5a62…               NA
+## 2 BFC3  Droso… 2018-07-23… 2018-07-23… /User… rela… 5a62…               NA
+## 3 BFC5  linke… 2018-07-25… 2018-07-25… /User… rela… 1752…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -829,8 +840,8 @@ bfcinfo(bfc)
 ## # A tibble: 2 x 10
 ##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
-## 1 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
-## 2 BFC41 genco… 2018-07-19… 2018-07-19… /User… rela… bf40…               NA
+## 1 BFC1  genco… 2018-07-23… 2018-07-23… /User… rela… 5a62…               NA
+## 2 BFC3  Droso… 2018-07-23… 2018-07-23… /User… rela… 5a62…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -878,7 +889,7 @@ se <- tximeta(coldata)
 ## 1 
 ## found matching linked transcriptome:
 ## [ Ensembl - Drosophila melanogaster - release 92 ]
-## loading existing EnsDb created: 2018-07-14 14:45:15
+## loading existing EnsDb created: 2018-07-23 20:11:48
 ## generating transcript ranges
 ```
 
@@ -912,9 +923,9 @@ bfcinfo(bfc)
 ## # A tibble: 3 x 10
 ##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
-## 1 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
-## 2 BFC41 genco… 2018-07-19… 2018-07-19… /User… rela… bf40…               NA
-## 3 BFC47 linke… 2018-07-22… 2018-07-22… /User… rela… 9c33…               NA
+## 1 BFC1  genco… 2018-07-23… 2018-07-23… /User… rela… 5a62…               NA
+## 2 BFC3  Droso… 2018-07-23… 2018-07-23… /User… rela… 5a62…               NA
+## 3 BFC6  linke… 2018-07-25… 2018-07-25… /User… rela… 1752…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -927,8 +938,8 @@ bfcinfo(bfc)
 ## # A tibble: 2 x 10
 ##   rid   rname  create_time access_time rpath  rtype fpath last_modified_t…
 ##   <chr> <chr>  <chr>       <chr>       <chr>  <chr> <chr>            <dbl>
-## 1 BFC28 Droso… 2018-07-14… 2018-07-14… /User… rela… 31e7…               NA
-## 2 BFC41 genco… 2018-07-19… 2018-07-19… /User… rela… bf40…               NA
+## 1 BFC1  genco… 2018-07-23… 2018-07-23… /User… rela… 5a62…               NA
+## 2 BFC3  Droso… 2018-07-23… 2018-07-23… /User… rela… 5a62…               NA
 ## # ... with 2 more variables: etag <chr>, expires <dbl>
 ```
 
@@ -986,7 +997,7 @@ session_info()
 ##  language (EN)                                              
 ##  collate  en_US.UTF-8                                       
 ##  tz       America/New_York                                  
-##  date     2018-07-22
+##  date     2018-07-25
 ```
 
 ```
@@ -1106,7 +1117,7 @@ session_info()
 ##  tibble                 1.4.2     2018-01-22 CRAN (R 3.6.0)
 ##  tidyselect             0.2.4     2018-02-26 CRAN (R 3.6.0)
 ##  tools                  3.6.0     2018-05-15 local         
-##  tximeta              * 0.99.6    2018-07-22 Bioconductor  
+##  tximeta              * 0.99.7    2018-07-25 Bioconductor  
 ##  tximport               1.9.8     2018-07-11 cran (@1.9.8) 
 ##  utf8                   1.1.4     2018-05-24 CRAN (R 3.6.0)
 ##  utils                * 3.6.0     2018-05-15 local         

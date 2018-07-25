@@ -101,6 +101,7 @@ tximeta <- function(coldata, ...) {
                       importTime=Sys.time())
   # get quantifier metadata from JSON files within quant dirs
   metaInfo <- lapply(files, getMetaInfo)
+  # Salmon's SHA-256 hash of the index is called "index_seq_hash" in the meta_info.json file
   indexSeqHash <- metaInfo[[1]]$index_seq_hash # first sample  
   if (length(files) > 1) {
     hashes <- sapply(metaInfo, function(x) x$index_seq_hash)
@@ -232,8 +233,7 @@ getTxomeInfo <- function(indexSeqHash) {
   if (bfccount(q) == 1) {
     loadpath <- bfcrpath(bfc, "linkedTxomeTbl")
     linkedTxomeTbl <- readRDS(loadpath)
-    # TODO come up with a better column than 'index_seq_hash' to deal with SHA-256 and SHA-512...
-    m <- match(indexSeqHash, linkedTxomeTbl$index_seq_hash)
+    m <- match(indexSeqHash, linkedTxomeTbl$sha256)
     if (!is.na(m)) {
       txomeInfo <- as.list(linkedTxomeTbl[m,])
       message(paste0("found matching linked transcriptome:\n[ ",
@@ -248,8 +248,7 @@ getTxomeInfo <- function(indexSeqHash) {
   # best this would be an external data package
   hashfile <- file.path(system.file("extdata",package="tximeta"),"hashtable.csv")
   hashtable <- read.csv(hashfile,stringsAsFactors=FALSE)
-  # TODO come up with a better column than 'index_seq_hash' to deal with SHA-256 and SHA-512...
-  m <- match(indexSeqHash, hashtable$index_seq_hash)
+  m <- match(indexSeqHash, hashtable$sha256)
   if (!is.na(m)) {
     # now we can go get the GTF to annotate the ranges
     txomeInfo <- as.list(hashtable[m,])
@@ -273,8 +272,6 @@ getTxDb <- function(txomeInfo) {
   if (bfccount(q) == 0) {
     # TODO: this next line already creates an entry,
     # but will need to clean up if the TxDb construction below fails
-    # TODO: naming the BiocFileCache entry as the basename of the GTF is not a great idea, 
-    # Gencode and Ensembl have release numbers in the GTF, but RefSeq it may break 
     savepath <- bfcnew(bfc, txdbName, ext=".sqlite")
     if (txomeInfo$source == "Ensembl") {
       message("building EnsDb with 'ensembldb' package")
