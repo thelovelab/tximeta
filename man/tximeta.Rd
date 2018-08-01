@@ -2,9 +2,9 @@
 % Please edit documentation in R/tximeta.R
 \name{tximeta}
 \alias{tximeta}
-\title{tximeta: Import transcript abundances with automagic population of metadata}
+\title{tximeta: Transcript quantification import with automatic metadata}
 \usage{
-tximeta(coldata, ...)
+tximeta(coldata, type = "salmon", ...)
 }
 \arguments{
 \item{coldata}{a data.frame with at least two columns:
@@ -12,6 +12,8 @@ tximeta(coldata, ...)
 \item{"files"}{character vector pointing to sample quantification files}
 \item{"names"}{character vector of sample names}
 }}
+
+\item{type}{what quantifier was used (see \code{\link{tximport}})}
 
 \item{...}{initial arguments passed to \code{tximport}}
 }
@@ -29,6 +31,11 @@ for the user, without additional effort from the user. Note that this package
 is in "beta" / under development.
 }
 \details{
+Most of the code in \code{tximeta} works to add metadata and transcript ranges
+when the quantification was performed with Salmon or Sailfish. However,
+\code{tximeta} can be used with any quantification \code{type} that is supported
+by \code{\link{tximport}}, where it will return an un-ranged SummarizedExperiment.
+
 \code{tximeta} checks the hash signature of the index against a database
 of known transcriptomes (this database under construction) or a locally stored
 \code{linkedTxome} (see \code{link{makeLinkedTxome}}), and then will

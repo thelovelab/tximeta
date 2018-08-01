@@ -14,6 +14,17 @@ test_that("tximeta works as expected", {
   makeLinkedTxome(indexDir=indexDir, source="Ensembl", organism="Drosophila melanogaster",
                   release="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
 
-  se <- tximeta(coldata)
+  expect_warning({se <- tximeta(coldata)}, "missing from the GTF")
+  
+})
 
+test_that("tximeta can import kallisto", {
+
+  library(readr)
+  dir <- system.file("extdata", package="tximportData")
+  samples <- read.table(file.path(dir,"samples.txt"), header=TRUE)
+  files <- file.path(dir,"kallisto", samples$run, "abundance.tsv.gz")
+  coldata <- data.frame(files, names=paste0("sample",1:6))
+  se <- tximeta(coldata, type="kallisto", txOut=TRUE)
+  
 })

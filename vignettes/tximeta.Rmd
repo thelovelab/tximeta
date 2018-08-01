@@ -427,6 +427,16 @@ bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 bfcinfo(bfc)
 ```
 
+# Other quantifiers
+
+`tximeta` can import the output from any quantifiers that are
+supported by `tximport`, and if these are not *Salmon* or *Sailfish*
+output, it will simply return a un-ranged *SummarizedExperiment*. We
+are working to allow manually passing of the hash value of the
+transcriptome, the cDNA sequences of which can be hashed with
+[FastaDigest](https://github.com/COMBINE-lab/FastaDigest) 
+(can be installed with `pip install fasta_digest`).
+
 # Next steps
 
 ### Basic functionality

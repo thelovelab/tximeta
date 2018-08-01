@@ -1,4 +1,4 @@
-#' tximeta: Import transcript abundances with automagic population of metadata
+#' tximeta: Transcript quantification import with automatic metadata
 #'
 #' \code{tximeta} leverages the hash signature of the Salmon or Sailfish index,
 #' in addition to a number of core Bioconductor packages (GenomicFeatures,
@@ -6,6 +6,11 @@
 #' for the user, without additional effort from the user. Note that this package
 #' is in "beta" / under development.
 #'
+#' Most of the code in \code{tximeta} works to add metadata and transcript ranges
+#' when the quantification was performed with Salmon or Sailfish. However,
+#' \code{tximeta} can be used with any quantification \code{type} that is supported
+#' by \code{\link{tximport}}, where it will return an un-ranged SummarizedExperiment.
+#' 
 #' \code{tximeta} checks the hash signature of the index against a database
 #' of known transcriptomes (this database under construction) or a locally stored
 #' \code{linkedTxome} (see \code{link{makeLinkedTxome}}), and then will
@@ -33,6 +38,7 @@
 #' \item{"files"}{character vector pointing to sample quantification files}
 #' \item{"names"}{character vector of sample names}
 #' }
+#' @param type what quantifier was used (see \code{\link{tximport}})
 #' @param ... initial arguments passed to \code{tximport}
 #' 
 #' @return a SummarizedExperiment with metadata on the \code{rowRanges}.
@@ -82,7 +88,7 @@
 #' @importFrom methods is
 #'
 #' @export
-tximeta <- function(coldata, ...) {
+tximeta <- function(coldata, type="salmon", ...) {
   
   stopifnot(all(c("files","names") %in% names(coldata)))
   
@@ -94,11 +100,21 @@ tximeta <- function(coldata, ...) {
   }
   
   # remove the files column from colData
-  coldataSub <- subset(coldata, select=-files)
+  coldata <- subset(coldata, select=-files)
 
   # tximeta metadata
   tximetaInfo <- list(version=packageVersion("tximeta"),
                       importTime=Sys.time())
+
+  metadata <- list(tximetaInfo=tximetaInfo)
+  
+  if (!type %in% c("salmon","sailfish")) {
+    txi <- tximport(files, type=type, ...)
+    metadata$countsFromAbundance <- txi$countsFromAbundance
+    se <- makeUnrangedSE(txi, coldata, metadata)
+    return(se)
+  }
+  
   # get quantifier metadata from JSON files within quant dirs
   metaInfo <- lapply(files, getMetaInfo)
   # Salmon's SHA-256 hash of the index is called "index_seq_hash" in the meta_info.json file
@@ -111,25 +127,22 @@ tximeta <- function(coldata, ...) {
   }
   # reshape
   metaInfo <- reshapeMetaInfo(metaInfo)
-  # start to build metadata list
-  metadata <- list(
-    quantInfo=metaInfo,
-    tximetaInfo=tximetaInfo
-  )
+  # add to metadata list
+  metadata$quantInfo <- metaInfo
+  
   # try to import files early, so we don't waste user time
   # with metadata magic before a tximport error
   message("importing quantifications")
-  txi <- tximport(files, type="salmon", txOut=TRUE, ...)
+  txi <- tximport(files, type=type, txOut=TRUE, ...)
+  metadata$countsFromAbundance <- txi$countsFromAbundance
 
   # TODO need to store "countsFromAbundance" value in outgoing 'se'
 
   # try and find a matching txome
   txomeInfo <- getTxomeInfo(indexSeqHash)
   if (is.null(txomeInfo)) {
-    message("couldn't find matching transcriptome, returning un-ranged SummarizedExperiment") 
-    se <- SummarizedExperiment(assays=txi[c("counts","abundance","length")],
-                               colData=coldataSub,
-                               metadata=metadata)
+    message("couldn't find matching transcriptome, returning un-ranged SummarizedExperiment")
+    se <- makeUnrangedSE(txi, coldata, metadata)
     return(se)
   }
 
@@ -177,7 +190,7 @@ tximeta <- function(coldata, ...) {
   # put 'counts' in front to facilitate DESeqDataSet construction
   se <- SummarizedExperiment(assays=txi[c("counts","abundance","length")],
                              rowRanges=txps,
-                             colData=coldataSub,
+                             colData=coldata,
                              metadata=metadata)
   se
   
@@ -317,4 +330,10 @@ checkTxi2Txps <- function(txi, txps) {
     }
   }
   txi
+}
+
+makeUnrangedSE <- function(txi, coldata, metadata) {
+  SummarizedExperiment(assays=txi[c("counts","abundance","length")],
+                       colData=coldata,
+                       metadata=metadata)
 }
