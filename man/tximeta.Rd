@@ -15,7 +15,7 @@ tximeta(coldata, type = "salmon", ...)
 
 \item{type}{what quantifier was used (see \code{\link{tximport}})}
 
-\item{...}{initial arguments passed to \code{tximport}}
+\item{...}{arguments passed to \code{tximport}}
 }
 \value{
 a SummarizedExperiment with metadata on the \code{rowRanges}.

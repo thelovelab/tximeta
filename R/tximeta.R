@@ -39,7 +39,7 @@
 #' \item{"names"}{character vector of sample names}
 #' }
 #' @param type what quantifier was used (see \code{\link{tximport}})
-#' @param ... initial arguments passed to \code{tximport}
+#' @param ... arguments passed to \code{tximport}
 #' 
 #' @return a SummarizedExperiment with metadata on the \code{rowRanges}.
 #' (if the hash signature in the Salmon or Sailfish index does not match

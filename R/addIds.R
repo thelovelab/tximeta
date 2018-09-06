@@ -27,7 +27,7 @@ addIds <- function(se, column, gene=FALSE) {
                         ".eg.db")
   stopifnot(requireNamespace(orgpkg.name, quietly=TRUE))
   orgpkg <- get(orgpkg.name)
-  message(paste0("mapping to new IDs using '", orgpkg.name, "' data package"))
+  message("mapping to new IDs using '", orgpkg.name, "' data package")
   keytype <- if (gene) "ENSEMBL" else "ENSEMBLTRANS"
   suppressMessages({newIds <- mapIds(orgpkg, sub("\\..*","", rownames(se)),
                                      column, keytype)})

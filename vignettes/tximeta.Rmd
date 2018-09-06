@@ -99,10 +99,10 @@ coming from the annotation source, and not easily avoided by
 `tximeta`. 
 
 We plan to create and maintain a large table of signatures for as many
-sources, organisms, releases of transcriptomes as possible. We are
-also developing support for *linked transcriptomes*, where one or
+sources, organisms, releases of transcriptomes as possible. `tximeta`
+also has functions to support for *linked transcriptomes*, where one or
 more sources for transcript sequences have been combined or
-filtered. See the `linkedTxome` vignette in this package for a
+filtered. See the **Linked transcriptome** section below for a
 demonstration. (The *makeLinkedTxome* function was used above to avoid
 downloading the GTF during the vignette building process.)
 
@@ -115,11 +115,10 @@ suppressPackageStartupMessages(library(SummarizedExperiment))
 colData(se)
 ```
 
-Here we show the three matrices that were imported. (Note: this part
-would need updating for un-reduced inferential variance matrices.) 
-(Second note: the downstream packages would need updating of their
-functions or workflows, e.g. `DESeqDataSetFromTximport` needs a little
-update to work with these *SummarizedExperiments* instead of simple lists.)
+Here we show the three matrices that were imported. `tximeta` does not
+yet support import of inferential replicates (Gibbs samples or
+bootstrap samples), but this functionality will be added in a future
+version.
 
 ```{r}
 assayNames(se)
@@ -145,7 +144,10 @@ creation, it also keeps a pointer to the necessary database for
 summarizing transcript-level quantifications and bias corrections to
 the gene-level. If necessary, `summarizeToGene` can pull down the
 remote source for summarization, but given that we've already built a
-TxDb once, it simply loads the stashed version.
+TxDb once, it simply loads the stashed version. In order to remove the
+stashed TxDb and regenerate, one can remove the relevant entry from
+the `tximeta` file cache that resides at the location given by
+`getTximetaBFC()`.
 
 ```{r}
 gse <- summarizeToGene(se)
@@ -170,21 +172,14 @@ mcols(gse)
 # Run a differential expression analysis
 
 The following code chunk demonstrates how to build a *DESeqDataSet*
-and begin a differential expression analysis. Likely we would
-simplify these steps with a convenience function either in *tximeta*
-or in *DESeq2*.
+and begin a differential expression analysis. 
 
 ```{r}
 suppressPackageStartupMessages(library(DESeq2))
-gse2 <- gse
-assayNames(gse2)
-# rounding counts
-assay(gse2) <- round(assay(gse2))
-# rename the "length" assay to "avgTxLength"
-# DESeq2 will then use this matrix for calculating bias offsets
-assayNames(gse2)[3] <- "avgTxLength"
-# here there is a single sample so we use ~1
-dds <- DESeqDataSet(gse2, ~1)
+assay(gse) <- round(assay(gse)) # delete this after DESeq2 v1.21.18 propagates
+# here there is a single sample so we use ~1.
+# expect a warning that there is only a single sample...
+suppressWarnings({dds <- DESeqDataSet(gse, ~1)})
 dds <- estimateSizeFactors(dds)
 # ... and so on
 ```
@@ -196,10 +191,10 @@ The following information is attached to the *SummarizedExperiment* by
 
 ```{r}
 names(metadata(se))
-str(metadata(se)$quantInfo)
-str(metadata(se)$txomeInfo)
-str(metadata(se)$tximetaInfo)
-str(metadata(se)$txdbInfo)
+str(metadata(se)[["quantInfo"]])
+str(metadata(se)[["txomeInfo"]])
+str(metadata(se)[["tximetaInfo"]])
+str(metadata(se)[["txdbInfo"]])
 ```
 
 # Quantification files with an unknown transcriptome

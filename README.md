@@ -169,9 +169,6 @@ We use the following logic to specify the location of the
 We have a *tximeta* vignette for how `tximeta` would look, and some
 thoughts on next steps at the end of the document. 
 
-Also see the *linkedTxome* vignette for examples of how we are
-thinking to work with linked transcriptomes. 
-
 # Feedback
 
 We'd love to hear your feedback. Please file an 

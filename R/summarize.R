@@ -6,6 +6,7 @@
 #' in the BiocFileCache or by building it from an ftp location).
 #'
 #' @param se a SummarizedExperiment produced by \code{tximeta}
+#' @param ... arguments passed to \code{tximport}
 #'
 #' @return a SummarizedExperiment with summarized quantifications
 #'
@@ -15,7 +16,7 @@
 #' gse <- summarizeToGene(se)
 #'
 #' @export
-summarizeToGene <- function(se) {
+summarizeToGene <- function(se, ...) {
 
   # TODO make `summarizeToGene` a generic in tximport
 
@@ -29,7 +30,7 @@ summarizeToGene <- function(se) {
     length=assays(se)$length,
     countsFromAbundance="no"
   )
-  txi.gene <- tximport::summarizeToGene(txi, tx2gene)
+  txi.gene <- tximport::summarizeToGene(txi, tx2gene, ...)
 
   # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
   suppressWarnings({ g <- genes(txdb) })
@@ -40,10 +41,16 @@ summarizeToGene <- function(se) {
   # TODO give a warning here if there are genes in TxDb not in Salmon index?
   g <- g[rownames(txi.gene$counts)]
 
+  metadata <- metadata(se)
+  # stash countsFromAbundance value
+  metadata$countsFromAbundance <- txi.gene$countsFromAbundance
+  
+  
   # put 'counts' in front to facilitate DESeqDataSet construction
   gse <- SummarizedExperiment(assays=txi.gene[c("counts","abundance","length")],
                               rowRanges=g,
                               colData=colData(se),
-                              metadata=metadata(se))
+                              metadata=metadata)
+  
   gse
 }

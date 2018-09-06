@@ -4,10 +4,12 @@
 \alias{summarizeToGene}
 \title{Summarize transcript-level quantifications to gene-level}
 \usage{
-summarizeToGene(se)
+summarizeToGene(se, ...)
 }
 \arguments{
 \item{se}{a SummarizedExperiment produced by \code{tximeta}}
+
+\item{...}{arguments passed to \code{tximport}}
 }
 \value{
 a SummarizedExperiment with summarized quantifications
