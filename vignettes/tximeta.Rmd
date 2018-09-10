@@ -176,7 +176,6 @@ and begin a differential expression analysis.
 
 ```{r}
 suppressPackageStartupMessages(library(DESeq2))
-assay(gse) <- round(assay(gse)) # delete this after DESeq2 v1.21.18 propagates
 # here there is a single sample so we use ~1.
 # expect a warning that there is only a single sample...
 suppressWarnings({dds <- DESeqDataSet(gse, ~1)})
