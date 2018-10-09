@@ -151,9 +151,15 @@ tximeta <- function(coldata, type="salmon", ...) {
   
   message("generating transcript ranges")
   # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
-  suppressWarnings({
-    txps <- transcripts(txdb)
-  })
+  if (txomeInfo$source == "Ensembl") {
+    suppressWarnings({
+        txps <- transcripts(txdb)
+    })
+  } else {
+    suppressWarnings({
+        txps <- transcripts(txdb, columns=c("tx_id","gene_id","tx_name"))
+    })
+  }
   names(txps) <- txps$tx_name
 
   # TODO temporary hack: Ensembl FASTA has txp version, Ensembl GTF it is not in the txname
