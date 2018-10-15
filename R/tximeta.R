@@ -33,10 +33,10 @@
 #' same location, one should set the BiocFileCache directory to
 #' have group write permissions (g+w).
 #'
-#' @param coldata a data.frame with at least two columns:
+#' @param coldata a data.frame with at least two columns (others will propogate to object):
 #' \itemize{
-#' \item{"files"}{character vector pointing to sample quantification files}
-#' \item{"names"}{character vector of sample names}
+#' \item{\code{files} - character, path of quantification files}
+#' \item{\code{names} - character, sample names}
 #' }
 #' @param type what quantifier was used (see \code{\link{tximport}})
 #' @param ... arguments passed to \code{tximport}
