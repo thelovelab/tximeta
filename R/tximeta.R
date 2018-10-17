@@ -73,7 +73,7 @@
 #' # bfc <- BiocFileCache(bfcloc)
 #' # bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 #'
-#' @importFrom SummarizedExperiment SummarizedExperiment assays colData
+#' @importFrom SummarizedExperiment SummarizedExperiment assays assayNames colData
 #' @importFrom S4Vectors metadata mcols mcols<-
 #' @importFrom tximport tximport summarizeToGene
 #' @importFrom jsonlite fromJSON toJSON
@@ -136,8 +136,6 @@ tximeta <- function(coldata, type="salmon", ...) {
   txi <- tximport(files, type=type, txOut=TRUE, ...)
   metadata$countsFromAbundance <- txi$countsFromAbundance
 
-  # TODO need to store "countsFromAbundance" value in outgoing 'se'
-
   # try and find a matching txome
   txomeInfo <- getTxomeInfo(indexSeqHash)
   if (is.null(txomeInfo)) {
@@ -162,21 +160,37 @@ tximeta <- function(coldata, type="salmon", ...) {
   }
   names(txps) <- txps$tx_name
 
+  # put 'counts' in front to facilitate DESeqDataSet construction
+  assays <- txi[c("counts","abundance","length")]
+
+  # if there are inferential replicates or inferential variance
+  if ("infReps" %in% names(txi)) {
+    infReps <- rearrangeInfReps(txi)
+    infReps <- lapply(infReps, function(mat) {
+      rownames(mat) <- rownames(assays[["counts"]])
+      colnames(mat) <- colnames(assays[["counts"]])
+      mat
+    })
+    assays <- c(assays, infReps)
+  } else if ("variance" %in% names(txi)) {
+    assays <- c(assays, txi["variance"])
+  }
+  
   # TODO temporary hack: Ensembl FASTA has txp version, Ensembl GTF it is not in the txname
   # meanwhile Gencode GTF puts the version in the name
   if (txomeInfo$source == "Ensembl") {
-    txId <- sub("\\..*", "", rownames(txi$counts))
-    rownames(txi$abundance) <- txId
-    rownames(txi$counts) <- txId
-    rownames(txi$length) <- txId
+    txId <- sub("\\..*", "", rownames(assays[["counts"]]))
+    for (nm in names(assays)) {
+      rownames(assays[[nm]]) <- txId
+    }
   }
 
-  txi <- checkTxi2Txps(txi, txps)
+  assays <- checkAssays2Txps(assays, txps)
   
   # TODO give a warning here if there are transcripts in TxDb not in Salmon index?
   # ...hmm, maybe not because that is now a "feature" given linkedTxomes that
   # are a simple subset of the transcripts/genes in the source FASTA & GTF
-  txps <- txps[rownames(txi$counts)]
+  txps <- txps[rownames(assays[["counts"]])]
 
   # Ensembl already has nice seqinfo attached, if not:
   if (txomeInfo$source != "Ensembl") {
@@ -193,8 +207,7 @@ tximeta <- function(coldata, type="salmon", ...) {
   metadata$txomeInfo <- txomeInfo
   metadata$txdbInfo <- txdbInfo
 
-  # put 'counts' in front to facilitate DESeqDataSet construction
-  se <- SummarizedExperiment(assays=txi[c("counts","abundance","length")],
+  se <- SummarizedExperiment(assays=assays,
                              rowRanges=txps,
                              colData=coldata,
                              metadata=metadata)
@@ -316,30 +329,50 @@ getTxDb <- function(txomeInfo) {
 }
 
 # check to see if there are any missing transcripts not available
-# for the rows of the tximport matrices. if so, give warning and subset
+# for the rows of the tximport assay matrices. if so, give warning and subset
 # (or error if all are missing)
-checkTxi2Txps <- function(txi, txps) {
-  txi.nms <- rownames(txi$counts)
-  txps.missing <- !txi.nms %in% names(txps)
-  if (!all(txi.nms %in% names(txps))) {
-    if (all(!txi.nms %in% names(txps))) {
+checkAssays2Txps <- function(assays, txps) {
+  assay.nms <- rownames(assays[["counts"]])
+  txps.missing <- !assay.nms %in% names(txps)
+  if (!all(assay.nms %in% names(txps))) {
+    
+    if (all(!assay.nms %in% names(txps))) {
       stop("none of the transcripts in the quantification files are in the GTF")
     } else {
       # TODO what to do here, GTF is missing some txps in FASTA for Ensembl
       warning(paste("missing some transcripts!
-",sum(txps.missing), "out of", nrow(txi$counts),
+",sum(txps.missing), "out of", nrow(assays[["counts"]]),
 "are missing from the GTF and dropped from SummarizedExperiment output"))
-      # TODO what about other matrices (inferential variance, etc.)?
-      for (mat in c("abundance","counts","length")) {
-        txi[[mat]] <- txi[[mat]][!txps.missing,,drop=FALSE]
+
+      # after warning, then subset
+      for (nm in names(assays)) {
+        assays[[nm]] <- assays[[nm]][!txps.missing,,drop=FALSE]
       }
+      
     }
   }
-  txi
+  assays
 }
 
 makeUnrangedSE <- function(txi, coldata, metadata) {
-  SummarizedExperiment(assays=txi[c("counts","abundance","length")],
+  assays <- txi[c("counts","abundance","length")]
+  # if there are inferential replicates
+  if ("infReps" %in% names(txi)) {
+    infReps <- rearrangeInfReps(txi)
+    assays <- c(assays, infReps)
+  } else if ("variance" %in% names(txi)) {
+    assays <- c(assays, txi["variance"])
+  }
+  SummarizedExperiment(assays=assays,
                        colData=coldata,
                        metadata=metadata)
+}
+
+rearrangeInfReps <- function(txi) {
+  nreps <- ncol(txi$infReps[[1]])
+  stopifnot(all(sapply(txi$infReps, ncol) == nreps))
+  getCols <- function(j,l) do.call(cbind, lapply(seq_along(l), function(k)  l[[k]][,j]))
+  infReps <- lapply(seq_len(nreps), getCols, txi$infReps)
+  names(infReps) <- paste0("infRep",seq_len(nreps))
+  infReps
 }
