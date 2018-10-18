@@ -35,9 +35,11 @@
 #'
 #' @param coldata a data.frame with at least two columns (others will propogate to object):
 #' \itemize{
-#' \item{\code{files} - character, path of quantification files}
+#' \item{\code{files} - character, paths of quantification files}
 #' \item{\code{names} - character, sample names}
 #' }
+#' if \code{coldata} is a vector, it is assumed to be the paths of quantification files
+#' and unique sample names are created
 #' @param type what quantifier was used (see \code{\link{tximport}})
 #' @param ... arguments passed to \code{tximport}
 #' 
@@ -89,6 +91,10 @@
 #'
 #' @export
 tximeta <- function(coldata, type="salmon", ...) {
+
+  if (is(coldata, "vector")) {
+    coldata <- data.frame(files=coldata, names=seq_along(coldata))
+  }
   
   stopifnot(all(c("files","names") %in% names(coldata)))
   

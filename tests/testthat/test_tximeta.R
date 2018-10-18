@@ -15,6 +15,9 @@ test_that("tximeta works as expected", {
                   release="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
 
   expect_warning({se <- tximeta(coldata)}, "missing from the GTF")
+
+  # just a vector of file paths is ok
+  expect_warning({se <- tximeta(files)})
   
 })
 

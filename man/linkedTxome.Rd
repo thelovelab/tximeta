@@ -3,6 +3,7 @@
 \name{linkedTxome}
 \alias{linkedTxome}
 \alias{makeLinkedTxome}
+\alias{linkedTxome}
 \alias{loadLinkedTxome}
 \title{Make and load linked transcriptomes ("linkedTxome")}
 \usage{
