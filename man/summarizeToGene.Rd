@@ -4,10 +4,13 @@
 \alias{summarizeToGene}
 \title{Summarize transcript-level quantifications to gene-level}
 \usage{
-summarizeToGene(se, ...)
+summarizeToGene(se, varReduce = FALSE, ...)
 }
 \arguments{
 \item{se}{a SummarizedExperiment produced by \code{tximeta}}
+
+\item{varReduce}{whether to reduce per-sample inferential replicates
+information into a matrix of sample variances \code{variance} (default FALSE)}
 
 \item{...}{arguments passed to \code{tximport}}
 }

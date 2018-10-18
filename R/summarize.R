@@ -6,6 +6,8 @@
 #' in the BiocFileCache or by building it from an ftp location).
 #'
 #' @param se a SummarizedExperiment produced by \code{tximeta}
+#' @param varReduce whether to reduce per-sample inferential replicates
+#' information into a matrix of sample variances \code{variance} (default FALSE)
 #' @param ... arguments passed to \code{tximport}
 #'
 #' @return a SummarizedExperiment with summarized quantifications
@@ -16,7 +18,7 @@
 #' gse <- summarizeToGene(se)
 #'
 #' @export
-summarizeToGene <- function(se, ...) {
+summarizeToGene <- function(se, varReduce=FALSE, ...) {
 
   # TODO make `summarizeToGene` a generic in tximport
 
@@ -37,15 +39,23 @@ summarizeToGene <- function(se, ...) {
   )
   if ("infRep1" %in% assayNames(se)) {
     infReps <- list(assays(se)[grep("infRep", assayNames(se))])
+    if (varReduce) {
+      # split from per replicate list into per sample list
+      # (this is what tximport expects for varReduce=TRUE)
+      infReps <- list(splitInfReps(infReps[[1]]))
+    }
     txi <- c(txi, infReps=infReps)
+  } else {
+    if (varReduce) stop("cannot calculate inferential variance without inferential replicates")
   }
 
-  # TODO only trick here is if varReduce=TRUE and infReps are re-packaged by tximeta it won't work
-  txi.gene <- tximport::summarizeToGene(txi, tx2gene, ...)
+  txi.gene <- tximport::summarizeToGene(txi, tx2gene, varReduce=varReduce, ...)
 
   # put 'counts' in front to facilitate DESeqDataSet construction
   assays <- txi.gene[c("counts","abundance","length")]
-  if ("infRep1" %in% assayNames(se)) {
+  if (varReduce) {
+    assays <- c(assays, txi.gene["variance"])
+  } else if ("infRep1" %in% assayNames(se)) {
     infReps <- txi.gene$infReps
     assays <- c(assays, infReps)
   }
@@ -63,7 +73,6 @@ summarizeToGene <- function(se, ...) {
   gse <- SummarizedExperiment(assays=assays,
                               rowRanges=g,
                               colData=colData(se),
-                              metadata=metadata)
-  
+                              metadata=metadata)  
   gse
 }

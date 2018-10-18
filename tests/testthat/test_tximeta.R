@@ -53,11 +53,13 @@ test_that("tximeta can import inferential replicates", {
     expect_true("infRep1" %in% assayNames(se))
 
     se2 <- tximeta(coldata, varReduce=TRUE)
-    expect_true("variance" %in% assayNames(se))
+    expect_true("variance" %in% assayNames(se2))
 
     gse <- summarizeToGene(se)
-    # TODO this doesn't work yet
-    # gse <- summarizeToGene(se, varReduce=TRUE)
+    expect_true("infRep1" %in% assayNames(gse))
+
+    gse <- summarizeToGene(se, varReduce=TRUE)
+    expect_true("variance" %in% assayNames(gse))
     
   }
   
