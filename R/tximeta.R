@@ -165,7 +165,7 @@ tximeta <- function(coldata, type="salmon", ...) {
 
   # if there are inferential replicates or inferential variance
   if ("infReps" %in% names(txi)) {
-    infReps <- rearrangeInfReps(txi)
+    infReps <- rearrangeInfReps(txi$infReps)
     infReps <- lapply(infReps, function(mat) {
       rownames(mat) <- rownames(assays[["counts"]])
       colnames(mat) <- colnames(assays[["counts"]])
@@ -358,7 +358,7 @@ makeUnrangedSE <- function(txi, coldata, metadata) {
   assays <- txi[c("counts","abundance","length")]
   # if there are inferential replicates
   if ("infReps" %in% names(txi)) {
-    infReps <- rearrangeInfReps(txi)
+    infReps <- rearrangeInfReps(txi$infReps)
     assays <- c(assays, infReps)
   } else if ("variance" %in% names(txi)) {
     assays <- c(assays, txi["variance"])
@@ -368,11 +368,25 @@ makeUnrangedSE <- function(txi, coldata, metadata) {
                        metadata=metadata)
 }
 
-rearrangeInfReps <- function(txi) {
-  nreps <- ncol(txi$infReps[[1]])
-  stopifnot(all(sapply(txi$infReps, ncol) == nreps))
+# arrange list of inferential replicate matrices (per sample)
+# into per replicate (infRep1, infRep2, ...)
+rearrangeInfReps <- function(infReps) {
+  nreps <- ncol(infReps[[1]])
+  stopifnot(all(sapply(infReps, ncol) == nreps))
   getCols <- function(j,l) do.call(cbind, lapply(seq_along(l), function(k)  l[[k]][,j]))
-  infReps <- lapply(seq_len(nreps), getCols, txi$infReps)
+  infReps <- lapply(seq_len(nreps), getCols, infReps)
   names(infReps) <- paste0("infRep",seq_len(nreps))
   infReps
 }
+
+# split list of inferential replicate matrices (per replicate)
+# into per sample (sample1, sample2, ...)
+splitInfReps <- function(infReps) {
+  nsamps <- ncol(infReps[[1]])
+  sample.names <- colnames(infReps[[1]])
+  getCols <- function(j,l) do.call(cbind, lapply(seq_along(l), function(k)  l[[k]][,j]))
+  infReps <- lapply(seq_len(nsamps), getCols, infReps)
+  names(infReps) <- sample.names
+  infReps
+}
+
