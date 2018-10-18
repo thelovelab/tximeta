@@ -9,9 +9,11 @@ tximeta(coldata, type = "salmon", ...)
 \arguments{
 \item{coldata}{a data.frame with at least two columns (others will propogate to object):
 \itemize{
-\item{\code{files} - character, path of quantification files}
+\item{\code{files} - character, paths of quantification files}
 \item{\code{names} - character, sample names}
-}}
+}
+if \code{coldata} is a vector, it is assumed to be the paths of quantification files
+and unique sample names are created}
 
 \item{type}{what quantifier was used (see \code{\link{tximport}})}
 
