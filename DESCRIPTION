@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 0.99.16
+Version: 0.99.17
 Title: Transcript Quantification Import with Automatic Metadata
 Description: Transcript quantification import from Salmon with
     automatic population of metadata and transcript ranges.
@@ -8,9 +8,9 @@ Description: Transcript quantification import from Salmon with
     reproducible analyses.
 Authors@R: c(
     person("Michael", "Love", email="michaelisaiahlove@gmail.com", role = c("aut","cre")),
-    person("Rob", "Patro", role = "aut"),
-    person("Peter", "Hickey", role = "ctb"),
-    person("Charlotte", "Soneson", role = "ctb"))
+    person("Rob", "Patro", role = c("aut","ctb")),
+    person("Peter", "Hickey", role = c("aut","ctb")),
+    person("Charlotte", "Soneson", role = c("aut","ctb")))
 Maintainer: Michael Love <michaelisaiahlove@gmail.com>
 License: GPL-2
 VignetteBuilder: knitr
