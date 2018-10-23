@@ -4,7 +4,7 @@
 \alias{tximeta}
 \title{tximeta: Transcript quantification import with automatic metadata}
 \usage{
-tximeta(coldata, type = "salmon", ...)
+tximeta(coldata, type = "salmon", skipMeta = FALSE, ...)
 }
 \arguments{
 \item{coldata}{a data.frame with at least two columns (others will propogate to object):
@@ -16,6 +16,11 @@ if \code{coldata} is a vector, it is assumed to be the paths of quantification f
 and unique sample names are created}
 
 \item{type}{what quantifier was used (see \code{\link{tximport}})}
+
+\item{skipMeta}{whether to skip metadata generation
+(e.g. to avoid errors if not connected to internet).
+This calls \code{tximport} directly and so either
+\code{txOut=TRUE} or \code{tx2gene} should be specified.}
 
 \item{...}{arguments passed to \code{tximport}}
 }

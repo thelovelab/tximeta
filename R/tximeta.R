@@ -41,6 +41,10 @@
 #' if \code{coldata} is a vector, it is assumed to be the paths of quantification files
 #' and unique sample names are created
 #' @param type what quantifier was used (see \code{\link{tximport}})
+#' @param skipMeta whether to skip metadata generation
+#' (e.g. to avoid errors if not connected to internet).
+#' This calls \code{tximport} directly and so either
+#' \code{txOut=TRUE} or \code{tx2gene} should be specified.
 #' @param ... arguments passed to \code{tximport}
 #' 
 #' @return a SummarizedExperiment with metadata on the \code{rowRanges}.
@@ -90,7 +94,7 @@
 #' @importFrom methods is
 #'
 #' @export
-tximeta <- function(coldata, type="salmon", ...) {
+tximeta <- function(coldata, type="salmon", skipMeta=FALSE, ...) {
 
   if (is(coldata, "vector")) {
     coldata <- data.frame(files=coldata, names=seq_along(coldata))
@@ -114,7 +118,7 @@ tximeta <- function(coldata, type="salmon", ...) {
 
   metadata <- list(tximetaInfo=tximetaInfo)
   
-  if (!type %in% c("salmon","sailfish")) {
+  if (!type %in% c("salmon","sailfish") | skipMeta) {
     txi <- tximport(files, type=type, ...)
     metadata$countsFromAbundance <- txi$countsFromAbundance
     se <- makeUnrangedSE(txi, coldata, metadata)
