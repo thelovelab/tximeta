@@ -4,7 +4,8 @@
 \alias{tximeta}
 \title{tximeta: Transcript quantification import with automatic metadata}
 \usage{
-tximeta(coldata, type = "salmon", skipMeta = FALSE, ...)
+tximeta(coldata, type = "salmon", txOut = TRUE, skipMeta = FALSE,
+  ...)
 }
 \arguments{
 \item{coldata}{a data.frame with at least two columns (others will propogate to object):
@@ -16,6 +17,12 @@ if \code{coldata} is a vector, it is assumed to be the paths of quantification f
 and unique sample names are created}
 
 \item{type}{what quantifier was used (see \code{\link{tximport}})}
+
+\item{txOut}{whether to output transcript-level data.
+\code{tximeta} is designed to have transcript-level output
+with Salmon or Sailfish, so default is \code{TRUE},
+and it's recommended to use \code{\link{summarizeToGene}}
+following \code{tximeta} for gene-level summarization.}
 
 \item{skipMeta}{whether to skip metadata generation
 (e.g. to avoid errors if not connected to internet).

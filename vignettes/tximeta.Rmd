@@ -431,6 +431,16 @@ transcriptome, the cDNA sequences of which can be hashed with
 [FastaDigest](https://github.com/COMBINE-lab/FastaDigest) 
 (can be installed with `pip install fasta_digest`).
 
+# Acknowledgments
+
+The development of *tximeta* has benefited from suggestions from these
+and other individuals in the community:
+
+* Vincent Carey
+* Lori Shepherd
+* Martin Morgan
+* Koen van den Berge
+
 # Next steps
 
 ### Basic functionality

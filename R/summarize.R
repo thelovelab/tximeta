@@ -22,6 +22,8 @@ summarizeToGene <- function(se, varReduce=FALSE, ...) {
 
   # TODO make `summarizeToGene` a generic in tximport
 
+  missingMetadata(se, summarize=TRUE)
+    
   txdb <- getTxDb(metadata(se)$txomeInfo)
   message("obtaining transcript-to-gene mapping from TxDb")
 
@@ -75,4 +77,14 @@ summarizeToGene <- function(se, varReduce=FALSE, ...) {
                               colData=colData(se),
                               metadata=metadata)  
   gse
+}
+
+missingMetadata <- function(se, summarize=TRUE) {
+  msg <- "use of this function requires transcriptome metadata which is missing.
+  use a linkedTxome to provide the missing metadata and rerun tximeta()"
+  if (summarize) {
+    msg <- paste0(msg, "
+  or use tx2gene, txOut=FALSE (and skipMeta=TRUE if Salmon/Sailfish)")
+  }
+  if (is.null(metadata(se)$txomeInfo)) stop(msg)
 }

@@ -18,6 +18,13 @@ test_that("tximeta works as expected", {
 
   # just a vector of file paths is ok
   expect_warning({se <- tximeta(files)})
+
+  expect_error({se <- tximeta(coldata, txOut=FALSE)}, "transcript-level output")
+
+  # skip metadata
+  se <- tximeta(coldata, skipMeta=TRUE)
+  expect_error({summarizeToGene(se)}, "transcriptome metadata")
+  expect_error({addIds(se)}, "transcriptome metadata")
   
 })
 
