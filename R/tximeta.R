@@ -41,6 +41,11 @@
 #' if \code{coldata} is a vector, it is assumed to be the paths of quantification files
 #' and unique sample names are created
 #' @param type what quantifier was used (see \code{\link{tximport}})
+#' @param txOut whether to output transcript-level data.
+#' \code{tximeta} is designed to have transcript-level output
+#' with Salmon or Sailfish, so default is \code{TRUE},
+#' and it's recommended to use \code{\link{summarizeToGene}}
+#' following \code{tximeta} for gene-level summarization.
 #' @param skipMeta whether to skip metadata generation
 #' (e.g. to avoid errors if not connected to internet).
 #' This calls \code{tximport} directly and so either
@@ -94,7 +99,7 @@
 #' @importFrom methods is
 #'
 #' @export
-tximeta <- function(coldata, type="salmon", skipMeta=FALSE, ...) {
+tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
 
   if (is(coldata, "vector")) {
     coldata <- data.frame(files=coldata, names=seq_along(coldata))
@@ -119,10 +124,13 @@ tximeta <- function(coldata, type="salmon", skipMeta=FALSE, ...) {
   metadata <- list(tximetaInfo=tximetaInfo)
   
   if (!type %in% c("salmon","sailfish") | skipMeta) {
-    txi <- tximport(files, type=type, ...)
+    txi <- tximport(files, type=type, txOut=txOut, ...)
     metadata$countsFromAbundance <- txi$countsFromAbundance
     se <- makeUnrangedSE(txi, coldata, metadata)
     return(se)
+  } else {
+    if (!txOut) stop("tximeta is designed to have transcript-level output for Salmon/Sailfish.
+  set txOut=TRUE and use summarizeToGene for gene-level summarization")
   }
   
   # get quantifier metadata from JSON files within quant dirs
