@@ -4,7 +4,7 @@
 \alias{addIds}
 \title{Add IDs to rowRanges of a SummarizedExperiment}
 \usage{
-addIds(se, column, gene = FALSE)
+addIds(se, column, gene = FALSE, ...)
 }
 \arguments{
 \item{se}{the SummarizedExperiment}
@@ -12,6 +12,8 @@ addIds(se, column, gene = FALSE)
 \item{column}{the name of the new ID to add (a \code{column} of the org database)}
 
 \item{gene}{logical, whether the rows are genes or transcripts (default is FALSE)}
+
+\item{...}{arguments passed to \code{mapIds}}
 }
 \value{
 a SummarizedExperiment
@@ -19,7 +21,10 @@ a SummarizedExperiment
 \description{
 For now this just works with SummarizedExperiments
 with Ensembl gene or transcript IDs. See example
-of usage in tximeta vignette.
+of usage in tximeta vignette. For obtaining
+multiple matching IDs for each row of the SummarizedExperiment
+set \code{multiVals="list"}. See \code{select} for documentation
+on use of \code{multiVals}.
 }
 \examples{
 
