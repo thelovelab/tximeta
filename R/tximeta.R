@@ -123,7 +123,7 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
 
   metadata <- list(tximetaInfo=tximetaInfo)
   
-  if (!type %in% c("salmon","sailfish") | skipMeta) {
+  if (!type %in% c("salmon","sailfish","alevin") | skipMeta) {
     txi <- tximport(files, type=type, txOut=txOut, ...)
     metadata$countsFromAbundance <- txi$countsFromAbundance
     se <- makeUnrangedSE(txi, coldata, metadata)
@@ -132,9 +132,14 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
     if (!txOut) stop("tximeta is designed to have transcript-level output for Salmon/Sailfish.
   set txOut=TRUE and use summarizeToGene for gene-level summarization")
   }
+
+  if (type == "alevin") {
+    metaInfo <- list(getMetaInfo(dirname(files)))
+  } else {
+    # get quantifier metadata from JSON files within quant dirs
+    metaInfo <- lapply(files, getMetaInfo)
+  }
   
-  # get quantifier metadata from JSON files within quant dirs
-  metaInfo <- lapply(files, getMetaInfo)
   # Salmon's SHA-256 hash of the index is called "index_seq_hash" in the meta_info.json file
   indexSeqHash <- metaInfo[[1]]$index_seq_hash # first sample  
   if (length(files) > 1) {
@@ -164,16 +169,25 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
 
   # go build or load a TxDb from the gtf
   txdb <- getTxDb(txomeInfo)
-  
-  message("generating transcript ranges")
-  # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
-  suppressWarnings({
-    txps <- transcripts(txdb)
-  })
-  names(txps) <- txps$tx_name
+
+  if (type == "alevin") {
+    message("generating gene ranges")
+    txps <- genes(txdb)
+  } else {
+    message("generating transcript ranges")
+    # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
+    suppressWarnings({
+      txps <- transcripts(txdb)
+      names(txps) <- txps$tx_name
+    })
+  }
 
   # put 'counts' in front to facilitate DESeqDataSet construction
   assays <- txi[c("counts","abundance","length")]
+
+  if (type == "alevin") {
+    assays <- assays["counts"]
+  }
 
   # if there are inferential replicates or inferential variance
   if ("infReps" %in% names(txi)) {
@@ -219,6 +233,10 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
   metadata$txomeInfo <- txomeInfo
   metadata$txdbInfo <- txdbInfo
 
+  if (type == "alevin") {
+    coldata <- data.frame(row.names=colnames(assays[["counts"]]))
+  }
+  
   se <- SummarizedExperiment(assays=assays,
                              rowRanges=txps,
                              colData=coldata,
@@ -260,6 +278,8 @@ reshapeMetaInfo <- function(metaInfo) {
 genome2UCSC <- function(x) {
   if (x == "GRCh38") {
     "hg38"
+  } else if (x == "GRCm38") {
+    "mm10"
   } else {
     x
   }
