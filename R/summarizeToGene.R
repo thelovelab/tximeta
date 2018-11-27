@@ -1,30 +1,8 @@
-#' Summarize transcript-level quantifications to gene-level
-#'
-#' This function uses the tximport package to summarize counts,
-#' abundances and effective lengths from transcript-level to gene-level.
-#' It automatically will access the relevant TxDb (by either finding it
-#' in the BiocFileCache or by building it from an ftp location).
-#'
-#' @param se a SummarizedExperiment produced by \code{tximeta}
-#' @param varReduce whether to reduce per-sample inferential replicates
-#' information into a matrix of sample variances \code{variance} (default FALSE)
-#' @param ... arguments passed to \code{tximport}
-#'
-#' @return a SummarizedExperiment with summarized quantifications
-#'
-#' @examples
-#'
-#' example(tximeta)
-#' gse <- summarizeToGene(se)
-#'
-#' @export
-summarizeToGene <- function(se, varReduce=FALSE, ...) {
+summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
 
-  # TODO make `summarizeToGene` a generic in tximport
-
-  missingMetadata(se, summarize=TRUE)
+  missingMetadata(object, summarize=TRUE)
     
-  txdb <- getTxDb(metadata(se)$txomeInfo)
+  txdb <- getTxDb(metadata(object)$txomeInfo)
   message("obtaining transcript-to-gene mapping from TxDb")
 
   # TODO fix this next line of code for EnsDb
@@ -34,13 +12,13 @@ summarizeToGene <- function(se, varReduce=FALSE, ...) {
   suppressWarnings({ g <- genes(txdb) })
 
   txi <- list(
-    abundance=assays(se)[["abundance"]],
-    counts=assays(se)[["counts"]],
-    length=assays(se)[["length"]],
+    abundance=assays(object)[["abundance"]],
+    counts=assays(object)[["counts"]],
+    length=assays(object)[["length"]],
     countsFromAbundance="no"
   )
-  if ("infRep1" %in% assayNames(se)) {
-    infReps <- list(assays(se)[grep("infRep", assayNames(se))])
+  if ("infRep1" %in% assayNames(object)) {
+    infReps <- list(assays(object)[grep("infRep", assayNames(object))])
     if (varReduce) {
       # split from per replicate list into per sample list
       # (this is what tximport expects for varReduce=TRUE)
@@ -51,13 +29,13 @@ summarizeToGene <- function(se, varReduce=FALSE, ...) {
     if (varReduce) stop("cannot calculate inferential variance without inferential replicates")
   }
 
-  txi.gene <- tximport::summarizeToGene(txi, tx2gene, varReduce=varReduce, ...)
+  txi.gene <- summarizeToGene(object=txi, tx2gene=tx2gene, varReduce=varReduce, ...)
 
   # put 'counts' in front to facilitate DESeqDataSet construction
   assays <- txi.gene[c("counts","abundance","length")]
   if (varReduce) {
     assays <- c(assays, txi.gene["variance"])
-  } else if ("infRep1" %in% assayNames(se)) {
+  } else if ("infRep1" %in% assayNames(object)) {
     infReps <- txi.gene$infReps
     assays <- c(assays, infReps)
   }
@@ -68,16 +46,48 @@ summarizeToGene <- function(se, varReduce=FALSE, ...) {
   # TODO give a warning here if there are genes in TxDb not in Salmon index?
   g <- g[rownames(assays[["counts"]])]
 
-  metadata <- metadata(se)
+  metadata <- metadata(object)
   # stash countsFromAbundance value
   metadata$countsFromAbundance <- txi.gene$countsFromAbundance
   
   gse <- SummarizedExperiment(assays=assays,
                               rowRanges=g,
-                              colData=colData(se),
+                              colData=colData(object),
                               metadata=metadata)  
   gse
 }
+
+#' Summarize estimated quantitites to gene-level
+#'
+#' Summarizes abundances, counts, lengths, (and inferential
+#' replicates or variance) from transcript- to gene-level.
+#' This function operates on SummarizedExperiment objects, and
+#' will automatically access the relevant TxDb (by either finding it
+#' in the BiocFileCache or by building it from an ftp location).
+#' #' This function uses the tximport package to perform summarization,
+#' where a method is defined that works on simple lists.
+#'
+#' @param object a SummarizedExperiment produced by \code{tximeta}
+#' @param varReduce whether to reduce per-sample inferential replicates
+#' information into a matrix of sample variances \code{variance} (default FALSE)
+#' @param ... arguments passed to \code{tximport}
+#'
+#' @return a SummarizedExperiment with summarized quantifications
+#'
+#' @rdname summarizeToGene
+#' @docType methods
+#' @aliases summarizeToGene,SummarizedExperiment-method
+#' 
+#' @examples
+#'
+#' example(tximeta)
+#' gse <- summarizeToGene(se)
+#'
+#' @importFrom tximport summarizeToGene
+#' 
+#' @export
+setMethod("summarizeToGene", signature(object="SummarizedExperiment"),
+          summarizeToGene.SummarizedExperiment)
 
 missingMetadata <- function(se, summarize=TRUE) {
   msg <- "use of this function requires transcriptome metadata which is missing.
