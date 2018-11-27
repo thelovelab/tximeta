@@ -179,10 +179,16 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
   } else {
     message("generating transcript ranges")
     # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
-    suppressWarnings({
-      txps <- transcripts(txdb)
-      names(txps) <- txps$tx_name
-    })
+    if (txomeInfo$source == "Ensembl") {
+      suppressWarnings({
+        txps <- transcripts(txdb)
+      })
+    } else {
+      suppressWarnings({
+        txps <- transcripts(txdb, columns=c("tx_id","gene_id","tx_name"))
+      })      
+    }
+    names(txps) <- txps$tx_name
   }
 
   # put 'counts' in front to facilitate DESeqDataSet construction
