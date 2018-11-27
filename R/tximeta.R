@@ -163,6 +163,9 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
   txomeInfo <- getTxomeInfo(indexSeqHash)
   if (is.null(txomeInfo)) {
     message("couldn't find matching transcriptome, returning un-ranged SummarizedExperiment")
+    if (type == "alevin") {
+      coldata <- data.frame(row.names=colnames(txi[["counts"]]))
+    }
     se <- makeUnrangedSE(txi, coldata, metadata)
     return(se)
   }
@@ -176,17 +179,28 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
   } else {
     message("generating transcript ranges")
     # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
-    suppressWarnings({
-      txps <- transcripts(txdb)
-      names(txps) <- txps$tx_name
-    })
+    if (txomeInfo$source == "Ensembl") {
+      suppressWarnings({
+        txps <- transcripts(txdb)
+      })
+    } else {
+      suppressWarnings({
+        txps <- transcripts(txdb, columns=c("tx_id","gene_id","tx_name"))
+      })      
+    }
+    names(txps) <- txps$tx_name
   }
 
   # put 'counts' in front to facilitate DESeqDataSet construction
   assays <- txi[c("counts","abundance","length")]
 
   if (type == "alevin") {
-    assays <- assays["counts"]
+    if ("variance" %in% names(assays)) {
+      assays <- assays[c("counts","variance")]
+    } else {
+      assays <- assays["counts"]
+    }
+    coldata <- data.frame(row.names=colnames(assays[["counts"]]))
   }
 
   # if there are inferential replicates or inferential variance
@@ -233,10 +247,6 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
   metadata$txomeInfo <- txomeInfo
   metadata$txdbInfo <- txdbInfo
 
-  if (type == "alevin") {
-    coldata <- data.frame(row.names=colnames(assays[["counts"]]))
-  }
-  
   se <- SummarizedExperiment(assays=assays,
                              rowRanges=txps,
                              colData=coldata,
@@ -395,6 +405,7 @@ makeUnrangedSE <- function(txi, coldata, metadata) {
   } else if ("variance" %in% names(txi)) {
     assays <- c(assays, txi["variance"])
   }
+  assays <- assays[!sapply(assays, is.null)]
   SummarizedExperiment(assays=assays,
                        colData=coldata,
                        metadata=metadata)
