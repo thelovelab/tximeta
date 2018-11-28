@@ -183,6 +183,21 @@ dds <- estimateSizeFactors(dds)
 # ... and so on
 ```
 
+The following code chunk demonstrates how to build a *DGEList* object,
+for use with *edgeR* (for example of generating an object for running
+*limma*, see details in the *tximport* vignette).
+
+```{r}
+suppressPackageStartupMessages(library(edgeR))
+cts <- assays(gse)[["counts"]]
+normMat <- assays(gse)[["length"]]
+normMat <- normMat / exp(rowMeans(log(normMat)))
+o <- log(calcNormFactors(cts/normMat)) + log(colSums(cts/normMat))
+y <- DGEList(cts)
+y <- scaleOffset(y, t(t(log(normMat)) + o))
+# ... see edgeR User's Guide for further steps
+```
+
 # Metadata galore
 
 The following information is attached to the *SummarizedExperiment* by
