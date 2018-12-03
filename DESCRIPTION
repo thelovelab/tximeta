@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 1.1.7
+Version: 1.1.8
 Title: Transcript Quantification Import with Automatic Metadata
 Description: Transcript quantification import from Salmon with
     automatic population of metadata and transcript ranges.
@@ -38,6 +38,7 @@ Suggests:
     edgeR,
     devtools
 biocViews: Annotation, DataImport, Preprocessing,
-    RNASeq, Transcriptomics, Transcription, GeneExpression
+    RNASeq, Transcriptomics, Transcription, GeneExpression,
+    ImmunoOncology
 RoxygenNote: 6.1.0
 Encoding: UTF-8
