@@ -86,6 +86,7 @@
 #'
 #' @importFrom SummarizedExperiment SummarizedExperiment assays assayNames colData
 #' @importFrom S4Vectors metadata mcols mcols<-
+#' @importFrom GenomicRanges seqnames
 #' @importFrom tximport tximport summarizeToGene
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom AnnotationDbi loadDb saveDb select keys mapIds
