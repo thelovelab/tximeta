@@ -86,6 +86,7 @@
 #'
 #' @importFrom SummarizedExperiment SummarizedExperiment assays assayNames colData
 #' @importFrom S4Vectors metadata mcols mcols<-
+#' @importFrom GenomicRanges seqnames
 #' @importFrom tximport tximport summarizeToGene
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom AnnotationDbi loadDb saveDb select keys mapIds
@@ -189,6 +190,11 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
       })      
     }
     names(txps) <- txps$tx_name
+
+    # dammit de novo transcript annotation will have the transcript names as seqnames (seqid in the GFF3)
+    if (tolower(txomeInfo$source) == "dammit") {
+      names(txps) <- seqnames(txps)
+    }
   }
 
   # put 'counts' in front to facilitate DESeqDataSet construction
@@ -233,7 +239,7 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
   txps <- txps[rownames(assays[["counts"]])]
 
   # Ensembl already has nice seqinfo attached, if not:
-  if (txomeInfo$source != "Ensembl") {
+  if (txomeInfo$source == "Gencode") {
     # TODO can we get a solution that doesn't rely on UCSC for the seqlevels?
     # this produces an error if not connected to internet
     message("fetching genome info")
