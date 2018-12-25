@@ -324,8 +324,10 @@ getTxomeInfo <- function(indexSeqHash) {
 
   # if not in linkedTxomes try the pre-computed hashtable...
 
-  # TODO this is very temporary code obviously
-  # best this would be an external data package
+  # TODO this is temporary code, best this would be an external data package
+  # TODO multiple FASTAs are stored in the CSV with a space in between,
+  #      whereas in the linkedTxome tibble they are stored as a list()...
+  #      here perhaps they should be split into a list before being sent along as txomeInfo
   hashfile <- file.path(system.file("extdata",package="tximeta"),"hashtable.csv")
   hashtable <- read.csv(hashfile,stringsAsFactors=FALSE)
   m <- match(indexSeqHash, hashtable$sha256)
