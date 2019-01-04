@@ -191,7 +191,8 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
     }
     names(txps) <- txps$tx_name
 
-    # dammit de novo transcript annotation will have the transcript names as seqnames (seqid in the GFF3)
+    # dammit de novo transcript annotation will have
+    # the transcript names as seqnames (seqid in the GFF3)
     if (tolower(txomeInfo$source) == "dammit") {
       names(txps) <- seqnames(txps)
     }
@@ -325,15 +326,15 @@ getTxomeInfo <- function(indexSeqHash) {
   # if not in linkedTxomes try the pre-computed hashtable...
 
   # TODO this is temporary code, best this would be an external data package
-  # TODO multiple FASTAs are stored in the CSV with a space in between,
-  #      whereas in the linkedTxome tibble they are stored as a list()...
-  #      here perhaps they should be split into a list before being sent along as txomeInfo
   hashfile <- file.path(system.file("extdata",package="tximeta"),"hashtable.csv")
   hashtable <- read.csv(hashfile,stringsAsFactors=FALSE)
   m <- match(indexSeqHash, hashtable$sha256)
   if (!is.na(m)) {
     # now we can go get the GTF to annotate the ranges
     txomeInfo <- as.list(hashtable[m,])
+    if (grepl(" ", txomeInfo$fasta)) {
+      txomeInfo$fasta <- strsplit(txomeInfo$fasta, " ")
+    }
     message(paste0("found matching transcriptome:\n[ ",
                    txomeInfo$source," - ",txomeInfo$organism," - release ",txomeInfo$release," ]"))
     return(txomeInfo)
