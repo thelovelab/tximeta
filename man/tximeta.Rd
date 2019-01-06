@@ -5,7 +5,7 @@
 \title{tximeta: Transcript quantification import with automatic metadata}
 \usage{
 tximeta(coldata, type = "salmon", txOut = TRUE, skipMeta = FALSE,
-  ...)
+  cleanDuplicateTxps = FALSE, ...)
 }
 \arguments{
 \item{coldata}{a data.frame with at least two columns (others will propogate to object):
@@ -28,6 +28,11 @@ following \code{tximeta} for gene-level summarization.}
 (e.g. to avoid errors if not connected to internet).
 This calls \code{tximport} directly and so either
 \code{txOut=TRUE} or \code{tx2gene} should be specified.}
+
+\item{cleanDuplicateTxps}{whether to try to clean
+duplicate transcripts (exact sequence duplicates) by replacing
+the transcript names that do not appear in the GTF
+with those that do appear in the GTF}
 
 \item{...}{arguments passed to \code{tximport}}
 }

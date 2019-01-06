@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 1.1.11
+Version: 1.1.13
 Title: Transcript Quantification Import with Automatic Metadata
 Description: Transcript quantification import from Salmon with
     automatic population of metadata and transcript ranges.
@@ -23,6 +23,7 @@ Imports:
     AnnotationDbi,
     GenomicFeatures,
     ensembldb,
+    Biostrings,
     BiocFileCache,
     tibble,
     GenomeInfoDb,
