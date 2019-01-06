@@ -50,6 +50,10 @@
 #' (e.g. to avoid errors if not connected to internet).
 #' This calls \code{tximport} directly and so either
 #' \code{txOut=TRUE} or \code{tx2gene} should be specified.
+#' @param cleanDuplicateTxps whether to try to clean
+#' duplicate transcripts (exact sequence duplicates) by replacing
+#' the transcript names that do not appear in the GTF
+#' with those that do appear in the GTF
 #' @param ... arguments passed to \code{tximport}
 #' 
 #' @return a SummarizedExperiment with metadata on the \code{rowRanges}.
@@ -92,6 +96,7 @@
 #' @importFrom AnnotationDbi loadDb saveDb select keys mapIds
 #' @importFrom GenomicFeatures makeTxDbFromGFF transcripts genes
 #' @importFrom ensembldb ensDbFromGtf EnsDb
+#' @importFrom Biostrings readDNAStringSet %in%
 #' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfccount bfcrpath
 #' @importFrom tibble tibble
 #' @importFrom GenomeInfoDb Seqinfo genome<- seqinfo<- seqlevels
@@ -100,7 +105,8 @@
 #' @importFrom methods is
 #'
 #' @export
-tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
+tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE,
+                    cleanDuplicateTxps=FALSE, ...) {
 
   if (is(coldata, "vector")) {
     coldata <- data.frame(files=coldata, names=seq_along(coldata))
@@ -229,6 +235,30 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE, ...) {
     txId <- sub("\\..*", "", rownames(assays[["counts"]]))
     for (nm in names(assays)) {
       rownames(assays[[nm]]) <- txId
+    }
+  }
+
+  assay.nms <- rownames(assays[["counts"]])
+  txps.missing <- !assay.nms %in% names(txps)
+  if (sum(txps.missing) > 0 & cleanDuplicateTxps) {
+    # this function swaps out rows missing in `txps`
+    # for duplicate txps which are in `txps`. needed by 
+    # Ensembl includes haplotype chromosome txps that duplicate
+    # standard chromosome txps (identical sequence)
+    missing.txps <- assay.nms[txps.missing]
+    dup.table <- cleanDuplicateTxps(missing.txps, txomeInfo, txps)
+    if (is.null(dup.table)) {
+      message("no duplicated transcripts to clean")
+    } else {
+      message(paste("cleaning",nrow(dup.table),"duplicate transcript names"))
+      # which rownames to fix
+      m <- match(dup.table$dups.to.fix, assay.nms)
+      stopifnot(all(!is.na(m)))
+      # change the rownames to alternatives that are in `txps`
+      for (nm in names(assays)) {
+        assay.nms[m] <- dup.table$alts
+        rownames(assays[[nm]]) <- assay.nms
+      }      
     }
   }
 
