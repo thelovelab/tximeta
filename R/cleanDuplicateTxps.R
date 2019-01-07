@@ -17,9 +17,10 @@ cleanDuplicateTxps <- function(missing.txps, txomeInfo, txps) {
     } else {
       dna <- readDNAStringSet(txomeInfo$fasta)
     }
-    # since this only concerns Ensembl txps,
-    # cut off version number (and other info) from the name
-    names(dna) <- sub("\\..*", "", names(dna))
+    # this concerns Ensembl txps: cut off version number etc. from name
+    if (txomeInfo$source == "Ensembl") {
+      names(dna) <- sub("\\..*", "", names(dna))
+    }
 
     # which are duplicated based on DNA sequence
     dups <- duplicated(dna)
