@@ -275,7 +275,7 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE,
     # this produces an error if not connected to internet
     message("fetching genome info")
     ucsc_genome <- genome2UCSC(txomeInfo$genome)
-    seqinfo(txps) <- Seqinfo(genome=ucsc_genome)[seqlevels(txps)]
+    try(seqinfo(txps) <- Seqinfo(genome=ucsc_genome)[seqlevels(txps)])
   }
 
   # add more metadata
