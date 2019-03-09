@@ -11,7 +11,10 @@ addIds(se, column, gene = FALSE, ...)
 
 \item{column}{the name of the new ID to add (a \code{column} of the org database)}
 
-\item{gene}{logical, whether the rows are genes or transcripts (default is FALSE)}
+\item{gene}{logical, whether to map by genes or transcripts (default is FALSE).
+if rows are genes, and easily detected as such (ENSG or ENSMUSG), it will
+automatically switch to TRUE. if rows are transcripts and \code{gene=TRUE},
+then it will try to use a \code{gene_id} column to map IDs to \code{column}}
 
 \item{...}{arguments passed to \code{mapIds}}
 }
