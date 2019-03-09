@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.1.18
+-------------------------
+
+    o Specifying gene=TRUE in addIds() when rows are
+      transcripts will attempt to use a gene_id column
+      to map the IDs. This usually gives a better mapping
+      rate.
+
 CHANGES IN VERSION 0.0.16
 -------------------------
 

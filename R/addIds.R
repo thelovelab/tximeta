@@ -9,7 +9,10 @@
 #' 
 #' @param se the SummarizedExperiment
 #' @param column the name of the new ID to add (a \code{column} of the org database)
-#' @param gene logical, whether the rows are genes or transcripts (default is FALSE)
+#' @param gene logical, whether to map by genes or transcripts (default is FALSE).
+#' if rows are genes, and easily detected as such (ENSG or ENSMUSG), it will
+#' automatically switch to TRUE. if rows are transcripts and \code{gene=TRUE},
+#' then it will try to use a \code{gene_id} column to map IDs to \code{column}
 #' @param ... arguments passed to \code{mapIds}
 #'
 #' @return a SummarizedExperiment
@@ -36,13 +39,19 @@ addIds <- function(se, column, gene=FALSE, ...) {
   message("mapping to new IDs using '", orgpkg.name, "' data package
 if all matching IDs are desired, and '1:many mappings' are reported,
 set multiVals='list' to obtain all the matching IDs")
-  if (!gene & grepl("ENSG",rownames(se)[1])) {
+  if (!gene & grepl("ENSG|ENSMUSG",rownames(se)[1])) {
     message("it appears the rows are gene IDs, setting 'gene' to TRUE")
     gene <- TRUE
   }
+  keys <- rownames(se)
+  if (gene & grepl("ENST|ENSMUST",rownames(se)[1])) {
+    message("gene=TRUE and rows are transcripts: using 'gene_id' column to map IDs")
+    stopifnot("gene_id" %in% names(mcols(se)))
+    keys <- mcols(se)$gene_id
+  }
   keytype <- if (gene) "ENSEMBL" else "ENSEMBLTRANS"
-  newIds <- mapIds(orgpkg, sub("\\..*","", rownames(se)),
-                                     column, keytype, ...)
+  newIds <- mapIds(orgpkg, sub("\\..*","", keys),
+                   column, keytype, ...)
   mcols(se)[[column]] <- newIds
   se
 }
