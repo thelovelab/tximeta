@@ -67,6 +67,13 @@ test_that("tximeta can import inferential replicates", {
 
     gse <- summarizeToGene(se, varReduce=TRUE)
     expect_true("variance" %in% assayNames(gse))
+
+    dir <- system.file("extdata", package="macrophage")
+    coldata <- read.csv(file.path(dir, "coldata.csv"))
+    coldata$files <- file.path(dir, "quants", coldata$names, "quant.sf.gz")
+    coldata <- coldata[1:2,]
+    se <- tximeta(coldata)
+    se <- tximeta(coldata, skipSeqinfo=TRUE)
     
   }
   

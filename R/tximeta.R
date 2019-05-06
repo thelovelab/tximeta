@@ -50,6 +50,9 @@
 #' (e.g. to avoid errors if not connected to internet).
 #' This calls \code{tximport} directly and so either
 #' \code{txOut=TRUE} or \code{tx2gene} should be specified.
+#' @param skipSeqinfo whether to skip the addition of Seqinfo,
+#' which requires an internet connection to download the
+#' relevant chromosome information table from UCSC
 #' @param cleanDuplicateTxps whether to try to clean
 #' duplicate transcripts (exact sequence duplicates) by replacing
 #' the transcript names that do not appear in the GTF
@@ -105,7 +108,8 @@
 #' @importFrom methods is
 #'
 #' @export
-tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE,
+tximeta <- function(coldata, type="salmon", txOut=TRUE,
+                    skipMeta=FALSE, skipSeqinfo=FALSE,
                     cleanDuplicateTxps=FALSE, ...) {
 
   if (is(coldata, "vector")) {
@@ -270,7 +274,7 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE, skipMeta=FALSE,
   txps <- txps[rownames(assays[["counts"]])]
 
   # Ensembl already has nice seqinfo attached, if not:
-  if (txomeInfo$source == "Gencode") {
+  if (txomeInfo$source == "Gencode" & !skipSeqinfo) {
     # TODO can we get a solution that doesn't rely on UCSC for the seqlevels?
     # this produces an error if not connected to internet
     message("fetching genome info")
