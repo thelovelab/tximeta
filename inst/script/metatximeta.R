@@ -58,22 +58,18 @@ hashit <- function(source, organism, release, catNC=FALSE) {
   NULL
 }
 
-hashit("Gencode", "Homo sapiens", "29")
-hashit("Gencode", "Mus musculus", "M19")
-hashit("Gencode", "Mus musculus", "M18")
-hashit("Ensembl", "Homo sapiens", "94")
-hashit("Ensembl", "Homo sapiens", "93")
-hashit("Ensembl", "Mus musculus", "94")
-hashit("Ensembl", "Mus musculus", "93")
-hashit("Ensembl", "Drosophila melanogaster", "94")
-hashit("Ensembl", "Drosophila melanogaster", "93")
+hashit("Gencode", "Homo sapiens", "30")
+hashit("Gencode", "Mus musculus", "M21")
 
-hashit("Ensembl", "Mus musculus", "94", catNC=TRUE)
-hashit("Ensembl", "Mus musculus", "93", catNC=TRUE)
-hashit("Ensembl", "Mus musculus", "92", catNC=TRUE)
-hashit("Ensembl", "Mus musculus", "91", catNC=TRUE)
-hashit("Ensembl", "Mus musculus", "90", catNC=TRUE)
-hashit("Ensembl", "Mus musculus", "89", catNC=TRUE)
-hashit("Ensembl", "Mus musculus", "88", catNC=TRUE)
-hashit("Ensembl", "Mus musculus", "87", catNC=TRUE)
-hashit("Ensembl", "Mus musculus", "86", catNC=TRUE)
+hashit("Ensembl", "Homo sapiens", "95")
+hashit("Ensembl", "Homo sapiens", "96")
+hashit("Ensembl", "Mus musculus", "95")
+hashit("Ensembl", "Mus musculus", "96")
+hashit("Ensembl", "Drosophila melanogaster", "95")
+# hashit("Ensembl", "Drosophila melanogaster", "96") => genome moved from BDGP6 to BDGP6.22
+
+hashit("Ensembl", "Homo sapiens", "95", catNC=TRUE)
+hashit("Ensembl", "Homo sapiens", "96", catNC=TRUE)
+hashit("Ensembl", "Mus musculus", "95", catNC=TRUE)
+hashit("Ensembl", "Mus musculus", "96", catNC=TRUE)
+
