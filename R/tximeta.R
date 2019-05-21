@@ -181,31 +181,16 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
     return(se)
   }
 
-  # go build or load a TxDb from the gtf
+  # build or load a TxDb from the gtf
   txdb <- getTxDb(txomeInfo)
 
-  if (type == "alevin") {
+  # build or load transcript ranges (Alevin gets gene ranges instead)
+  if (type != "alevin") {
+    txps <- getTxpRanges(txdb, txomeInfo)
+  } else if (type == "alevin") {
+    # alevin gets gene ranges instead
     message("generating gene ranges")
     txps <- genes(txdb)
-  } else {
-    message("generating transcript ranges")
-    # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
-    if (txomeInfo$source == "Ensembl") {
-      suppressWarnings({
-        txps <- transcripts(txdb)
-      })
-    } else {
-      suppressWarnings({
-        txps <- transcripts(txdb, columns=c("tx_id","gene_id","tx_name"))
-      })      
-    }
-    names(txps) <- txps$tx_name
-
-    # dammit de novo transcript annotation will have
-    # the transcript names as seqnames (seqid in the GFF3)
-    if (tolower(txomeInfo$source) == "dammit") {
-      names(txps) <- seqnames(txps)
-    }
   }
 
   # put 'counts' in front to facilitate DESeqDataSet construction
@@ -476,3 +461,41 @@ splitInfReps <- function(infReps) {
   infReps
 }
 
+# build or load txp ranges
+getTxpRanges <- function(txdb, txomeInfo) {
+  stopifnot(length(txomeInfo$gtf) == 1)
+  stopifnot(txomeInfo$gtf != "")
+  txpRngsName <- paste0("txpRngs-",basename(txomeInfo$gtf))
+  bfcloc <- getBFCLoc()
+  bfc <- BiocFileCache(bfcloc)
+  q <- bfcquery(bfc, txpRngsName)
+  if (bfccount(q) == 0) {
+    # TODO: this next line already creates an entry,
+    # but will need to clean up if the TxDb construction below fails
+    savepath <- bfcnew(bfc, txpRngsName, ext=".rds")
+    # now generate txp ranges
+    message("generating transcript ranges")
+    # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
+    if (txomeInfo$source == "Ensembl") {
+      suppressWarnings({
+        txps <- transcripts(txdb)
+      })
+    } else {
+      suppressWarnings({
+        txps <- transcripts(txdb, columns=c("tx_id","gene_id","tx_name"))
+      })
+    }
+    names(txps) <- txps$tx_name
+    # dammit de novo transcript annotation will have
+    # the transcript names as seqnames (seqid in the GFF3)
+    if (tolower(txomeInfo$source) == "dammit") {
+      names(txps) <- seqnames(txps)
+    }
+    saveRDS(txps, file=savepath)
+  } else {
+    loadpath <- bfcrpath(bfc, txpRngsName)
+    message(paste("loading existing transcript ranges created:",q$create_time[1]))
+    txps <- readRDS(loadpath)
+  }
+  txps
+}

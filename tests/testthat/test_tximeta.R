@@ -88,3 +88,4 @@ test_that("tximeta can import alevin", {
   #se <- tximeta(coldata, type="alevin")
 
 })
+

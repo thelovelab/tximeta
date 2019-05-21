@@ -1,12 +1,40 @@
-CHANGES IN VERSION 1.1.18
--------------------------
+Changes in version 1.3.3
++ tximeta now also caches the transcript ranges themselves,
+  rather than just the TxDb. This shaves extra seconds off
+  the tximeta() call!
 
-    o Specifying gene=TRUE in addIds() when rows are
-      transcripts will attempt to use a gene_id column
-      to map the IDs. This usually gives a better mapping
-      rate.
+Changes in version 1.3.1
++ add 'skipSeqinfo' argument, which avoids attempting
+  to fetch chromosome information (from UCSC) if set
+  to TRUE.
 
-CHANGES IN VERSION 0.0.16
--------------------------
+Changes in version 1.1.18
++ Specifying gene=TRUE in addIds() when rows are
+  transcripts will attempt to use a gene_id column
+  to map the IDs. This usually gives a better mapping
+  rate.
 
-    o Added examples to all man pages.
+Changes in version 1.1.14
++ Cut off version number from Ensembl names only (not Gencode)
+
+Changes in version 1.1.13
++ Added 'cleanDuplicateTxps' argument, which does a lot of work
+  for the user: it downloads the FASTA from the source, identifies
+  duplicate transcripts (identical cDNA sequence) then looks to
+  see if transcripts that are in the quantification files,
+  but missing from the GTF, could be renamed from the list of
+  duplicate transcripts such that they would be present in the GTF.
+
+Changes in version 1.1.11
++ Added coding + non-coding combinations of Ensembl transcriptomes
+  to the hash table. Must be in this order: coding, then non-coding.
+
+Changes in version 1.1.9
++ Added support for dammit de novo transcriptomes.
+
+Changes in version 1.1.6
++ Added summarizeToGene as a method, to avoid conflicts with tximport.
+
+Changes in version 1.1.5
++ Added in Charlotte's code to split out Gencode and Ensembl code
+  for generating transcript ranges.
