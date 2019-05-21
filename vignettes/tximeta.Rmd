@@ -115,14 +115,15 @@ suppressPackageStartupMessages(library(SummarizedExperiment))
 colData(se)
 ```
 
-Here we show the three matrices that were imported. `tximeta` does not
-yet support import of inferential replicates (Gibbs samples or
-bootstrap samples), but this functionality will be added in a future
-version.
+Here we show the three matrices that were imported. 
 
 ```{r}
 assayNames(se)
 ```
+
+If there were inferential replicates (Gibbs samples or
+bootstrap samples), these would be imported as additional assays named
+`"infRep1"`, `"infRep2"`, ...
 
 `tximeta` has imported the correct ranges for the transcripts:
 
@@ -215,14 +216,24 @@ str(metadata(se)[["txdbInfo"]])
 
 `tximeta` automatically imports relevant metadata when the
 transcriptome matches a known source, but also facilitates the
-linking of transcriptomes used as for a *Salmon* index with relevant
-public sources. The linking is important in the case that the
-transcript sequence no longer matches a known source (combined or
-filtered FASTA files), or if the source is not known to
-`tximeta`. Below we demonstrate how to make a *linkedTxome* and how
-to share and load a *linkedTxome*.
+linking of transcriptomes used in building the *Salmon* index with
+relevant public sources. 
+The linking of the transcriptome source with the quantification files is
+important in the case that the transcript sequence no longer matches a
+known source (uniquely combined or filtered FASTA files), or if the
+source is not known to `tximeta`. Combinations of coding and
+non-coding human and mouse *Ensembl* transcripts should be
+automatically recognized by `tximeta` and does not require making a
+*linkedTxome*. 
+Here we say "unknown" when we mean that the hash
+value of this transcriptome has not yet been added to the set 
+of precomputed hash values stored within `tximeta`. As the package 
+is further developed, we plan to roll out support for all common
+transcriptomes, from all sources.
+Below we demonstrate how to make a *linkedTxome* and how to share and
+load a *linkedTxome*. 
 
-Here we point to *Salmon* quantification files which were quantified
+We point to *Salmon* quantification files which were quantified
 against a transcriptome combining two Ensembl FASTA files: the cDNA
 and the non-coding transcripts for *Drosophila melanogaster*.
 
@@ -298,8 +309,17 @@ indexDir <- file.path(dir, "Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2")
 ```
 
 Now we provide the location of the FASTA files and the GTF file for
-this transcriptome. The recommended usage of `tximeta` would be to
-specify a remote GTF source, as seen in the commented-out line below:
+this transcriptome. 
+
+**Note:** the basename for the GTF file is used as a unique identifier
+for the cached versions of the *TxDb* and the transcript ranges, which
+are stored on the user's behalf via *BiocFileCache*. This is not an
+issue, as Gencode, Ensembl, and RefSeq all provide GTF files which are
+uniquely identified by their filename,
+e.g. `Drosophila_melanogaster.BDGP6.92.gtf.gz`.
+
+The recommended usage of `tximeta` would be to specify a remote GTF
+source, as seen in the commented-out line below: 
 
 ```{r}
 fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz",
@@ -311,7 +331,7 @@ Instead of the above commented-out FTP location for the GTF file, we
 specify a location within an R package. This step is just to avoid
 downloading from a remote FTP during vignette building. This use of
 `system.file` to point to a file in an R package is specific to this
-vignette and would not be used in a typical workflow.
+vignette and should not be used in a typical workflow.
 
 ```{r}
 dir2 <- system.file("extdata/salmon_dm", package="tximportData")
@@ -462,27 +482,18 @@ and other individuals in the community:
 
 * Switching `rowRanges` from transcript ranges to exons-by-transcript
   ranges list, or from gene ranges to exons-by-gene ranges list.
-* As is already supported in `tximport`, also import inferential
-  variance matrices (Gibbs samples or bootstrap samples)
 
 ### Facilitate plots and summaries
     
 * Basic plots across samples: abundances, mapping rates, rich bias model parameters
-* Time summaries: when quantified? when imported? I would love to
-  know when the library was prepared and sequenced but this seems hopeless.
+* Time summaries: when quantified? when imported?
 
 ### Challenges
 
 * Building out actual, sustainable plan for supporting as many
-  organisms and sources as possible. We can define rules which
-  determine where the FASTA and GTF files will be based on `source` and
-  `release` (also here we ignored something like "type", e.g. CHR
-  or ALL gene files from Gencode)
-* Some support already for linked transcriptomes, see `linkedTxomes`
-  vignette. Need to work more on combining multiple sources
-  (potentially meta-transcriptomes from different organisms?), and
-  also on how to approach de novo transcriptomes, and how to support
-  reproducibility there.
+  organisms and sources as possible. Ongoing discussions between the
+  `tximeta` developers and GA4GH/`refget` may provide a sustainable
+  solution. 
 * Facilitate functional annotation, either with vignettes/workflow or
   with additional functionality. E.g.: 
   housekeeping genes, arbitrary gene sets, genes expressed in GTEx tissues
