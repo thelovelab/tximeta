@@ -49,6 +49,7 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
   metadata <- metadata(object)
   # stash countsFromAbundance value
   metadata$countsFromAbundance <- txi.gene$countsFromAbundance
+  metadata$level <- "gene"
   
   gse <- SummarizedExperiment(assays=assays,
                               rowRanges=g,
