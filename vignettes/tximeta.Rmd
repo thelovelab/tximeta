@@ -162,6 +162,12 @@ se.exons <- addExons(se)
 rowRanges(se.exons)[[1]]
 ```
 
+As with the transcript ranges, the exon ranges will be generated once
+and cached locally. As it takes a non-negligible amount of time to
+generate the exon-by-transcript *GRangesList*, this local caching
+offers substantial time savings for repeated usage of `addExons` with
+the same transcriptome.
+
 We have implemented `addExons` to work only on the transcript-level
 *SummarizedExperiment* object. We provide some motivation for this
 choice in `?addExons`. Briefly, if it is desired to know the exons
@@ -178,7 +184,9 @@ database for the purpose of summarizing transcript-level
 quantifications and bias corrections to the gene-level. After
 summarization, the `rowRanges` reflect the start and end position of
 the gene, which in Bioconductor are defined by the left-most and
-right-most genomic coordinates of all the transcripts.
+right-most genomic coordinates of all the transcripts. As with the
+transcript and exons, the gene ranges are cached locally for repeated
+usage. 
 
 ```{r}
 gse <- summarizeToGene(se)

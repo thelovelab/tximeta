@@ -1,15 +1,20 @@
 summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
 
   missingMetadata(object, summarize=TRUE)
-    
-  txdb <- getTxDb(metadata(object)$txomeInfo)
+
+  txomeInfo <- metadata(object)$txomeInfo
+  txdb <- getTxDb(txomeInfo)
   message("obtaining transcript-to-gene mapping from TxDb")
 
   # TODO fix this next line of code for EnsDb
-  suppressMessages({tx2gene <- select(txdb, keys(txdb, "TXNAME"), "GENEID", "TXNAME")})
+  suppressMessages({
+    tx2gene <- select(txdb, keys(txdb, "TXNAME"), "GENEID", "TXNAME")
+  })
 
   # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
-  suppressWarnings({ g <- genes(txdb) })
+  suppressWarnings({
+    g <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="gene")
+  })
 
   txi <- list(
     abundance=assays(object)[["abundance"]],
