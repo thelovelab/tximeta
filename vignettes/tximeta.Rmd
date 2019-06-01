@@ -138,17 +138,47 @@ bioinformatic mistakes:
 seqinfo(se)
 ```
 
-# Easy summarization to gene-level
+# Add exons per transcript
 
 Because the SummarizedExperiment maintains all the metadata of its
 creation, it also keeps a pointer to the necessary database for
-summarizing transcript-level quantifications and bias corrections to
-the gene-level. If necessary, `summarizeToGene` can pull down the
-remote source for summarization, but given that we've already built a
-TxDb once, it simply loads the stashed version. In order to remove the
-stashed TxDb and regenerate, one can remove the relevant entry from
-the `tximeta` file cache that resides at the location given by
-`getTximetaBFC()`.
+pulling out additional information, as demonstrated in the following
+sections. 
+
+If necessary, the *tximeta* package can pull down the remote source to
+build a TxDb, but given that we've already built a TxDb once, it
+simply loads the cached version. In order to remove the cached TxDb
+and regenerate, one can remove the relevant entry from the `tximeta`
+file cache that resides at the location given by `getTximetaBFC()`.
+
+The `se` object created by `tximeta`, has the start, end, and strand
+information for each transcript. Here, we swap out the transcript
+*GRanges* for exons-by-transcript *GRangesList* (it is a list of
+*GRanges*, where each element of the list gives the exons for a
+particular transcript).
+
+```{r}
+se.exons <- addExons(se)
+rowRanges(se.exons)[[1]]
+```
+
+We have implemented `addExons` to work only on the transcript-level
+*SummarizedExperiment* object. We provide some motivation for this
+choice in `?addExons`. Briefly, if it is desired to know the exons
+associated with a particular gene, we feel that it makes more sense to
+pull out the relevant set of exons-by-transcript for the transcripts
+for this gene, rather than losing the hierarchical structure (exons to
+transcripts to genes) that would occur with a *GRangesList* of exons
+grouped per gene.
+
+# Easy summarization to gene-level
+
+Likewise, the *tximeta* package can make use of the cached TxDb
+database for the purpose of summarizing transcript-level
+quantifications and bias corrections to the gene-level. After
+summarization, the `rowRanges` reflect the start and end position of
+the gene, which in Bioconductor are defined by the left-most and
+right-most genomic coordinates of all the transcripts.
 
 ```{r}
 gse <- summarizeToGene(se)
@@ -199,7 +229,7 @@ y <- scaleOffset(y, t(t(log(normMat)) + o))
 # ... see edgeR User's Guide for further steps
 ```
 
-# Metadata galore
+# `tximeta` stores additional metadata
 
 The following information is attached to the *SummarizedExperiment* by
 `tximeta`: 
@@ -208,8 +238,8 @@ The following information is attached to the *SummarizedExperiment* by
 names(metadata(se))
 str(metadata(se)[["quantInfo"]])
 str(metadata(se)[["txomeInfo"]])
-str(metadata(se)[["tximetaInfo"]])
-str(metadata(se)[["txdbInfo"]])
+metadata(se)[["tximetaInfo"]]
+metadata(se)[["txdbInfo"]]
 ```
 
 # Quantification files with an unknown transcriptome
@@ -478,22 +508,26 @@ and other individuals in the community:
 
 # Next steps
 
-### Basic functionality
+### Integration with GA4GH / `refget` API
 
-* Switching `rowRanges` from transcript ranges to exons-by-transcript
-  ranges list, or from gene ranges to exons-by-gene ranges list.
+* We are collaborating and in communication with GA4GH working groups
+  to build out functionality to perform lookup on collections of
+  transcripts, i.e. transcriptomes, provided by Ensembl. This will
+  greatly expand the applicability of `tximeta`. The current version
+  of `tximeta` relies on hashing of common transcriptomes, which are
+  stored within the package's `extdata` directory in a CSV file, or
+  on the use of *linkedTxome* for any additional transcriptomes. 
+  However, with the GA4GH / `refget` API in place, `tximeta` will
+  be able to identify and access transcriptome metadata for vastly
+  more reference transcriptomes (collections of transcripts).
 
 ### Facilitate plots and summaries
     
 * Basic plots across samples: abundances, mapping rates, rich bias model parameters
 * Time summaries: when quantified? when imported?
 
-### Challenges
+### Extended functionality
 
-* Building out actual, sustainable plan for supporting as many
-  organisms and sources as possible. Ongoing discussions between the
-  `tximeta` developers and GA4GH/`refget` may provide a sustainable
-  solution. 
 * Facilitate functional annotation, either with vignettes/workflow or
   with additional functionality. E.g.: 
   housekeeping genes, arbitrary gene sets, genes expressed in GTEx tissues

@@ -91,13 +91,13 @@
 #' # bfc <- BiocFileCache(bfcloc)
 #' # bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 #'
-#' @importFrom SummarizedExperiment SummarizedExperiment assays assayNames colData
+#' @importFrom SummarizedExperiment SummarizedExperiment assays assayNames colData rowRanges<-
 #' @importFrom S4Vectors metadata mcols mcols<-
 #' @importFrom GenomicRanges seqnames
 #' @importFrom tximport tximport summarizeToGene
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom AnnotationDbi loadDb saveDb select keys mapIds
-#' @importFrom GenomicFeatures makeTxDbFromGFF transcripts genes
+#' @importFrom GenomicFeatures makeTxDbFromGFF transcripts genes exonsBy
 #' @importFrom ensembldb ensDbFromGtf EnsDb
 #' @importFrom Biostrings readDNAStringSet %in%
 #' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfccount bfcrpath
@@ -187,10 +187,12 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
   # build or load transcript ranges (Alevin gets gene ranges instead)
   if (type != "alevin") {
     txps <- getTxpRanges(txdb, txomeInfo)
+    metadata$level <- "txp"
   } else if (type == "alevin") {
     # alevin gets gene ranges instead
     message("generating gene ranges")
     txps <- genes(txdb)
+    metadata$level <- "gene"
   }
 
   # put 'counts' in front to facilitate DESeqDataSet construction

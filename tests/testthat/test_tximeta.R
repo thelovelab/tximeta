@@ -16,12 +16,25 @@ test_that("tximeta works as expected", {
 
   expect_warning({se <- tximeta(coldata)}, "missing from the GTF")
 
+  # check adding exons
+  library(SummarizedExperiment)
+  se <- addExons(se)
+
+  # check summarize to gene
+  gse <- summarizeToGene(se)
+  expect_error(addExons(gse), "transcript-level")
+
+  # check adding IDs
+  library(org.Dm.eg.db)
+  gse <- addIds(gse, "REFSEQ", gene=TRUE)
+    
   # just a vector of file paths is ok
   expect_warning({se <- tximeta(files)})
 
+  # check error on txOut=FALSE
   expect_error({se <- tximeta(coldata, txOut=FALSE)}, "transcript-level output")
 
-  # skip metadata
+  # check skipping metadata, appropriate warnings
   se <- tximeta(coldata, skipMeta=TRUE)
   expect_error({summarizeToGene(se)}, "transcriptome metadata")
   expect_error({addIds(se)}, "transcriptome metadata")
@@ -52,6 +65,8 @@ test_that("tximeta can import inferential replicates", {
   # don't want to rely on internet connection for tests...
   if (FALSE) {
     library(SummarizedExperiment)
+
+    # check the GEUVADIS samples with Salmon Gibbs samples
     dir <- system.file("extdata", package="tximportData")
     samples <- read.table(file.path(dir,"samples.txt"), header=TRUE)
     files <- file.path(dir,"salmon_gibbs", samples$run, "quant.sf.gz")
@@ -68,6 +83,7 @@ test_that("tximeta can import inferential replicates", {
     gse <- summarizeToGene(se, varReduce=TRUE)
     expect_true("variance" %in% assayNames(gse))
 
+    # check the macrophage dataset with Salmon Gibbs samples
     dir <- system.file("extdata", package="macrophage")
     coldata <- read.csv(file.path(dir, "coldata.csv"))
     coldata$files <- file.path(dir, "quants", coldata$names, "quant.sf.gz")
