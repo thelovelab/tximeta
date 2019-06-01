@@ -50,8 +50,7 @@ any known transcriptomes, or any locally saved \code{linkedTxome},
 \code{tximeta} leverages the hash signature of the Salmon or Sailfish index,
 in addition to a number of core Bioconductor packages (GenomicFeatures,
 ensembldb, GenomeInfoDb, BiocFileCache) to automatically populate metadata
-for the user, without additional effort from the user. Note that this package
-is in "beta" / under development.
+for the user, without additional effort from the user.
 }
 \details{
 Most of the code in \code{tximeta} works to add metadata and transcript ranges

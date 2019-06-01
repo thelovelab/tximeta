@@ -3,8 +3,7 @@
 #' \code{tximeta} leverages the hash signature of the Salmon or Sailfish index,
 #' in addition to a number of core Bioconductor packages (GenomicFeatures,
 #' ensembldb, GenomeInfoDb, BiocFileCache) to automatically populate metadata
-#' for the user, without additional effort from the user. Note that this package
-#' is in "beta" / under development.
+#' for the user, without additional effort from the user. 
 #'
 #' Most of the code in \code{tximeta} works to add metadata and transcript ranges
 #' when the quantification was performed with Salmon or Sailfish. However,
@@ -186,12 +185,13 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
 
   # build or load transcript ranges (Alevin gets gene ranges instead)
   if (type != "alevin") {
-    txps <- getTxpRanges(txdb, txomeInfo)
+    txps <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="txp")
     metadata$level <- "txp"
   } else if (type == "alevin") {
     # alevin gets gene ranges instead
     message("generating gene ranges")
-    txps <- genes(txdb)
+    # here gene ranges are named 'txps' for compatibility with code below...
+    txps <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="gene")
     metadata$level <- "gene"
   }
 
@@ -463,41 +463,69 @@ splitInfReps <- function(infReps) {
   infReps
 }
 
-# build or load txp ranges
-getTxpRanges <- function(txdb, txomeInfo) {
+# build or load ranges
+# either transcript, exon-by-transcript, or gene ranges
+getRanges <- function(txdb=txdb, txomeInfo=txomeInfo, type=c("txp","exon","gene")) {
+  long <- c(txp="transcript",exon="exon",gene="gene")
   stopifnot(length(txomeInfo$gtf) == 1)
   stopifnot(txomeInfo$gtf != "")
-  txpRngsName <- paste0("txpRngs-",basename(txomeInfo$gtf))
+  rngsName <- paste0(type,"Rngs-",basename(txomeInfo$gtf))
   bfcloc <- getBFCLoc()
   bfc <- BiocFileCache(bfcloc)
-  q <- bfcquery(bfc, txpRngsName)
+  q <- bfcquery(bfc, rngsName)
   if (bfccount(q) == 0) {
     # TODO: this next line already creates an entry,
     # but will need to clean up if the TxDb construction below fails
-    savepath <- bfcnew(bfc, txpRngsName, ext=".rds")
-    # now generate txp ranges
-    message("generating transcript ranges")
+    savepath <- bfcnew(bfc, rngsName, ext=".rds")
+    # now generate ranges
+    message(paste("generating",long[type],"ranges"))
     # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
-    if (txomeInfo$source == "Ensembl") {
+
+    if (type == "txp") {
+      ################
+      ## txp ranges ##
+      ################
+
+      if (txomeInfo$source == "Ensembl") {
+        suppressWarnings({
+          rngs <- transcripts(txdb)
+        })
+      } else {
+        suppressWarnings({
+          rngs <- transcripts(txdb, columns=c("tx_id","gene_id","tx_name"))
+        })
+      }
+      names(rngs) <- rngs$tx_name
+      # dammit de novo transcript annotation will have
+      # the transcript names as seqnames (seqid in the GFF3)
+      if (tolower(txomeInfo$source) == "dammit") {
+        names(rngs) <- seqnames(rngs)
+      }
+    } else if (type == "exon") {
+      #################
+      ## exon ranges ##
+      #################
+
+      # TODO suppress warnings about out-of-bound ranges for now... how to pass this on
       suppressWarnings({
-        txps <- transcripts(txdb)
+        rngs <- exonsBy(txdb, by="tx", use.names=TRUE)
       })
-    } else {
+      
+    } else if (type == "gene") {
+      #################
+      ## gene ranges ##
+      #################
+
+      # TODO suppress warnings about out-of-bound ranges for now... how to pass this on
       suppressWarnings({
-        txps <- transcripts(txdb, columns=c("tx_id","gene_id","tx_name"))
+        rngs <- genes(txdb)
       })
     }
-    names(txps) <- txps$tx_name
-    # dammit de novo transcript annotation will have
-    # the transcript names as seqnames (seqid in the GFF3)
-    if (tolower(txomeInfo$source) == "dammit") {
-      names(txps) <- seqnames(txps)
-    }
-    saveRDS(txps, file=savepath)
+    saveRDS(rngs, file=savepath)
   } else {
-    loadpath <- bfcrpath(bfc, txpRngsName)
-    message(paste("loading existing transcript ranges created:",q$create_time[1]))
-    txps <- readRDS(loadpath)
+    loadpath <- bfcrpath(bfc, rngsName)
+    message(paste("loading existing",long[type],"ranges created:",q$create_time[1]))
+    rngs <- readRDS(loadpath)
   }
-  txps
+  rngs
 }

@@ -36,14 +36,10 @@ addExons <- function(se) {
     stop("addExons() is design for transcript-level SummarizedExperiments, see ?addExons")
   }
   missingMetadata(se)
-  
-  txdb <- getTxDb(metadata(se)$txomeInfo)
 
-  message("obtaining exons from TxDb")
-  # TODO suppress warnings about out-of-bound ranges for now... how to pass this on
-  suppressWarnings({
-    exons <- exonsBy(txdb, by="tx", use.names=TRUE)
-  })
+  txomeInfo <- metadata(se)$txomeInfo
+  txdb <- getTxDb(txomeInfo)
+  exons <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="exon")
 
   # check if all transcripts are present, and then subset
   stopifnot(all(rownames(se) %in% names(exons)))
