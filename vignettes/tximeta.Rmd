@@ -223,8 +223,7 @@ dds <- estimateSizeFactors(dds)
 ```
 
 The following code chunk demonstrates how to build a *DGEList* object,
-for use with *edgeR* (for example of generating an object for running
-*limma*, see details in the *tximport* vignette).
+for use with *edgeR*.
 
 ```{r}
 suppressPackageStartupMessages(library(edgeR))
@@ -235,6 +234,25 @@ o <- log(calcNormFactors(cts/normMat)) + log(colSums(cts/normMat))
 y <- DGEList(cts)
 y <- scaleOffset(y, t(t(log(normMat)) + o))
 # ... see edgeR User's Guide for further steps
+```
+
+For *limma* with *voom* transformation we recommend, as in the
+*tximport* vignette to generate counts-from-abundance instead of
+providing an offset for average transcript length.
+
+```{r}
+gse <- summarizeToGene(se, countsFromAbundance="lengthScaledTPM")
+library(limma)
+y <- DGEList(assays(gse)[["counts"]])
+# see limma User's Guide for further steps
+```
+
+Above we generated counts-from-abundance when calling
+`summarizeToGene`. The counts-from-abundance status is then stored in
+the metadata:
+
+```{r}
+metadata(gse)$countsFromAbundance 
 ```
 
 # `tximeta` stores additional metadata
