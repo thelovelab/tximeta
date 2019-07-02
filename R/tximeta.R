@@ -195,29 +195,36 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
     metadata$level <- "gene"
   }
 
-  # put 'counts' in front to facilitate DESeqDataSet construction
-  assays <- txi[c("counts","abundance","length")]
-
+  # package up the assays
   if (type == "alevin") {
-    if ("variance" %in% names(assays)) {
-      assays <- assays[c("counts","variance")]
+    # special alevin code
+    if ("variance" %in% names(txi)) {
+      if ("infReps" %in% names(txi)) {
+        assays <- c(txi[c("counts","variance")], txi$infReps)
+        names(assays) <- c("counts", "variance", paste0("infRep", seq_along(txi$infReps)))
+      } else {
+        assays <- txi[c("counts","variance")]
+      }
     } else {
-      assays <- assays["counts"]
+      assays <- txi["counts"]
     }
     coldata <- data.frame(row.names=colnames(assays[["counts"]]))
-  }
-
-  # if there are inferential replicates or inferential variance
-  if ("infReps" %in% names(txi)) {
-    infReps <- rearrangeInfReps(txi$infReps)
-    infReps <- lapply(infReps, function(mat) {
-      rownames(mat) <- rownames(assays[["counts"]])
-      colnames(mat) <- colnames(assays[["counts"]])
-      mat
-    })
-    assays <- c(assays, infReps)
-  } else if ("variance" %in% names(txi)) {
-    assays <- c(assays, txi["variance"])
+  } else {
+    # for methods other than alevin...
+    # put 'counts' in front to facilitate DESeqDataSet construction
+    # and remove countsFromAbundance
+    txi.nms <- c("counts", c(setdiff(names(txi), c("counts","countsFromAbundance","infReps"))))
+    assays <- txi[txi.nms]
+    # if there are inferential replicates
+    if ("infReps" %in% names(txi)) {
+      infReps <- rearrangeInfReps(txi$infReps)
+      infReps <- lapply(infReps, function(mat) {
+        rownames(mat) <- rownames(assays[["counts"]])
+        colnames(mat) <- colnames(assays[["counts"]])
+        mat
+      })
+      assays <- c(assays, infReps)
+    }
   }
   
   # TODO temporary hack: Ensembl FASTA has txp version, Ensembl GTF it is not in the txname
