@@ -1,5 +1,6 @@
 # catNC = whether to concatenate the non-coding RNA to the coding (Ensembl only)
 hashit <- function(source, organism, release, catNC=FALSE) {
+
   if (source == "Gencode") {
     if (organism == "Homo sapiens") {
       fasta <- paste0("ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_human/release_",
@@ -16,6 +17,7 @@ hashit <- function(source, organism, release, catNC=FALSE) {
       genome <- "GRCm38"
     }
   }
+  
   if (source == "Ensembl") {
     org <- sub(" ","_",tolower(organism))
     org_upper <- sub(" ","_",organism)
@@ -35,6 +37,17 @@ hashit <- function(source, organism, release, catNC=FALSE) {
                   release,"/gtf/",org,"/",org_upper,".",genome,".",release,".gtf.gz")
 
   }
+
+  if (source == "RefSeq") {
+    genome <- if (organism == "Homo sapiens") {
+                "GRCh38"
+              } else if (organism == "Mus musculus") {
+                "GRCm38"
+              }
+    fasta <- ""
+    gtf <- ""
+  }
+
   stopifnot(all(sapply(fasta, RCurl::url.exists)))
   stopifnot(RCurl::url.exists(gtf))
   if (catNC) {
