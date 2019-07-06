@@ -39,15 +39,28 @@ hashit <- function(source, organism, release, catNC=FALSE) {
   }
 
   if (source == "RefSeq") {
-    genome <- if (organism == "Homo sapiens") {
-                "GRCh38"
-              } else if (organism == "Mus musculus") {
-                "GRCm38"
-              }
-    fasta <- ""
-    gtf <- ""
+    org_upper <- sub(" ","_",organism)
+    chop <- function(x) as.numeric(sub(".*\\.p","",x))
+    if (organism == "Homo sapiens") {
+      genome <- "GRCh38"
+      release_num <- chop(release) + 26
+      gcf <- "GCF_000001405"
+    } else if (organism == "Mus musculus") {
+      genome <- "GRCm38"
+      release_num <- chop(release) + 20
+      gcf <- "GCF_000001635"
+    }
+    fasta <- paste0("ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/",org_upper,
+                    "/all_assembly_versions/",gcf,".",release_num,"_",release,"/",
+                    gcf,".",release_num,"_",release,"_rna.fna.gz")
+    gtf <- paste0("ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/vertebrate_mammalian/",org_upper,
+                  "/all_assembly_versions/",gcf,".",release_num,"_",release,"/",
+                  gcf,".",release_num,"_",release,"_genomic.gff.gz")
   }
 
+  #message(fasta)
+  #message(gtf)
+  
   stopifnot(all(sapply(fasta, RCurl::url.exists)))
   stopifnot(RCurl::url.exists(gtf))
   if (catNC) {
@@ -74,15 +87,14 @@ hashit <- function(source, organism, release, catNC=FALSE) {
 hashit("Gencode", "Homo sapiens", "30")
 hashit("Gencode", "Mus musculus", "M21")
 
-hashit("Ensembl", "Homo sapiens", "95")
 hashit("Ensembl", "Homo sapiens", "96")
-hashit("Ensembl", "Mus musculus", "95")
 hashit("Ensembl", "Mus musculus", "96")
 hashit("Ensembl", "Drosophila melanogaster", "95")
 # hashit("Ensembl", "Drosophila melanogaster", "96") => genome moved from BDGP6 to BDGP6.22
 
-hashit("Ensembl", "Homo sapiens", "95", catNC=TRUE)
 hashit("Ensembl", "Homo sapiens", "96", catNC=TRUE)
-hashit("Ensembl", "Mus musculus", "95", catNC=TRUE)
 hashit("Ensembl", "Mus musculus", "96", catNC=TRUE)
 
+hashit("RefSeq", "Homo sapiens", "GRCh38.p13")
+hashit("RefSeq", "Homo sapiens", "GRCh38.p12")
+hashit("RefSeq", "Mus musculus", "GRCm38.p6")
