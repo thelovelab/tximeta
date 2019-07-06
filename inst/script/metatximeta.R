@@ -24,8 +24,15 @@ hashit <- function(source, organism, release, catNC=FALSE) {
     genome <- if (organism == "Homo sapiens") {
                 "GRCh38"
               } else if (organism == "Mus musculus") {
-                  "GRCm38"
-              } else if (organism == "Drosophila melanogaster") "BDGP6"
+                "GRCm38"
+              } else if (organism == "Drosophila melanogaster") {
+                if (as.numeric(release) >= 96) {
+                  "BDGP6.22"
+                } else {
+                  "BDGP6"
+                }
+              } 
+  
     fasta <- paste0("ftp://ftp.ensembl.org/pub/release-",
                     release,"/fasta/",org,"/cdna/",org_upper,".",genome,".cdna.all.fa.gz")
     if (catNC) {
@@ -89,8 +96,13 @@ hashit("Gencode", "Mus musculus", "M21")
 
 hashit("Ensembl", "Homo sapiens", "96")
 hashit("Ensembl", "Mus musculus", "96")
-hashit("Ensembl", "Drosophila melanogaster", "95")
-# hashit("Ensembl", "Drosophila melanogaster", "96") => genome moved from BDGP6 to BDGP6.22
+
+hashit("Ensembl", "Drosophila melanogaster", "97", catNC=TRUE)
+hashit("Ensembl", "Drosophila melanogaster", "96", catNC=TRUE)
+hashit("Ensembl", "Drosophila melanogaster", "95", catNC=TRUE)
+hashit("Ensembl", "Drosophila melanogaster", "94", catNC=TRUE)
+hashit("Ensembl", "Drosophila melanogaster", "93", catNC=TRUE)
+hashit("Ensembl", "Drosophila melanogaster", "92", catNC=TRUE)
 
 hashit("Ensembl", "Homo sapiens", "96", catNC=TRUE)
 hashit("Ensembl", "Mus musculus", "96", catNC=TRUE)
