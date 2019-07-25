@@ -1,12 +1,12 @@
 #' tximeta: Transcript quantification import with automatic metadata
 #'
-#' \code{tximeta} leverages the hash signature of the Salmon or Sailfish index,
+#' \code{tximeta} leverages the hash signature of the Salmon index,
 #' in addition to a number of core Bioconductor packages (GenomicFeatures,
 #' ensembldb, GenomeInfoDb, BiocFileCache) to automatically populate metadata
 #' for the user, without additional effort from the user. 
 #'
 #' Most of the code in \code{tximeta} works to add metadata and transcript ranges
-#' when the quantification was performed with Salmon or Sailfish. However,
+#' when the quantification was performed with Salmon. However,
 #' \code{tximeta} can be used with any quantification \code{type} that is supported
 #' by \code{\link{tximport}}, where it will return an un-ranged SummarizedExperiment.
 #' 
@@ -24,7 +24,7 @@
 #' directory. At any point, the user can specify a location using
 #' \code{\link{setTximetaBFC}} and this choice will be saved for future sessions.
 #' Multiple users can point to the same BiocFileCache, such that
-#' transcript databases (TxDb) associated with certain Salmon or Sailfish indices
+#' transcript databases (TxDb) associated with certain Salmon indices
 #' and \code{linkedTxomes} can be accessed by different users without additional
 #' effort or time spent downloading/building the relevant TxDb.
 #'
@@ -42,9 +42,12 @@
 #' @param type what quantifier was used (see \code{\link{tximport}})
 #' @param txOut whether to output transcript-level data.
 #' \code{tximeta} is designed to have transcript-level output
-#' with Salmon or Sailfish, so default is \code{TRUE},
+#' with Salmon, so default is \code{TRUE},
 #' and it's recommended to use \code{\link{summarizeToGene}}
 #' following \code{tximeta} for gene-level summarization.
+#' For an Alevin file, \code{tximeta} will import the
+#' gene level counts ignoring this argument (Alevin
+#' produces only gene-level quantification).
 #' @param skipMeta whether to skip metadata generation
 #' (e.g. to avoid errors if not connected to internet).
 #' This calls \code{tximport} directly and so either
