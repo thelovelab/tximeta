@@ -12,7 +12,7 @@ makeLinkedTxome(indexDir, source, organism, release, genome, fasta, gtf,
 loadLinkedTxome(jsonFile)
 }
 \arguments{
-\item{indexDir}{the path to the Salmon or Sailfish index}
+\item{indexDir}{the path to the Salmon index}
 
 \item{source}{the source of transcriptome (e.g. "Gencode" or "Ensembl")}
 

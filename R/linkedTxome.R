@@ -2,7 +2,7 @@
 #'
 #' For now, for details please see the vignette \code{inst/script/linked.Rmd}
 #' 
-#' @param indexDir the path to the Salmon or Sailfish index
+#' @param indexDir the path to the Salmon index
 #' @param source the source of transcriptome (e.g. "Gencode" or "Ensembl")
 #' @param organism organism (e.g. "Homo sapiens")
 #' @param release release number (e.g. "27")
