@@ -91,22 +91,16 @@ hashit <- function(source, organism, release, catNC=FALSE) {
   NULL
 }
 
-hashit("Gencode", "Homo sapiens", "30")
-hashit("Gencode", "Mus musculus", "M21")
-
-hashit("Ensembl", "Homo sapiens", "96")
-hashit("Ensembl", "Mus musculus", "96")
-
-hashit("Ensembl", "Drosophila melanogaster", "97", catNC=TRUE)
-hashit("Ensembl", "Drosophila melanogaster", "96", catNC=TRUE)
-hashit("Ensembl", "Drosophila melanogaster", "95", catNC=TRUE)
-hashit("Ensembl", "Drosophila melanogaster", "94", catNC=TRUE)
-hashit("Ensembl", "Drosophila melanogaster", "93", catNC=TRUE)
-hashit("Ensembl", "Drosophila melanogaster", "92", catNC=TRUE)
-
-hashit("Ensembl", "Homo sapiens", "96", catNC=TRUE)
-hashit("Ensembl", "Mus musculus", "96", catNC=TRUE)
-
-hashit("RefSeq", "Homo sapiens", "GRCh38.p13")
-hashit("RefSeq", "Homo sapiens", "GRCh38.p12")
-hashit("RefSeq", "Mus musculus", "GRCm38.p6")
+hashit("Gencode", "Homo sapiens", i)
+hashit("Gencode", "Mus musculus", paste0("M",i))
+#
+hashit("Ensembl", "Homo sapiens", i)
+hashit("Ensembl", "Mus musculus", i)
+hashit("Ensembl", "Drosophila melanogaster", i)
+#
+hashit("Ensembl", "Homo sapiens", i, catNC=TRUE)
+hashit("Ensembl", "Mus musculus", i, catNC=TRUE)
+hashit("Ensembl", "Drosophila melanogaster", i, catNC=TRUE)
+#
+hashit("RefSeq", "Homo sapiens", paste0("GRCh38.p",i))
+hashit("RefSeq", "Mus musculus", paste0("GRCm38.p",i))
