@@ -221,8 +221,7 @@ suppressPackageStartupMessages(library(DESeq2))
 # here there is a single sample so we use ~1.
 # expect a warning that there is only a single sample...
 suppressWarnings({dds <- DESeqDataSet(gse, ~1)})
-dds <- estimateSizeFactors(dds)
-# ... and so on
+# ... see DESeq2 vignette
 ```
 
 The following code chunk demonstrates how to build a *DGEList* object,
@@ -237,6 +236,23 @@ o <- log(calcNormFactors(cts/normMat)) + log(colSums(cts/normMat))
 y <- DGEList(cts)
 y <- scaleOffset(y, t(t(log(normMat)) + o))
 # ... see edgeR User's Guide for further steps
+```
+
+The following code chunk demonstrates how one could use the *Swish*
+method in the fishpond Bioconductor package. Here we use the
+transcript-level object `se`. This dataset only has a single sample
+and no inferential replicates, but the analysis would begin with such
+code. See the Swish vignette in the fishpond package for a complete
+example: 
+
+```{r eval=FALSE}
+y <- se # rename the object to 'y'
+library(fishpond)
+# if inferential replicates existed in the data,
+# analysis would begin with:
+#
+# y <- scaleInfReps(y)
+# ... see Swish vignette in the fishpond package
 ```
 
 For *limma* with *voom* transformation we recommend, as in the
