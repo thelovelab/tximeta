@@ -27,7 +27,7 @@
 addIds <- function(se, column, gene=FALSE, ...) {
   missingMetadata(se, summarize=FALSE)
   # here a hack, for now this is just a prototype for ENSEMBL genes or txps
-  stopifnot(metadata(se)$txomeInfo$source %in% c("Gencode","Ensembl"))
+  stopifnot(metadata(se)$txomeInfo$source %in% c("GENCODE","Ensembl"))
   # TODO probably should switch from package-based 'org.Hs.eg.db' to the
   # instead obtain and load OrgDb through AnnotationHub?
   orgpkg.name <- paste0("org.",

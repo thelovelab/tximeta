@@ -202,7 +202,7 @@ We would like to add support to easily map transcript or gene
 identifiers from one annotation to another. This is just a prototype
 function, but we show how we can easily add alternate IDs given that we
 know the organism and the source of the transcriptome. (This function
-currently only works for Gencode and Ensembl gene or transcript IDs
+currently only works for GENCODE and Ensembl gene or transcript IDs
 but could be extended to work for arbitrary sources.)
 
 ```{r}
@@ -389,7 +389,7 @@ this transcriptome.
 **Note:** the basename for the GTF file is used as a unique identifier
 for the cached versions of the *TxDb* and the transcript ranges, which
 are stored on the user's behalf via *BiocFileCache*. This is not an
-issue, as Gencode, Ensembl, and RefSeq all provide GTF files which are
+issue, as GENCODE, Ensembl, and RefSeq all provide GTF files which are
 uniquely identified by their filename,
 e.g. `Drosophila_melanogaster.BDGP6.92.gtf.gz`.
 

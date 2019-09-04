@@ -231,7 +231,7 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
   }
   
   # TODO temporary hack: Ensembl FASTA has txp version, Ensembl GTF it is not in the txname
-  # meanwhile Gencode GTF puts the version in the name
+  # meanwhile GENCODE GTF puts the version in the name
   if (txomeInfo$source == "Ensembl") {
     txId <- sub("\\..*", "", rownames(assays[["counts"]]))
     for (nm in names(assays)) {
@@ -271,7 +271,7 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
   txps <- txps[rownames(assays[["counts"]])]
 
   # Ensembl already has nice seqinfo attached, if not:
-  if (txomeInfo$source == "Gencode" & !skipSeqinfo) {
+  if (txomeInfo$source == "GENCODE" & !skipSeqinfo) {
     # TODO can we get a solution that doesn't rely on UCSC for the seqlevels?
     # this produces an error if not connected to internet
     message("fetching genome info")
