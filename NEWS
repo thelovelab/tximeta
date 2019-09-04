@@ -26,7 +26,7 @@ Changes in version 1.1.18
   rate.
 
 Changes in version 1.1.14
-+ Cut off version number from Ensembl names only (not Gencode)
++ Cut off version number from Ensembl names only (not GENCODE)
 
 Changes in version 1.1.13
 + Added 'cleanDuplicateTxps' argument, which does a lot of work
@@ -47,5 +47,5 @@ Changes in version 1.1.6
 + Added summarizeToGene as a method, to avoid conflicts with tximport.
 
 Changes in version 1.1.5
-+ Added in Charlotte's code to split out Gencode and Ensembl code
++ Added in Charlotte's code to split out GENCODE and Ensembl code
   for generating transcript ranges.

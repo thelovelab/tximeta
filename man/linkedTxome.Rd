@@ -14,7 +14,7 @@ loadLinkedTxome(jsonFile)
 \arguments{
 \item{indexDir}{the path to the Salmon index}
 
-\item{source}{the source of transcriptome (e.g. "Gencode" or "Ensembl")}
+\item{source}{the source of transcriptome (e.g. "GENCODE" or "Ensembl")}
 
 \item{organism}{organism (e.g. "Homo sapiens")}
 

@@ -3,7 +3,7 @@
 #' For now, for details please see the vignette \code{inst/script/linked.Rmd}
 #' 
 #' @param indexDir the path to the Salmon index
-#' @param source the source of transcriptome (e.g. "Gencode" or "Ensembl")
+#' @param source the source of transcriptome (e.g. "GENCODE" or "Ensembl")
 #' @param organism organism (e.g. "Homo sapiens")
 #' @param release release number (e.g. "27")
 #' @param genome genome (e.g. "GRCh38")
@@ -62,7 +62,7 @@ makeLinkedTxome <- function(indexDir, source, organism, release,
   # 'index' is just the basename of the Salmon index
   index <- basename(indexDir)
   # standardize capitalization
-  std.sources <- c("Gencode","Ensembl")
+  std.sources <- c("GENCODE","Ensembl")
   for (src in std.sources) {
     if (tolower(source) == tolower(src)) {
       source <- src
