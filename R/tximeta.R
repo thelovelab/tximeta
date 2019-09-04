@@ -8,7 +8,7 @@
 #' Most of the code in \code{tximeta} works to add metadata and transcript ranges
 #' when the quantification was performed with Salmon. However,
 #' \code{tximeta} can be used with any quantification \code{type} that is supported
-#' by \code{\link{tximport}}, where it will return an un-ranged SummarizedExperiment.
+#' by \code{\link{tximport}}, where it will return an non-ranged SummarizedExperiment.
 #' 
 #' \code{tximeta} checks the hash signature of the index against a database
 #' of known transcriptomes (this database under construction) or a locally stored
@@ -175,7 +175,7 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
   # try and find a matching txome
   txomeInfo <- getTxomeInfo(indexSeqHash)
   if (is.null(txomeInfo)) {
-    message("couldn't find matching transcriptome, returning un-ranged SummarizedExperiment")
+    message("couldn't find matching transcriptome, returning non-ranged SummarizedExperiment")
     if (type == "alevin") {
       coldata <- data.frame(row.names=colnames(txi[["counts"]]))
     }

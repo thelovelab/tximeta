@@ -321,7 +321,7 @@ coldata <- data.frame(files=file, names="SRR1197474", sample="1",
 ```
 
 Trying to import the files gives a message that `tximeta` couldn't find
-a matching transcriptome, so it returns an un-ranged
+a matching transcriptome, so it returns an non-ranged
 *SummarizedExperiment*. 
 
 ```{r}
@@ -535,7 +535,7 @@ bfcinfo(bfc)
 
 `tximeta` can import the output from any quantifiers that are
 supported by `tximport`, and if these are not *Salmon*, *Alevin*, or
-*Sailfish* output, it will simply return a un-ranged
+*Sailfish* output, it will simply return a non-ranged
 *SummarizedExperiment*. 
 We are working to allow manually passing of the hash value of the
 transcriptome, the cDNA sequences of which can be hashed with

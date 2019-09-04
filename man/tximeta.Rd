@@ -59,7 +59,7 @@ for the user, without additional effort from the user.
 Most of the code in \code{tximeta} works to add metadata and transcript ranges
 when the quantification was performed with Salmon. However,
 \code{tximeta} can be used with any quantification \code{type} that is supported
-by \code{\link{tximport}}, where it will return an un-ranged SummarizedExperiment.
+by \code{\link{tximport}}, where it will return an non-ranged SummarizedExperiment.
 
 \code{tximeta} checks the hash signature of the index against a database
 of known transcriptomes (this database under construction) or a locally stored
