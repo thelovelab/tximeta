@@ -106,3 +106,18 @@ test_that("tximeta can import alevin", {
   
 })
 
+test_that("tximeta can import refseq", {
+
+  if (FALSE) {
+    dir <- system.file("extdata", package="tximportData")
+    files <- file.path(dir,"refseq/ERR188021/quant.sf.gz")
+    file.exists(files)
+    coldata <- data.frame(files, names="A")
+
+    # here the important test is if we can pull down seqinfo
+    # (sequence names and lengths) from RefSeq FTP site
+    se <- tximeta(coldata)
+    seqinfo(se)
+  }
+    
+})
