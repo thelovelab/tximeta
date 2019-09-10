@@ -106,7 +106,7 @@
 #' @importFrom tibble tibble
 #' @importFrom GenomeInfoDb Seqinfo genome<- seqinfo<- seqlevels
 #' @importFrom rappdirs user_cache_dir
-#' @importFrom utils menu packageVersion read.csv
+#' @importFrom utils menu packageVersion read.csv read.delim
 #' @importFrom methods is
 #'
 #' @export
@@ -270,15 +270,21 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
   # are a simple subset of the transcripts/genes in the source FASTA & GTF
   txps <- txps[rownames(assays[["counts"]])]
 
-  # Ensembl already has nice seqinfo attached, if not:
-  if (txomeInfo$source == "GENCODE" & !skipSeqinfo) {
-    # TODO can we get a solution that doesn't rely on UCSC for the seqlevels?
-    # this produces an error if not connected to internet
-    message("fetching genome info")
-    ucsc_genome <- genome2UCSC(txomeInfo$genome)
-    try(seqinfo(txps) <- Seqinfo(genome=ucsc_genome)[seqlevels(txps)])
-  }
+  # Ensembl already has nice seqinfo attached
 
+  # if GENCODE...
+  if (txomeInfo$source == "GENCODE" & !skipSeqinfo) {
+    message("fetching genome info for GENCODE")
+    ucsc.genome <- genome2UCSC(txomeInfo$genome)
+    try(seqinfo(txps) <- Seqinfo(genome=ucsc.genome)[seqlevels(txps)])
+  } else if (txomeInfo$source == "RefSeq" & !skipSeqinfo) {
+    # if RefSeq...
+    message("fetching genome info for RefSeq")
+    refseq.genome <- gtf2RefSeq(txomeInfo$gtf, txomeInfo$genome)
+    stopifnot(all(seqlevels(txps) %in% seqnames(refseq.genome)))
+    try(seqinfo(txps) <- refseq.genome[seqlevels(txps)])
+  }
+  
   # add more metadata
   txdbInfo <- metadata(txdb)$value
   names(txdbInfo) <- metadata(txdb)$name
@@ -331,6 +337,20 @@ genome2UCSC <- function(x) {
   } else {
     x
   }
+}
+
+gtf2RefSeq <- function(gtf, genome) {
+  report <- sub("genomic.gff.gz","assembly_report.txt",basename(gtf))
+  dir <- dirname(gtf)
+  reportFtp <- paste0(dir, "/", report)
+  tab <- read.delim(reportFtp, comment.char="#", header=FALSE, sep="\t", stringsAsFactors=FALSE)
+  # TODO - need to figure out what to do about these un-parser friendly files
+  tab <- tab[,c(7,9,10)]
+  names(tab) <- c("refseqAccn","length","ucscName")
+  Seqinfo(seqnames=tab$refseqAccn,
+          seqlengths=tab$length,
+          isCircular=NA,
+          genome=genome)
 }
 
 # build out metadata based on indexSeqHash
