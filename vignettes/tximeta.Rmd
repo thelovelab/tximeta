@@ -363,6 +363,16 @@ FASTA files, and the location of the relevant GTF file. It also
 records the signature of the transcriptome that was computed by
 *Salmon* during the `index` step.
 
+**Multiple GTF/GFF files:** `linkedTxome` and `tximeta` do not
+currently support multiple GTF/GFF files, which is a more complicated
+case than multiple FASTA, which is supported. Currently, we recommend
+that if users should add or combine GTF/GFF files themselves to create
+a single GTF/GFF file that contains all features used in
+quantification, and then upload such a file to *Zenodo*, which can
+then be linked as shown below. Feel free to contact the developers on
+the Bioconductor support site or GitHub Issue page for further details
+or feature requests.
+
 By default, `linkedTxome` will write out a JSON file which can be
 shared with others, linking the signature of the index with the other
 metadata, including FASTA and GTF sources. By default, it will write
