@@ -2,14 +2,26 @@
 #'
 #' For now, for details please see the vignette \code{inst/script/linked.Rmd}
 #' 
-#' @param indexDir the path to the Salmon index
-#' @param source the source of transcriptome (e.g. "GENCODE" or "Ensembl")
+#' @param indexDir the local path to the Salmon index
+#' @param source the source of transcriptome (e.g. "GENCODE", "Ensembl", "de-novo")
 #' @param organism organism (e.g. "Homo sapiens")
 #' @param release release number (e.g. "27")
-#' @param genome genome (e.g. "GRCh38")
-#' @param fasta FTP location for the FASTA sequence (of which the index is a subset)
-#' @param gtf FTP location for the GTF file (of which the index is a subset)
-#' @param write should a JSON file be written out
+#' @param genome genome (e.g. "GRCh38", or "none")
+#' @param fasta location(s) for the FASTA transcript sequences
+#' (of which the transcripts used to build the index is equal or a subset).
+#' This can be a local path, or an HTTP or FTP URL
+#' @param gtf location for the GTF/GFF file
+#' (of which the transcripts used to build the index is equal or a subset).
+#' This can be a local path, or an HTTP or FTP URL
+#' While the \code{fasta} argument can take a vector of length greater than one
+#' (more than one FASTA file containing transcripts used in indexing),
+#' the \code{gtf} argument has to be a single GTF/GFF file. If transcripts
+#' were added to a standard set of reference transcripts (e.g. fusion genes,
+#' or pathogen transcripts), it is recommended that the tximeta user would manually
+#' add these to the GTF/GFF file, and post the modified GTF/GFF publicly, such as
+#' on Zenodo. This enables consistent annotation and downstream annotation
+#' tasks, such as by \code{summarizeToGene}.
+#' @param write logical, should a JSON file be written out
 #' which documents the transcriptome signature and metadata? (default is TRUE)
 #' @param jsonFile the path to the json file for the linkedTxome
 #'

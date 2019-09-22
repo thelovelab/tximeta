@@ -437,6 +437,10 @@ checkAssays2Txps <- function(assays, txps) {
   assay.nms <- rownames(assays[["counts"]])
   txps.missing <- !assay.nms %in% names(txps)
   if (!all(assay.nms %in% names(txps))) {
+
+    # it's probably ok that the messaging here uses the term 'txps',
+    # because it's unlikely that we'd have genes not present in the GTF
+    # which nevertheless had txps in the GTF...
     
     if (all(!assay.nms %in% names(txps))) {
       stop("none of the transcripts in the quantification files are in the GTF")

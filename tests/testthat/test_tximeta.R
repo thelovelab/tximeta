@@ -55,6 +55,9 @@ test_that("tximeta can import GENCODE and Ensembl", {
     files <- file.path(dir,"salmon_gibbs", samples$run, "quant.sf.gz")
     coldata <- data.frame(files, names=paste0("sample",1:6))
     se <- tximeta(coldata, dropInfReps=TRUE)
+
+    gse <- summarizeToGene(se)
+    
   }
 
 })

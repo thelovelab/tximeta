@@ -6,7 +6,6 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
   txdb <- getTxDb(txomeInfo)
   message("obtaining transcript-to-gene mapping from TxDb")
 
-  # TODO fix this next line of code for EnsDb
   suppressMessages({
     tx2gene <- select(txdb, keys(txdb, "TXNAME"), "GENEID", "TXNAME")
   })
@@ -45,7 +44,8 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
     assays <- c(assays, infReps)
   }
 
-  # here do the same check/subset but with gene-level tximport assay matrices and gene ranges
+  # here do the same check/subset but with the gene-level
+  # tximport assay matrices and gene ranges
   assays <- checkAssays2Txps(assays, g)
 
   # TODO give a warning here if there are genes in TxDb not in Salmon index?
