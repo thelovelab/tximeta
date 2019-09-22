@@ -12,21 +12,33 @@ makeLinkedTxome(indexDir, source, organism, release, genome, fasta, gtf,
 loadLinkedTxome(jsonFile)
 }
 \arguments{
-\item{indexDir}{the path to the Salmon index}
+\item{indexDir}{the local path to the Salmon index}
 
-\item{source}{the source of transcriptome (e.g. "GENCODE" or "Ensembl")}
+\item{source}{the source of transcriptome (e.g. "GENCODE", "Ensembl", "de-novo")}
 
 \item{organism}{organism (e.g. "Homo sapiens")}
 
 \item{release}{release number (e.g. "27")}
 
-\item{genome}{genome (e.g. "GRCh38")}
+\item{genome}{genome (e.g. "GRCh38", or "none")}
 
-\item{fasta}{FTP location for the FASTA sequence (of which the index is a subset)}
+\item{fasta}{location(s) for the FASTA transcript sequences
+(of which the transcripts used to build the index is equal or a subset).
+This can be a local path, or an HTTP or FTP URL}
 
-\item{gtf}{FTP location for the GTF file (of which the index is a subset)}
+\item{gtf}{location for the GTF/GFF file
+(of which the transcripts used to build the index is equal or a subset).
+This can be a local path, or an HTTP or FTP URL
+While the \code{fasta} argument can take a vector of length greater than one
+(more than one FASTA file containing transcripts used in indexing),
+the \code{gtf} argument has to be a single GTF/GFF file. If transcripts
+were added to a standard set of reference transcripts (e.g. fusion genes,
+or pathogen transcripts), it is recommended that the tximeta user would manually
+add these to the GTF/GFF file, and post the modified GTF/GFF publicly, such as
+on Zenodo. This enables consistent annotation and downstream annotation
+tasks, such as by \code{summarizeToGene}.}
 
-\item{write}{should a JSON file be written out
+\item{write}{logical, should a JSON file be written out
 which documents the transcriptome signature and metadata? (default is TRUE)}
 
 \item{jsonFile}{the path to the json file for the linkedTxome}
