@@ -106,7 +106,7 @@
 #' @importFrom tibble tibble
 #' @importFrom GenomeInfoDb Seqinfo genome<- seqinfo<- seqlevels
 #' @importFrom rappdirs user_cache_dir
-#' @importFrom utils menu packageVersion read.csv read.delim
+#' @importFrom utils menu packageVersion read.csv read.delim head
 #' @importFrom methods is
 #'
 #' @export
@@ -230,8 +230,9 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
     }
   }
   
-  # TODO temporary hack: Ensembl FASTA has txp version, Ensembl GTF it is not in the txname
-  # meanwhile GENCODE GTF puts the version in the name
+  # Ensembl FASTA has txp version numbers,
+  # but in the Ensembl GTF it is not in the txname,
+  # so here we have to remove the version number to build the SummarizedExperiment
   if (txomeInfo$source == "Ensembl") {
     txId <- sub("\\..*", "", rownames(assays[["counts"]]))
     for (nm in names(assays)) {
@@ -239,6 +240,7 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
     }
   }
 
+  # code for `cleanDuplicateTxps = TRUE` ##
   assay.nms <- rownames(assays[["counts"]])
   txps.missing <- !assay.nms %in% names(txps)
   if (sum(txps.missing) > 0 & cleanDuplicateTxps) {
@@ -265,9 +267,7 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
 
   assays <- checkAssays2Txps(assays, txps)
   
-  # TODO give a warning here if there are transcripts in TxDb not in Salmon index?
-  # ...hmm, maybe not because that is now a "feature" given linkedTxomes that
-  # are a simple subset of the transcripts/genes in the source FASTA & GTF
+  # TODO we could give a warning here if there are txps in TxDb not in index
   txps <- txps[rownames(assays[["counts"]])]
 
   # Ensembl already has nice seqinfo attached
@@ -328,7 +328,7 @@ reshapeMetaInfo <- function(metaInfo) {
 
 # temporary function to map from GRCh38 to hg38 to allow easy
 # comparison with UCSC objects from AnnotationHub...
-# TODO obviously this will have to go/be rethought
+# TODO we need a better solution for obtaining seqinfo for GENCODE
 genome2UCSC <- function(x) {
   if (x == "GRCh38") {
     "hg38"
@@ -409,7 +409,7 @@ getTxDb <- function(txomeInfo) {
     savepath <- bfcnew(bfc, txdbName, ext=".sqlite")
     if (txomeInfo$source == "Ensembl") {
       message("building EnsDb with 'ensembldb' package")
-      # TODO suppress warnings here from GTF construction?
+      # TODO what about suppressing all these warnings
       suppressWarnings(ensDbFromGtf(txomeInfo$gtf, outfile=savepath))
       txdb <- EnsDb(savepath)
     } else {
@@ -441,10 +441,28 @@ checkAssays2Txps <- function(assays, txps) {
     if (all(!assay.nms %in% names(txps))) {
       stop("none of the transcripts in the quantification files are in the GTF")
     } else {
+
+      if (sum(txps.missing) > 3) {
+        example.missing <- paste0("Example missing txps: [",
+                                  paste(head(assay.nms[txps.missing],3),collapse=", "),
+                                  ", ...]")
+      } else {
+        example.missing <- paste0("Missing txps: [",
+                                  paste(assay.nms[txps.missing],collapse=", "), "]")
+      }
+      
       # TODO what to do here, GTF is missing some txps in FASTA for Ensembl
-      warning(paste("missing some transcripts!
-",sum(txps.missing), "out of", nrow(assays[["counts"]]),
-"are missing from the GTF and dropped from SummarizedExperiment output"))
+      warning(paste0("
+
+Warning: the annotation is missing some transcripts that were quantified.
+", sum(txps.missing), " out of ", nrow(assays[["counts"]]),
+" txps were missing from GTF/GFF but were in the indexed FASTA.
+(This occurs sometimes with Ensembl txps on haplotype chromosomes.)
+In order to build a ranged SummarizedExperiment, these txps were removed.
+To keep these txps, and to skip adding ranges, use skipMeta=TRUE
+
+", example.missing, "
+"))
 
       # after warning, then subset
       for (nm in names(assays)) {
@@ -499,7 +517,11 @@ getRanges <- function(txdb=txdb, txomeInfo=txomeInfo, type=c("txp","exon","gene"
   long <- c(txp="transcript",exon="exon",gene="gene")
   stopifnot(length(txomeInfo$gtf) == 1)
   stopifnot(txomeInfo$gtf != "")
+
+  # TODO the entry in the BiocFileCache assumes that the GTF/GFF file
+  # has a distinctive naming structure... works for GENCODE/Ensembl/RefSeq 
   rngsName <- paste0(type,"Rngs-",basename(txomeInfo$gtf))
+  
   bfcloc <- getBFCLoc()
   bfc <- BiocFileCache(bfcloc)
   q <- bfcquery(bfc, rngsName)
