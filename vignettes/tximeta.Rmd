@@ -11,11 +11,20 @@ abstract: >
   *Salmon* or *Alevin* into R/Bioconductor. Metadata and transcript
   ranges are added automatically, facilitating combining multiple
   genomic datasets and helping to prevent bioinformatic errors.
+bibliography: library.bib
 vignette: |
   %\VignetteIndexEntry{Transcript quantification import with automatic metadata}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+# Introduction
+
+The `tximeta` package [@Love2019] extends the `tximport` package
+[@Soneson2015] for import of transcript-level quantification data into
+R/Bioconductor. It facilitates addition of annotation data when the
+RNA-seq data has been quantified with *Salmon* [@Patro2017]. For more
+details on these packages, consult the **References** below.
 
 # Analysis starts with sample table
 
@@ -597,3 +606,5 @@ and other individuals in the community:
 library(devtools)
 session_info()
 ```
+
+# References
