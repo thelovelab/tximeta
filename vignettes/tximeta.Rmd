@@ -5,6 +5,8 @@ date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output: 
   rmarkdown::html_document:
     highlight: tango
+	toc: true
+	toc_float: true
 abstract: >
   `tximeta` performs numerous annotation and metadata gathering tasks on
   behalf of users during the import of transcript quantifications from
