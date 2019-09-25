@@ -8,7 +8,7 @@ citEntry(entry="article",
            as.person("N. Tessa Pierce"),
            as.person("Lori Shepherd"),
            as.person("Martin Morgan"),
-           as.person("Rob Patro"),
+           as.person("Rob Patro")
            ),
          year = 2019,
          journal = "bioRxiv",
