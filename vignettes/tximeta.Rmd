@@ -5,8 +5,8 @@ date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output: 
   rmarkdown::html_document:
     highlight: tango
-	toc: true
-	toc_float: true
+    toc: true
+    toc_float: true
 abstract: >
   `tximeta` performs numerous annotation and metadata gathering tasks on
   behalf of users during the import of transcript quantifications from
@@ -25,8 +25,10 @@ vignette: |
 The `tximeta` package [@Love2019] extends the `tximport` package
 [@Soneson2015] for import of transcript-level quantification data into
 R/Bioconductor. It facilitates addition of annotation data when the
-RNA-seq data has been quantified with *Salmon* [@Patro2017]. For more
-details on these packages, consult the **References** below.
+RNA-seq data has been quantified with *Salmon* [@Patro2017] or for
+scRNA-seq data quantified with *Alevin* [@Srivastava2019]. For more
+details on these packages -- including the motivation for `tximeta`
+and description of similar work -- consult the **References** below.
 
 # Analysis starts with sample table
 
@@ -120,7 +122,7 @@ filtered. See the **Linked transcriptome** section below for a
 demonstration. (The *makeLinkedTxome* function was used above to avoid
 downloading the GTF during the vignette building process.)
 
-# Examining SummarizedExperiment output
+# SummarizedExperiment output
 
 We, of course, have our coldata from before. Note that we've removed `files`.
 
@@ -285,7 +287,7 @@ the metadata:
 metadata(gse)$countsFromAbundance 
 ```
 
-# `tximeta` stores additional metadata
+# Additional metadata
 
 The following information is attached to the *SummarizedExperiment* by
 `tximeta`: 
@@ -298,12 +300,15 @@ metadata(se)[["tximetaInfo"]]
 metadata(se)[["txdbInfo"]]
 ```
 
-# Quantification files with an unknown transcriptome
+# Transcriptomes not known to tximeta
 
 `tximeta` automatically imports relevant metadata when the
-transcriptome matches a known source, but also facilitates the
+transcriptome matches a known source -- *known* in the sense that it
+is in the set of pre-computed hashed checksums in `tximeta` (GENCODE,
+Ensembl, and RefSeq for human and mouse). `tximeta` also facilitates the
 linking of transcriptomes used in building the *Salmon* index with
-relevant public sources. 
+relevant public sources, in the case that these are not part of this
+pre-computed set known to `tximeta`.
 The linking of the transcriptome source with the quantification files is
 important in the case that the transcript sequence no longer matches a
 known source (uniquely combined or filtered FASTA files), or if the
@@ -339,7 +344,7 @@ a matching transcriptome, so it returns an non-ranged
 se <- tximeta(coldata)
 ```
 
-# Linked transcriptome for reproducible analysis
+# Linked transcriptomes
 
 If the transcriptome used to generate the *Salmon* index does not
 match any transcriptomes from known sources (e.g. from combining or filtering
@@ -575,7 +580,7 @@ and other individuals in the community:
 
 # Next steps
 
-### Integration with GA4GH / `refget` API
+**Integration with GA4GH / refget API**
 
 * We are collaborating and in communication with GA4GH working groups
   to build out functionality to perform lookup on collections of
@@ -588,12 +593,12 @@ and other individuals in the community:
   be able to identify and access transcriptome metadata for vastly
   more reference transcriptomes (collections of transcripts).
 
-### Facilitate plots and summaries
+**Facilitate plots and summaries**
     
 * Basic plots across samples: abundances, mapping rates, rich bias model parameters
 * Time summaries: when quantified? when imported?
 
-### Extended functionality
+**Extended functionality**
 
 * Facilitate functional annotation, either with vignettes/workflow or
   with additional functionality. E.g.: 
