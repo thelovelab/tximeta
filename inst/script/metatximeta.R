@@ -1,4 +1,3 @@
-# catNC = whether to concatenate the non-coding RNA to the coding (Ensembl only)
 hashit <- function(source, organism, release, catNC=FALSE) {
 
   if (source == "GENCODE") {
@@ -91,8 +90,8 @@ hashit <- function(source, organism, release, catNC=FALSE) {
   NULL
 }
 
-hashit("GENCODE", "Homo sapiens", i)
-hashit("GENCODE", "Mus musculus", paste0("M",i))
+for (i in 32:31) hashit("GENCODE", "Homo sapiens", i)
+for (i in 23:22) hashit("GENCODE", "Mus musculus", paste0("M",i))
 #
 hashit("Ensembl", "Homo sapiens", i)
 hashit("Ensembl", "Mus musculus", i)
