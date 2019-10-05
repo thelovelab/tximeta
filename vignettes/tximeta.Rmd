@@ -100,25 +100,54 @@ se <- tximeta(coldata)
 
 # What happened? 
 
-`tximeta` recognized the signature of the transcriptome that the files
+`tximeta` recognized the hashed checksum of the transcriptome that the files
 were quantified against, it accessed the GTF file of the transcriptome
 source, found and attached the transcript ranges, and added the
 appropriate transcriptome and genome metadata.  A remote GTF is only
 downloaded once, and a local or remote GTF is only parsed to build a
 *TxDb* once: if `tximeta` recognizes that it has seen this *Salmon*
 index before, it will use a cached version of the metadata and
-transcript ranges. 
+transcript ranges.
 
 Note the warning above that 9 of the transcripts are missing from the
 GTF file and so are dropped from the final output. This is a problem
 coming from the annotation source, and not easily avoided by
 `tximeta`. 
 
-We plan to create and maintain a large table of signatures for as many
-sources, organisms, releases of transcriptomes as possible. `tximeta`
-also has functions to support for *linked transcriptomes*, where one or
-more sources for transcript sequences have been combined or
-filtered. See the **Linked transcriptome** section below for a
+# Pre-computed transcriptome checksums
+
+We plan to create and maintain a large table of checksums for as many
+sources, organisms, releases of transcriptomes as possible. Currently
+the following checksums are supported in this version of `tximeta`:
+
+```{r echo=FALSE}
+tab <- read.csv(file.path(dir, "hashtable.csv"),
+                stringsAsFactors=FALSE)
+release.range <- function(tab, source, organism) {
+  tab.idx <- tab$organism == organism & tab$source == source
+  rels <- tab$release[tab.idx]
+  if (organism == "Mus musculus" & source == "GENCODE") {
+    paste0("M", range(as.numeric(sub("M","",rels))))
+  } else if (source == "RefSeq") {
+    paste0("p", range(as.numeric(sub(".*p","",rels))))
+  } else {
+    range(as.numeric(rels))
+  }
+}
+dat <- data.frame(
+  source=rep(c("GENCODE","Ensembl","RefSeq"),c(2,3,2)),
+  organism=c("Homo sapiens","Mus musculus",
+             "Drosophila melanogaster")[c(1:2,1:3,1:2)]
+)
+rng <- t(sapply(seq_len(nrow(dat)), function(i)
+  release.range(tab, dat[i,1], dat[i,2])))
+dat$range <- paste0(rng[,1], "-", rng[,2])
+knitr::kable(dat)
+```
+
+`tximeta` also has functions to support for *linked transcriptomes*,
+where one or more sources for transcript sequences have been combined
+or filtered. See the **Linked transcriptome** section below for a
 demonstration. (The *makeLinkedTxome* function was used above to avoid
 downloading the GTF during the vignette building process.)
 
@@ -376,7 +405,7 @@ cat Drosophila_melanogaster.BDGP6.cdna.all.fa.gz Drosophila_melanogaster.BDGP6.n
 To make this quantification reproducible, we make a `linkedTxome`
 which records key information about the sources of the transcript
 FASTA files, and the location of the relevant GTF file. It also
-records the signature of the transcriptome that was computed by
+records the checksum of the transcriptome that was computed by
 *Salmon* during the `index` step.
 
 **Multiple GTF/GFF files:** `linkedTxome` and `tximeta` do not
@@ -390,7 +419,7 @@ the Bioconductor support site or GitHub Issue page for further details
 or feature requests.
 
 By default, `linkedTxome` will write out a JSON file which can be
-shared with others, linking the signature of the index with the other
+shared with others, linking the checksum of the index with the other
 metadata, including FASTA and GTF sources. By default, it will write
 out to a file with the same name as the `indexDir`, but with a `.json`
 extension added. This can be prevented with `write=FALSE`, and the
@@ -460,7 +489,7 @@ makeLinkedTxome(indexDir=indexDir,
 ```
 
 After running `makeLinkedTxome`, the connection between this *Salmon*
-index (and its signature) with the sources is saved for persistent
+index (and its checksum) with the sources is saved for persistent
 usage.
 
 With use of `tximeta` and a *linkedTxome* -- as with `tximeta` on a

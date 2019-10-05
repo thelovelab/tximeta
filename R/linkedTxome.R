@@ -22,7 +22,7 @@
 #' on Zenodo. This enables consistent annotation and downstream annotation
 #' tasks, such as by \code{summarizeToGene}.
 #' @param write logical, should a JSON file be written out
-#' which documents the transcriptome signature and metadata? (default is TRUE)
+#' which documents the transcriptome checksum and metadata? (default is TRUE)
 #' @param jsonFile the path to the json file for the linkedTxome
 #'
 #' @return nothing, the function is run for its side effects

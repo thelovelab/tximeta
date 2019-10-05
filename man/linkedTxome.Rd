@@ -39,7 +39,7 @@ on Zenodo. This enables consistent annotation and downstream annotation
 tasks, such as by \code{summarizeToGene}.}
 
 \item{write}{logical, should a JSON file be written out
-which documents the transcriptome signature and metadata? (default is TRUE)}
+which documents the transcriptome checksum and metadata? (default is TRUE)}
 
 \item{jsonFile}{the path to the json file for the linkedTxome}
 }
