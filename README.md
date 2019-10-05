@@ -79,6 +79,7 @@ multiple files. A simple example of such a script is:
 ```{r}
 coldata <- read.csv("coldata.csv")
 library(tximeta)
+library(SummarizedExperiment)
 se <- tximeta(coldata)
 # write out the assay data
 for (a in assayNames(se)) {
