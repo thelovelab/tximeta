@@ -45,12 +45,12 @@ with those that do appear in the GTF}
 }
 \value{
 a SummarizedExperiment with metadata on the \code{rowRanges}.
-(if the hash signature in the Salmon or Sailfish index does not match
+(if the hashed checksum in the Salmon or Sailfish index does not match
 any known transcriptomes, or any locally saved \code{linkedTxome},
 \code{tximeta} will just return a non-ranged SummarizedExperiment)
 }
 \description{
-\code{tximeta} leverages the hash signature of the Salmon index,
+\code{tximeta} leverages the hashed checksum of the Salmon index,
 in addition to a number of core Bioconductor packages (GenomicFeatures,
 ensembldb, GenomeInfoDb, BiocFileCache) to automatically populate metadata
 for the user, without additional effort from the user.
@@ -61,7 +61,7 @@ when the quantification was performed with Salmon. However,
 \code{tximeta} can be used with any quantification \code{type} that is supported
 by \code{\link{tximport}}, where it will return an non-ranged SummarizedExperiment.
 
-\code{tximeta} checks the hash signature of the index against a database
+\code{tximeta} checks the hashed checksum of the index against a database
 of known transcriptomes (this database under construction) or a locally stored
 \code{linkedTxome} (see \code{link{makeLinkedTxome}}), and then will
 automatically populate, e.g. the transcript locations, the transcriptome release,
