@@ -116,9 +116,11 @@ coming from the annotation source, and not easily avoided by
 
 # Pre-computed transcriptome checksums
 
-We plan to create and maintain a large table of checksums for as many
-sources, organisms, releases of transcriptomes as possible. Currently
-the following checksums are supported in this version of `tximeta`:
+We plan to support a wide variety of sources and organisms for
+transcriptomes with pre-computed checksums, though for now the
+software focuses on predominantly human and mouse transcriptomes 
+(see **Next steps** below for details). 
+The following checksums are supported in this version of `tximeta`:
 
 ```{r echo=FALSE}
 tab <- read.csv(file.path(dir, "hashtable.csv"),
@@ -141,7 +143,7 @@ dat <- data.frame(
 )
 rng <- t(sapply(seq_len(nrow(dat)), function(i)
   release.range(tab, dat[i,1], dat[i,2])))
-dat$range <- paste0(rng[,1], "-", rng[,2])
+dat$releases <- paste0(rng[,1], "-", rng[,2])
 knitr::kable(dat)
 ```
 
