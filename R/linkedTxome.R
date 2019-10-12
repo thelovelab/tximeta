@@ -33,8 +33,8 @@
 #' @examples
 #'
 #' # point to a Salmon quantification file with an additional artificial transcript
-#' dir <- system.file("extdata/salmon_dm/SRR1197474.plus", package="tximportData")
-#' file <- file.path(dir, "quant.sf")
+#' dir <- system.file("extdata/salmon_dm", package="tximportData")
+#' file <- file.path(dir, "SRR1197474.plus", "quant.sf")
 #' coldata <- data.frame(files=file, names="SRR1197474", sample="1",
 #'                       stringsAsFactors=FALSE)
 #'
