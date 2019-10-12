@@ -51,31 +51,25 @@ For now, for details please see the vignette \code{inst/script/linked.Rmd}
 }
 \examples{
 
-# point to a Salmon quantification file which combined two Ensembl FASTA files:
-dir <- system.file("extdata/salmon_dm/SRR1197474", package="tximportData")
-file <- file.path(dir, "quant.sf.gz")
+# point to a Salmon quantification file with an additional artificial transcript
+dir <- system.file("extdata/salmon_dm/SRR1197474.plus", package="tximportData")
+file <- file.path(dir, "quant.sf")
 coldata <- data.frame(files=file, names="SRR1197474", sample="1",
                       stringsAsFactors=FALSE)
 
 # now point to the Salmon index itself to create a linkedTxome
 # as the index will not match a known txome
-dir <- system.file("extdata", package="tximeta")
-indexDir <- file.path(dir, "Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2")
+indexDir <- file.path(dir, "Dm.BDGP6.22.98.plus_salmon-0.14.1")
 
 # point to the source FASTA and GTF:
-fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz",
-             "ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.ncrna.fa.gz")
-
-# we comment this out for the example, and instead point to a local version
-# usually one would point to the FTP source for the GTF file here
-# gtfFTP <- "ftp://ftp.ensembl.org/pub/release-92/gtf/drosophila_melanogaster/Drosophila_melanogaster.BDGP6.92.gtf.gz"
-
-dir2 <- system.file("extdata/salmon_dm", package="tximportData")
-gtfPath <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
+fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
+              "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz",
+              "extra_transcript.fa.gz")
+gtfPath <- file.path(dir, "Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz")
 
 # now create a linkedTxome, linking the Salmon index to its FASTA and GTF sources
 makeLinkedTxome(indexDir=indexDir, source="Ensembl", organism="Drosophila melanogaster",
-                release="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
+                release="98", genome="BDGP6.22", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
 
 # to clear the entire linkedTxome table
 # (don't run unless you want to clear this table!)
