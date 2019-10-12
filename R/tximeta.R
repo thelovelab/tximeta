@@ -70,7 +70,7 @@
 #'
 #' # point to a Salmon quantification file:
 #' dir <- system.file("extdata/salmon_dm", package="tximportData")
-#' files <- file.path(dir, "SRR1197474_cdna", "quant.sf.gz") 
+#' files <- file.path(dir, "SRR1197474", "quant.sf") 
 #' coldata <- data.frame(files, names="SRR1197474", condition="A", stringsAsFactors=FALSE)
 #'
 #' # normally we would just run the following which would download the appropriate metadata
@@ -78,13 +78,12 @@
 #'
 #' # for this example, we instead point to a local path where the GTF can be found
 #' # by making a linkedTxome:
-#' dir <- system.file("extdata", package="tximeta")
-#' indexDir <- file.path(dir, "Drosophila_melanogaster.BDGP6.cdna.v92_salmon_0.10.2")
-#' fastaFTP <- "ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz"
-#' dir2 <- system.file("extdata/salmon_dm", package="tximportData")
-#' gtfPath <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
+#' indexDir <- file.path(dir, "Dm.BDGP6.22.98_salmon-0.14.1")
+#' fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
+#'               "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz")
+#' gtfPath <- file.path(dir, "Drosophila_melanogaster.BDGP6.22.98.gtf.gz")
 #' makeLinkedTxome(indexDir=indexDir, source="Ensembl", organism="Drosophila melanogaster",
-#'                 release="92", genome="BDGP6", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
+#'                 release="98", genome="BDGP6.22", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
 #' se <- tximeta(coldata)
 #'
 #' # to clear the entire linkedTxome table
