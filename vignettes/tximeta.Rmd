@@ -47,8 +47,7 @@ RNA-seq project with multiple samples.
 
 ```{r}
 dir <- system.file("extdata/salmon_dm", package="tximportData")
-# here gzipped, normally these are not
-files <- file.path(dir, "SRR1197474_cdna", "quant.sf.gz") 
+files <- file.path(dir, "SRR1197474", "quant.sf") 
 file.exists(files)
 coldata <- data.frame(files, names="SRR1197474", condition="A", stringsAsFactors=FALSE)
 coldata
@@ -77,17 +76,16 @@ local one. This following code is therefore not recommended for a
 typically workflow, but is particular to the vignette code.
 
 ```{r}
-dir <- system.file("extdata", package="tximeta")
-indexDir <- file.path(dir, "Drosophila_melanogaster.BDGP6.cdna.v92_salmon_0.10.2")
-fastaFTP <- "ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz"
-dir2 <- system.file("extdata/salmon_dm", package="tximportData")
-gtfPath <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
+indexDir <- file.path(dir, "Dm.BDGP6.22.98_salmon-0.14.1")
+fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
+              "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz")
+gtfPath <- file.path(dir,"Drosophila_melanogaster.BDGP6.22.98.gtf.gz")
 suppressPackageStartupMessages(library(tximeta))
 makeLinkedTxome(indexDir=indexDir,
                 source="Ensembl",
                 organism="Drosophila melanogaster",
-                release="92",
-                genome="BDGP6",
+                release="98",
+                genome="BDGP6.22",
                 fasta=fastaFTP,
                 gtf=gtfPath,
                 write=FALSE)
@@ -109,7 +107,7 @@ downloaded once, and a local or remote GTF is only parsed to build a
 index before, it will use a cached version of the metadata and
 transcript ranges.
 
-Note the warning above that 9 of the transcripts are missing from the
+Note the warning above that 5 of the transcripts are missing from the
 GTF file and so are dropped from the final output. This is a problem
 coming from the annotation source, and not easily avoided by
 `tximeta`. 
@@ -123,7 +121,8 @@ software focuses on predominantly human and mouse transcriptomes
 The following checksums are supported in this version of `tximeta`:
 
 ```{r echo=FALSE}
-tab <- read.csv(file.path(dir, "hashtable.csv"),
+dir2 <- system.file("extdata", package="tximeta")
+tab <- read.csv(file.path(dir2, "hashtable.csv"),
                 stringsAsFactors=FALSE)
 release.range <- function(tab, source, organism) {
   tab.idx <- tab$organism == organism & tab$source == source
@@ -147,7 +146,7 @@ dat$releases <- paste0(rng[,1], "-", rng[,2])
 knitr::kable(dat)
 ```
 
-`tximeta` also has functions to support for *linked transcriptomes*,
+`tximeta` also has functions to support *linked transcriptomes*,
 where one or more sources for transcript sequences have been combined
 or filtered. See the **Linked transcriptome** section below for a
 demonstration. (The *makeLinkedTxome* function was used above to avoid
@@ -344,7 +343,7 @@ The linking of the transcriptome source with the quantification files is
 important in the case that the transcript sequence no longer matches a
 known source (uniquely combined or filtered FASTA files), or if the
 source is not known to `tximeta`. Combinations of coding and
-non-coding human and mouse *Ensembl* transcripts should be
+non-coding human, mouse, and fruit fly *Ensembl* transcripts should be
 automatically recognized by `tximeta` and does not require making a
 *linkedTxome*. 
 Here we say "unknown" when we mean that the hash
@@ -355,13 +354,13 @@ transcriptomes, from all sources.
 Below we demonstrate how to make a *linkedTxome* and how to share and
 load a *linkedTxome*. 
 
-We point to *Salmon* quantification files which were quantified
-against a transcriptome combining two Ensembl FASTA files: the cDNA
-and the non-coding transcripts for *Drosophila melanogaster*.
+We point to a *Salmon* quantification file which was quantified
+against a transcriptome that included the coding and non-coding
+*Drosophila melanogaster* transcripts, as well as an artificial
+transcript of 960 bp (for demonstration purposes only).
 
 ```{r}
-dir <- system.file("extdata/salmon_dm/SRR1197474", package="tximportData")
-file <- file.path(dir, "quant.sf.gz")
+file <- file.path(dir, "SRR1197474.plus", "quant.sf")
 file.exists(file)
 coldata <- data.frame(files=file, names="SRR1197474", sample="1",
                       stringsAsFactors=FALSE)
@@ -392,18 +391,6 @@ public source(s)
 `tximeta` offers functionality to assist reproducible analysis in both
 of these cases.
 
-In the case of the quantification file above, the transcriptome was
-generated locally by downloading and combining the Ensembl cDNA and
-non-coding FASTA files *Drosophila melanogaster*, release 92. The
-following un-evaluated command line code chunk reproduces the
-production of the transcriptome from publicly available sources.
-
-```
-wget ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz 
-wget ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.ncrna.fa.gz
-cat Drosophila_melanogaster.BDGP6.cdna.all.fa.gz Drosophila_melanogaster.BDGP6.ncrna.fa.gz > Drosophila_melanogaster.BDGP6.v92.fa.gz
-```
-
 To make this quantification reproducible, we make a `linkedTxome`
 which records key information about the sources of the transcript
 FASTA files, and the location of the relevant GTF file. It also
@@ -413,7 +400,7 @@ records the checksum of the transcriptome that was computed by
 **Multiple GTF/GFF files:** `linkedTxome` and `tximeta` do not
 currently support multiple GTF/GFF files, which is a more complicated
 case than multiple FASTA, which is supported. Currently, we recommend
-that if users should add or combine GTF/GFF files themselves to create
+that users should add or combine GTF/GFF files themselves to create
 a single GTF/GFF file that contains all features used in
 quantification, and then upload such a file to *Zenodo*, which can
 then be linked as shown below. Feel free to contact the developers on
@@ -436,8 +423,7 @@ of a *Salmon* index directory in the *tximeta* package itself for
 demonstration of functionality in this vignette.
 
 ```{r}
-dir <- system.file("extdata", package="tximeta")
-indexDir <- file.path(dir, "Drosophila_melanogaster.BDGP6.v92_salmon_0.10.2")
+indexDir <- file.path(dir, "Dm.BDGP6.22.98.plus_salmon-0.14.1")
 ```
 
 Now we provide the location of the FASTA files and the GTF file for
@@ -448,26 +434,26 @@ for the cached versions of the *TxDb* and the transcript ranges, which
 are stored on the user's behalf via *BiocFileCache*. This is not an
 issue, as GENCODE, Ensembl, and RefSeq all provide GTF files which are
 uniquely identified by their filename,
-e.g. `Drosophila_melanogaster.BDGP6.92.gtf.gz`.
+e.g. `Drosophila_melanogaster.BDGP6.22.98.gtf.gz`.
 
 The recommended usage of `tximeta` would be to specify a remote GTF
 source, as seen in the commented-out line below: 
 
 ```{r}
-fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.cdna.all.fa.gz",
-              "ftp://ftp.ensembl.org/pub/release-92/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.ncrna.fa.gz")
-#gtfFTP <- "ftp://ftp.ensembl.org/pub/release-92/gtf/drosophila_melanogaster/Drosophila_melanogaster.BDGP6.92.gtf.gz"
+fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
+              "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz",
+              "extra_transcript.fa.gz")
+#gtfFTP <- "ftp://path/to/custom/Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz"
 ```
 
 Instead of the above commented-out FTP location for the GTF file, we
 specify a location within an R package. This step is just to avoid
 downloading from a remote FTP during vignette building. This use of
-`system.file` to point to a file in an R package is specific to this
+`file.path` to point to a file in an R package is specific to this
 vignette and should not be used in a typical workflow.
 
 ```{r}
-dir2 <- system.file("extdata/salmon_dm", package="tximportData")
-gtfPath <- file.path(dir2,"Drosophila_melanogaster.BDGP6.92.gtf.gz")
+gtfPath <- file.path(dir,"Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz")
 ```
 
 Finally, we create a *linkedTxome*.  In this vignette, we point to a
@@ -485,7 +471,7 @@ tmp <- tempdir()
 jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
 makeLinkedTxome(indexDir=indexDir,
                 source="Ensembl", organism="Drosophila melanogaster",
-                release="92", genome="BDGP6",
+                release="98", genome="BDGP6.22",
                 fasta=fastaFTP, gtf=gtfPath,
                 jsonFile=jsonFile)
 ```
@@ -494,13 +480,12 @@ After running `makeLinkedTxome`, the connection between this *Salmon*
 index (and its checksum) with the sources is saved for persistent
 usage.
 
-With use of `tximeta` and a *linkedTxome* -- as with `tximeta` on a
-known, un-filtered, un-combined transcriptome -- the software
+With use of `tximeta` and a *linkedTxome*, the software
 figures out if the remote GTF has been accessed and compiled into a
 *TxDb* before, and on future calls, it will simply load the
 pre-computed metadata and transcript ranges.
 
-Note the warning that 9 of the transcripts are missing from the GTF
+Note the warning that 5 of the transcripts are missing from the GTF
 file and so are dropped from the final output. This is a problem
 coming from the annotation source, and not easily avoided by
 `tximeta`. 
