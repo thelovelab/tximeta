@@ -350,14 +350,10 @@ known source (uniquely combined or filtered FASTA files), or if the
 source is not known to `tximeta`. Combinations of coding and
 non-coding human, mouse, and fruit fly *Ensembl* transcripts should be
 automatically recognized by `tximeta` and does not require making a
-*linkedTxome*. 
-Here we say "unknown" when we mean that the hash
-value of this transcriptome has not yet been added to the set 
-of precomputed hash values stored within `tximeta`. As the package 
-is further developed, we plan to roll out support for all common
-transcriptomes, from all sources.
-Below we demonstrate how to make a *linkedTxome* and how to share and
-load a *linkedTxome*. 
+*linkedTxome*. As the package is further developed, we plan to roll
+out support for all common transcriptomes, from all sources.  Below we
+demonstrate how to make a *linkedTxome* and how to share and load a
+*linkedTxome*.
 
 We point to a *Salmon* quantification file which was quantified
 against a transcriptome that included the coding and non-coding
@@ -421,11 +417,12 @@ file location can be changed with `jsonFile`.
 
 First we specify the path where the *Salmon* index is located. 
 
-Typically you would not use `system.file` to find this directory, but
-simply define `indexDir` to be the path of the *Salmon* directory on
-your machine. Here we use `system.file` because we have included parts
-of a *Salmon* index directory in the *tximeta* package itself for
-demonstration of functionality in this vignette.
+Typically you would not use `system.file` and `file.path` to locate
+this directory, but simply define `indexDir` to be the path of the
+*Salmon* directory on your machine. Here we use `system.file` and
+`file.path` because we have included parts of a *Salmon* index
+directory in the *tximeta* package itself for demonstration of
+functionality in this vignette.
 
 ```{r}
 indexDir <- file.path(dir, "Dm.BDGP6.22.98.plus_salmon-0.14.1")
@@ -455,7 +452,11 @@ Instead of the above commented-out FTP location for the GTF file, we
 specify a location within an R package. This step is just to avoid
 downloading from a remote FTP during vignette building. This use of
 `file.path` to point to a file in an R package is specific to this
-vignette and should not be used in a typical workflow.
+vignette and should not be used in a typical workflow. The following
+GTF file is a modified version of the release 98 from Ensembl, which
+includes description of a one transcript, one exon artificial gene
+which was inserted into the transcriptome (for demonstration purposes
+only). 
 
 ```{r}
 gtfPath <- file.path(dir,"Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz")
@@ -483,7 +484,12 @@ makeLinkedTxome(indexDir=indexDir,
 
 After running `makeLinkedTxome`, the connection between this *Salmon*
 index (and its checksum) with the sources is saved for persistent
-usage.
+usage. Note that because we added a single transcript of 960bp to the
+FASTA file used for quantification, `tximeta` could tell that this was
+not quantified against release 98 of the Ensembl transcripts for
+*Drosophila melanogaster*. Only when the correct set of transcripts
+were specified does `tximeta` recognize and import the correct
+metadata.
 
 With use of `tximeta` and a *linkedTxome*, the software
 figures out if the remote GTF has been accessed and compiled into a
