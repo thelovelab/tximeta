@@ -146,6 +146,11 @@ dat$releases <- paste0(rng[,1], "-", rng[,2])
 knitr::kable(dat)
 ```
 
+For Ensembl transcriptomes, we support the combined protein coding
+(cDNA) and non-coding (ncRNA) sequences, as well as the protein coding
+alone (although the former approach combining coding and non-coding
+transcripts is recommended for more accurate quantification).
+
 `tximeta` also has functions to support *linked transcriptomes*,
 where one or more sources for transcript sequences have been combined
 or filtered. See the **Linked transcriptome** section below for a
