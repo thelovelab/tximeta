@@ -14,7 +14,7 @@
 #' by \code{\link{tximport}}, where it will return an non-ranged SummarizedExperiment.
 #' 
 #' \code{tximeta} performs a lookup of the hashed checksum of the index
-#' (stored in a metadata file in the \code{aux_info} directory of the Salmon output)
+#' (stored in an auxilary information directory of the Salmon output)
 #' against a database of known transcriptomes, which lives within the tximeta
 #' package and is continually updated on Bioconductor's release schedule.
 #' In addition, \code{tximeta} performs a lookup of the checksum against a
@@ -308,7 +308,15 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
 # read metadata files from Salmon directory
 getMetaInfo <- function(file) {
   dir <- dirname(file)
-  jsonPath <- file.path(dir,"aux_info","meta_info.json")
+  auxDir <- "aux_info" # the default auxiliary information location
+  if (!file.exists(dir, auxDir)) {
+    # just in case this was changed...
+    jsonPath <- file.path(dir, "cmd_info.json")
+    cmd_info <- jsonlite::fromJSON(jsonPath)
+    auxDir <- if (is.element("auxDir", names(cmd_info))) cmd_info$auxDir
+  }
+  # ok now we read in the metadata
+  jsonPath <- file.path(dir, auxDir, "meta_info.json")
   if (!file.exists(jsonPath)) {
     stop("\n\n  the quantification files exist, but the metadata files are missing.
   tximeta (and other downstream software) require the entire output directory
