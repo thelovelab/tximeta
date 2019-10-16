@@ -3,17 +3,24 @@
 #' \code{tximeta} leverages the hashed checksum of the Salmon index,
 #' in addition to a number of core Bioconductor packages (GenomicFeatures,
 #' ensembldb, GenomeInfoDb, BiocFileCache) to automatically populate metadata
-#' for the user, without additional effort from the user. 
+#' for the user, without additional effort from the user. Note that
+#' \code{tximeta} requires that the entire output directory of Salmon/Alevin
+#' is present and unmodified in order to identify the provenance of the
+#' reference transcripts.
 #'
 #' Most of the code in \code{tximeta} works to add metadata and transcript ranges
 #' when the quantification was performed with Salmon. However,
 #' \code{tximeta} can be used with any quantification \code{type} that is supported
 #' by \code{\link{tximport}}, where it will return an non-ranged SummarizedExperiment.
 #' 
-#' \code{tximeta} checks the hashed checksum of the index against a database
-#' of known transcriptomes (this database under construction) or a locally stored
-#' \code{linkedTxome} (see \code{link{makeLinkedTxome}}), and then will
-#' automatically populate, e.g. the transcript locations, the transcriptome release,
+#' \code{tximeta} performs a lookup of the hashed checksum of the index
+#' (stored in a metadata file in the \code{aux_info} directory of the Salmon output)
+#' against a database of known transcriptomes, which lives within the tximeta
+#' package and is continually updated on Bioconductor's release schedule.
+#' In addition, \code{tximeta} performs a lookup of the checksum against a
+#' locally stored table of \code{linkedTxome}'s (see \code{link{makeLinkedTxome}}).
+#' If \code{tximeta} detects a match, it will automatically populate,
+#' e.g. the transcript locations, the transcriptome release,
 #' the genome with correct chromosome lengths, etc. It allows for automatic
 #' and correct summarization of transcript-level quantifications to the gene-level
 #' via \code{\link{summarizeToGene}} without the need to manually build
@@ -103,7 +110,7 @@
 #' @importFrom Biostrings readDNAStringSet %in%
 #' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfccount bfcrpath
 #' @importFrom tibble tibble
-#' @importFrom GenomeInfoDb Seqinfo genome<- seqinfo<- seqlevels
+#' @importFrom GenomeInfoDb Seqinfo genome<- seqlengths seqinfo seqinfo<- seqlevels
 #' @importFrom rappdirs user_cache_dir
 #' @importFrom utils menu packageVersion read.csv read.delim head
 #' @importFrom methods is
@@ -302,7 +309,13 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
 getMetaInfo <- function(file) {
   dir <- dirname(file)
   jsonPath <- file.path(dir,"aux_info","meta_info.json")
-  stopifnot(file.exists(jsonPath))
+  if (!file.exists(jsonPath)) {
+    stop("\n\n  the quantification files exist, but the metadata files are missing.
+  tximeta (and other downstream software) require the entire output directory
+  of Salmon/Alevin, including the quantification files and many other files
+  that contain critical metadata. make sure to preserve the entire directory
+  for use with tximeta (and other downstream software).\n\n") 
+  }
   fromJSON(jsonPath)
 }
 
