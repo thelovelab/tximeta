@@ -15,6 +15,11 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
     g <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="gene")
   })
 
+  # need to add seqinfo for GENCODE and RefSeq
+  if (all(is.na(seqlengths(g)))) {
+    seqinfo(g) <- seqinfo(object)
+  }
+  
   txi <- list(
     abundance=assays(object)[["abundance"]],
     counts=assays(object)[["counts"]],

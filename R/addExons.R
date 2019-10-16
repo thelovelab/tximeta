@@ -41,6 +41,11 @@ addExons <- function(se) {
   txdb <- getTxDb(txomeInfo)
   exons <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="exon")
 
+  # need to add seqinfo for GENCODE and RefSeq
+  if (all(is.na(seqlengths(g)))) {
+    seqinfo(g) <- seqinfo(object)
+  }
+  
   # check if all transcripts are present, and then subset
   stopifnot(all(rownames(se) %in% names(exons)))
   exons <- exons[rownames(se)]

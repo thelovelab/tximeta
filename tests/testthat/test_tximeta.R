@@ -49,6 +49,8 @@ test_that("tximeta can import GENCODE and Ensembl", {
     coldata <- data.frame(files, names=paste0("sample",1:6))
     se <- tximeta(coldata)
 
+    gse <- summarizeToGene(se)
+
     dir <- system.file("extdata", package="tximportData")
     samples <- read.table(file.path(dir,"samples.txt"), header=TRUE)
     files <- file.path(dir,"salmon_gibbs", samples$run, "quant.sf.gz")
