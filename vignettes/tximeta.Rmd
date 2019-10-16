@@ -30,6 +30,15 @@ scRNA-seq data quantified with *Alevin* [@Srivastava2019]. For more
 details on these packages -- including the motivation for `tximeta`
 and description of similar work -- consult the **References** below.
 
+**Note:** `tximeta` requires that the **entire output directory** of
+*Salmon*/*Alevin* is present and unmodified in order to identify the
+provenance of the reference transcripts. In general, it's a good idea
+to not modify or re-arrange the output directory of bioinformatic
+software as other downstream software rely on and assume a consistent
+directory structure. For sharing multiple samples, one can use, for
+example, `tar -czf` to bundle up a set of Salmon output directories,
+or to bundle one Alevin output directory.
+
 # Analysis starts with sample table
 
 The first step using `tximeta` is to read in the sample table, which
