@@ -309,11 +309,13 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
 getMetaInfo <- function(file) {
   dir <- dirname(file)
   auxDir <- "aux_info" # the default auxiliary information location
-  if (!file.exists(dir, auxDir)) {
+  if (!file.exists(file.path(dir, auxDir))) {
     # just in case this was changed...
     jsonPath <- file.path(dir, "cmd_info.json")
     cmd_info <- jsonlite::fromJSON(jsonPath)
-    auxDir <- if (is.element("auxDir", names(cmd_info))) cmd_info$auxDir
+    if ("auxDir" %in% names(cmd_info)) {
+      auxDir <- cmd_info$auxDir
+    }
   }
   # ok now we read in the metadata
   jsonPath <- file.path(dir, auxDir, "meta_info.json")

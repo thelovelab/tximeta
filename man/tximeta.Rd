@@ -65,7 +65,7 @@ when the quantification was performed with Salmon. However,
 by \code{\link{tximport}}, where it will return an non-ranged SummarizedExperiment.
 
 \code{tximeta} performs a lookup of the hashed checksum of the index
-(stored in a metadata file in the \code{aux_info} directory of the Salmon output)
+(stored in an auxilary information directory of the Salmon output)
 against a database of known transcriptomes, which lives within the tximeta
 package and is continually updated on Bioconductor's release schedule.
 In addition, \code{tximeta} performs a lookup of the checksum against a
