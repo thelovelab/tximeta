@@ -1,27 +1,19 @@
-Changes in version 1.3.18
+Changes in version 1.4.0
 + tximeta will now pull down RefSeq seqinfo, using the
   dirname() of the GTF location, and assuming some
   consistency in the structure of the assembly_report.txt
   that is located in the same directory. Needs more
   testing though across releases and organisms.
-
-Changes in version 1.3.6
 + expanded caching of ranges to exons and genes as well.
   Exons in particular take a long time to build from
   TxDb, so this saves quite a lot of time.
-
-Changes in version 1.3.5
 + new 'addExons' function will add exons to trancript-level
   summarized experiments, by replacing transcript GRanges
   with exon-by-transcript GRangesList. Purposely designed
   only for transcript-level, see note in ?addExons
-
-Changes in version 1.3.3
 + tximeta now also caches the transcript ranges themselves,
   rather than just the TxDb. This shaves extra seconds off
   the tximeta() call!
-
-Changes in version 1.3.1
 + add 'skipSeqinfo' argument, which avoids attempting
   to fetch chromosome information (from UCSC) if set
   to TRUE.
