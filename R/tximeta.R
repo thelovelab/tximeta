@@ -132,6 +132,10 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
   if (!all(file.exists(files))) {
     stop("the files do not exist at the location specified by 'coldata$files'")
   }
+
+  if (type == "alevin") {
+    if (length(files) > 1) stop("alevin import currently only supports a single experiment")
+  }
   
   # remove the files column from colData
   coldata <- subset(coldata, select=-files)
