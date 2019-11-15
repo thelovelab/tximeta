@@ -67,7 +67,13 @@ makeLinkedTxome <- function(indexDir, source, organism, release,
   }
   indexList <- fromJSON(indexJson)
   # Salmon's SHA-256 hash of the index is called "SeqHash" in the index JSON
-  indexSeqHash <- indexList$value0$SeqHash
+  # Pre-Salmon 1.0.0 the header.json file has a "value0" sublist, 
+  # from Salmon 1.0.0 the info.json file doesn't
+  if ("value0" %in% names(indexList)) {
+    indexSeqHash <- indexList$value0$SeqHash
+  } else {
+    indexSeqHash <- indexList$SeqHash
+  }
   # here and in the data frame where we record linkedTxome's,
   # 'index' is just the basename of the Salmon index
   index <- basename(indexDir)
