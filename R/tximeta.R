@@ -275,6 +275,15 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
     }
   }
 
+  # special edits to rownames for Gencode to remove chars after `|`
+  # (and user didn't use --gencode when building Salmon index)
+  testTxp <- rownames(assays[[1]])[1]
+  if (grepl("ENST|ENSMUST", testTxp) & grepl("\\|", testTxp)) {
+    for (i in names(assays)) {
+      rownames(assays[[i]]) <- sub("\\|.*","",rownames(assays[[i]]))
+    }
+  }
+  
   assays <- checkAssays2Txps(assays, txps)
   
   # TODO we could give a warning here if there are txps in TxDb not in index
