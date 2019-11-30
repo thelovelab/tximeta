@@ -1,3 +1,58 @@
+#' Import transcript-level quantification data with automatic metadata
+#' 
+#' The tximeta package imports abundances (TPM), estimated counts,
+#' and effective lengths from Salmon, Alevin, or other quantification
+#' tools, and will output a SummarizedExperiment object. For Salmon
+#' and Alevin quantification directories, \code{tximeta} will
+#' try to identify the correct provenance of the reference transcripts
+#' and automatically attach the transcript ranges to the
+#' SummarizedExperiment, to facilitate downstream integration with
+#' other datasets. The automatic identification of reference transcripts
+#' should work out-of-the-box for human or mouse transcriptomes from
+#' the sources: GENCODE, Ensembl, or RefSeq.
+#'
+#' The main functions are:
+#' \itemize{
+#' \item \code{\link{tximeta}} - with key argument: \code{coldata}
+#' \item \code{\link{summarizeToGene}}
+#' \item \code{\link{addIds}}
+#' \item \code{\link{addExons}}
+#' }
+#' 
+#' All software-related questions should be posted to the Bioconductor Support Site:
+#' 
+#' \url{http://support.bioconductor.org}
+#'
+#' The code can be viewed at the GitHub repository,
+#' which also lists the contributtor code of conduct:
+#'
+#' \url{https://github.com/mikelove/tximeta}
+#' 
+#' @references
+#'
+#' \strong{tximeta} reference:
+#' 
+#' Michael I. Love, Charlotte Soneson, Peter F. Hickey, Lisa K. Johnson
+#' N. Tessa Pierce, Lori Shepherd, Martin Morgan, Rob Patro (2019)
+#' Tximeta: reference sequence checksums for provenance identification
+#' in RNA-seq. bioRxiv.
+#' \url{https://doi.org/10.1101/777888}
+#'
+#' \strong{tximport} reference (the effective length offset and counts-from-abundance):
+#' 
+#' Charlotte Soneson, Michael I. Love, Mark D. Robinson (2015)
+#' Differential analyses for RNA-seq: transcript-level estimates
+#' improve gene-level inferences. F1000Research.
+#' \url{http://doi.org/10.12688/f1000research.7563}
+#'
+#' @author Michael I. Love, Charlotte Soneson, Peter Hickey, Rob Patro
+#' 
+#' @docType package
+#' @name tximeta-package
+#' @aliases tximeta-package
+#' @keywords package
+NULL
+
 #' tximeta: Transcript quantification import with automatic metadata
 #'
 #' \code{tximeta} leverages the hashed checksum of the Salmon index,
@@ -275,7 +330,7 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
     }
   }
 
-  # special edits to rownames for Gencode to remove chars after `|`
+  # special edits to rownames for GENCODE to remove chars after `|`
   # (and user didn't use --gencode when building Salmon index)
   testTxp <- rownames(assays[[1]])[1]
   if (grepl("ENST|ENSMUST", testTxp) & grepl("\\|", testTxp)) {
