@@ -1,9 +1,9 @@
 #' Import transcript-level quantification data with automatic metadata
 #' 
 #' The tximeta package imports abundances (TPM), estimated counts,
-#' and effective lengths from Salmon, Alevin, or other quantification
+#' and effective lengths from Salmon, alevin, or other quantification
 #' tools, and will output a SummarizedExperiment object. For Salmon
-#' and Alevin quantification directories, \code{tximeta} will
+#' and alevin quantification directories, \code{tximeta} will
 #' try to identify the correct provenance of the reference transcripts
 #' and automatically attach the transcript ranges to the
 #' SummarizedExperiment, to facilitate downstream integration with
@@ -58,10 +58,10 @@ NULL
 #'
 #' \code{tximeta} leverages the hashed checksum of the Salmon index,
 #' in addition to a number of core Bioconductor packages (GenomicFeatures,
-#' ensembldb, GenomeInfoDb, BiocFileCache) to automatically populate metadata
-#' for the user, without additional effort from the user. Note that
-#' \code{tximeta} requires that the entire output directory of Salmon/Alevin
-#' is present and unmodified in order to identify the provenance of the
+#' ensembldb, AnnotationHub, GenomeInfoDb, BiocFileCache) to automatically
+#' populate metadata for the user, without additional effort from the user.
+#' Note that \code{tximeta} requires that the entire output directory of Salmon
+#' or alevin is present and unmodified in order to identify the provenance of the
 #' reference transcripts.
 #'
 #' Most of the code in \code{tximeta} works to add metadata and transcript ranges
@@ -87,9 +87,12 @@ NULL
 #' directory. At any point, the user can specify a location using
 #' \code{\link{setTximetaBFC}} and this choice will be saved for future sessions.
 #' Multiple users can point to the same BiocFileCache, such that
-#' transcript databases (TxDb) associated with certain Salmon indices
+#' transcript databases (TxDb or EnsDb) associated with certain Salmon indices
 #' and \code{linkedTxomes} can be accessed by different users without additional
-#' effort or time spent downloading/building the relevant TxDb.
+#' effort or time spent downloading and building the relevant TxDb / EnsDb.
+#' Note that, if the EnsDb is present in AnnotationHub, \code{tximeta} will
+#' use this object instead of downloading and building an EnsDb from GTF
+#' (to disable this set useHub=FALSE).
 #'
 #' In order to allow that multiple users can read and write to the
 #' same location, one should set the BiocFileCache directory to
@@ -108,8 +111,8 @@ NULL
 #' with Salmon, so default is \code{TRUE},
 #' and it's recommended to use \code{\link{summarizeToGene}}
 #' following \code{tximeta} for gene-level summarization.
-#' For an Alevin file, \code{tximeta} will import the
-#' gene level counts ignoring this argument (Alevin
+#' For an alevin file, \code{tximeta} will import the
+#' gene level counts ignoring this argument (alevin
 #' produces only gene-level quantification).
 #' @param skipMeta whether to skip metadata generation
 #' (e.g. to avoid errors if not connected to internet).
@@ -118,6 +121,10 @@ NULL
 #' @param skipSeqinfo whether to skip the addition of Seqinfo,
 #' which requires an internet connection to download the
 #' relevant chromosome information table from UCSC
+#' @param useHub whether to first attempt to download an EnsDb
+#' object from AnnotationHub, rather than creating from a
+#' GTF file from FTP (default is TRUE). If FALSE, it will
+#' force \code{tximeta} to download and parse the GTF
 #' @param cleanDuplicateTxps whether to try to clean
 #' duplicate transcripts (exact sequence duplicates) by replacing
 #' the transcript names that do not appear in the GTF
@@ -163,8 +170,9 @@ NULL
 #' @importFrom AnnotationDbi loadDb saveDb select keys mapIds
 #' @importFrom GenomicFeatures makeTxDbFromGFF transcripts genes exonsBy
 #' @importFrom ensembldb ensDbFromGtf EnsDb
+#' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfcadd bfccount bfcrpath
+#' @importFrom AnnotationHub AnnotationHub query dbconn dbfile
 #' @importFrom Biostrings readDNAStringSet %in%
-#' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfccount bfcrpath
 #' @importFrom tibble tibble
 #' @importFrom GenomeInfoDb Seqinfo genome<- seqlengths seqinfo seqinfo<- seqlevels
 #' @importFrom rappdirs user_cache_dir
@@ -172,8 +180,12 @@ NULL
 #' @importFrom methods is
 #'
 #' @export
-tximeta <- function(coldata, type="salmon", txOut=TRUE,
-                    skipMeta=FALSE, skipSeqinfo=FALSE,
+tximeta <- function(coldata,
+                    type="salmon",
+                    txOut=TRUE,
+                    skipMeta=FALSE,
+                    skipSeqinfo=FALSE,
+                    useHub=TRUE,
                     cleanDuplicateTxps=FALSE, ...) {
 
   if (is(coldata, "vector")) {
@@ -250,9 +262,9 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
   }
 
   # build or load a TxDb from the gtf
-  txdb <- getTxDb(txomeInfo)
+  txdb <- getTxDb(txomeInfo, useHub=useHub)
 
-  # build or load transcript ranges (Alevin gets gene ranges instead)
+  # build or load transcript ranges (alevin gets gene ranges instead)
   if (type != "alevin") {
     txps <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="txp")
     metadata$level <- "txp"
@@ -427,7 +439,7 @@ getMetaInfo <- function(file) {
   if (!file.exists(jsonPath)) {
     stop("\n\n  the quantification files exist, but the metadata files are missing.
   tximeta (and other downstream software) require the entire output directory
-  of Salmon/Alevin, including the quantification files and many other files
+  of Salmon/alevin, including the quantification files and many other files
   that contain critical metadata. make sure to preserve the entire directory
   for use with tximeta (and other downstream software).\n\n") 
   }
@@ -522,26 +534,48 @@ getTxomeInfo <- function(indexSeqHash) {
 }
 
 # build or load a TxDb for the dataset
-getTxDb <- function(txomeInfo) {
+getTxDb <- function(txomeInfo, useHub=TRUE) {
   # TODO what if there are multiple GTF files?
   stopifnot(length(txomeInfo$gtf) == 1)
   stopifnot(txomeInfo$gtf != "")
   txdbName <- basename(txomeInfo$gtf)
   bfcloc <- getBFCLoc()
   bfc <- BiocFileCache(bfcloc)
+  # look up txdbName
   q <- bfcquery(bfc, txdbName)
+  # then filter for equality with rname
+  q <- q[q$rname==txdbName,]
   if (bfccount(q) == 0) {
-    # TODO: this next line already creates an entry,
-    # but will need to clean up if the TxDb construction below fails
-    savepath <- bfcnew(bfc, txdbName, ext=".sqlite")
     if (txomeInfo$source == "Ensembl") {
-      message("building EnsDb with 'ensembldb' package")
-      # TODO what about suppressing all these warnings
-      suppressWarnings(ensDbFromGtf(txomeInfo$gtf, outfile=savepath))
-      txdb <- EnsDb(savepath)
+      hubWorked <- FALSE
+      if (useHub) {
+        message("useHub=TRUE: checking for EnsDb via 'AnnotationHub'")
+        ah <- AnnotationHub()
+        # get records
+        records <- query(ah, c("Ensembl", txomeInfo$organism, txomeInfo$release))
+        # confirm source and organism through metadata columns
+        records <- records[records$dataprovider=="Ensembl" & records$species==txomeInfo$organism,]
+        # confirm release number through grep on the 'title'
+        records <- records[grepl(paste("Ensembl", txomeInfo$release, "EnsDb"), records$title),]
+        if (length(records) == 1) {
+          message("found matching EnsDb via 'AnnotationHub'")
+          hubWorked <- TRUE
+          txdb <- ah[[names(records)]]
+          bfcadd(bfc, rname=txdbName, fpath=dbfile(dbconn(txdb)))
+        }
+      }
+      if (!hubWorked) {
+        message("building EnsDb with 'ensembldb' package")
+        # TODO need to create an entry to obtain a savepath
+        savepath <- bfcnew(bfc, rname=txdbName, ext=".sqlite")
+        # TODO what about suppressing all these warnings
+        suppressWarnings(ensDbFromGtf(txomeInfo$gtf, outfile=savepath))
+        txdb <- EnsDb(savepath)
+      }
     } else {
       message("building TxDb with 'GenomicFeatures' package")
       txdb <- makeTxDbFromGFF(txomeInfo$gtf)
+      savepath <- bfcnew(bfc, rname=txdbName, ext=".sqlite")
       saveDb(txdb, file=savepath)
     }
   } else {

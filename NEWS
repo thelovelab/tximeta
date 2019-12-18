@@ -1,3 +1,9 @@
+Changes in version 1.5.8
++ tximeta will now make use of EnsDb created and distributed
+  on AnnotationHub, unless useHub=FALSE. Also, a new function
+  retrieveDb() can be called on a SummarizedExperiment to
+  retrieve the underlying TxDb or EnsDb.
+
 Changes in version 1.5.3
 + If during the indexing step, user didn't use --gencode
   for a Gencode transcriptome file, tximeta will deal with

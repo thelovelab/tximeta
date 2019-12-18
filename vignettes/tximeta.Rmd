@@ -10,7 +10,7 @@ output:
 abstract: >
   `tximeta` performs numerous annotation and metadata gathering tasks on
   behalf of users during the import of transcript quantifications from
-  *Salmon* or *Alevin* into R/Bioconductor. Metadata and transcript
+  *Salmon* or *alevin* into R/Bioconductor. Metadata and transcript
   ranges are added automatically, facilitating combining multiple
   genomic datasets and helping to prevent bioinformatic errors.
 bibliography: library.bib
@@ -26,18 +26,18 @@ The `tximeta` package [@Love2019] extends the `tximport` package
 [@Soneson2015] for import of transcript-level quantification data into
 R/Bioconductor. It facilitates addition of annotation data when the
 RNA-seq data has been quantified with *Salmon* [@Patro2017] or for
-scRNA-seq data quantified with *Alevin* [@Srivastava2019]. For more
+scRNA-seq data quantified with *alevin* [@Srivastava2019]. For more
 details on these packages -- including the motivation for `tximeta`
 and description of similar work -- consult the **References** below.
 
 **Note:** `tximeta` requires that the **entire output directory** of
-*Salmon*/*Alevin* is present and unmodified in order to identify the
+*Salmon* / *alevin* is present and unmodified in order to identify the
 provenance of the reference transcripts. In general, it's a good idea
 to not modify or re-arrange the output directory of bioinformatic
 software as other downstream software rely on and assume a consistent
 directory structure. For sharing multiple samples, one can use, for
 example, `tar -czf` to bundle up a set of Salmon output directories,
-or to bundle one Alevin output directory.
+or to bundle one alevin output directory.
 
 # Analysis starts with sample table
 
@@ -45,7 +45,7 @@ The first step using `tximeta` is to read in the sample table, which
 will become the *column data*, `colData`, of the final object,
 a *SummarizedExperiment*. The sample table should contain all the
 information we need to identify the *Salmon* quantification
-directories. For *Alevin* quantification, one should point to the
+directories. For *alevin* quantification, one should point to the
 `quants_mat.gz` file that contains the counts for all of the cells.
 
 Here we will use a *Salmon* quantification file in the
@@ -112,7 +112,7 @@ were quantified against, it accessed the GTF file of the transcriptome
 source, found and attached the transcript ranges, and added the
 appropriate transcriptome and genome metadata.  A remote GTF is only
 downloaded once, and a local or remote GTF is only parsed to build a
-*TxDb* once: if `tximeta` recognizes that it has seen this *Salmon*
+*TxDb* or *EnsDb* once: if `tximeta` recognizes that it has seen this *Salmon*
 index before, it will use a cached version of the metadata and
 transcript ranges.
 
@@ -120,6 +120,25 @@ Note the warning above that 5 of the transcripts are missing from the
 GTF file and so are dropped from the final output. This is a problem
 coming from the annotation source, and not easily avoided by
 `tximeta`. 
+
+# TxDb, EnsDb, and AnnotationHub
+
+`tximeta` makes use of Bioconductor packages for storing
+transcript databases as *TxDb* or *EnsDb* objects, which both are 
+connected by default to `sqlite` backends.
+For GENCODE and RefSeq GTF files, `tximeta` uses the *GenomicFeatures*
+packages [@granges] to parse the GTF and build a *TxDb*. For Ensembl
+GTF files, `tximeta` will first attempt to obtain the correct *EnsDb*
+object using *AnnotationHub*. The *ensembldb* package [@ensembldb]
+contains classes and methods for extracting relevant data from Ensembl
+files. If the *EnsDb* has already been made available on
+AnnotationHub, `tximeta` will download the database directly, which
+saves the user time parsing the GTF into a database (to avoid this,
+set `useHub=FALSE`). If the relevant *EnsDb* is not available on
+AnnotationHub, `tximeta` will build an *EnsDb* using *ensembldb* after
+downloading the GTF file. Again, the download/construction of a
+transcript database occurs only once, and upon subsequent usage of
+*tximeta* functions, the cached version will be used.
 
 # Pre-computed transcriptome checksums
 
@@ -168,7 +187,7 @@ downloading the GTF during the vignette building process.)
 
 # SummarizedExperiment output
 
-We, of course, have our coldata from before. Note that we've removed `files`.
+We have our coldata from before. Note that we've removed `files`.
 
 ```{r}
 suppressPackageStartupMessages(library(SummarizedExperiment))
@@ -618,7 +637,7 @@ bfcinfo(bfc)
 # Other quantifiers
 
 `tximeta` can import the output from any quantifiers that are
-supported by `tximport`, and if these are not *Salmon*, *Alevin*, or
+supported by `tximport`, and if these are not *Salmon*, *alevin*, or
 *Sailfish* output, it will simply return a non-ranged
 *SummarizedExperiment*. 
 We are working to allow manually passing of the hash value of the

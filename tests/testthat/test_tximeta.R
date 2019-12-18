@@ -54,11 +54,18 @@ test_that("tximeta can import GENCODE and Ensembl", {
 
     gse <- summarizeToGene(se)
 
+    # Ensembl example --- show that we can use AnnotationHub
+    
     dir <- system.file("extdata", package="tximportData")
     samples <- read.table(file.path(dir,"samples.txt"), header=TRUE)
     files <- file.path(dir,"salmon_gibbs", samples$run, "quant.sf.gz")
     coldata <- data.frame(files, names=paste0("sample",1:6))
-    se <- tximeta(coldata, dropInfReps=TRUE)
+
+    # with AnnotationHub (default)
+    se <- tximeta(coldata, dropInfReps=TRUE, useHub=TRUE)
+    
+    # without AnnotationHub
+    se <- tximeta(coldata, dropInfReps=TRUE, useHub=FALSE)
 
     gse <- summarizeToGene(se)
     
@@ -130,19 +137,21 @@ test_that("tximeta can import refseq", {
 
 test_that("tximeta can import kallisto", {
 
-  dir <- system.file("extdata", package="tximportData")
-  samples <- read.table(file.path(dir,"samples.txt"), header=TRUE)
-  files <- file.path(dir,"kallisto", samples$run, "abundance.tsv.gz")
-  coldata <- data.frame(files, names=paste0("sample",1:6))
-  se <- tximeta(coldata, type="kallisto", txOut=TRUE)
-
-  # inferential replicates as well
-  library(SummarizedExperiment)
-  files <- file.path(dir,"kallisto_boot", samples$run, "abundance.h5")
-  coldata <- data.frame(files, names=paste0("sample",1:6))
-  se <- tximeta(coldata, type="kallisto", txOut=TRUE)
-  expect_true("infRep1" %in% assayNames(se))
-  se <- tximeta(coldata, type="kallisto", txOut=TRUE, varReduce=TRUE)
-  expect_true("variance" %in% assayNames(se))
+  if (requireNamespace(package="rhdf5", quietly=TRUE)) {
+    dir <- system.file("extdata", package="tximportData")
+    samples <- read.table(file.path(dir,"samples.txt"), header=TRUE)
+    files <- file.path(dir,"kallisto", samples$run, "abundance.tsv.gz")
+    coldata <- data.frame(files, names=paste0("sample",1:6))
+    se <- tximeta(coldata, type="kallisto", txOut=TRUE)
+    
+    # inferential replicates as well
+    library(SummarizedExperiment)
+    files <- file.path(dir,"kallisto_boot", samples$run, "abundance.h5")
+    coldata <- data.frame(files, names=paste0("sample",1:6))
+    se <- tximeta(coldata, type="kallisto", txOut=TRUE)
+    expect_true("infRep1" %in% assayNames(se))
+    se <- tximeta(coldata, type="kallisto", txOut=TRUE, varReduce=TRUE)
+    expect_true("variance" %in% assayNames(se))
+  }
   
 })

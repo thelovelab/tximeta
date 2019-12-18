@@ -4,7 +4,7 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
 
   txomeInfo <- metadata(object)$txomeInfo
   txdb <- getTxDb(txomeInfo)
-  message("obtaining transcript-to-gene mapping from TxDb")
+  message("obtaining transcript-to-gene mapping from database")
 
   suppressMessages({
     tx2gene <- select(txdb, keys(txdb, "TXNAME"), "GENEID", "TXNAME")

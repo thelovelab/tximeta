@@ -10,6 +10,7 @@ tximeta(
   txOut = TRUE,
   skipMeta = FALSE,
   skipSeqinfo = FALSE,
+  useHub = TRUE,
   cleanDuplicateTxps = FALSE,
   ...
 )
@@ -43,6 +44,11 @@ This calls \code{tximport} directly and so either
 which requires an internet connection to download the
 relevant chromosome information table from UCSC}
 
+\item{useHub}{whether to first attempt to download an EnsDb
+object from AnnotationHub, rather than creating from a
+GTF file from FTP (default is TRUE). If FALSE, it will
+force \code{tximeta} to download and parse the GTF}
+
 \item{cleanDuplicateTxps}{whether to try to clean
 duplicate transcripts (exact sequence duplicates) by replacing
 the transcript names that do not appear in the GTF
@@ -59,10 +65,10 @@ any known transcriptomes, or any locally saved \code{linkedTxome},
 \description{
 \code{tximeta} leverages the hashed checksum of the Salmon index,
 in addition to a number of core Bioconductor packages (GenomicFeatures,
-ensembldb, GenomeInfoDb, BiocFileCache) to automatically populate metadata
-for the user, without additional effort from the user. Note that
-\code{tximeta} requires that the entire output directory of Salmon/Alevin
-is present and unmodified in order to identify the provenance of the
+ensembldb, AnnotationHub, GenomeInfoDb, BiocFileCache) to automatically
+populate metadata for the user, without additional effort from the user.
+Note that \code{tximeta} requires that the entire output directory of Salmon
+or alevin is present and unmodified in order to identify the provenance of the
 reference transcripts.
 }
 \details{
@@ -89,9 +95,12 @@ this package should be kept, either using a default location or a temporary
 directory. At any point, the user can specify a location using
 \code{\link{setTximetaBFC}} and this choice will be saved for future sessions.
 Multiple users can point to the same BiocFileCache, such that
-transcript databases (TxDb) associated with certain Salmon indices
+transcript databases (TxDb or EnsDb) associated with certain Salmon indices
 and \code{linkedTxomes} can be accessed by different users without additional
-effort or time spent downloading/building the relevant TxDb.
+effort or time spent downloading and building the relevant TxDb / EnsDb.
+Note that, if the EnsDb is present in AnnotationHub, \code{tximeta} will
+use this object instead of downloading and building an EnsDb from GTF
+(to disable this set useHub=FALSE).
 
 In order to allow that multiple users can read and write to the
 same location, one should set the BiocFileCache directory to
