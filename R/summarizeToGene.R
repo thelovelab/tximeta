@@ -99,13 +99,3 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
 #' @export
 setMethod("summarizeToGene", signature(object="SummarizedExperiment"),
           summarizeToGene.SummarizedExperiment)
-
-missingMetadata <- function(se, summarize=TRUE) {
-  msg <- "use of this function requires transcriptome metadata which is missing.
-  use a linkedTxome to provide the missing metadata and rerun tximeta()"
-  if (summarize) {
-    msg <- paste0(msg, "
-  or use tx2gene, txOut=FALSE (and skipMeta=TRUE if Salmon)")
-  }
-  if (is.null(metadata(se)$txomeInfo)) stop(msg)
-}

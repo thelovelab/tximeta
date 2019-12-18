@@ -35,7 +35,7 @@ addExons <- function(se) {
   if (metadata(se)$level == "gene") {
     stop("addExons() is design for transcript-level SummarizedExperiments, see ?addExons")
   }
-  missingMetadata(se)
+  missingMetadata(se, summarize=FALSE)
 
   txomeInfo <- metadata(se)$txomeInfo
   txdb <- getTxDb(txomeInfo)

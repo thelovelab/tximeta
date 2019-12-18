@@ -6,8 +6,17 @@
 \alias{loadLinkedTxome}
 \title{Make and load linked transcriptomes ("linkedTxome")}
 \usage{
-makeLinkedTxome(indexDir, source, organism, release, genome, fasta, gtf,
-  write = TRUE, jsonFile)
+makeLinkedTxome(
+  indexDir,
+  source,
+  organism,
+  release,
+  genome,
+  fasta,
+  gtf,
+  write = TRUE,
+  jsonFile
+)
 
 loadLinkedTxome(jsonFile)
 }

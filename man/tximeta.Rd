@@ -4,8 +4,15 @@
 \alias{tximeta}
 \title{tximeta: Transcript quantification import with automatic metadata}
 \usage{
-tximeta(coldata, type = "salmon", txOut = TRUE, skipMeta = FALSE,
-  skipSeqinfo = FALSE, cleanDuplicateTxps = FALSE, ...)
+tximeta(
+  coldata,
+  type = "salmon",
+  txOut = TRUE,
+  skipMeta = FALSE,
+  skipSeqinfo = FALSE,
+  cleanDuplicateTxps = FALSE,
+  ...
+)
 }
 \arguments{
 \item{coldata}{a data.frame with at least two columns (others will propogate to object):

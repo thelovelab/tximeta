@@ -26,7 +26,10 @@ test_that("tximeta works as expected", {
   # check adding IDs
   library(org.Dm.eg.db)
   gse <- addIds(gse, "REFSEQ", gene=TRUE)
-    
+
+  # check retrieving the database
+  edb <- retrieveDb(se)
+  
   # just a vector of file paths is ok
   expect_warning({se <- tximeta(files)})
 
@@ -124,7 +127,6 @@ test_that("tximeta can import refseq", {
   }
     
 })
-
 
 test_that("tximeta can import kallisto", {
 

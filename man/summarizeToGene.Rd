@@ -5,8 +5,7 @@
 \alias{summarizeToGene,SummarizedExperiment-method}
 \title{Summarize estimated quantitites to gene-level}
 \usage{
-\S4method{summarizeToGene}{SummarizedExperiment}(object,
-  varReduce = FALSE, ...)
+\S4method{summarizeToGene}{SummarizedExperiment}(object, varReduce = FALSE, ...)
 }
 \arguments{
 \item{object}{a SummarizedExperiment produced by \code{tximeta}}

@@ -21,6 +21,7 @@ The main functions are:
 \itemize{
 \item \code{\link{tximeta}} - with key argument: \code{coldata}
 \item \code{\link{summarizeToGene}} - summarize quants to gene-level
+\item \code{\link{retrieveDb}} - retrieve the transcript database
 \item \code{\link{addIds}} - add transcript or gene ID (see \code{gene} argument)
 \item \code{\link{addExons}} - convert from GRanges to GRangesList
 }

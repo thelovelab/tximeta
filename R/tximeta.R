@@ -15,6 +15,7 @@
 #' \itemize{
 #' \item \code{\link{tximeta}} - with key argument: \code{coldata}
 #' \item \code{\link{summarizeToGene}} - summarize quants to gene-level
+#' \item \code{\link{retrieveDb}} - retrieve the transcript database
 #' \item \code{\link{addIds}} - add transcript or gene ID (see \code{gene} argument)
 #' \item \code{\link{addExons}} - convert from GRanges to GRangesList
 #' }
@@ -371,6 +372,42 @@ tximeta <- function(coldata, type="salmon", txOut=TRUE,
                              metadata=metadata)
   se
   
+}
+
+#' Retrieve the TxDb or EnsDb associated with a SummarizedExperiment
+#'
+#' SummarizedExperiment objects returned by \code{\link{tximeta}} have
+#' associated TxDb or EnsDb databases which are cached locally and used
+#' to perform various metadata related tasks. This helper function
+#' retrieves the database itself for the user to perform any additional
+#' operations.
+#'
+#' @param se the SummarizedExperiment
+#'
+#' @return a database object
+#'
+#' @examples
+#'
+#' example(tximeta)
+#' edb <- retrieveDb(se)
+#' 
+#' @export
+retrieveDb <- function(se) {
+  missingMetadata(se, summarize=FALSE)
+  txomeInfo <- metadata(se)$txomeInfo
+  getTxDb(txomeInfo)
+}
+
+missingMetadata <- function(se, summarize=FALSE) {
+  msg <- "use of this function requires transcriptome metadata which is missing.
+  either: (1) the object was not produced by tximeta, or
+  (2) tximeta could not recognize the checksum of the transcriptome.
+  If (2), use a linkedTxome to provide the missing metadata and rerun tximeta"
+  if (summarize) {
+    msg <- paste0(msg, "
+  or use tx2gene, txOut=FALSE (and skipMeta=TRUE if Salmon)")
+  }
+  if (is.null(metadata(se)$txomeInfo)) stop(msg)
 }
 
 # read metadata files from Salmon directory

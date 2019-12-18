@@ -198,6 +198,28 @@ bioinformatic mistakes:
 seqinfo(se)
 ```
 
+# Retrieve the transcript database
+
+The `se` object has associated metadata that allows `tximeta` to link
+to locally stored cached databases and other Bioconductor objects. In
+further sections, we will show examples functions that leverage this
+databases for adding exon information, summarize transcript-level data
+to the gene level, or add identifiers. However, first we mention that
+the user can easily access the cached database with the following
+helper function. In this case, `tximeta` has an associated *EnsDb*
+object that we can retrieve and use in our R session:
+
+```{r}
+edb <- retrieveDb(se)
+class(edb)
+```
+
+The database returned by `retrieveDb` is either a *TxDb* in the case
+of GENCODE or RefSeq GTF annotation file, or an *EnsDb* in the case of
+an Ensembl GTF annotation file. For further use of these two database
+objects, consult the *GenomicFeatures* vignettes and the *ensembldb*
+vignettes, respectively (both Bioconductor packages).
+
 # Add exons per transcript
 
 Because the SummarizedExperiment maintains all the metadata of its
@@ -613,6 +635,7 @@ and other individuals in the community:
 * Lori Shepherd
 * Martin Morgan
 * Koen Van den Berge
+* Johannes Rainer
 
 # Next steps
 
