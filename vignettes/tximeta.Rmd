@@ -645,6 +645,23 @@ transcriptome, the cDNA sequences of which can be hashed with
 [FastaDigest](https://github.com/COMBINE-lab/FastaDigest) 
 (can be installed with `pip install fasta_digest`).
 
+# Automated analysis with ARMOR
+
+This vignette described the use of `tximeta` to import quantification
+data into R/Bioconductor with automatic detection and addition of
+metadata. The *SummarizedExperiment* produced by `tximeta` can then be
+provided to downstream statistical analysis packages as described
+above. The *tximeta* package does not contain any functionality for
+automated differential analysis. 
+
+The [ARMOR](https://github.com/csoneson/ARMOR) workflow does automate 
+a variety of differential analyses, and make use of `tximeta` for
+creation of a *SummarizedExperiment* with attached annotation
+metadata. ARMOR stands for 
+``An Automated Reproducible MOdular Workflow for Preprocessing
+and Differential Analysis of RNA-seq Data'' and is described in more
+detail in the article by @Orjuelag2019.
+
 # Acknowledgments
 
 The development of *tximeta* has benefited from suggestions from these
