@@ -38,12 +38,18 @@ test_that("tximeta works as expected", {
   se <- tximeta(files)
 
   # check error on txOut=FALSE
-  expect_error({se <- tximeta(coldata, txOut=FALSE)}, "transcript-level output")
+  expect_error({se <- tximeta(coldata, txOut=FALSE)},
+               "transcript-level output")
 
   # check skipping metadata, appropriate warnings
   se <- tximeta(coldata, skipMeta=TRUE)
   expect_error({summarizeToGene(se)}, "transcriptome metadata")
   expect_error({addIds(se)}, "transcriptome metadata")
+
+  # check customMetaInfo
+  se <- tximeta(coldata, customMetaInfo="aux_info/meta_info.json")
+  expect_error(tximeta(coldata, customMetaInfo="foobar.json"),
+               "metadata files are missing")
   
 })
 
