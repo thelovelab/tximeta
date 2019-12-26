@@ -37,7 +37,9 @@ to not modify or re-arrange the output directory of bioinformatic
 software as other downstream software rely on and assume a consistent
 directory structure. For sharing multiple samples, one can use, for
 example, `tar -czf` to bundle up a set of Salmon output directories,
-or to bundle one alevin output directory.
+or to bundle one alevin output directory. For tips on using `tximeta`
+with other quantifiers see the 
+[other quantifiers](#other_quantifiers) section below.
 
 # Analysis starts with sample table
 
