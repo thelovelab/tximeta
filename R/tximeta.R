@@ -129,6 +129,14 @@ NULL
 #' duplicate transcripts (exact sequence duplicates) by replacing
 #' the transcript names that do not appear in the GTF
 #' with those that do appear in the GTF
+#' @param customMetaInfo the relative path to a custom metadata
+#' information JSON file, relative to the paths in \code{files} of
+#' \code{coldata}. For example, \code{customMetaInfo="meta_info.json"}
+#' would indicate that in the same directory as the quantification
+#' files in \code{files}, there are custom metadata information
+#' JSON files. These should contain the SHA-256 hash of the
+#' reference transcripts with the \code{index_seq_hash} tag
+#' (see details in vignette).
 #' @param ... arguments passed to \code{tximport}
 #' 
 #' @return a SummarizedExperiment with metadata on the \code{rowRanges}.
@@ -186,7 +194,9 @@ tximeta <- function(coldata,
                     skipMeta=FALSE,
                     skipSeqinfo=FALSE,
                     useHub=TRUE,
-                    cleanDuplicateTxps=FALSE, ...) {
+                    cleanDuplicateTxps=FALSE,
+                    customMetaInfo=NULL,
+                    ...) {
 
   if (is(coldata, "vector")) {
     coldata <- data.frame(files=coldata, names=seq_along(coldata))
@@ -213,8 +223,12 @@ tximeta <- function(coldata,
                       importTime=Sys.time())
 
   metadata <- list(tximetaInfo=tximetaInfo)
+
+  skipMetaLogic <- skipMeta |
+    ( !type %in% c("salmon","sailfish","alevin") &
+      is.null(customMetaInfo) )
   
-  if (!type %in% c("salmon","sailfish","alevin") | skipMeta) {
+  if (skipMetaLogic) {
     txi <- tximport(files, type=type, txOut=txOut, ...)
     metadata$countsFromAbundance <- txi$countsFromAbundance
     se <- makeUnrangedSE(txi, coldata, metadata)
@@ -225,10 +239,12 @@ tximeta <- function(coldata,
   }
 
   if (type == "alevin") {
-    metaInfo <- list(getMetaInfo(dirname(files)))
+    metaInfo <- list(getMetaInfo(dirname(files),
+                                 customMetaInfo=customMetaInfo))
   } else {
     # get quantifier metadata from JSON files within quant dirs
-    metaInfo <- lapply(files, getMetaInfo)
+    metaInfo <- lapply(files, getMetaInfo,
+                       customMetaInfo=customMetaInfo)
   }
   
   # Salmon's SHA-256 hash of the index is called "index_seq_hash" in the meta_info.json file
@@ -423,19 +439,24 @@ missingMetadata <- function(se, summarize=FALSE) {
 }
 
 # read metadata files from Salmon directory
-getMetaInfo <- function(file) {
+# customMetaInfo = path of the custom metadata info file
+getMetaInfo <- function(file, customMetaInfo=NULL) {
   dir <- dirname(file)
-  auxDir <- "aux_info" # the default auxiliary information location
-  if (!file.exists(file.path(dir, auxDir))) {
-    # just in case this was changed...
-    jsonPath <- file.path(dir, "cmd_info.json")
-    cmd_info <- jsonlite::fromJSON(jsonPath)
-    if ("auxDir" %in% names(cmd_info)) {
-      auxDir <- cmd_info$auxDir
+  if (is.null(customMetaInfo)) {
+    auxDir <- "aux_info" # the default auxiliary information location
+    if (!file.exists(file.path(dir, auxDir))) {
+      # just in case this was changed...
+      jsonPath <- file.path(dir, "cmd_info.json")
+      cmd_info <- jsonlite::fromJSON(jsonPath)
+      if ("auxDir" %in% names(cmd_info)) {
+        auxDir <- cmd_info$auxDir
+      }
     }
+    # ok now we read in the metadata
+    jsonPath <- file.path(dir, auxDir, "meta_info.json")
+  } else {
+    jsonPath <- file.path(dir, customMetaInfo)
   }
-  # ok now we read in the metadata
-  jsonPath <- file.path(dir, auxDir, "meta_info.json")
   if (!file.exists(jsonPath)) {
     stop("\n\n  the quantification files exist, but the metadata files are missing.
   tximeta (and other downstream software) require the entire output directory

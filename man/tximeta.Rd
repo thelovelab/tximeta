@@ -12,6 +12,7 @@ tximeta(
   skipSeqinfo = FALSE,
   useHub = TRUE,
   cleanDuplicateTxps = FALSE,
+  customMetaInfo = NULL,
   ...
 )
 }
@@ -31,8 +32,8 @@ and unique sample names are created}
 with Salmon, so default is \code{TRUE},
 and it's recommended to use \code{\link{summarizeToGene}}
 following \code{tximeta} for gene-level summarization.
-For an Alevin file, \code{tximeta} will import the
-gene level counts ignoring this argument (Alevin
+For an alevin file, \code{tximeta} will import the
+gene level counts ignoring this argument (alevin
 produces only gene-level quantification).}
 
 \item{skipMeta}{whether to skip metadata generation
@@ -53,6 +54,15 @@ force \code{tximeta} to download and parse the GTF}
 duplicate transcripts (exact sequence duplicates) by replacing
 the transcript names that do not appear in the GTF
 with those that do appear in the GTF}
+
+\item{customMetaInfo}{the relative path to a custom metadata
+information JSON file, relative to the paths in \code{files} of
+\code{coldata}. For example, \code{customMetaInfo="meta_info.json"}
+would indicate that in the same directory as the quantification
+files in \code{files}, there are custom metadata information
+JSON files. These should contain the SHA-256 hash of the
+reference transcripts with the \code{index_seq_hash} tag
+(see details in vignette).}
 
 \item{...}{arguments passed to \code{tximport}}
 }

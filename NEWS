@@ -1,3 +1,9 @@
+Changes in version 1.5.11
++ tximeta can now use `customMetaInfo` argument to locate
+  a custom metadata information file such as `meta_info.json`,
+  which should contain a tage, `index_seq_hash`, with the SHA-256
+  hash value of the reference transcripts.
+
 Changes in version 1.5.8
 + tximeta will now make use of EnsDb created and distributed
   on AnnotationHub, unless useHub=FALSE. Also, a new function

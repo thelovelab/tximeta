@@ -639,11 +639,22 @@ bfcinfo(bfc)
 `tximeta` can import the output from any quantifiers that are
 supported by `tximport`, and if these are not *Salmon*, *alevin*, or
 *Sailfish* output, it will simply return a non-ranged
-*SummarizedExperiment*. 
-We are working to allow manually passing of the hash value of the
-transcriptome, the cDNA sequences of which can be hashed with
-[FastaDigest](https://github.com/COMBINE-lab/FastaDigest) 
-(can be installed with `pip install fasta_digest`).
+*SummarizedExperiment* by default.
+
+An alternative workflow is to wrap other quantifiers in workflows
+that include metadata information JSON files along with each
+quantification file. One can place these files in
+`aux_info/meta_info.json` or any relative location specified by
+`customMetaInfo`, for example `customMetaInfo=meta_info.json`. This
+JSON file is located relative to the quantification file and should
+contain a tag `index_seq_hash` with an associated value of the SHA-256
+hash of the reference transcripts. For computing the hash value of the
+reference transcripts, see the
+[FastaDigest](https://github.com/COMBINE-lab/FastaDigest) python
+package. The correct digest is the SHA-256 hash value of the reference
+sequences stripped of the sequence ID, concatenated
+together. *FastaDigest* can be installed with 
+`pip install fasta_digest`.
 
 # Automated analysis with ARMOR
 
