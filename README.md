@@ -8,19 +8,17 @@ For a reference and citation for `tximeta`:
 > identification in RNA-seq" *bioRxiv*, September 2019.
 > [doi: 10.1101/777888](https://doi.org/10.1101/777888)
 
-# Idea in diagrams
+# Idea in diagram
 
-Quantification methods *Salmon* and *Alevin* propogate a *hashed
-checksum* of the transcriptome sequence into the index and
-quantification directories. This can be diagrammed like so, where the
-dotted lines represent not direct links, but possible comparisons that
-could be made based on signature. The signature is a SHA256 hash of
+![](vignettes/diagram.png)
+
+Quantification methods *Salmon* and *Alevin* propogate a 
+*hashed checksum* of the transcriptome sequence into the index and
+quantification directories. The signature is a SHA256 hash of
 the transcriptome cDNA sequence, excluding transcript identifiers
 (this may change going forward, to enable coordination with larger
 efforts at data-driven identifiers for collections of sequences, see
 the last section of vignette for details).
-
-![](img/quant.png)
 
 Following quantification, and even performed by a different analyst or
 at a different institute, when importing quantifications into
@@ -35,7 +33,11 @@ attaching critical annotation information to the data object, such
 that exact quantifications can be reproduced from raw data (all
 software versions are also attached to the data object).
 
-![](img/tximeta.png)
+Other quantifiers can also be used as long as these alternative tools
+are wrapped in workflows that include metadata information JSON files
+along with each quantification file, storing the reference transcript
+checksum. See vignette for details, and the `customMetaInfo` argument
+details in `?tximeta`.
 
 # Idea in text
 
@@ -108,7 +110,7 @@ specific location using the *BiocFileCache* package. Since these
 *TxDb* saved objects (sqlite databases) can be ~100 Mb, we want to
 make sure the user is OK with these being saved to a given location. 
 Also we want to allow for the situation that multiple users share a
-*BiocFileCache* location, such that any *TxDb* objects or
+*BiocFileCache* location, such that any *TxDb* / *EnsDb* objects or
 *linkedTxome* information can be shared, reducing unnecessary
 downloads or emails asking about the provenance of the transcriptome
 for a given set of quantification files.

@@ -1,6 +1,6 @@
 ---
-title: "tximeta: transcript quantification import with automatic metadata"
-author: "Michael Love, Rob Patro, Charlotte Soneson, Peter Hickey"
+title: "Tximeta: transcript quantification import with automatic metadata"
+author: "Michael I. Love, Charlotte Soneson, Peter F. Hickey, Rob Patro"
 date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output: 
   rmarkdown::html_document:
@@ -8,7 +8,7 @@ output:
     toc: true
     toc_float: true
 abstract: >
-  `tximeta` performs numerous annotation and metadata gathering tasks on
+  Tximeta performs numerous annotation and metadata gathering tasks on
   behalf of users during the import of transcript quantifications from
   *Salmon* or *alevin* into R/Bioconductor. Metadata and transcript
   ranges are added automatically, facilitating genomic analyses and
@@ -45,6 +45,10 @@ or to bundle one alevin output directory. For tips on using `tximeta`
 with other quantifiers see the 
 [other quantifiers](#other_quantifiers) section below.
 
+<center>
+<img width=600 src="diagram.png"/>
+</center>
+
 # Analysis starts with sample table
 
 The first step using `tximeta` is to read in the sample table, which
@@ -73,7 +77,7 @@ coldata
 1. `files` - a pointer to the `quant.sf` files
 2. `names` - the unique names that should be used to identify samples
 
-# Running tximeta from a sample table
+# Running tximeta
 
 Normally, we would just run `tximeta` like so:
 
@@ -87,8 +91,8 @@ we will point to a GTF file saved locally (in the *tximportData*
 package). We link the transcriptome of the *Salmon* index to its
 locally saved GTF. The standard recommended usage of `tximeta` would
 be the code chunk above, or to specify a remote GTF source, not a
-local one. This following code is therefore not recommended for a
-typically workflow, but is particular to the vignette code.
+local one. **This following code is therefore not recommended for a
+typically workflow, but is particular to the vignette code.**
 
 ```{r}
 indexDir <- file.path(dir, "Dm.BDGP6.22.98_salmon-0.14.1")
@@ -146,7 +150,7 @@ downloading the GTF file. Again, the download/construction of a
 transcript database occurs only once, and upon subsequent usage of
 *tximeta* functions, the cached version will be used.
 
-# Pre-computed transcriptome checksums
+# Pre-computed checksums
 
 We plan to support a wide variety of sources and organisms for
 transcriptomes with pre-computed checksums, though for now the
@@ -315,7 +319,7 @@ gse <- addIds(gse, "REFSEQ", gene=TRUE)
 mcols(gse)
 ```
 
-# Run a differential expression analysis
+# Differential expression analysis
 
 The following code chunk demonstrates how to build a *DESeqDataSet*
 and begin a differential expression analysis. 
@@ -391,7 +395,7 @@ metadata(se)[["tximetaInfo"]]
 metadata(se)[["txdbInfo"]]
 ```
 
-# Transcriptomes not known to tximeta
+# What if checksum isn't known?
 
 `tximeta` automatically imports relevant metadata when the
 transcriptome matches a known source -- *known* in the sense that it
@@ -618,7 +622,7 @@ behalf.
 se <- tximeta(coldata)
 ```
 
-# Clear *linkedTxomes*
+# Clear *linkedTxomes* again
 
 Finally, we clear the *linkedTxomes* table again so that the above
 examples will work. This is just for the vignette code and not part of
