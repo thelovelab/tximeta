@@ -1,16 +1,16 @@
 Package: tximeta
-Version: 1.5.14
+Version: 1.5.15
 Title: Transcript Quantification Import with Automatic Metadata
-Description: Transcript quantification import from Salmon with
-    automatic population of metadata and transcript ranges.
-    Filtered, combined, or de novo transcriptomes can be linked
-    to the appropriate sources with linkedTxomes and shared for
-    reproducible analyses.
+Description: Transcript quantification import from Salmon and
+    alevin with automatic attachment of transcript ranges and
+    release information, and other associated metadata. De novo
+    transcriptomes can be linked to the appropriate sources with
+    linkedTxomes and shared for computational reproducibility.
 Authors@R: c(
     person("Michael", "Love", email="michaelisaiahlove@gmail.com", role = c("aut","cre")),
-    person("Rob", "Patro", role = c("aut","ctb")),
+    person("Charlotte", "Soneson", role = c("aut","ctb")),
     person("Peter", "Hickey", role = c("aut","ctb")),
-    person("Charlotte", "Soneson", role = c("aut","ctb")))
+    person("Rob", "Patro", role = c("aut","ctb")))
 Maintainer: Michael Love <michaelisaiahlove@gmail.com>
 License: GPL-2
 VignetteBuilder: knitr
@@ -22,7 +22,9 @@ Imports:
 Suggests: knitr, rmarkdown, testthat, tximportData, org.Dm.eg.db,
     DESeq2, edgeR, limma, devtools
 URL: https://github.com/mikelove/tximeta
-biocViews: Annotation, DataImport, Preprocessing, RNASeq, Transcriptomics,
-    Transcription, GeneExpression, ImmunoOncology
+biocViews: Annotation, GenomeAnnotation, DataImport, Preprocessing,
+    RNASeq, SingleCell, Transcriptomics, Transcription, GeneExpression,
+    FunctionalGenomics, ReproducibleResearch, ReportWriting,
+    ImmunoOncology
 RoxygenNote: 7.0.2
 Encoding: UTF-8

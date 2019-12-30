@@ -11,8 +11,8 @@ abstract: >
   `tximeta` performs numerous annotation and metadata gathering tasks on
   behalf of users during the import of transcript quantifications from
   *Salmon* or *alevin* into R/Bioconductor. Metadata and transcript
-  ranges are added automatically, facilitating combining multiple
-  genomic datasets and helping to prevent bioinformatic errors.
+  ranges are added automatically, facilitating genomic analyses and
+  assisting in computational reproducibility.
 bibliography: library.bib
 vignette: |
   %\VignetteIndexEntry{Transcript quantification import with automatic metadata}
@@ -24,11 +24,15 @@ vignette: |
 
 The `tximeta` package [@Love2019] extends the `tximport` package
 [@Soneson2015] for import of transcript-level quantification data into
-R/Bioconductor. It facilitates addition of annotation data when the
+R/Bioconductor. It automatically adds annotation metadata when the
 RNA-seq data has been quantified with *Salmon* [@Patro2017] or for
-scRNA-seq data quantified with *alevin* [@Srivastava2019]. For more
-details on these packages -- including the motivation for `tximeta`
-and description of similar work -- consult the **References** below.
+scRNA-seq data quantified with *alevin* [@Srivastava2019]. To our
+knowledge, `tximeta` is the only package for RNA-seq data import that
+can automatically identify and attach transcriptome metadata based on
+the unique sequence of the reference transcripts.
+For more details on these packages -- including the motivation for
+`tximeta` and description of similar work -- consult the
+**References** below.
 
 **Note:** `tximeta` requires that the **entire output directory** of
 *Salmon* / *alevin* is present and unmodified in order to identify the
@@ -129,7 +133,7 @@ coming from the annotation source, and not easily avoided by
 transcript databases as *TxDb* or *EnsDb* objects, which both are 
 connected by default to `sqlite` backends.
 For GENCODE and RefSeq GTF files, `tximeta` uses the *GenomicFeatures*
-packages [@granges] to parse the GTF and build a *TxDb*. For Ensembl
+package [@granges] to parse the GTF and build a *TxDb*. For Ensembl
 GTF files, `tximeta` will first attempt to obtain the correct *EnsDb*
 object using *AnnotationHub*. The *ensembldb* package [@ensembldb]
 contains classes and methods for extracting relevant data from Ensembl
