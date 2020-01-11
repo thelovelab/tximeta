@@ -1,3 +1,7 @@
+Changes in version 1.5.16
+* Added a wrapper function makeDGEList() to simplify making
+  a DGEList for use with edgeR. See vignette for example.
+
 Changes in version 1.5.11
 + tximeta can now use `customMetaInfo` argument to locate
   a custom metadata information file such as `meta_info.json`,

@@ -332,11 +332,19 @@ suppressWarnings({dds <- DESeqDataSet(gse, ~1)})
 # ... see DESeq2 vignette
 ```
 
-The following code chunk demonstrates how to build a *DGEList* object,
-for use with *edgeR*.
+We have a convenient wrapper function that will build a *DGEList*
+object for use with *edgeR*.
 
 ```{r}
 suppressPackageStartupMessages(library(edgeR))
+y <- makeDGEList(gse)
+# ... see edgeR User's Guide for further steps
+```
+
+The following code chunk demonstrates the code inside of the above
+wrapper function, and produces the same output.
+
+```{r}
 cts <- assays(gse)[["counts"]]
 normMat <- assays(gse)[["length"]]
 normMat <- normMat / exp(rowMeans(log(normMat)))

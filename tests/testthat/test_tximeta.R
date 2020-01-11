@@ -50,6 +50,10 @@ test_that("tximeta works as expected", {
   se <- tximeta(coldata, customMetaInfo="aux_info/meta_info.json")
   expect_error(tximeta(coldata, customMetaInfo="foobar.json"),
                "metadata files are missing")
+
+  # check make DGEList
+  library(edgeR)
+  y <- makeDGEList(se)
   
 })
 
