@@ -25,7 +25,9 @@ hashit <- function(source, organism, release, catNC=FALSE) {
               } else if (organism == "Mus musculus") {
                 "GRCm38"
               } else if (organism == "Drosophila melanogaster") {
-                if (as.numeric(release) >= 96) {
+                if (as.numeric(release) >= 99) {
+                  "BDGP6.28"
+                } else if (as.numeric(release) >= 96) {
                   "BDGP6.22"
                 } else {
                   "BDGP6"
@@ -90,9 +92,12 @@ hashit <- function(source, organism, release, catNC=FALSE) {
   NULL
 }
 
-for (i in 32:31) hashit("GENCODE", "Homo sapiens", i)
-for (i in 23:22) hashit("GENCODE", "Mus musculus", paste0("M",i))
+i <- 33
+hashit("GENCODE", "Homo sapiens", i)
+i <- 24
+hashit("GENCODE", "Mus musculus", paste0("M",i))
 #
+i <- 99
 hashit("Ensembl", "Homo sapiens", i)
 hashit("Ensembl", "Mus musculus", i)
 hashit("Ensembl", "Drosophila melanogaster", i)
