@@ -125,6 +125,9 @@ NULL
 #' object from AnnotationHub, rather than creating from a
 #' GTF file from FTP (default is TRUE). If FALSE, it will
 #' force \code{tximeta} to download and parse the GTF
+#' @param markDuplicateTxps whether to mark the status
+#' (\code{hasDuplicate}) and names of duplicate transcripts
+#' (\code{duplicates}) in the rowData of the SummarizedExperiment output
 #' @param cleanDuplicateTxps whether to try to clean
 #' duplicate transcripts (exact sequence duplicates) by replacing
 #' the transcript names that do not appear in the GTF
@@ -172,6 +175,7 @@ NULL
 #'
 #' @importFrom SummarizedExperiment SummarizedExperiment assays assayNames colData rowRanges<-
 #' @importFrom S4Vectors metadata mcols mcols<-
+#' @importFrom IRanges CharacterList LogicalList
 #' @importFrom GenomicRanges seqnames
 #' @importFrom tximport tximport summarizeToGene
 #' @importFrom jsonlite fromJSON toJSON
@@ -194,6 +198,7 @@ tximeta <- function(coldata,
                     skipMeta=FALSE,
                     skipSeqinfo=FALSE,
                     useHub=TRUE,
+                    markDuplicateTxps=FALSE,
                     cleanDuplicateTxps=FALSE,
                     customMetaInfo=NULL,
                     ...) {
@@ -334,16 +339,33 @@ tximeta <- function(coldata,
     }
   }
 
-  # code for `cleanDuplicateTxps = TRUE` ##
+  # code for marking or cleaning duplicate txps
   assay.nms <- rownames(assays[["counts"]])
   txps.missing <- !assay.nms %in% names(txps)
-  if (sum(txps.missing) > 0 & cleanDuplicateTxps) {
+  # either we want to mark duplicates, or clean up duplicates (if we can)
+  if (markDuplicateTxps | (cleanDuplicateTxps & sum(txps.missing) > 0)) {
+    dup.list <- makeDuplicateTxpsList(txomeInfo)
+  }
+  if (markDuplicateTxps) {
+    dups.in.rownms <- unlist(dup.list) %in% assay.nms
+    dups.in.rownms <- LogicalList(split(dups.in.rownms, rep(seq_along(dup.list), lengths(dup.list))))
+    names(dups.in.rownms) <- NULL
+    num.dups.in.rownms <- sapply(dups.in.rownms, sum)
+    just.one <- num.dups.in.rownms == 1
+    if (!all(just.one)) {
+      dup.list <- dup.list[just.one]
+      dups.in.rownms <- dups.in.rownms[just.one]
+    }
+    duplicates <- dup.list[ !dups.in.rownms ]
+    duplicates.id <- as.character(dup.list[ dups.in.rownms ])
+  }
+  if (cleanDuplicateTxps & sum(txps.missing) > 0) {
     # this function swaps out rows missing in `txps`
-    # for duplicate txps which are in `txps`. needed by 
+    # for duplicate txps which are in `txps`. needed bc
     # Ensembl includes haplotype chromosome txps that duplicate
     # standard chromosome txps (identical sequence)
     missing.txps <- assay.nms[txps.missing]
-    dup.table <- cleanDuplicateTxps(missing.txps, txomeInfo, txps)
+    dup.table <- makeDuplicateTxpsTable(missing.txps, dup.list, txps)
     if (is.null(dup.table)) {
       message("no duplicated transcripts to clean")
     } else {
@@ -355,7 +377,7 @@ tximeta <- function(coldata,
       for (nm in names(assays)) {
         assay.nms[m] <- dup.table$alts
         rownames(assays[[nm]]) <- assay.nms
-      }      
+      }
     }
   }
 
@@ -373,6 +395,19 @@ tximeta <- function(coldata,
   # TODO we could give a warning here if there are txps in TxDb not in index
   txps <- txps[rownames(assays[["counts"]])]
 
+  # mark duplicates in the rowData
+  if (markDuplicateTxps) {
+    if (length(duplicates) > 0) {
+      mcols(txps)$hasDuplicate <- FALSE
+      mcols(txps)$hasDuplicate[ names(txps) %in% duplicates.id ] <- TRUE
+      mcols(txps)$duplicates <- CharacterList(as.list(rep("",length(txps))))
+      # if necessary remove any of these not in txps
+      duplicates <- duplicates[ duplicates.id %in% names(txps) ]
+      duplicates.id <- duplicates.id[ duplicates.id %in% names(txps) ]
+      mcols(txps)$duplicates[ match(duplicates.id, names(txps)) ] <- duplicates
+    }
+  }
+  
   # Ensembl already has nice seqinfo attached
 
   # if GENCODE...
@@ -583,6 +618,8 @@ getTxDb <- function(txomeInfo, useHub=TRUE) {
           hubWorked <- TRUE
           txdb <- ah[[names(records)]]
           bfcadd(bfc, rname=txdbName, fpath=dbfile(dbconn(txdb)))
+        } else {
+          message("did not find matching EnsDb via 'AnnotationHub'")
         }
       }
       if (!hubWorked) {

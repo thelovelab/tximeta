@@ -11,6 +11,7 @@ tximeta(
   skipMeta = FALSE,
   skipSeqinfo = FALSE,
   useHub = TRUE,
+  markDuplicateTxps = FALSE,
   cleanDuplicateTxps = FALSE,
   customMetaInfo = NULL,
   ...
@@ -49,6 +50,10 @@ relevant chromosome information table from UCSC}
 object from AnnotationHub, rather than creating from a
 GTF file from FTP (default is TRUE). If FALSE, it will
 force \code{tximeta} to download and parse the GTF}
+
+\item{markDuplicateTxps}{whether to mark the status
+(\code{hasDuplicate}) and names of duplicate transcripts
+(\code{duplicates}) in the rowData of the SummarizedExperiment output}
 
 \item{cleanDuplicateTxps}{whether to try to clean
 duplicate transcripts (exact sequence duplicates) by replacing

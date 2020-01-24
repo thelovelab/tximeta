@@ -82,6 +82,15 @@ test_that("tximeta can import GENCODE and Ensembl", {
     se <- tximeta(coldata, dropInfReps=TRUE, useHub=FALSE)
 
     gse <- summarizeToGene(se)
+
+    # test the duplicate code
+    dir <- system.file("extdata", package="macrophage")
+    samples <- list.files(file.path(dir, "quants"))[1:3]
+    files <- file.path(dir,"quants", samples, "quant.sf.gz")
+    coldata <- data.frame(files, names=paste0("sample",1:3))
+    se <- tximeta(coldata, dropInfReps=TRUE, markDuplicateTxps=TRUE)
+
+    se <- tximeta(coldata, dropInfReps=TRUE, cleanDuplicateTxps=TRUE)
     
   }
 
