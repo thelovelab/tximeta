@@ -44,27 +44,46 @@ makeDuplicateTxpsList <- function(txomeInfo) {
   dup.list
 }
 
-makeDuplicateTxpsTable <- function(missing.txps, dup.list, txps) {
-  # dup.list is a list of the duplicate txps
+makeDuplicateTxpsTable <- function(missing.txps, dup.list, txp.nms) {
+  # dup.list is a list of the duplicate txps, according to the FASTA
   all.dups <- unlist(dup.list)
 
   # we want to try to fix those duplicate txps that are
   # in rownames of the assays but not in `txps`
   dups.to.fix <- intersect(all.dups, missing.txps)
+  dups.to.fix.list <- LogicalList(split(all.dups %in% dups.to.fix, rep(seq_along(dup.list), lengths(dup.list))))
+  dup.list <- dup.list[any(dups.to.fix.list)]
+  dups.to.fix.list <- dups.to.fix.list[any(dups.to.fix.list)]
+  names(dups.to.fix.list) <- NULL
 
-  # TODO finish this part...
+  # if we have a set of duplicates where > 1 is in the rownames of assays,
+  # this is unexpected (Salmon should have combined these)
+  # and we pass on fixing this
+  more.than.one <- sapply(dups.to.fix.list, sum) > 1
+  dup.list <- dup.list[!more.than.one]
+  dups.to.fix.list <- dups.to.fix.list[!more.than.one]
+
+  # now we can name the duplicate sets by the missing txp
+  names(dup.list) <- dup.list[dups.to.fix.list]
+  all.dups <- unlist(dup.list)
   
   # is there an alternative in `txps`?
-  alts <- dna[!names(dna) %in% names(dups.to.fix)]
-  alts <- alts[alts %in% dups.to.fix]
-  alts <- alts[names(alts) %in% names(txps)]
+  dups.with.alt <- intersect(all.dups, txp.nms)
+  dups.with.alt.list <- LogicalList(split(all.dups %in% dups.with.alt, rep(seq_along(dup.list), lengths(dup.list))))
+  dup.list <- dup.list[any(dups.with.alt.list)]
+  dups.with.alt.list <- dups.with.alt.list[any(dups.with.alt.list)]
+
+  # pull out the alts
+  names(dups.with.alt.list) <- names(dup.list)
+  alts <- dup.list[dups.with.alt.list]
 
   # no reason to prefer one since they are all in `txps`
-  alts <- sort(alts[!duplicated(alts)])
-  
-  # only worry about dups with alternatives in `txps`
-  dups.to.fix <- sort(dups.to.fix[dups.to.fix %in% alts])
-  stopifnot(all(dups.to.fix == alts))
-  dup.table <- tibble(dups.to.fix=names(dups.to.fix),
-                      alts=names(alts))
+  alts <- sapply(alts, `[`, 1)
+  stopifnot(all(alts %in% txp.nms))
+
+  # return a table for the txp name swap
+  dup.table <- data.frame(dups.to.fix=names(alts),
+                          alts=unname(alts),
+                          stringsAsFactors=FALSE)
+  dup.table
 }

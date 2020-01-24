@@ -346,26 +346,13 @@ tximeta <- function(coldata,
   if (markDuplicateTxps | (cleanDuplicateTxps & sum(txps.missing) > 0)) {
     dup.list <- makeDuplicateTxpsList(txomeInfo)
   }
-  if (markDuplicateTxps) {
-    dups.in.rownms <- unlist(dup.list) %in% assay.nms
-    dups.in.rownms <- LogicalList(split(dups.in.rownms, rep(seq_along(dup.list), lengths(dup.list))))
-    names(dups.in.rownms) <- NULL
-    num.dups.in.rownms <- sapply(dups.in.rownms, sum)
-    just.one <- num.dups.in.rownms == 1
-    if (!all(just.one)) {
-      dup.list <- dup.list[just.one]
-      dups.in.rownms <- dups.in.rownms[just.one]
-    }
-    duplicates <- dup.list[ !dups.in.rownms ]
-    duplicates.id <- as.character(dup.list[ dups.in.rownms ])
-  }
   if (cleanDuplicateTxps & sum(txps.missing) > 0) {
     # this function swaps out rows missing in `txps`
     # for duplicate txps which are in `txps`. needed bc
     # Ensembl includes haplotype chromosome txps that duplicate
     # standard chromosome txps (identical sequence)
     missing.txps <- assay.nms[txps.missing]
-    dup.table <- makeDuplicateTxpsTable(missing.txps, dup.list, txps)
+    dup.table <- makeDuplicateTxpsTable(missing.txps, dup.list, names(txps))
     if (is.null(dup.table)) {
       message("no duplicated transcripts to clean")
     } else {
@@ -397,6 +384,19 @@ tximeta <- function(coldata,
 
   # mark duplicates in the rowData
   if (markDuplicateTxps) {
+    # assay names could have changed due to cleanDuplicateTxps
+    assay.nms <- rownames(assays[["counts"]])
+    dups.in.rownms <- unlist(dup.list) %in% assay.nms
+    dups.in.rownms <- LogicalList(split(dups.in.rownms, rep(seq_along(dup.list), lengths(dup.list))))
+    names(dups.in.rownms) <- NULL
+    num.dups.in.rownms <- sapply(dups.in.rownms, sum)
+    just.one <- num.dups.in.rownms == 1
+    if (!all(just.one)) {
+      dup.list <- dup.list[just.one]
+      dups.in.rownms <- dups.in.rownms[just.one]
+    }
+    duplicates <- dup.list[ !dups.in.rownms ]
+    duplicates.id <- as.character(dup.list[ dups.in.rownms ])
     if (length(duplicates) > 0) {
       mcols(txps)$hasDuplicate <- FALSE
       mcols(txps)$hasDuplicate[ names(txps) %in% duplicates.id ] <- TRUE
