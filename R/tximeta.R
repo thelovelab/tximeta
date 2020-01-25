@@ -399,14 +399,17 @@ tximeta <- function(coldata,
     }
     duplicates <- dup.list[ !dups.in.rownms ]
     duplicates.id <- as.character(dup.list[ dups.in.rownms ])
+    mcols(txps)$hasDuplicate <- FALSE
+    mcols(txps)$duplicates <- CharacterList(as.list(rep("",length(txps))))
     if (length(duplicates) > 0) {
-      mcols(txps)$hasDuplicate <- FALSE
+      message(paste(length(duplicates), "duplicate set founds"))
       mcols(txps)$hasDuplicate[ names(txps) %in% duplicates.id ] <- TRUE
-      mcols(txps)$duplicates <- CharacterList(as.list(rep("",length(txps))))
       # if necessary remove any of these not in txps
       duplicates <- duplicates[ duplicates.id %in% names(txps) ]
       duplicates.id <- duplicates.id[ duplicates.id %in% names(txps) ]
       mcols(txps)$duplicates[ match(duplicates.id, names(txps)) ] <- duplicates
+    } else {
+      message("no duplicates found")
     }
   }
   

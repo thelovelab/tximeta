@@ -18,9 +18,15 @@ makeDuplicateTxpsList <- function(txomeInfo) {
     } else {
       dna <- readDNAStringSet(txomeInfo$fasta)
     }
-    # this concerns Ensembl txps: cut off version number etc. from name
     if (txomeInfo$source == "Ensembl") {
-      names(dna) <- sub("\\..*", "", names(dna))
+      testTxp <- names(dna)[1]
+      if (grepl("ENST|ENSMUST",testTxp)) {
+        # for human and mouse, need to split on version number
+        # (GTF has no version in txname, while FASTA has versions)
+        names(dna) <- sub("\\..*", "", names(dna))
+      } else {
+        names(dna) <- sub(" .*", "", names(dna))
+      }
     } else if (txomeInfo$source == "GENCODE") {
       names(dna) <- sub("\\|.*", "", names(dna))
     }
