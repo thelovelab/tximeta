@@ -39,7 +39,7 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
   }
 
   txi.gene <- summarizeToGene(object=txi, tx2gene=tx2gene, varReduce=varReduce, ...)
-
+  
   # put 'counts' in front to facilitate DESeqDataSet construction
   assays <- txi.gene[c("counts","abundance","length")]
   if (varReduce) {
@@ -56,6 +56,14 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
   # TODO give a warning here if there are genes in TxDb not in Salmon index?
   g <- g[rownames(assays[["counts"]])]
 
+  # calculate duplication
+  if ("hasDuplicate" %in% colnames(mcols(se))) {
+    stopifnot(all(rownames(se) %in% tx2gene[,1]))
+    t2g.o <- tx2gene[match(rownames(se),tx2gene[,1]),]
+    has.dup.list <- List(split(mcols(se)$hasDuplicate, t2g.o$GENEID))
+    mcols(g)$numDupSets <- sum(has.dup.list)
+  }
+  
   metadata <- metadata(object)
   # stash countsFromAbundance value
   metadata$countsFromAbundance <- txi.gene$countsFromAbundance

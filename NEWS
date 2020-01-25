@@ -1,3 +1,15 @@
+Changes in version 1.5.19
+* Added `markDuplicateTxps` argument to add `hasDuplicate`
+  and `duplicates` columns to rowData of SummarizedExperiment.
+  One note is that, for efficiency, this argument and
+  `cleanDuplicateTxps` will now share a duplicates CharacterList
+  that is stored in the BiocFileCache, with the name `dups-...`.
+  Therefore, if you have previously used `cleanDuplicateTxps`,
+  you may need to bfcremove() any `dups-...` entries.
+  Summarization to gene level will keep track of `numDupSets`
+  per gene which informs about the number of transcripts sets
+  (equivalence classes by transcript sequence content).
+
 Changes in version 1.5.16
 * Added a wrapper function makeDGEList() to simplify making
   a DGEList for use with edgeR. See vignette for example.

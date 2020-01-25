@@ -53,7 +53,9 @@ force \code{tximeta} to download and parse the GTF}
 
 \item{markDuplicateTxps}{whether to mark the status
 (\code{hasDuplicate}) and names of duplicate transcripts
-(\code{duplicates}) in the rowData of the SummarizedExperiment output}
+(\code{duplicates}) in the rowData of the SummarizedExperiment output.
+Subsequent summarization to gene level will keep track
+of the number of transcripts sets per gene (\code{numDupSets})}
 
 \item{cleanDuplicateTxps}{whether to try to clean
 duplicate transcripts (exact sequence duplicates) by replacing
