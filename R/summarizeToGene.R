@@ -57,11 +57,11 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
   g <- g[rownames(assays[["counts"]])]
 
   # calculate duplication
-  if ("hasDuplicate" %in% colnames(mcols(se))) {
-    stopifnot(all(rownames(se) %in% tx2gene[,1]))
-    t2g.o <- tx2gene[match(rownames(se),tx2gene[,1]),]
-    has.dup.list <- List(split(mcols(se)$hasDuplicate, t2g.o$GENEID))
-    mcols(g)$numDupSets <- sum(has.dup.list)
+  if ("hasDuplicate" %in% colnames(mcols(object))) {
+    stopifnot(all(rownames(object) %in% tx2gene[,1]))
+    t2g.o <- tx2gene[match(rownames(object),tx2gene[,1]),]
+    has.dup.list <- LogicalList(split(mcols(object)$hasDuplicate, t2g.o$GENEID))
+    mcols(g)$numDupObjectts <- sum(has.dup.list)
   }
   
   metadata <- metadata(object)
