@@ -403,6 +403,41 @@ metadata(se)[["tximetaInfo"]]
 metadata(se)[["txdbInfo"]]
 ```
 
+# Errors connecting to a database
+
+`tximeta` makes use of *BiocFileCache* to store transcript and other
+databases, so saving the relevant databases in a centralized location
+used by other Bioconductor packages as well. It is possible that an
+error can occur in connecting to these databases, either if the files
+were accidentally removed from the file system, or if there was an
+error generating or writing the database to the cache location. In
+each of these cases, it is easy to remove the entry in the
+*BiocFileCache* so that `tximeta` will know to regenerate the
+transcript database or any other missing database.
+
+If you have used the default cache location, then you can obtain
+access to your BiocFileCache with:
+
+```{r}
+library(BiocFileCache)
+bfc <- BiocFileCache()
+```
+
+Otherwise, you can recall your particular `tximeta` cache location
+with `getTximetaBFC()`.
+
+You can then inspect the entries in your BiocFileCache using `bfcinfo`
+and remove the entry associated with the missing database with `bfcremove`. 
+See the BiocFileCache vignette for more details on finding and
+removing entries from a BiocFileCache.
+
+Note that there may be many entries in the BiocFileCache location,
+including `.sqlite` database files and serialized `.rds` files. You
+should only remove the entry associated with the missing database,
+e.g. if R gave an error when trying to connect to the TxDb associated
+with GENCODE v99 human transcripts, you should look for the `rid` of
+the entry associated with the human v99 GTF from GENCODE.
+
 # What if checksum isn't known?
 
 `tximeta` automatically imports relevant metadata when the
