@@ -61,7 +61,7 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
     stopifnot(all(rownames(object) %in% tx2gene[,1]))
     t2g.o <- tx2gene[match(rownames(object),tx2gene[,1]),]
     has.dup.list <- LogicalList(split(mcols(object)$hasDuplicate, t2g.o$GENEID))
-    mcols(g)$numDupObjectts <- sum(has.dup.list)
+    mcols(g)$numDupObjects <- sum(has.dup.list)
   }
   
   metadata <- metadata(object)
