@@ -63,7 +63,7 @@ bfclocFile <- function() {
 
 writeBFCLocFile <- function(bfcloc) {
   tximetaDir <- user_cache_dir("tximeta")
-  if (!file.exists(tximetaDir)) dir.create(tximetaDir)
+  if (!file.exists(tximetaDir)) dir.create(tximetaDir, recursive=TRUE)
   bfclocFile <- bfclocFile()
   write(toJSON(bfcloc, pretty=TRUE), file=bfclocFile)
 }
