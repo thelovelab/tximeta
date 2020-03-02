@@ -39,10 +39,10 @@ which also lists the contributtor code of conduct:
 \strong{tximeta} reference:
 
 Michael I. Love, Charlotte Soneson, Peter F. Hickey, Lisa K. Johnson
-N. Tessa Pierce, Lori Shepherd, Martin Morgan, Rob Patro (2019)
+N. Tessa Pierce, Lori Shepherd, Martin Morgan, Rob Patro (2020)
 Tximeta: reference sequence checksums for provenance identification
-in RNA-seq. bioRxiv.
-\url{https://doi.org/10.1101/777888}
+in RNA-seq. PLOS Computational Biology.
+\url{https://doi.org/10.1371/journal.pcbi.1007664}
 
 \strong{tximport} reference (the effective length offset and counts-from-abundance):
 

@@ -22,7 +22,7 @@ vignette: |
 
 # Introduction
 
-The `tximeta` package [@Love2019] extends the `tximport` package
+The `tximeta` package [@Love2020] extends the `tximport` package
 [@Soneson2015] for import of transcript-level quantification data into
 R/Bioconductor. It automatically adds annotation metadata when the
 RNA-seq data has been quantified with *Salmon* [@Patro2017] or for

@@ -1,5 +1,5 @@
 citEntry(entry="article",
-         title = "Tximeta: reference sequence checksums for provenance identification in RNA-seq",
+         title = "Tximeta: Reference sequence checksums for provenance identification in RNA-seq",
          author = personList(
            as.person("Michael I. Love"),
            as.person("Charlotte Soneson"),
@@ -10,11 +10,11 @@ citEntry(entry="article",
            as.person("Martin Morgan"),
            as.person("Rob Patro")
            ),
-         year = 2019,
-         journal = "bioRxiv",
-         doi = "10.1101/777888",
+         year = 2020,
+         journal = "PLOS Computational Biology",
+         doi = "10.1371/journal.pcbi.1007664",
          textVersion =
            paste("Michael I. Love, Charlotte Soneson, Peter F. Hickey, Lisa K. Johnson,",
                  "N. Tessa Pierce, Lori Shepherd, Martin Morgan, Rob Patro",
-                 "Tximeta: reference sequence checksums for provenance identification in RNA-seq",
-                 "bioRxiv" ) )
+                 "Tximeta: Reference sequence checksums for provenance identification in RNA-seq",
+                 "PLOS Computational Biology" ) )
