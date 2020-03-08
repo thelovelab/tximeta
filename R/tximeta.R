@@ -553,7 +553,9 @@ gtf2RefSeq <- function(gtf, genome) {
           genome=genome)
 }
 
-# build out metadata based on indexSeqHash
+# identify the txome based on the indexSeqHash
+# - first look into the linkedTxomeTbl
+# - secondly look into the pre-computed hash table in `extdata`
 getTxomeInfo <- function(indexSeqHash) {
 
   # first try to find any linkedTxomes in the linkedTxomeTbl
@@ -594,7 +596,7 @@ getTxomeInfo <- function(indexSeqHash) {
   return(NULL)
 }
 
-# build or load a TxDb for the dataset
+# build or load a TxDb/EnsDb for the dataset
 getTxDb <- function(txomeInfo, useHub=TRUE) {
   # TODO what if there are multiple GTF files?
   stopifnot(length(txomeInfo$gtf) == 1)
@@ -629,17 +631,22 @@ getTxDb <- function(txomeInfo, useHub=TRUE) {
       }
       if (!hubWorked) {
         message("building EnsDb with 'ensembldb' package")
-        # TODO need to create an entry to obtain a savepath
-        savepath <- bfcnew(bfc, rname=txdbName, ext=".sqlite")
         # TODO what about suppressing all these warnings
-        suppressWarnings(ensDbFromGtf(txomeInfo$gtf, outfile=savepath))
+        suppressWarnings({
+          savepath <- ensDbFromGtf(
+            txomeInfo$gtf,
+            outfile = bfcnew(bfc, rname=txdbName, ext=".sqlite")
+          )
+        })
         txdb <- EnsDb(savepath)
       }
     } else {
       message("building TxDb with 'GenomicFeatures' package")
       txdb <- makeTxDbFromGFF(txomeInfo$gtf)
-      savepath <- bfcnew(bfc, rname=txdbName, ext=".sqlite")
-      saveDb(txdb, file=savepath)
+      saveDb(
+        txdb,
+        file = bfcnew(bfc, rname=txdbName, ext=".sqlite")
+      )
     }
   } else {
     loadpath <- bfcrpath(bfc, txdbName)
@@ -754,9 +761,6 @@ getRanges <- function(txdb=txdb, txomeInfo=txomeInfo, type=c("txp","exon","gene"
   bfc <- BiocFileCache(bfcloc)
   q <- bfcquery(bfc, rngsName)
   if (bfccount(q) == 0) {
-    # TODO: this next line already creates an entry,
-    # but will need to clean up if the TxDb construction below fails
-    savepath <- bfcnew(bfc, rngsName, ext=".rds")
     # now generate ranges
     message(paste("generating",long[type],"ranges"))
     # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
@@ -801,6 +805,7 @@ getRanges <- function(txdb=txdb, txomeInfo=txomeInfo, type=c("txp","exon","gene"
         rngs <- genes(txdb)
       })
     }
+    savepath <- bfcnew(bfc, rngsName, ext=".rds")
     saveRDS(rngs, file=savepath)
   } else {
     loadpath <- bfcrpath(bfc, rngsName)
