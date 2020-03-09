@@ -737,6 +737,7 @@ and other individuals in the community:
 * Martin Morgan
 * Koen Van den Berge
 * Johannes Rainer
+* James Ashmore
 
 # Next steps
 

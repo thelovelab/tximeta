@@ -570,6 +570,7 @@ getTxomeInfo <- function(indexSeqHash) {
     m <- match(indexSeqHash, linkedTxomeTbl$sha256)
     if (!is.na(m)) {
       txomeInfo <- as.list(linkedTxomeTbl[m,])
+      txomeInfo$linkedTxome <- TRUE
       message(paste0("found matching linked transcriptome:\n[ ",
                      txomeInfo$source," - ",txomeInfo$organism," - release ",txomeInfo$release," ]"))
       return(txomeInfo)
@@ -588,6 +589,7 @@ getTxomeInfo <- function(indexSeqHash) {
     if (grepl(" ", txomeInfo$fasta)) {
       txomeInfo$fasta <- strsplit(txomeInfo$fasta, " ")
     }
+    txomeInfo$linkedTxome <- FALSE
     message(paste0("found matching transcriptome:\n[ ",
                    txomeInfo$source," - ",txomeInfo$organism," - release ",txomeInfo$release," ]"))
     return(txomeInfo)
@@ -631,13 +633,29 @@ getTxDb <- function(txomeInfo, useHub=TRUE) {
       }
       if (!hubWorked) {
         message("building EnsDb with 'ensembldb' package")
-        # TODO what about suppressing all these warnings
-        suppressWarnings({
-          savepath <- ensDbFromGtf(
-            txomeInfo$gtf,
-            outfile = bfcnew(bfc, rname=txdbName, ext=".sqlite")
-          )
-        })
+
+        # split code based on whether linkedTxome (bc GTF filename may be modified)
+        if (!txomeInfo$linkedTxome) {
+          # TODO what about suppressing all these warnings
+          suppressWarnings({
+            savepath <- ensDbFromGtf(
+              txomeInfo$gtf,
+              outfile = bfcnew(bfc, rname=txdbName, ext=".sqlite")
+            )
+          })
+        } else {
+          # for linkedTxome, because the GTF filename may be modified
+          # we manually provide organism, genomeVersion, and version
+          suppressWarnings({
+            savepath <- ensDbFromGtf(
+              txomeInfo$gtf,
+              outfile = bfcnew(bfc, rname=txdbName, ext=".sqlite"),
+              organism = txomeInfo$organism,
+              genomeVersion = txomeInfo$genome,
+              version = txomeInfo$release
+            )
+          })
+        }
         txdb <- EnsDb(savepath)
       }
     } else {
