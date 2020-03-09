@@ -33,10 +33,6 @@ a particular gene, it is recommended to pull out the relevant
 \code{GRangesList} for the transcripts of this gene, while the object
 represents transcript-level data, such that the exons are still
 associated with transcripts.
-}
-\examples{
 
-example(tximeta)
-se <- addExons(se)
-
+For an example of \code{addExons}, please see the tximeta vignette.
 }
