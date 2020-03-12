@@ -1,3 +1,8 @@
+Changes in version 1.5.28
+* Added function `splitSE` to split one assay of a 
+  SummarizedExperiment into multiple assays, each containing 
+  features of a given type.
+  
 Changes in version 1.5.19
 * Added `markDuplicateTxps` argument to add `hasDuplicate`
   and `duplicates` columns to rowData of SummarizedExperiment.
