@@ -37,7 +37,7 @@ between the features of different types, are given in a \code{data.frame}.
 }
 \examples{
 se <- SummarizedExperiment::SummarizedExperiment(
-  assays = SimpleList(
+  assays = S4Vectors::SimpleList(
     counts = as(matrix(1:15, nrow = 5), "sparseMatrix"),
     logcounts = log2(matrix(1:15, nrow = 5))
   ), 
