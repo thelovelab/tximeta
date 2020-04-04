@@ -312,6 +312,10 @@ tximeta <- function(coldata,
     } else {
       assays <- txi["counts"]
     }
+    # add tier information as well if it exists in the list
+    if ("tier" %in% names(txi)) {
+      assays <- c(assays, txi["tier"])
+    }
     coldata <- data.frame(row.names=colnames(assays[["counts"]]))
   } else {
     # for methods other than alevin...
@@ -735,6 +739,9 @@ makeUnrangedSE <- function(txi, coldata, metadata) {
     assays <- c(assays, infReps)
   } else if ("variance" %in% names(txi)) {
     assays <- c(assays, txi["variance"])
+  }
+  if ("tier" %in% names(txi)) {
+    assays <- c(assays, txi["tier"])
   }
   assays <- assays[!sapply(assays, is.null)]
   SummarizedExperiment(assays=assays,
