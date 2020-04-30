@@ -89,15 +89,15 @@ hashit <- function(source, organism, release, catNC=FALSE) {
   write.table(df, file="newrows.csv", append=TRUE, quote=FALSE, sep=",", row.names=FALSE, col.names=FALSE)
   system("rm -f transcripts.fa")
   system("rm -f hash.json")
-  NULL
+  message("done!")
 }
 
-i <- 33
+i <- 34
 hashit("GENCODE", "Homo sapiens", i)
-i <- 24
+i <- 25
 hashit("GENCODE", "Mus musculus", paste0("M",i))
 #
-i <- 99
+i <- 100
 hashit("Ensembl", "Homo sapiens", i)
 hashit("Ensembl", "Mus musculus", i)
 hashit("Ensembl", "Drosophila melanogaster", i)

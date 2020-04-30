@@ -1,3 +1,6 @@
+Changes in version 1.7.1
+* Updated to Ensembl release 100, GENCODE 34/M25.
+
 Changes in version 1.6.0
 * Added PLOS Computational Biology citation! :-)
 * Added function `splitSE` to split one assay of a 
