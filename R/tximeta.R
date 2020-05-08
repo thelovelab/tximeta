@@ -315,6 +315,10 @@ tximeta <- function(coldata,
     } else {
       assays <- txi["counts"]
     }
+    # add mean information as well if it exists in the list
+    if ("mean" %in% names(txi)) {
+      assays <- c(assays, txi["mean"])
+    }
     # add tier information as well if it exists in the list
     if ("tier" %in% names(txi)) {
       assays <- c(assays, txi["tier"])
@@ -742,6 +746,9 @@ makeUnrangedSE <- function(txi, coldata, metadata) {
     assays <- c(assays, infReps)
   } else if ("variance" %in% names(txi)) {
     assays <- c(assays, txi["variance"])
+  }
+  if ("mean" %in% names(txi)) {
+    assays <- c(assays, txi["mean"])
   }
   if ("tier" %in% names(txi)) {
     assays <- c(assays, txi["tier"])
