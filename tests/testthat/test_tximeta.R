@@ -140,6 +140,7 @@ test_that("tximeta can import alevin", {
   coldata <- data.frame(files, names="neurons")
   #se <- tximeta(coldata, type="alevin")
   #se <- tximeta(coldata, type="alevin", dropInfReps=TRUE)
+  #se <- tximeta(coldata, type="alevin", dropInfReps=TRUE, skipMeta=TRUE)
   
 })
 

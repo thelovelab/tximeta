@@ -238,6 +238,9 @@ tximeta <- function(coldata,
   if (skipMetaLogic) {
     txi <- tximport(files, type=type, txOut=txOut, ...)
     metadata$countsFromAbundance <- txi$countsFromAbundance
+    if (type == "alevin") {
+      coldata <- data.frame(row.names=colnames(txi[["counts"]]))
+    }
     se <- makeUnrangedSE(txi, coldata, metadata)
     return(se)
   } else {
