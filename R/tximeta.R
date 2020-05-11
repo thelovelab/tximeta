@@ -227,6 +227,7 @@ tximeta <- function(coldata,
 
   # tximeta metadata
   tximetaInfo <- list(version=packageVersion("tximeta"),
+                      type=type,
                       importTime=Sys.time())
 
   metadata <- list(tximetaInfo=tximetaInfo)
