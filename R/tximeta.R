@@ -271,7 +271,7 @@ tximeta <- function(coldata,
         message("\nNOTE: inferential replicate number not equal across files,
 may lead to errors in object construction, unless 'dropInfReps=TRUE'")
         if (any(nboot == 0)) {
-          message(paste("\nNOTE: the following files (by #) have 0 bootstraps:
+          message(paste("\nNOTE: the following files (by #) have 0 inferential replicates:
   ",paste(which(nboot == 0),collapse=",")),"\n")
         }
       }
