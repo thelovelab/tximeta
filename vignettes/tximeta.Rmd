@@ -738,6 +738,7 @@ and other individuals in the community:
 * Koen Van den Berge
 * Johannes Rainer
 * James Ashmore
+* Ben Johnson
 
 # Next steps
 

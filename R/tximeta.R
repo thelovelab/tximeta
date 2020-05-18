@@ -265,6 +265,17 @@ tximeta <- function(coldata,
     if (!all(hashes == indexSeqHash)) {
       stop("the samples do not share the same index, and cannot be imported")
     }
+    if ("num_bootstraps" %in% names(metaInfo[[1]])) {
+      nboot <- sapply(metaInfo, function(x) x$num_bootstraps)
+      if (!all(nboot == nboot[1])) {
+        message("\nNOTE: inferential replicate number not equal across files,
+may lead to errors in object construction, unless 'dropInfReps=TRUE'")
+        if (any(nboot == 0)) {
+          message(paste("\nNOTE: the following files (by #) have 0 bootstraps:
+  ",paste(which(nboot == 0),collapse=",")),"\n")
+        }
+      }
+    }
   }
   # reshape
   metaInfo <- reshapeMetaInfo(metaInfo)
