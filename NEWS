@@ -1,3 +1,7 @@
+Changes in version 1.7.6
+* Now summarizeToGene() will add a column tx_ids, which is a
+  CharacterList of the transcript IDs.
+
 Changes in version 1.7.1
 * Updated to Ensembl release 100, GENCODE 34/M25.
 

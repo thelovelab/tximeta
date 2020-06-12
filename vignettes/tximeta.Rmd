@@ -297,7 +297,8 @@ summarization, the `rowRanges` reflect the start and end position of
 the gene, which in Bioconductor are defined by the left-most and
 right-most genomic coordinates of all the transcripts. As with the
 transcript and exons, the gene ranges are cached locally for repeated
-usage. 
+usage. The transcript IDs are stored as a *CharacterList* column
+`tx_ids`.
 
 ```{r}
 gse <- summarizeToGene(se)

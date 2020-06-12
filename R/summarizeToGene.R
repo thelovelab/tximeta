@@ -56,6 +56,13 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
   # TODO give a warning here if there are genes in TxDb not in Salmon index?
   g <- g[rownames(assays[["counts"]])]
 
+  # store txp IDS
+  tx_ids <- CharacterList(split(tx2gene$TXNAME, tx2gene$GENEID))
+  if (all(names(g) %in% names(tx_ids))) {
+    tx_ids <- tx_ids[names(g)]
+    mcols(g)$tx_ids <- tx_ids
+  }
+  
   # calculate duplication
   if ("hasDuplicate" %in% colnames(mcols(object))) {
     stopifnot(all(rownames(object) %in% tx2gene[,1]))
@@ -80,10 +87,12 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
 #'
 #' Summarizes abundances, counts, lengths, (and inferential
 #' replicates or variance) from transcript- to gene-level.
+#' Transcript IDs are stored as a CharacterList in the \code{mcols}
+#' of the output object.
 #' This function operates on SummarizedExperiment objects, and
 #' will automatically access the relevant TxDb (by either finding it
 #' in the BiocFileCache or by building it from an ftp location).
-#' #' This function uses the tximport package to perform summarization,
+#' This function uses the tximport package to perform summarization,
 #' where a method is defined that works on simple lists.
 #'
 #' @param object a SummarizedExperiment produced by \code{tximeta}
@@ -92,6 +101,7 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
 #' @param ... arguments passed to \code{tximport}
 #'
 #' @return a SummarizedExperiment with summarized quantifications
+#' and transcript IDs as a CharacterList in the \code{mcols}
 #'
 #' @rdname summarizeToGene
 #' @docType methods

@@ -17,14 +17,17 @@ information into a matrix of sample variances \code{variance} (default FALSE)}
 }
 \value{
 a SummarizedExperiment with summarized quantifications
+and transcript IDs as a CharacterList in the \code{mcols}
 }
 \description{
 Summarizes abundances, counts, lengths, (and inferential
 replicates or variance) from transcript- to gene-level.
+Transcript IDs are stored as a CharacterList in the \code{mcols}
+of the output object.
 This function operates on SummarizedExperiment objects, and
 will automatically access the relevant TxDb (by either finding it
 in the BiocFileCache or by building it from an ftp location).
-#' This function uses the tximport package to perform summarization,
+This function uses the tximport package to perform summarization,
 where a method is defined that works on simple lists.
 }
 \examples{
