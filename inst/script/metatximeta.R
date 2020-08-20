@@ -92,12 +92,12 @@ hashit <- function(source, organism, release, catNC=FALSE) {
   message("done!")
 }
 
-i <- 34
+i <- 35
 hashit("GENCODE", "Homo sapiens", i)
 i <- 25
 hashit("GENCODE", "Mus musculus", paste0("M",i))
 #
-i <- 100
+i <- 101
 hashit("Ensembl", "Homo sapiens", i)
 hashit("Ensembl", "Mus musculus", i)
 hashit("Ensembl", "Drosophila melanogaster", i)
