@@ -5,8 +5,8 @@ For a reference and citation for `tximeta`:
 > Michael I. Love, Charlotte Soneson, Peter F. Hickey, Lisa K. Johnson,
 > N. Tessa Pierce, Lori Shepherd, Martin Morgan, Rob Patro.
 > "Tximeta: reference sequence checksums for provenance
-> identification in RNA-seq" *bioRxiv*, September 2019.
-> [doi: 10.1101/777888](https://doi.org/10.1101/777888)
+> identification in RNA-seq" *PLOS Computational Biology* (2020)
+> [doi: 10.1371/journal.pcbi.1007664](https://doi.org/10.1371/journal.pcbi.1007664)
 
 # Idea in diagram
 
