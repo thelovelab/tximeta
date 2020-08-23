@@ -46,7 +46,7 @@ This calls \code{tximport} directly and so either
 which requires an internet connection to download the
 relevant chromosome information table from UCSC}
 
-\item{useHub}{whether to first attempt to download an EnsDb
+\item{useHub}{whether to first attempt to download a TxDb/EnsDb
 object from AnnotationHub, rather than creating from a
 GTF file from FTP (default is TRUE). If FALSE, it will
 force \code{tximeta} to download and parse the GTF}
@@ -115,8 +115,8 @@ Multiple users can point to the same BiocFileCache, such that
 transcript databases (TxDb or EnsDb) associated with certain Salmon indices
 and \code{linkedTxomes} can be accessed by different users without additional
 effort or time spent downloading and building the relevant TxDb / EnsDb.
-Note that, if the EnsDb is present in AnnotationHub, \code{tximeta} will
-use this object instead of downloading and building an EnsDb from GTF
+Note that, if the TxDb or EnsDb is present in AnnotationHub, \code{tximeta} will
+use this object instead of downloading and building a TxDb/EnsDb from GTF
 (to disable this set useHub=FALSE).
 
 In order to allow that multiple users can read and write to the

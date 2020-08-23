@@ -90,8 +90,8 @@ NULL
 #' transcript databases (TxDb or EnsDb) associated with certain Salmon indices
 #' and \code{linkedTxomes} can be accessed by different users without additional
 #' effort or time spent downloading and building the relevant TxDb / EnsDb.
-#' Note that, if the EnsDb is present in AnnotationHub, \code{tximeta} will
-#' use this object instead of downloading and building an EnsDb from GTF
+#' Note that, if the TxDb or EnsDb is present in AnnotationHub, \code{tximeta} will
+#' use this object instead of downloading and building a TxDb/EnsDb from GTF
 #' (to disable this set useHub=FALSE).
 #'
 #' In order to allow that multiple users can read and write to the
@@ -121,7 +121,7 @@ NULL
 #' @param skipSeqinfo whether to skip the addition of Seqinfo,
 #' which requires an internet connection to download the
 #' relevant chromosome information table from UCSC
-#' @param useHub whether to first attempt to download an EnsDb
+#' @param useHub whether to first attempt to download a TxDb/EnsDb
 #' object from AnnotationHub, rather than creating from a
 #' GTF file from FTP (default is TRUE). If FALSE, it will
 #' force \code{tximeta} to download and parse the GTF
@@ -436,14 +436,14 @@ may lead to errors in object construction, unless 'dropInfReps=TRUE'")
     }
   }
   
-  # Ensembl already has nice seqinfo attached
-
-  # if GENCODE...
-  if (txomeInfo$source == "GENCODE" & !skipSeqinfo) {
+  # Ensembl already has nice seqinfo attached...
+  # if GENCODE, and not from AHub (which have seqinfo)
+  missingSeqinfo <- any(is.na(seqlengths(txps)))
+  if (txomeInfo$source == "GENCODE" & !skipSeqinfo & missingSeqinfo) {
     message("fetching genome info for GENCODE")
     ucsc.genome <- genome2UCSC(txomeInfo$genome)
     try(seqinfo(txps) <- Seqinfo(genome=ucsc.genome)[seqlevels(txps)])
-  } else if (txomeInfo$source == "RefSeq" & !skipSeqinfo) {
+  } else if (txomeInfo$source == "RefSeq" & !skipSeqinfo & missingSeqinfo) {
     # if RefSeq...
     message("fetching genome info for RefSeq")
     refseq.genome <- gtf2RefSeq(txomeInfo$gtf, txomeInfo$genome)
@@ -602,7 +602,7 @@ getTxomeInfo <- function(indexSeqHash) {
 
   # if not in linkedTxomes try the pre-computed hashtable...
 
-  # TODO this is temporary code, best this would be an external data package
+  # TODO best this would be an external data package / future GA4GH RefGet API
   hashfile <- file.path(system.file("extdata",package="tximeta"),"hashtable.csv")
   hashtable <- read.csv(hashfile,stringsAsFactors=FALSE)
   m <- match(indexSeqHash, hashtable$sha256)
@@ -633,55 +633,81 @@ getTxDb <- function(txomeInfo, useHub=TRUE) {
   q <- bfcquery(bfc, txdbName)
   # then filter for equality with rname
   q <- q[q$rname==txdbName,]
+
+  ### No TxDb was found in the BiocFilecache ###
   if (bfccount(q) == 0) {
-    if (txomeInfo$source == "Ensembl") {
+
+    # Ensembl and GENCODE best case we can find database on AnnotationHub
+    hubSources <- c("Ensembl","GENCODE")
+    srcName <- txomeInfo$source
+    if (srcName %in% hubSources) {
       hubWorked <- FALSE
+      ensSrc <- srcName == "Ensembl"
+      dbType <- if (ensSrc) "EnsDb" else "TxDb"
       if (useHub) {
-        message("useHub=TRUE: checking for EnsDb via 'AnnotationHub'")
+        message(paste("useHub=TRUE: checking for", dbType, "via 'AnnotationHub'"))
         ah <- AnnotationHub()
         # get records
-        records <- query(ah, c("Ensembl", txomeInfo$organism, txomeInfo$release))
-        # confirm source and organism through metadata columns
-        records <- records[records$dataprovider=="Ensembl" & records$species==txomeInfo$organism,]
-        # confirm release number through grep on the 'title'
-        records <- records[grepl(paste("Ensembl", txomeInfo$release, "EnsDb"), records$title),]
+        records <- query(ah, c(srcName, txomeInfo$organism, txomeInfo$release))
+        # confirm source, organism, dbType through metadata columns
+        records <- records[records$dataprovider==srcName &
+                           records$species==txomeInfo$organism &
+                           records$rdataclass==dbType,]        
+        if (ensSrc) {
+          # Confirm release number through grep on the title
+          # EnsDb record titles look like "Ensembl 123 EnsDb for Homo sapiens"
+          records <- records[grepl(paste(srcName, txomeInfo$release, dbType), records$title),]
+        } else {
+          # Narrow records based on the genome coordinates
+          # GENCODE record titles look like "TxDb for Gencode v123 on hg38 coordinates"
+          coords <- genome2UCSC(txomeInfo$genome)
+          records <- records[grepl(coords, records$title),]
+        }
         if (length(records) == 1) {
-          message("found matching EnsDb via 'AnnotationHub'")
+          message(paste("found matching", dbType, "via 'AnnotationHub'"))
           hubWorked <- TRUE
           txdb <- ah[[names(records)]]
           bfcadd(bfc, rname=txdbName, fpath=dbfile(dbconn(txdb)))
         } else {
-          message("did not find matching EnsDb via 'AnnotationHub'")
+          message(paste("did not find matching", dbType, "via 'AnnotationHub'"))
         }
       }
+      # if check on AnnotationHub failed (or wasn't attempted)
       if (!hubWorked) {
-        message("building EnsDb with 'ensembldb' package")
-
-        # split code based on whether linkedTxome (bc GTF filename may be modified)
-        if (!txomeInfo$linkedTxome) {
-          # TODO what about suppressing all these warnings
-          suppressWarnings({
-            savepath <- ensDbFromGtf(
-              txomeInfo$gtf,
-              outfile = bfcnew(bfc, rname=txdbName, ext=".sqlite")
-            )
-          })
-        } else {
-          # for linkedTxome, because the GTF filename may be modified
-          # we manually provide organism, genomeVersion, and version
-          suppressWarnings({
-            savepath <- ensDbFromGtf(
-              txomeInfo$gtf,
-              outfile = bfcnew(bfc, rname=txdbName, ext=".sqlite"),
-              organism = txomeInfo$organism,
-              genomeVersion = txomeInfo$genome,
-              version = txomeInfo$release
-            )
-          })
+        # build db for Ensembl
+        if (ensSrc) {
+          message("building EnsDb with 'ensembldb' package")
+          # split code based on whether linkedTxome (bc GTF filename may be modified)
+          if (!txomeInfo$linkedTxome) {
+            # TODO what about suppressing all these warnings
+            suppressWarnings({
+              savepath <- ensDbFromGtf(
+                txomeInfo$gtf,
+                outfile = bfcnew(bfc, rname=txdbName, ext=".sqlite")
+              )
+            })
+          } else {
+            # for linkedTxome, because the GTF filename may be modified
+            # we manually provide organism, genomeVersion, and version
+            suppressWarnings({
+              savepath <- ensDbFromGtf(
+                txomeInfo$gtf,
+                outfile = bfcnew(bfc, rname=txdbName, ext=".sqlite"),
+                organism = txomeInfo$organism,
+                genomeVersion = txomeInfo$genome,
+                version = txomeInfo$release
+              )
+            })
+          }
+          txdb <- EnsDb(savepath)
         }
-        txdb <- EnsDb(savepath)
       }
-    } else {
+    }
+
+    # two cases left:
+    # 1) GENCODE source but AHub didn't work
+    # 2) Neither Ensembl or GENCODE source
+    if (!srcName %in% hubSources || !hubWorked) {
       message("building TxDb with 'GenomicFeatures' package")
       txdb <- makeTxDbFromGFF(txomeInfo$gtf)
       saveDb(
@@ -689,7 +715,9 @@ getTxDb <- function(txomeInfo, useHub=TRUE) {
         file = bfcnew(bfc, rname=txdbName, ext=".sqlite")
       )
     }
+
   } else {
+    ### Yes, TxDb was found in the BiocFilecache ###
     loadpath <- bfcrpath(bfc, txdbName)
     if (txomeInfo$source == "Ensembl") {
       message(paste("loading existing EnsDb created:",q$create_time[1]))
@@ -699,6 +727,7 @@ getTxDb <- function(txomeInfo, useHub=TRUE) {
       txdb <- loadDb(loadpath)
     }
   }
+  
   txdb
 }
 
