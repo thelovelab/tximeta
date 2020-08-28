@@ -5,8 +5,8 @@
 #' Running \code{setTximetaBFC} will ask the user to specify a
 #' BiocFileCache directory for accessing and saving TxDb sqlite files.
 #' Note that tximeta's BiocFileCache can be set by the environmental
-#' variable \code{TXIMETA_HUB_CACHE}.
-#'
+#' variable \code{TXIMETA_HUB_CACHE}, which will reset the cache location.
+#' 
 #' @param dir the location for tximeta's BiocFileCache. can be missing
 #' in which case the function will call \code{file.choose} for choosing
 #' location interactively

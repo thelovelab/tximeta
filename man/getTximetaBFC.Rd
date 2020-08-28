@@ -7,12 +7,14 @@
 \usage{
 getTximetaBFC()
 
-setTximetaBFC(dir)
+setTximetaBFC(dir, quiet = FALSE)
 }
 \arguments{
 \item{dir}{the location for tximeta's BiocFileCache. can be missing
 in which case the function will call \code{file.choose} for choosing
 location interactively}
+
+\item{quiet}{whether to suppress feedback message}
 }
 \value{
 the directory of the BiocFileCache used by tximeta
@@ -23,6 +25,8 @@ Running \code{getTximetaBFC} will report the saved directory,
 if it has been determined, or will return NULL.
 Running \code{setTximetaBFC} will ask the user to specify a
 BiocFileCache directory for accessing and saving TxDb sqlite files.
+Note that tximeta's BiocFileCache can be set by the environmental
+variable \code{TXIMETA_HUB_CACHE}.
 }
 \examples{
 
