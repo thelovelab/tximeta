@@ -4,10 +4,13 @@
 #' if it has been determined, or will return NULL.
 #' Running \code{setTximetaBFC} will ask the user to specify a
 #' BiocFileCache directory for accessing and saving TxDb sqlite files.
+#' Note that tximeta's BiocFileCache can be set by the environmental
+#' variable \code{TXIMETA_HUB_CACHE}.
 #'
 #' @param dir the location for tximeta's BiocFileCache. can be missing
 #' in which case the function will call \code{file.choose} for choosing
 #' location interactively
+#' @param quiet whether to suppress feedback message
 #' 
 #' @return the directory of the BiocFileCache used by tximeta
 #' (or nothing, in the case of \code{setTximetaBFC})
@@ -37,7 +40,7 @@ getTximetaBFC <- function() {
 #' @rdname getTximetaBFC
 #' 
 #' @export
-setTximetaBFC <- function(dir) {
+setTximetaBFC <- function(dir, quiet=FALSE) {
   if (missing(dir)) {
     message("which BiocFileCache directory should tximeta use? (press Enter to cancel)")
     bfcloc <- file.choose()
@@ -47,7 +50,7 @@ setTximetaBFC <- function(dir) {
   }
   bfclocFile <- bfclocFile()
   writeBFCLocFile(bfcloc)
-  message("for group use, set the permissions of this directory to allow group write (g+w)")
+  if (!quiet) message("for group use, set the permissions of this directory to allow group write (g+w)")
   invisible()
 }
 
@@ -84,6 +87,7 @@ getBFCLoc <- function() {
   "If not, a temporary directory that is specific to this R session will be used.","",
   "You can always change this directory later by running: setTximetaBFC()",
   "Or enter [0] to exit and set this directory manually now.",
+  "This location can also be set by environmental variable TXIMETA_HUB_CACHE.",
   sep="\n")
 
   # this is the JSON file where we store the location of the tximeta BiocFileCache

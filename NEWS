@@ -1,3 +1,8 @@
+Changes in version 1.7.10
+* Added option that environmental variable TXIMETA_HUB_CACHE
+  can be used to set tximeta's cache location, to avoid
+  prompting the user on the first run of tximeta().
+
 Changes in version 1.7.9
 * tximeta() will now pull GENCODE TxDb from AnnotationHub
   when it is listed there (only Homo sapiens are at this

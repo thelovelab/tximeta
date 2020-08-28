@@ -60,16 +60,21 @@ test_that("tximeta works as expected", {
 test_that("tximeta can import GENCODE and Ensembl", {
 
   if (FALSE) {
+
+    ### GENCODE ###
     dir <- system.file("extdata", package="tximportData")
     samples <- read.table(file.path(dir,"samples.txt"), header=TRUE)
     files <- file.path(dir,"salmon", samples$run, "quant.sf.gz")
     coldata <- data.frame(files, names=paste0("sample",1:6))
-    se <- tximeta(coldata)
 
+    # with AnnotationHub (default)
+    se <- tximeta(coldata)
     gse <- summarizeToGene(se)
 
-    # Ensembl example --- show that we can use AnnotationHub
-    
+    # without AnnotationHub
+    se <- tximeta(coldata, useHub=FALSE)
+
+    ### Ensembl ###
     dir <- system.file("extdata", package="tximportData")
     samples <- read.table(file.path(dir,"samples.txt"), header=TRUE)
     files <- file.path(dir,"salmon_gibbs", samples$run, "quant.sf.gz")
