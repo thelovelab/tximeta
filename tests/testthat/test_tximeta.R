@@ -17,9 +17,15 @@ test_that("tximeta works as expected", {
   #expect_warning({se <- tximeta(coldata)}, "annotation is missing")
   se <- tximeta(coldata)
 
-  # check adding exons
+  # check adding CDS
   library(SummarizedExperiment)
+  se2 <- addCDS(se)
+  
+  # check adding exons
   se <- addExons(se)
+
+  # check adding CDS on exons
+  se <- addCDS(se)
 
   # check summarize to gene
   gse <- summarizeToGene(se)

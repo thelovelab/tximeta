@@ -175,14 +175,14 @@ NULL
 #' # bfc <- BiocFileCache(bfcloc)
 #' # bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 #'
-#' @importFrom SummarizedExperiment SummarizedExperiment assays assayNames colData rowRanges<-
+#' @importFrom SummarizedExperiment SummarizedExperiment assays assayNames colData rowRanges<- rowRanges
 #' @importFrom S4Vectors metadata mcols mcols<-
 #' @importFrom IRanges CharacterList LogicalList
 #' @importFrom GenomicRanges seqnames
 #' @importFrom tximport tximport summarizeToGene
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom AnnotationDbi loadDb saveDb select keys mapIds
-#' @importFrom GenomicFeatures makeTxDbFromGFF transcripts genes exonsBy
+#' @importFrom GenomicFeatures makeTxDbFromGFF transcripts genes exonsBy cdsBy
 #' @importFrom ensembldb ensDbFromGtf EnsDb
 #' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfcadd bfccount bfcrpath
 #' @importFrom AnnotationHub AnnotationHub query dbconn dbfile
@@ -191,7 +191,7 @@ NULL
 #' @importFrom GenomeInfoDb Seqinfo genome<- seqlengths seqinfo seqinfo<- seqlevels
 #' @importFrom rappdirs user_cache_dir
 #' @importFrom utils menu packageVersion read.csv read.delim head
-#' @importFrom methods is
+#' @importFrom methods is as
 #'
 #' @export
 tximeta <- function(coldata,
@@ -824,8 +824,8 @@ splitInfReps <- function(infReps) {
 
 # build or load ranges
 # either transcript, exon-by-transcript, or gene ranges
-getRanges <- function(txdb=txdb, txomeInfo=txomeInfo, type=c("txp","exon","gene")) {
-  long <- c(txp="transcript",exon="exon",gene="gene")
+getRanges <- function(txdb=txdb, txomeInfo=txomeInfo, type=c("txp","exon","cds","gene")) {
+  long <- c(txp="transcript",exon="exon",cds="CDS",gene="gene")
   stopifnot(length(txomeInfo$gtf) == 1)
   stopifnot(txomeInfo$gtf != "")
 
@@ -870,7 +870,15 @@ getRanges <- function(txdb=txdb, txomeInfo=txomeInfo, type=c("txp","exon","gene"
       suppressWarnings({
         rngs <- exonsBy(txdb, by="tx", use.names=TRUE)
       })
-      
+    } else if (type == "cds") {
+      #################
+      ## CDS ranges ##
+      #################
+
+      # TODO suppress warnings about out-of-bound ranges for now... how to pass this on
+      suppressWarnings({
+        rngs <- cdsBy(txdb, by="tx", use.names=TRUE)
+      })
     } else if (type == "gene") {
       #################
       ## gene ranges ##

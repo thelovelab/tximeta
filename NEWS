@@ -1,3 +1,9 @@
+Changes in version 1.7.11
+* Added function addCDS() that will add CDS ranges for coding
+  transcripts (and fills in original ranges for non-coding),
+  as well as a 'coding' column as a logical indicator.
+  Feature suggestion from Kristoffer Vitting-Seerup.
+
 Changes in version 1.7.10
 * Added option that environmental variable TXIMETA_HUB_CACHE
   can be used to set tximeta's cache location, to avoid
