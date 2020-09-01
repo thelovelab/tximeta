@@ -8,16 +8,8 @@ makeDuplicateTxpsList <- function(txomeInfo) {
     dup.list <- readRDS(loadpath)
     stopifnot(is(dup.list, "CharacterList"))
   } else {
-    # download the DNA from remote source
-    if (is.list(txomeInfo$fasta)) {
-      dna <- list()
-      for (i in seq_along(txomeInfo$fasta[[1]])) {
-        dna[[i]] <- readDNAStringSet(txomeInfo$fasta[[1]][i])
-      }
-      dna <- do.call(c, dna)
-    } else {
-      dna <- readDNAStringSet(txomeInfo$fasta)
-    }
+    # download the cDNA from remote source (or load from cache)
+    dna <- retrieveCDNA(txomeInfo, quiet=TRUE)
     if (txomeInfo$source == "Ensembl") {
       testTxp <- names(dna)[1]
       if (grepl("ENST|ENSMUST",testTxp)) {
@@ -43,7 +35,7 @@ makeDuplicateTxpsList <- function(txomeInfo) {
       names(dup.list) <- NULL
       dup.list <- CharacterList(dup.list)
     }
-    # save it to BFC so as not to repeat the FASTA download
+    # save it to BFC so as not to repeat the above operation
     savepath <- bfcnew(bfc, dup.list.id, ext=".rds")
     saveRDS(dup.list, file=savepath)
   }

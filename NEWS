@@ -1,3 +1,10 @@
+Changes in version 1.7.12
+* Added function retrieveCDNA() that will download or load
+  a cached version of the transcript sequences used for
+  quantification. Note that the returned sequences are not
+  ordered or matched to the rows of the SummarizedExperiment
+  object. Feature suggestion from Kristoffer Vitting-Seerup.
+
 Changes in version 1.7.11
 * Added function addCDS() that will add CDS ranges for coding
   transcripts (and fills in original ranges for non-coding),

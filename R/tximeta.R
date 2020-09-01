@@ -465,30 +465,6 @@ may lead to errors in object construction, unless 'dropInfReps=TRUE'")
   
 }
 
-#' Retrieve the TxDb or EnsDb associated with a SummarizedExperiment
-#'
-#' SummarizedExperiment objects returned by \code{\link{tximeta}} have
-#' associated TxDb or EnsDb databases which are cached locally and used
-#' to perform various metadata related tasks. This helper function
-#' retrieves the database itself for the user to perform any additional
-#' operations.
-#'
-#' @param se the SummarizedExperiment
-#'
-#' @return a database object
-#'
-#' @examples
-#'
-#' example(tximeta)
-#' edb <- retrieveDb(se)
-#' 
-#' @export
-retrieveDb <- function(se) {
-  missingMetadata(se, summarize=FALSE)
-  txomeInfo <- metadata(se)$txomeInfo
-  getTxDb(txomeInfo)
-}
-
 missingMetadata <- function(se, summarize=FALSE) {
   msg <- "use of this function requires transcriptome metadata which is missing.
   either: (1) the object was not produced by tximeta, or
