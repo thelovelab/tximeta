@@ -1,3 +1,9 @@
+Changes in version 1.7.13
+* Added 'fromDb' argument to addIds() to allow IDs to be
+  added from the associated TxDb/EnsDb instead of the org
+  package (which is used by default).
+  Feature suggestion from Kristoffer Vitting-Seerup.
+
 Changes in version 1.7.12
 * Added function retrieveCDNA() that will download or load
   a cached version of the transcript sequences used for

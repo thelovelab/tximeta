@@ -17,6 +17,9 @@ test_that("tximeta works as expected", {
   #expect_warning({se <- tximeta(coldata)}, "annotation is missing")
   se <- tximeta(coldata)
 
+  # check adding IDs from TxDb/EnsDb
+  se <- addIds(se, column="SYMBOL", fromDb=TRUE)
+  
   # check adding CDS
   library(SummarizedExperiment)
   se2 <- addCDS(se)
@@ -80,6 +83,9 @@ test_that("tximeta can import GENCODE and Ensembl", {
     se <- tximeta(coldata)
     gse <- summarizeToGene(se)
 
+    # check adding IDs from TxDb/EnsDb
+    se <- addIds(se, column="TXTYPE", fromDb=TRUE)
+    
     # without AnnotationHub
     se <- tximeta(coldata, useHub=FALSE)
 

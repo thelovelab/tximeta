@@ -4,12 +4,17 @@
 \alias{addIds}
 \title{Add IDs to rowRanges of a SummarizedExperiment}
 \usage{
-addIds(se, column, gene = FALSE, ...)
+addIds(se, column, fromDb = FALSE, gene = FALSE, ...)
 }
 \arguments{
 \item{se}{the SummarizedExperiment}
 
-\item{column}{the name of the new ID to add (a \code{column} of the org database)}
+\item{column}{the name of the new ID to add (a \code{column} of the org package
+database or of the TxDb/EnsDb is \code{fromDb=TRUE})}
+
+\item{fromDb}{logical, whether to use the TxDb/EnsDb that is associated
+with \code{se}. Default is FALSE, and an org package is used.
+Currently only implemented for transcript level (gene=FALSE)}
 
 \item{gene}{logical, whether to map by genes or transcripts (default is FALSE).
 if rows are genes, and easily detected as such (ENSG or ENSMUSG), it will
@@ -22,7 +27,7 @@ then it will try to use a \code{gene_id} column to map IDs to \code{column}}
 a SummarizedExperiment
 }
 \description{
-For now this just works with SummarizedExperiments
+For now this function just works with SummarizedExperiments
 with Ensembl gene or transcript IDs. See example
 of usage in tximeta vignette. For obtaining
 multiple matching IDs for each row of the SummarizedExperiment
