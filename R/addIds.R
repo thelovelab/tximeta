@@ -12,7 +12,8 @@
 #' database or of the TxDb/EnsDb is \code{fromDb=TRUE})
 #' @param fromDb logical, whether to use the TxDb/EnsDb that is associated
 #' with \code{se}. Default is FALSE, and an org package is used.
-#' Currently only implemented for transcript level (gene=FALSE)
+#' Currently only implemented for transcript level (gene=FALSE).
+#' Column names can be viewed with \code{columns(retrieveDb(se))}
 #' @param gene logical, whether to map by genes or transcripts (default is FALSE).
 #' if rows are genes, and easily detected as such (ENSG or ENSMUSG), it will
 #' automatically switch to TRUE. if rows are transcripts and \code{gene=TRUE},
