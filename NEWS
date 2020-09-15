@@ -1,46 +1,46 @@
 Changes in version 1.7.13
-* Added 'fromDb' argument to addIds() to allow IDs to be
++ Added 'fromDb' argument to addIds() to allow IDs to be
   added from the associated TxDb/EnsDb instead of the org
   package (which is used by default).
   Feature suggestion from Kristoffer Vitting-Seerup.
 
 Changes in version 1.7.12
-* Added function retrieveCDNA() that will download or load
++ Added function retrieveCDNA() that will download or load
   a cached version of the transcript sequences used for
   quantification. Note that the returned sequences are not
   ordered or matched to the rows of the SummarizedExperiment
   object. Feature suggestion from Kristoffer Vitting-Seerup.
 
 Changes in version 1.7.11
-* Added function addCDS() that will add CDS ranges for coding
++ Added function addCDS() that will add CDS ranges for coding
   transcripts (and fills in original ranges for non-coding),
   as well as a 'coding' column as a logical indicator.
   Feature suggestion from Kristoffer Vitting-Seerup.
 
 Changes in version 1.7.10
-* Added option that environmental variable TXIMETA_HUB_CACHE
++ Added option that environmental variable TXIMETA_HUB_CACHE
   can be used to set tximeta's cache location, to avoid
   prompting the user on the first run of tximeta().
 
 Changes in version 1.7.9
-* tximeta() will now pull GENCODE TxDb from AnnotationHub
++ tximeta() will now pull GENCODE TxDb from AnnotationHub
   when it is listed there (only Homo sapiens are at this
   point in time). Thanks to Leonardo Collado-Torres for
   the suggestion!
 
 Changes in version 1.7.6
-* Now summarizeToGene() will add a column tx_ids, which is a
++ Now summarizeToGene() will add a column tx_ids, which is a
   CharacterList of the transcript IDs.
 
 Changes in version 1.7.1
-* Updated to Ensembl release 100, GENCODE 34/M25.
++ Updated to Ensembl release 100, GENCODE 34/M25.
 
 Changes in version 1.6.0
-* Added PLOS Computational Biology citation! :-)
-* Added function `splitSE` to split one assay of a 
++ Added PLOS Computational Biology citation! :-)
++ Added function `splitSE` to split one assay of a 
   SummarizedExperiment into multiple assays, each containing 
   features of a given type.
-* Added a wrapper function makeDGEList() to simplify making
++ Added a wrapper function makeDGEList() to simplify making
   a DGEList for use with edgeR. See vignette for example.
 + tximeta will now make use of EnsDb created and distributed
   on AnnotationHub, unless useHub=FALSE. Also, a new function
@@ -50,7 +50,7 @@ Changes in version 1.6.0
   a custom metadata information file such as `meta_info.json`,
   which should contain a tage, `index_seq_hash`, with the SHA-256
   hash value of the reference transcripts.
-* Added `markDuplicateTxps` argument to add `hasDuplicate`
++ Added `markDuplicateTxps` argument to add `hasDuplicate`
   and `duplicates` columns to rowData of SummarizedExperiment.
   One note is that, for efficiency, this argument and
   `cleanDuplicateTxps` will now share a duplicates CharacterList
@@ -68,12 +68,12 @@ Changes in version 1.6.0
   in the GTF.
 
 Changes in version 1.5.28
-* Added function `splitSE` to split one assay of a 
++ Added function `splitSE` to split one assay of a 
   SummarizedExperiment into multiple assays, each containing 
   features of a given type.
   
 Changes in version 1.5.19
-* Added `markDuplicateTxps` argument to add `hasDuplicate`
++ Added `markDuplicateTxps` argument to add `hasDuplicate`
   and `duplicates` columns to rowData of SummarizedExperiment.
   One note is that, for efficiency, this argument and
   `cleanDuplicateTxps` will now share a duplicates CharacterList
@@ -85,7 +85,7 @@ Changes in version 1.5.19
   (equivalence classes by transcript sequence content).
 
 Changes in version 1.5.16
-* Added a wrapper function makeDGEList() to simplify making
++ Added a wrapper function makeDGEList() to simplify making
   a DGEList for use with edgeR. See vignette for example.
 
 Changes in version 1.5.11
