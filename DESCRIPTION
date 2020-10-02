@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 1.7.14
+Version: 1.7.15
 Title: Transcript Quantification Import with Automatic Metadata
 Description: Transcript quantification import from Salmon and
     alevin with automatic attachment of transcript ranges and

@@ -1,6 +1,30 @@
 #' Make and load linked transcriptomes ("linkedTxome")
 #'
-#' For now, for details please see the vignette \code{inst/script/linked.Rmd}
+#' \code{makeLinkedTxome} reads the checksum associated with a Salmon
+#' index at \code{indexDir}, and links it to key information
+#' about the transcriptome, including the \code{source}, \code{organism},
+#' \code{release}, and \code{genome} (these are custom character strings),
+#' as well as the locations (e.g. local, HTTP, or FTP) for one or more \code{fasta}
+#' files and one \code{gtf} file. \code{loadLinkedTxome} loads this
+#' information from a JSON file. See Details.
+#'
+#' \code{makeLinkedTxome} links the information about the transcriptome
+#' used for quantification in two ways:
+#' 1) the function will store a record in tximeta's cache such that
+#' future import of quantification data will automatically access and
+#' parse the GTF as if the transcriptome were one of those automatically
+#' detected by tximeta. Then all features of tximeta (e.g. summarization
+#' to gene, programmatic adding of IDs or metadata) will be available;
+#' 2) it will by default write out a JSON file
+#' that can be shared, or posted online, and which can be read by
+#' \code{loadLinkedTxome} which will store the information in tximeta's
+#' cache. This should make the full quantification-import pipeline
+#' computationally reproducible / auditable even for transcriptomes
+#' which differ from those provided by references (GENCODE, Ensembl,
+#' RefSeq).
+#' 
+#' For further details please see the "Linked transcriptomes"
+#' section of the tximeta vignette.
 #' 
 #' @param indexDir the local path to the Salmon index
 #' @param source the source of transcriptome (e.g. "GENCODE", "Ensembl", "de-novo")
