@@ -1,3 +1,6 @@
+Changes in version 1.9.2
++ Added hashes for GENCODE 36 and Ensembl 102.
+
 Changes in version 1.8.0
 + Added 'fromDb' argument to addIds() to allow IDs to be
   added from the associated TxDb/EnsDb instead of the org
