@@ -681,9 +681,9 @@ getTxDb <- function(txomeInfo, useHub=TRUE) {
     }
 
     # two cases left:
-    # 1) GENCODE source but AHub didn't work
-    # 2) Neither Ensembl or GENCODE source
-    if (!srcName %in% hubSources || !hubWorked) {
+    # 1) Neither Ensembl or GENCODE source
+    # 2) GENCODE source but AHub didn't work
+    if ((!srcName %in% hubSources) | (srcName == "GENCODE" & !hubWorked)) {
       message("building TxDb with 'GenomicFeatures' package")
       txdb <- makeTxDbFromGFF(txomeInfo$gtf)
       saveDb(
