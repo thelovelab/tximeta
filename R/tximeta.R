@@ -616,8 +616,8 @@ getTxDb <- function(txomeInfo, useHub=TRUE) {
     # Ensembl and GENCODE best case we can find database on AnnotationHub
     hubSources <- c("Ensembl","GENCODE")
     srcName <- txomeInfo$source
+    hubWorked <- FALSE
     if (srcName %in% hubSources) {
-      hubWorked <- FALSE
       ensSrc <- srcName == "Ensembl"
       dbType <- if (ensSrc) "EnsDb" else "TxDb"
       if (useHub) {
