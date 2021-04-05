@@ -189,7 +189,7 @@ NULL
 #' @importFrom Biostrings readDNAStringSet %in%
 #' @importFrom tibble tibble
 #' @importFrom GenomeInfoDb Seqinfo genome<- seqlengths seqinfo seqinfo<- seqlevels
-#' @importFrom rappdirs user_cache_dir
+#' @importFrom tools R_user_dir
 #' @importFrom utils menu packageVersion read.csv read.delim head
 #' @importFrom methods is as
 #'
