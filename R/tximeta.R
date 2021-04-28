@@ -663,6 +663,8 @@ getTxDb <- function(txomeInfo, useHub=TRUE) {
               )
             })
           } else {
+            message("NOTE: linkedTxome with source='Ensembl', ensembldb will be used to parse GTF.
+this may produce errors if the GTF is not from Ensembl, or has been modified")
             # for linkedTxome, because the GTF filename may be modified
             # we manually provide organism, genomeVersion, and version
             suppressWarnings({
