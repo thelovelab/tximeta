@@ -502,6 +502,13 @@ FASTA files, and the location of the relevant GTF file. It also
 records the checksum of the transcriptome that was computed by
 *Salmon* during the `index` step.
 
+**Source:** when creating the `linkedTxome` one must specify the 
+`source` of the transcriptome. See `?linkedTxome` for a note on 
+the implications of this text string. For canonical GENCODE or
+Ensembl transcriptomes, one can use `"GENCODE"` or `"Ensembl"`,
+but for modified transcriptomes, it is recommended to use a different
+string, e.g. `"ModifiedEnsembl"`, etc.
+
 **Multiple GTF/GFF files:** `linkedTxome` and `tximeta` do not
 currently support multiple GTF/GFF files, which is a more complicated
 case than multiple FASTA, which is supported. Currently, we recommend
