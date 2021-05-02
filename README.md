@@ -152,5 +152,5 @@ or feel free to [send us a tweet](https://twitter.com/mikelove).
 # Funding 
 
 tximeta and its maintainers have been partially supported by 
-NHGRI R01-HG009937
+NIH NHGRI R01-HG009937
 and by a CZI EOSS award.
