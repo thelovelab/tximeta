@@ -502,6 +502,13 @@ FASTA files, and the location of the relevant GTF file. It also
 records the checksum of the transcriptome that was computed by
 *Salmon* during the `index` step.
 
+**Source:** when creating the `linkedTxome` one must specify the 
+`source` of the transcriptome. See `?linkedTxome` for a note on 
+the implications of this text string. For canonical GENCODE or
+Ensembl transcriptomes, one can use `"GENCODE"` or `"Ensembl"`,
+but for modified transcriptomes, it is recommended to use a different
+string, e.g. `"ModifiedEnsembl"`, etc.
+
 **Multiple GTF/GFF files:** `linkedTxome` and `tximeta` do not
 currently support multiple GTF/GFF files, which is a more complicated
 case than multiple FASTA, which is supported. Currently, we recommend
@@ -727,6 +734,15 @@ metadata. ARMOR stands for
 ``An Automated Reproducible MOdular Workflow for Preprocessing
 and Differential Analysis of RNA-seq Data'' and is described in more
 detail in the article by @Orjuelag2019.
+
+# Default BiocFileCahce Caching Location Update
+
+*tximeta* makes use of the default BiocFileCache location, unless
+otherwise specified by the user. As of BiocFileCache version > 1.15.1,
+the default caching location used by BiocFileCache has changed. In
+order to continue to use the same cache (without re-downloading
+files), please follow the steps in the BiocFileCache vignette, under
+the heading **Default Caching Location Update**.
 
 # Acknowledgments
 

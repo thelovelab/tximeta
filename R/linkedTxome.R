@@ -27,7 +27,13 @@
 #' section of the tximeta vignette.
 #' 
 #' @param indexDir the local path to the Salmon index
-#' @param source the source of transcriptome (e.g. "GENCODE", "Ensembl", "de-novo")
+#' @param source the source of transcriptome (e.g. "de-novo").
+#' Note: if you specify "GENCODE" or "Ensembl", this will trigger
+#' behavior by tximeta that may not be desired: e.g. attempts to
+#' download canonical transcriptome data from AnnotationHub
+#' (unless useHub=FALSE when running tximeta) and parsing of
+#' Ensembl GTF using ensembldb (which may fail if the GTF file
+#' has been modified).
 #' @param organism organism (e.g. "Homo sapiens")
 #' @param release release number (e.g. "27")
 #' @param genome genome (e.g. "GRCh38", or "none")
@@ -106,6 +112,18 @@ makeLinkedTxome <- function(indexDir, source, organism, release,
   for (src in std.sources) {
     if (tolower(source) == tolower(src)) {
       source <- src
+    }
+  }
+  if (source %in% std.sources) {
+    if (source == "Ensembl") {
+      message("NOTE: linkedTxome with source='Ensembl', ensembldb will be used to parse GTF.
+this may produce errors if the GTF is not from Ensembl, or has been modified.
+set useHub=FALSE in tximeta to avoid download of reference txome from AnnotationHub.
+alternatively use a different string for source argument")
+    } else {
+      message("NOTE: linkedTxome with source='GENCODE', set useHub=FALSE in tximeta
+to avoid download of reference txome from AnnotationHub.
+alternatively use a different string for source argument")
     }
   }
   # a single-row tibble for the linkedTxomeTbl

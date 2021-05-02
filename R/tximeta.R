@@ -189,7 +189,7 @@ NULL
 #' @importFrom Biostrings readDNAStringSet %in%
 #' @importFrom tibble tibble
 #' @importFrom GenomeInfoDb Seqinfo genome<- seqlengths seqinfo seqinfo<- seqlevels
-#' @importFrom rappdirs user_cache_dir
+#' @importFrom tools R_user_dir
 #' @importFrom utils menu packageVersion read.csv read.delim head
 #' @importFrom methods is as
 #'
@@ -663,6 +663,8 @@ getTxDb <- function(txomeInfo, useHub=TRUE) {
               )
             })
           } else {
+            message("NOTE: linkedTxome with source='Ensembl', ensembldb will be used to parse GTF.
+this may produce errors if the GTF is not from Ensembl, or has been modified")
             # for linkedTxome, because the GTF filename may be modified
             # we manually provide organism, genomeVersion, and version
             suppressWarnings({

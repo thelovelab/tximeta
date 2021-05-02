@@ -23,7 +23,13 @@ loadLinkedTxome(jsonFile)
 \arguments{
 \item{indexDir}{the local path to the Salmon index}
 
-\item{source}{the source of transcriptome (e.g. "GENCODE", "Ensembl", "de-novo")}
+\item{source}{the source of transcriptome (e.g. "de-novo").
+Note: if you specify "GENCODE" or "Ensembl", this will trigger
+behavior by tximeta that may not be desired: e.g. attempts to
+download canonical transcriptome data from AnnotationHub
+(unless useHub=FALSE when running tximeta) and parsing of
+Ensembl GTF using ensembldb (which may fail if the GTF file
+has been modified).}
 
 \item{organism}{organism (e.g. "Homo sapiens")}
 

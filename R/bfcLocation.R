@@ -57,15 +57,15 @@ setTximetaBFC <- function(dir, quiet=FALSE) {
 # not exported:
 
 # functions to read or edit the BiocFileCache location for tximeta (bfcloc)
-# this information is stored in the 'tximeta' default user_cache_dir
+# this information is stored in the 'tximeta' default R_user_dir
 # under a file 'bfcloc.json'
 bfclocFile <- function() {
-  tximetaDir <- user_cache_dir("tximeta")
+  tximetaDir <- R_user_dir("tximeta", which="config")
   file.path(tximetaDir, "bfcloc.json")
 }
 
 writeBFCLocFile <- function(bfcloc) {
-  tximetaDir <- user_cache_dir("tximeta")
+  tximetaDir <- R_user_dir("tximeta", which="config")
   if (!file.exists(tximetaDir)) dir.create(tximetaDir, recursive=TRUE)
   bfclocFile <- bfclocFile()
   write(toJSON(bfcloc, pretty=TRUE), file=bfclocFile)
@@ -79,7 +79,7 @@ readBFCLocFile <- function(bfclocFile) {
 # the logic here depends on whether a location has been set before,
 # and whether tximport is being run interactively or not
 getBFCLoc <- function() {
-  defaultDir <- user_cache_dir(appname="BiocFileCache")
+  defaultDir <- R_user_dir("BiocFileCache", which="cache")
 
   prompt <- paste("",
   "tximeta needs a BiocFileCache directory to access and save TxDb objects.",

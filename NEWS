@@ -1,3 +1,7 @@
+Change in version 1.9.6
++ Using tools::R_user_dir instead of rappdirs, in line with
+  changes in BiocFileCache..
+
 Changes in version 1.9.2
 + Added hashes for GENCODE 36 and Ensembl 102.
 
