@@ -148,3 +148,9 @@ thoughts on next steps at the end of the document.
 We'd love to hear your feedback. Please file an 
 [Issue on GitHub](https://github.com/mikelove/tximeta/issues),
 or feel free to [send us a tweet](https://twitter.com/mikelove).
+
+# Funding 
+
+tximeta and its maintainers have been partially supported by 
+NHGRI R01-HG009937
+and by a CZI EOSS award.

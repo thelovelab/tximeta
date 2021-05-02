@@ -10,7 +10,10 @@ Authors@R: c(
     person("Michael", "Love", email="michaelisaiahlove@gmail.com", role = c("aut","cre")),
     person("Charlotte", "Soneson", role = c("aut","ctb")),
     person("Peter", "Hickey", role = c("aut","ctb")),
-    person("Rob", "Patro", role = c("aut","ctb")))
+    person("Rob", "Patro", role = c("aut","ctb")),
+    person("NHGRI", role="fnd"),
+    person("CZI", role="fnd")
+    )
 Maintainer: Michael Love <michaelisaiahlove@gmail.com>
 License: GPL-2
 VignetteBuilder: knitr
