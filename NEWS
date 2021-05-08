@@ -1,6 +1,26 @@
-Change in version 1.9.6
+Changes in version 1.10.0
++ Added more tximeta() messaging about specifying the
+  'source' in linkedTxome. Essentially, this triggers
+  GTF processing behavior that users may want to avoid,
+  and so specifying a string other than "Ensembl" may be
+  preferred. Also added note to vignette.
++ Added note to vignette about alevin import with tximeta
+  where the 'tgMap' step requires gene IDs and not gene
+  symbols.
++ Added hashes for GENCODE 37 (H.s.), M26 (M.m), and
+  Ensembl 103, and for GENCODE 36 and Ensembl 102.
++ Fixed a bug around AnnotationHub pulldown when using RefSeq
+  as the source.
+* Fixed a bug where multiple parsed Ensembl GTF TxDb would be
+  added to the BiocFileCache with the same rname.
+
+Changes in version 1.9.6
 + Using tools::R_user_dir instead of rappdirs, in line with
   changes in BiocFileCache..
+
+Changes in version 1.9.5
++ Added hashes for GENCODE 37 (H.s.), M26 (M.m), and
+  Ensembl 103.
 
 Changes in version 1.9.2
 + Added hashes for GENCODE 36 and Ensembl 102.

@@ -55,8 +55,12 @@ The first step using `tximeta` is to read in the sample table, which
 will become the *column data*, `colData`, of the final object,
 a *SummarizedExperiment*. The sample table should contain all the
 information we need to identify the *Salmon* quantification
-directories. For *alevin* quantification, one should point to the
-`quants_mat.gz` file that contains the counts for all of the cells.
+directories. 
+For *alevin* quantification, one should point to the `quants_mat.gz`
+file that contains the counts for all of the cells (also, in order to
+`tximeta` to work with *alevin* quantification, it requires that
+*alevin* was run using gene IDs in the `tgMap` step and not gene
+symbols).
 
 Here we will use a *Salmon* quantification file in the
 *tximportData* package to demonstrate the usage of `tximeta`. We do

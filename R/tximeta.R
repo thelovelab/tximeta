@@ -401,7 +401,7 @@ may lead to errors in object construction, unless 'dropInfReps=TRUE'")
       rownames(assays[[i]]) <- sub("\\|.*","",rownames(assays[[i]]))
     }
   }
-  
+
   assays <- checkAssays2Txps(assays, txps)
   
   # TODO we could give a warning here if there are txps in TxDb not in index
