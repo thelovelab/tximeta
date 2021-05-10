@@ -1,4 +1,4 @@
-hashit <- function(source, organism, release, catNC=FALSE) {
+hashit <- function(source, organism, release, catNC=FALSE, ...) {
 
   if (source == "GENCODE") {
     if (organism == "Homo sapiens") {
@@ -79,14 +79,14 @@ hashit <- function(source, organism, release, catNC=FALSE) {
   stopifnot(RCurl::url.exists(gtf))
   if (catNC) {
     for (f in fasta) {
-      download.file(f, basename(f))
+      download.file(f, basename(f), ...)
     }
     system(paste("cat",paste(basename(fasta),collapse=" "),"> transcripts.fa.gz"))
     for (f in fasta) {
       system(paste("rm -f",basename(f)))
     }
   } else {
-    download.file(fasta, "transcripts.fa.gz")
+    download.file(fasta, "transcripts.fa.gz", ...)
   }
   system("gunzip transcripts.fa.gz")
   system("compute_fasta_digest --reference transcripts.fa --out hash.json")
@@ -98,19 +98,22 @@ hashit <- function(source, organism, release, catNC=FALSE) {
   message("done!")
 }
 
-i <- 37
-hashit("GENCODE", "Homo sapiens", i)
-i <- 26
-hashit("GENCODE", "Mus musculus", paste0("M",i))
+# download method
+m <- "wget"
+
+i <- 38
+hashit("GENCODE", "Homo sapiens", i, method=m)
+i <- 27
+hashit("GENCODE", "Mus musculus", paste0("M",i), method=m)
 #
-i <- 103
-hashit("Ensembl", "Homo sapiens", i)
-hashit("Ensembl", "Mus musculus", i)
-hashit("Ensembl", "Drosophila melanogaster", i)
+i <- 104
+hashit("Ensembl", "Homo sapiens", i, method=m)
+hashit("Ensembl", "Mus musculus", i, method=m)
+hashit("Ensembl", "Drosophila melanogaster", i, method=m)
 #
-hashit("Ensembl", "Homo sapiens", i, catNC=TRUE)
-hashit("Ensembl", "Mus musculus", i, catNC=TRUE)
-hashit("Ensembl", "Drosophila melanogaster", i, catNC=TRUE)
+hashit("Ensembl", "Homo sapiens", i, catNC=TRUE, method=m)
+hashit("Ensembl", "Mus musculus", i, catNC=TRUE, method=m)
+hashit("Ensembl", "Drosophila melanogaster", i, catNC=TRUE, method=m)
 #
-hashit("RefSeq", "Homo sapiens", paste0("GRCh38.p",i))
-hashit("RefSeq", "Mus musculus", paste0("GRCm38.p",i))
+hashit("RefSeq", "Homo sapiens", paste0("GRCh38.p",i), method=m)
+hashit("RefSeq", "Mus musculus", paste0("GRCm38.p",i), method=m)
