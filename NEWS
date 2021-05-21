@@ -13,7 +13,7 @@ Changes in version 1.10.0
   GENCODE 36 and Ensembl 102.
 + Fixed a bug around AnnotationHub pulldown when using RefSeq
   as the source.
-* Fixed a bug where multiple parsed Ensembl GTF TxDb would be
++ Fixed a bug where multiple parsed Ensembl GTF TxDb would be
   added to the BiocFileCache with the same rname.
 
 Changes in version 1.9.11
