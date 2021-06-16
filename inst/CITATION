@@ -11,10 +11,13 @@ citEntry(entry="article",
            as.person("Rob Patro")
            ),
          year = 2020,
+         volume = 16,
+         issue = 2,
+         pages = "e1007664"
          journal = "PLOS Computational Biology",
          doi = "10.1371/journal.pcbi.1007664",
          textVersion =
            paste("Michael I. Love, Charlotte Soneson, Peter F. Hickey, Lisa K. Johnson,",
                  "N. Tessa Pierce, Lori Shepherd, Martin Morgan, Rob Patro",
                  "Tximeta: Reference sequence checksums for provenance identification in RNA-seq",
-                 "PLOS Computational Biology" ) )
+                 "PLOS Computational Biology 16(2): e1007664" ) )
