@@ -459,10 +459,20 @@ source is not known to `tximeta`. Combinations of coding and
 non-coding human, mouse, and fruit fly *Ensembl* transcripts should be
 automatically recognized by `tximeta` and does not require making a
 *linkedTxome*. As the package is further developed, we plan to roll
-out support for all common transcriptomes, from all sources.  Below we
-demonstrate how to make a *linkedTxome* and how to share and load a
-*linkedTxome*.
+out support for all common transcriptomes, from all sources.
 
+**Note:** if you are using Salmon in alignment mode, then there is no
+Salmon index, and without the Salmon index, there is no checksum. We
+don't have a perfect solution for this yet, but you can still
+summarize transcript counts to gene with a `tx2gene` table that you
+construct manually (see `tximport` vignette for example code). 
+Just specify the arguments,
+`skipMeta=TRUE, txOut=FALSE, tx2gene=tx2gene`, 
+when calling `tximeta` and it will perform summarization to gene level
+as in `tximport`.
+
+We now demonstrate how to make a *linkedTxome* and how to share and
+load a *linkedTxome*.
 We point to a *Salmon* quantification file which was quantified
 against a transcriptome that included the coding and non-coding
 *Drosophila melanogaster* transcripts, as well as an artificial
