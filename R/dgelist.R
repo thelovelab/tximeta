@@ -17,7 +17,8 @@ makeDGEList <- function(se) {
   normMat <- assays(se)[["length"]]
   normMat <- normMat / exp(rowMeans(log(normMat)))
   o <- log(edgeR::calcNormFactors(cts/normMat)) + log(colSums(cts/normMat))
-  y <- edgeR::DGEList(cts)
+  y <- edgeR::DGEList(cts, samples=as.data.frame(colData(se)),
+                      genes=as.data.frame(rowData(se)))
   y <- edgeR::scaleOffset(y, t(t(log(normMat)) + o))
   y
 }

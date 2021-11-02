@@ -1,3 +1,4 @@
 *.sqlite
 vignettes
 inst/script/newrows.csv
+.Rproj.user
