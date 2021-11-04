@@ -29,5 +29,5 @@ biocViews: Annotation, GenomeAnnotation, DataImport, Preprocessing,
     RNASeq, SingleCell, Transcriptomics, Transcription, GeneExpression,
     FunctionalGenomics, ReproducibleResearch, ReportWriting,
     ImmunoOncology
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Encoding: UTF-8

@@ -175,7 +175,7 @@ NULL
 #' # bfc <- BiocFileCache(bfcloc)
 #' # bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 #'
-#' @importFrom SummarizedExperiment SummarizedExperiment assays assayNames colData rowRanges<- rowRanges
+#' @importFrom SummarizedExperiment SummarizedExperiment assays assayNames colData rowData rowRanges<- rowRanges
 #' @importFrom S4Vectors metadata mcols mcols<-
 #' @importFrom IRanges CharacterList LogicalList
 #' @importFrom GenomicRanges seqnames
