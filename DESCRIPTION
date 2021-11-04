@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 1.13.0
+Version: 1.13.1
 Title: Transcript Quantification Import with Automatic Metadata
 Description: Transcript quantification import from Salmon and
     alevin with automatic attachment of transcript ranges and
