@@ -1,3 +1,6 @@
+Changes in version 1.13.1
++ Commenting out vignette chunk bc upstream issue.
+
 Changes in version 1.10.0
 + Added more tximeta() messaging about specifying the
   'source' in linkedTxome. Essentially, this triggers

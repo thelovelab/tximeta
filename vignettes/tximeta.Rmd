@@ -105,7 +105,7 @@ fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaste
 gtfPath <- file.path(dir,"Drosophila_melanogaster.BDGP6.22.98.gtf.gz")
 suppressPackageStartupMessages(library(tximeta))
 makeLinkedTxome(indexDir=indexDir,
-                source="Ensembl",
+                source="LocalEnsembl",
                 organism="Drosophila melanogaster",
                 release="98",
                 genome="BDGP6.22",
@@ -318,7 +318,7 @@ know the organism and the source of the transcriptome. (This function
 currently only works for GENCODE and Ensembl gene or transcript IDs
 but could be extended to work for arbitrary sources.)
 
-```{r}
+```{r eval=FALSE}
 library(org.Dm.eg.db)
 gse <- addIds(gse, "REFSEQ", gene=TRUE)
 mcols(gse)
@@ -601,7 +601,7 @@ index to its sources, and (2) it creates a JSON file such that this
 tmp <- tempdir()
 jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
 makeLinkedTxome(indexDir=indexDir,
-                source="Ensembl", organism="Drosophila melanogaster",
+                source="LocalEnsembl", organism="Drosophila melanogaster",
                 release="98", genome="BDGP6.22",
                 fasta=fastaFTP, gtf=gtfPath,
                 jsonFile=jsonFile)
