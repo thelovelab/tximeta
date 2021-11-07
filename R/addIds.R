@@ -33,8 +33,9 @@ addIds <- function(se, column, fromDb=FALSE, gene=FALSE, ...) {
   missingMetadata(se, summarize=FALSE)
   keys <- rownames(se)
   if (!fromDb) {
-    # here a hack, for now this is just a prototype for ENSEMBL genes or txps
-    stopifnot(metadata(se)$txomeInfo$source %in% c("GENCODE","Ensembl"))
+    # works for GENCODE or Ensembl, or linkedTxomes with local GTF supplying the DB
+    allowedSourceNames <- c("GENCODE","Ensembl","LocalGENCODE","LocalEnsembl")
+    stopifnot(metadata(se)$txomeInfo$source %in% allowedSourceNames)
     # TODO probably should switch from package-based 'org.Hs.eg.db'
     # and instead obtain and load OrgDb through AnnotationHub
     dbname <- paste0("org.",

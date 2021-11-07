@@ -496,10 +496,10 @@ se <- tximeta(coldata)
 # Linked transcriptomes
 
 If the transcriptome used to generate the *Salmon* index does not
-match any transcriptomes from known sources (e.g. from combining or filtering
-known transcriptome files), there is not much that can be done to
-automatically populate the metadata during quantification
-import. However, we can facilitate the following two cases: 
+match any transcriptomes from known sources (e.g. from combining or
+filtering known transcriptome files), there is not much that can be
+done to automatically populate the metadata during quantification
+import. However, we can facilitate the following two cases:
 
 1) the transcriptome was created locally and has been linked to its
 public source(s) 
@@ -520,8 +520,9 @@ records the checksum of the transcriptome that was computed by
 `source` of the transcriptome. See `?linkedTxome` for a note on 
 the implications of this text string. For canonical GENCODE or
 Ensembl transcriptomes, one can use `"GENCODE"` or `"Ensembl"`,
-but for modified transcriptomes, it is recommended to use a different
-string, e.g. `"ModifiedEnsembl"`, etc.
+but for modified or otherwise any transcriptomes defined by a local
+database, it is recommended to use a different string:
+`"LocalGENCODE"`, `"LocalEnsembl"`.
 
 **Multiple GTF/GFF files:** `linkedTxome` and `tximeta` do not
 currently support multiple GTF/GFF files, which is a more complicated

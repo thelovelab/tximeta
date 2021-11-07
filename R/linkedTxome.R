@@ -33,7 +33,9 @@
 #' download canonical transcriptome data from AnnotationHub
 #' (unless useHub=FALSE when running tximeta) and parsing of
 #' Ensembl GTF using ensembldb (which may fail if the GTF file
-#' has been modified).
+#' has been modified). For transcriptomes that are defined by
+#' local GTF files, it is recommended to use the terms "LocalGENCODE"
+#' or "LocalEnsembl"
 #' @param organism organism (e.g. "Homo sapiens")
 #' @param release release number (e.g. "27")
 #' @param genome genome (e.g. "GRCh38", or "none")
