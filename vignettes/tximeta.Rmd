@@ -114,8 +114,11 @@ makeLinkedTxome(indexDir=indexDir,
                 write=FALSE)
 ```
 
-```{r}
+```{r message=FALSE}
 library(tximeta)
+```
+
+```{r}
 se <- tximeta(coldata)
 ```
 
@@ -318,7 +321,7 @@ know the organism and the source of the transcriptome. (This function
 currently only works for GENCODE and Ensembl gene or transcript IDs
 but could be extended to work for arbitrary sources.)
 
-```{r eval=FALSE}
+```{r}
 library(org.Dm.eg.db)
 gse <- addIds(gse, "REFSEQ", gene=TRUE)
 mcols(gse)
@@ -404,8 +407,8 @@ The following information is attached to the *SummarizedExperiment* by
 names(metadata(se))
 str(metadata(se)[["quantInfo"]])
 str(metadata(se)[["txomeInfo"]])
-metadata(se)[["tximetaInfo"]]
-metadata(se)[["txdbInfo"]]
+str(metadata(se)[["tximetaInfo"]])
+str(metadata(se)[["txdbInfo"]])
 ```
 
 # Errors connecting to a database
@@ -521,8 +524,9 @@ records the checksum of the transcriptome that was computed by
 the implications of this text string. For canonical GENCODE or
 Ensembl transcriptomes, one can use `"GENCODE"` or `"Ensembl"`,
 but for modified or otherwise any transcriptomes defined by a local
-database, it is recommended to use a different string:
-`"LocalGENCODE"`, `"LocalEnsembl"`.
+database, it is recommended to use a different string,
+`"LocalGENCODE"` or `"LocalEnsembl", which will avoid *tximeta*
+pulling canonical GENCODE or Ensembl resources from AnnotationHub.
 
 **Multiple GTF/GFF files:** `linkedTxome` and `tximeta` do not
 currently support multiple GTF/GFF files, which is a more complicated
