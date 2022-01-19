@@ -486,6 +486,9 @@ getMetaInfo <- function(file, customMetaInfo=NULL) {
     if (!file.exists(file.path(dir, auxDir))) {
       # just in case this was changed...
       jsonPath <- file.path(dir, "cmd_info.json")
+      if (!file.exists(jsonPath)) {
+        stop("metadata files are missing, tximeta requires the full Salmon output directory")
+      }
       cmd_info <- jsonlite::fromJSON(jsonPath)
       if ("auxDir" %in% names(cmd_info)) {
         auxDir <- cmd_info$auxDir
