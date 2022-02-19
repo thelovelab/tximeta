@@ -49,7 +49,7 @@ with other quantifiers see the
 <img width=600 src="diagram.png"/>
 </center>
 
-# Analysis starts with sample table
+# Tximeta import starts with sample table
 
 The first step using `tximeta` is to read in the sample table, which
 will become the *column data*, `colData`, of the final object,
@@ -338,6 +338,22 @@ suppressPackageStartupMessages(library(DESeq2))
 # expect a warning that there is only a single sample...
 suppressWarnings({dds <- DESeqDataSet(gse, ~1)})
 # ... see DESeq2 vignette
+```
+
+The *Swish* method in the *fishpond* package directly works with the
+*SummarizedExperiment* output from *tximeta*, and can perform
+differential analysis on transcript expression taking into account
+inferential replicates, e.g. bootstrap or Gibbs samples, which are
+imported and arranged by `tximeta` if these were generated during
+quantification.
+
+```{r}
+library(fishpond)
+y <- se
+# y <- scaleInfReps(y)
+# y <- labelKeep(y)
+# y <- swish(y, x="condition")
+# ... see Swish vignette in fishpond package
 ```
 
 We have a convenient wrapper function that will build a *DGEList*
