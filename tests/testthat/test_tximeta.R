@@ -158,10 +158,10 @@ test_that("tximeta can import inferential replicates", {
 
 test_that("tximeta can import alevin", {
 
-  dir <- system.file("extdata", package="tximportData")
-  files <- file.path(dir,"alevin/neurons_900_v014/alevin/quants_mat.gz")
-  file.exists(files)
-  coldata <- data.frame(files, names="neurons")
+  ## dir <- system.file("extdata", package="tximportData")
+  ## files <- file.path(dir,"alevin/neurons_900_v014/alevin/quants_mat.gz")
+  ## file.exists(files)
+  ## coldata <- data.frame(files, names="neurons")
   #se <- tximeta(coldata, type="alevin")
   #se <- tximeta(coldata, type="alevin", dropInfReps=TRUE)
   #se <- tximeta(coldata, type="alevin", dropInfReps=TRUE, skipMeta=TRUE)
