@@ -47,8 +47,10 @@
 #' This can be a local path, or an HTTP or FTP URL
 #' While the \code{fasta} argument can take a vector of length greater than one
 #' (more than one FASTA file containing transcripts used in indexing),
-#' the \code{gtf} argument has to be a single GTF/GFF file. If transcripts
-#' were added to a standard set of reference transcripts (e.g. fusion genes,
+#' the \code{gtf} argument has to be a single GTF/GFF file.
+#' This can also be a serialized GRanges object (location of a .rda or .RData
+#' file) imported with rtracklayer.
+#' If transcripts were added to a standard set of reference transcripts (e.g. fusion genes,
 #' or pathogen transcripts), it is recommended that the tximeta user would manually
 #' add these to the GTF/GFF file, and post the modified GTF/GFF publicly, such as
 #' on Zenodo. This enables consistent annotation and downstream annotation

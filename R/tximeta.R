@@ -182,14 +182,14 @@ NULL
 #' @importFrom tximport tximport summarizeToGene
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom AnnotationDbi loadDb saveDb select keys mapIds
-#' @importFrom GenomicFeatures makeTxDbFromGFF transcripts genes exonsBy cdsBy
+#' @importFrom GenomicFeatures makeTxDbFromGFF makeTxDbFromGRanges transcripts genes exonsBy cdsBy
 #' @importFrom ensembldb ensDbFromGtf EnsDb
 #' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfcadd bfccount bfcrpath
 #' @importFrom AnnotationHub AnnotationHub query dbconn dbfile
 #' @importFrom Biostrings readDNAStringSet %in%
 #' @importFrom tibble tibble
 #' @importFrom GenomeInfoDb Seqinfo genome<- seqlengths seqinfo seqinfo<- seqlevels
-#' @importFrom tools R_user_dir
+#' @importFrom tools R_user_dir file_ext
 #' @importFrom utils menu packageVersion read.csv read.delim head
 #' @importFrom methods is as
 #'
@@ -690,7 +690,13 @@ this may produce errors if the GTF is not from Ensembl, or has been modified")
     # 2) GENCODE source but AHub didn't work
     if ((!srcName %in% hubSources) | (srcName == "GENCODE" & !hubWorked)) {
       message("building TxDb with 'GenomicFeatures' package")
-      txdb <- makeTxDbFromGFF(txomeInfo$gtf)
+      # allow .rda or .RData instead of GTF
+      if (tools::file_ext(txomeInfo$gtf) %in% c("rda","RData")) {
+        txdb <- makeTxDbFromGRanges(txomeInfo$gtf)
+      } else {
+        # the typical case: parse the GTF
+        txdb <- makeTxDbFromGFF(txomeInfo$gtf)
+      }
       saveDb(
         txdb,
         file = bfcnew(bfc, rname=txdbName, ext=".sqlite")
