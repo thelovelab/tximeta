@@ -692,7 +692,7 @@ this may produce errors if the GTF is not from Ensembl, or has been modified")
       message("building TxDb with 'GenomicFeatures' package")
       # allow .rda or .RData instead of GTF
       if (tools::file_ext(txomeInfo$gtf) %in% c("rda","RData")) {
-        txdb <- makeTxDbFromGRanges(txomeInfo$gtf)
+        txdb <- makeTxDbFromGRanges(load(txomeInfo$gtf))
       } else {
         # the typical case: parse the GTF
         txdb <- makeTxDbFromGFF(txomeInfo$gtf)
