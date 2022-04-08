@@ -690,9 +690,10 @@ this may produce errors if the GTF is not from Ensembl, or has been modified")
     # 2) GENCODE source but AHub didn't work
     if ((!srcName %in% hubSources) | (srcName == "GENCODE" & !hubWorked)) {
       message("building TxDb with 'GenomicFeatures' package")
-      # allow .rda or .RData instead of GTF
-      if (tools::file_ext(txomeInfo$gtf) %in% c("rda","RData")) {
-        txdb <- makeTxDbFromGRanges(load(txomeInfo$gtf))
+      # allow .rds instead of GTF
+      if (tools::file_ext(txomeInfo$gtf) == "rds") {
+        gtf2gr <- readRDS(txomeInfo$gtf)
+        txdb <- makeTxDbFromGRanges(gtf2gr)
       } else {
         # the typical case: parse the GTF
         txdb <- makeTxDbFromGFF(txomeInfo$gtf)
