@@ -3,6 +3,7 @@ Changes in version 1.14.0
   GRanges file (a file path to a .rda or .RData file). This
   bypasses some apparent issue where makeTxDbFromGFF fails
   while makeTxDbFromGRanges works.
++ Up to GENCODE 40 (H.s.), M29 (M.m), and Ensembl 106
 
 Changes in version 1.10.0
 + Added more tximeta() messaging about specifying the

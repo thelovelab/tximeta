@@ -101,12 +101,12 @@ hashit <- function(source, organism, release, catNC=FALSE, ...) {
 # download method
 m <- "wget"
 
-i <- 39
+i <- 40
 hashit("GENCODE", "Homo sapiens", i, method=m)
-i <- 28
+i <- 29
 hashit("GENCODE", "Mus musculus", paste0("M",i), method=m)
 #
-i <- 105
+i <- 106
 hashit("Ensembl", "Homo sapiens", i, method=m)
 hashit("Ensembl", "Mus musculus", i, method=m)
 hashit("Ensembl", "Drosophila melanogaster", i, method=m)
@@ -115,5 +115,6 @@ hashit("Ensembl", "Homo sapiens", i, catNC=TRUE, method=m)
 hashit("Ensembl", "Mus musculus", i, catNC=TRUE, method=m)
 hashit("Ensembl", "Drosophila melanogaster", i, catNC=TRUE, method=m)
 #
-hashit("RefSeq", "Homo sapiens", paste0("GRCh38.p",i), method=m)
-hashit("RefSeq", "Mus musculus", paste0("GRCm38.p",i), method=m)
+# RefSeq permalink transcriptomes are rarely updated
+# hashit("RefSeq", "Homo sapiens", paste0("GRCh38.p",i), method=m)
+# hashit("RefSeq", "Mus musculus", paste0("GRCm38.p",i), method=m)
