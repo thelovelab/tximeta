@@ -38,8 +38,11 @@ retrieveDb <- function(se) {
 #'
 #' @examples
 #'
+#' \dontrun{
+#' # this example is not run because it requires access to Ensembl ftp
 #' example(tximeta)
 #' cdna <- retrieveCDNA(se)
+#' }
 #' 
 #' @export
 retrieveCDNA <- function(se, quiet=FALSE) {
