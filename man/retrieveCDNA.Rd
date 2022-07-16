@@ -24,7 +24,10 @@ already summarized to genes for example).
 }
 \examples{
 
+\dontrun{
+# this example is not run because it requires access to Ensembl ftp
 example(tximeta)
 cdna <- retrieveCDNA(se)
+}
 
 }
