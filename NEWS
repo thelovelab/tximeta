@@ -1,3 +1,6 @@
+Changes in version 1.15.2
++ Up to GENCODE 41 (H.s.), M30 (M.m), and Ensembl 107
+
 Changes in version 1.14.0
 + Allow GTF specification in linkedTxome to be a serialized
   GRanges file (a file path to a .rda or .RData file). This
