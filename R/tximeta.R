@@ -357,7 +357,7 @@ may lead to errors in object construction, unless 'dropInfReps=TRUE'")
   # Ensembl FASTA has txp version numbers,
   # but in the Ensembl GTF it is not in the txname,
   # so here we have to remove the version number to build the SummarizedExperiment
-  if (txomeInfo$source == "Ensembl") {
+  if (txomeInfo$source %in% c("Ensembl","LocalEnsembl")) {
     txId <- sub("\\..*", "", rownames(assays[["counts"]]))
     for (nm in names(assays)) {
       rownames(assays[[nm]]) <- txId
