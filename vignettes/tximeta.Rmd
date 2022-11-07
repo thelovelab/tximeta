@@ -554,6 +554,16 @@ then be linked as shown below. Feel free to contact the developers on
 the Bioconductor support site or GitHub Issue page for further details
 or feature requests.
 
+**Stringtie:** A special note for building on top of
+Stringtie-generated transcripts: it is a good idea to change gene
+identifiers, to _not_ include a period `.`, as the period will later
+be used to separate transcript versions from gene identifiers. This
+can be done before building the Salmon index, by changing periods in
+the gene identifier to an underscore. See 
+[this GitHub issue](https://github.com/mikelove/tximeta/issues/68) for details.
+
+
+
 By default, `linkedTxome` will write out a JSON file which can be
 shared with others, linking the checksum of the index with the other
 metadata, including FASTA and GTF sources. By default, it will write
