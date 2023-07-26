@@ -5,10 +5,28 @@
 \alias{summarizeToGene,SummarizedExperiment-method}
 \title{Summarize estimated quantitites to gene-level}
 \usage{
-\S4method{summarizeToGene}{SummarizedExperiment}(object, varReduce = FALSE, ...)
+\S4method{summarizeToGene}{SummarizedExperiment}(
+  object,
+  assignRanges = c("range", "abundant"),
+  varReduce = FALSE,
+  ...
+)
 }
 \arguments{
 \item{object}{a SummarizedExperiment produced by \code{tximeta}}
+
+\item{assignRanges}{\code{"range"} or \code{"abundant"}, this argument
+controls the way that the \code{rowRanges} of the output object are assigned
+(note that this argument does not affect data aggregation at all).
+The default is to just output the entire \code{range} of the gene,
+i.e. the leftmost basepair to the rightmost basepair across all isoforms.
+Alternatively, for expressed genes, one can obtain the start and end
+of the most \code{abundant} isoform (averaging over all samples).
+Non-expressed genes will have \code{range}-based positions.
+For \code{abundant}, for expressed genes,
+the name of the range-assigned \code{isoform}, \code{max_prop}
+(maximum isoform proportion), and \code{iso_prop} (numeric values for
+isoform proportions) are also returned in \code{mcols}}
 
 \item{varReduce}{whether to reduce per-sample inferential replicates
 information into a matrix of sample variances \code{variance} (default FALSE)}

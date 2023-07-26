@@ -1,5 +1,16 @@
-summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
+summarizeToGene.SummarizedExperiment <- function(object,
+                                                 assignRanges=c("range","abundant"),
+                                                 varReduce=FALSE, ...) {
 
+  # arguments:
+  # assignRanges -
+  #   "range" or "abundant", whether to return an SE
+  #   with the GRanges set to the *range* of the isoforms,
+  #   or the ranges of the most *abundant* isoform
+  # varReduce - see ?tximport
+
+  assignRanges <- match.arg(assignRanges)
+  
   missingMetadata(object, summarize=TRUE)
 
   txomeInfo <- metadata(object)$txomeInfo
@@ -10,11 +21,10 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
     tx2gene <- select(txdb, keys(txdb, "TXNAME"), "GENEID", "TXNAME")
   })
 
-  # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
   suppressWarnings({
     g <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="gene")
   })
-
+      
   # need to add seqinfo for GENCODE and RefSeq
   if (all(is.na(seqlengths(g)))) {
     seqinfo(g) <- seqinfo(object)
@@ -70,11 +80,46 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
     has.dup.list <- LogicalList(split(mcols(object)$hasDuplicate, t2g.o$GENEID))
     mcols(g)$numDupObjects <- sum(has.dup.list)
   }
+
+  # assign ranges based on most abundant isoform
+  # (for the expressed genes)
+  if (assignRanges == "abundant") {
+    stopifnot(!is.null(rowRanges(object)))
+    iso_prop <- getIsoProps(tpm=assays(object)[["abundance"]],
+                            t2g=tx2gene)
+    # order by the rowRanges of the outgoing object
+    iso_prop <- iso_prop[names(g)]
+    # compute the most abundant isoform
+    mostAbundant <- sapply(iso_prop, \(x) names(x)[which.max(x)])
+    mostAbundant <- mostAbundant[!sapply(iso_prop, \(x) sum(x) == 0)]
+    # assign all this data to mcols(g)
+    mcols(g)$isoform <- NA
+    assignIdx <- names(g) %in% names(mostAbundant)
+    assignNms <- names(g)[assignIdx]
+    mcols(g)$isoform[assignIdx] <- mostAbundant[assignNms]
+    mcols(g)$max_prop <- sapply(iso_prop, max)
+    mcols(g)$iso_prop <- NumericList(iso_prop)
+    # bring over new start and end positions for the subset
+    # of genes that have a most abundant isoform
+    txp <- rowRanges(object)
+    # if addExons has been called, here we flatten
+    # we could also return a GRangesList but this would be complex
+    if (is(txp, "GRangesList")) {
+      txp <- unlist(range(txp))
+    }
+    txp <- txp[mcols(g)$isoform[assignIdx]]
+    # assume seqnames and strand are the same
+    stopifnot(all(seqnames(g)[assignIdx] == seqnames(txp)))
+    stopifnot(all(strand(g)[assignIdx] == strand(txp)))
+    start(g)[assignIdx] <- start(txp)
+    end(g)[assignIdx] <- end(txp)
+  }
   
   metadata <- metadata(object)
   # stash countsFromAbundance value
   metadata$countsFromAbundance <- txi.gene$countsFromAbundance
   metadata$level <- "gene"
+  metadata$assignRanges <- assignRanges # how were ranges assigned
   
   gse <- SummarizedExperiment(assays=assays,
                               rowRanges=g,
@@ -96,6 +141,18 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
 #' where a method is defined that works on simple lists.
 #'
 #' @param object a SummarizedExperiment produced by \code{tximeta}
+#' @param assignRanges \code{"range"} or \code{"abundant"}, this argument
+#' controls the way that the \code{rowRanges} of the output object are assigned
+#' (note that this argument does not affect data aggregation at all).
+#' The default is to just output the entire \code{range} of the gene,
+#' i.e. the leftmost basepair to the rightmost basepair across all isoforms.
+#' Alternatively, for expressed genes, one can obtain the start and end
+#' of the most \code{abundant} isoform (averaging over all samples).
+#' Non-expressed genes will have \code{range}-based positions.
+#' For \code{abundant}, for expressed genes,
+#' the name of the range-assigned \code{isoform}, \code{max_prop}
+#' (maximum isoform proportion), and \code{iso_prop} (numeric values for
+#' isoform proportions) are also returned in \code{mcols}
 #' @param varReduce whether to reduce per-sample inferential replicates
 #' information into a matrix of sample variances \code{variance} (default FALSE)
 #' @param ... arguments passed to \code{tximport}
@@ -117,3 +174,17 @@ summarizeToGene.SummarizedExperiment <- function(object, varReduce=FALSE, ...) {
 #' @export
 setMethod("summarizeToGene", signature(object="SummarizedExperiment"),
           summarizeToGene.SummarizedExperiment)
+
+getIsoProps <- function(tpm, t2g) {
+    rownames(t2g) <- t2g[,1]
+    txId <- rownames(tpm)
+    stopifnot(all(txId %in% t2g[,1]))
+    t2g <- t2g[txId,]
+    geneId <- t2g[,2]
+    tpmGene <- rowsum(tpm, geneId)
+    tpmGeneExpanded <- tpmGene[match(geneId,rownames(tpmGene)),,drop=FALSE]
+    isoPropMat <- tpm / tpmGeneExpanded
+    isoPropMat[is.nan(isoPropMat)] <- NA
+    # want to pick an isoform even if some samples have 0 expression
+    split(rowSums(isoPropMat, na.rm=TRUE), geneId)
+}

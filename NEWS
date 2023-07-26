@@ -1,3 +1,16 @@
+Changes in version 1.19.2
++ Add argument to summarizeToGene(): `assignRanges` that takes
+  either "range" (default) or "abundant", and determines
+  the ranges that are attached to the SE (rowRanges).
+  Note that this new argument does not affect the data aggregation
+  at all (counts and abundance are summarized to gene by `tximport`).
+  The default behavior of summarizeToGene() returns ranges that
+  correspond to the `range` of the isoforms of the gene, that is the
+  leftmost basepair to the rightmost basepair of any isoform.
+  The non-default "abundant" instead returns the range of the
+  most abundant isoform in the data, averaging over samples.
+  Information about the choice of range is included in `mcols`
+
 Changes in version 1.19.1
 + Up to GENCODE 44 (H.s.), M33 (M.m), and Ensembl 110
 

@@ -177,8 +177,8 @@ NULL
 #'
 #' @importFrom SummarizedExperiment SummarizedExperiment assays assayNames colData rowData rowRanges<- rowRanges
 #' @importFrom S4Vectors metadata mcols mcols<-
-#' @importFrom IRanges CharacterList LogicalList
-#' @importFrom GenomicRanges seqnames
+#' @importFrom IRanges CharacterList LogicalList NumericList
+#' @importFrom GenomicRanges seqnames strand start end start<- end<-
 #' @importFrom tximport tximport summarizeToGene
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom AnnotationDbi loadDb saveDb select keys mapIds

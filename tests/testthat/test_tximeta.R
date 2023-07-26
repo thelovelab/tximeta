@@ -26,18 +26,22 @@ test_that("tximeta works as expected", {
   
   # check adding CDS
   library(SummarizedExperiment)
-  se2 <- addCDS(se)
+  se_cds <- addCDS(se)
   
   # check adding exons
-  se <- addExons(se)
+  se_exons <- addExons(se)
 
   # check adding CDS on exons
-  se <- addCDS(se)
+  se_cds <- addCDS(se)
 
   # check summarize to gene
   gse <- summarizeToGene(se)
   expect_error(addExons(gse), "transcript-level")
 
+  gseAbndt <- summarizeToGene(se, assignRanges="abundant")
+
+  gseAbndt <- summarizeToGene(se_exons, assignRanges="abundant")
+  
   # check adding IDs
   library(org.Dm.eg.db)
   gse <- addIds(gse, "REFSEQ", gene=TRUE)
