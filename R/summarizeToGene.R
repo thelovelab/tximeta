@@ -48,6 +48,13 @@ summarizeToGene.SummarizedExperiment <- function(object,
     if (varReduce) stop("cannot calculate inferential variance without inferential replicates")
   }
 
+  # note here about how ranges are assigned
+  if (assignRanges == "abundant") {
+    message("gene ranges assigned by isoform abundance, see `assignRanges`")
+  } else {
+    message("gene ranges assigned by total range of isoforms, see `assignRanges`")
+  }
+  
   txi.gene <- summarizeToGene(object=txi, tx2gene=tx2gene, varReduce=varReduce, ...)
   
   # put 'counts' in front to facilitate DESeqDataSet construction
@@ -89,9 +96,10 @@ summarizeToGene.SummarizedExperiment <- function(object,
                             t2g=tx2gene)
     # order by the rowRanges of the outgoing object
     iso_prop <- iso_prop[names(g)]
-    # compute the most abundant isoform
-    mostAbundant <- sapply(iso_prop, \(x) names(x)[which.max(x)])
-    mostAbundant <- mostAbundant[!sapply(iso_prop, \(x) sum(x) == 0)]
+    # remove unexpressed genes
+    expressed <- !sapply(iso_prop, \(x) all(is.nan(x)))
+    # compute the most abundant isoform of expressed genes
+    mostAbundant <- sapply(iso_prop[expressed], \(x) names(x)[which.max(x)])
     # assign all this data to mcols(g)
     mcols(g)$isoform <- NA
     assignIdx <- names(g) %in% names(mostAbundant)
@@ -186,5 +194,5 @@ getIsoProps <- function(tpm, t2g) {
     isoPropMat <- tpm / tpmGeneExpanded
     isoPropMat[is.nan(isoPropMat)] <- NA
     # want to pick an isoform even if some samples have 0 expression
-    split(rowSums(isoPropMat, na.rm=TRUE), geneId)
+    split(rowMeans(isoPropMat, na.rm=TRUE), geneId)
 }
