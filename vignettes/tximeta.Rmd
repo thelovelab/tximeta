@@ -301,8 +301,8 @@ Likewise, the *tximeta* package can make use of the cached TxDb
 database for the purpose of summarizing transcript-level
 quantifications and bias corrections to the gene-level. After
 summarization, the `rowRanges` reflect the start and end position of
-the gene, which in Bioconductor are defined by the left-most and
-right-most genomic coordinates of all the transcripts. As with the
+the gene, which in Bioconductor are defined by the leftmost and
+rightmost genomic coordinates of all the transcripts. As with the
 transcript and exons, the gene ranges are cached locally for repeated
 usage. The transcript IDs are stored as a *CharacterList* column
 `tx_ids`.
@@ -310,6 +310,17 @@ usage. The transcript IDs are stored as a *CharacterList* column
 ```{r}
 gse <- summarizeToGene(se)
 rowRanges(gse)
+```
+
+We also offer a new type of range assignment, based on the most
+abundant isoform rather than the leftmost to rightmost coordinate. See
+the `assignRanges` argument of `?summarizeToGene`. Using the most
+abundant isoform arguably will reflect more accurate genomic distances
+than the default option.
+
+```{r eval=FALSE}
+# unevaluated code chunk
+gse <- summarizeToGene(se, assignRanges="abundant")
 ```
 
 # Add different identifiers
@@ -560,7 +571,7 @@ identifiers, to _not_ include a period `.`, as the period will later
 be used to separate transcript versions from gene identifiers. This
 can be done before building the Salmon index, by changing periods in
 the gene identifier to an underscore. See 
-[this GitHub issue](https://github.com/mikelove/tximeta/issues/68) for details.
+[this GitHub issue](https://github.com/thelovelab/tximeta/issues/68) for details.
 
 
 
