@@ -1,0 +1,19 @@
+url: https://thelovelab.github.io/tximeta
+
+title: tximeta
+
+authors:
+  Michael Love:
+    href: https://mikelove.github.io
+  Charlotte Soneson
+  Peter Hickey
+  Rob Patro
+
+reference:
+  - title: "Package overview"
+    contents:
+      - tximeta-package
+  - title: "Main functions"
+    contents:
+      - tximeta
+      - starts_with("summarizeToGene")

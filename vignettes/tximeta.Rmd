@@ -162,7 +162,7 @@ transcript database occurs only once, and upon subsequent usage of
 We plan to support a wide variety of sources and organisms for
 transcriptomes with pre-computed checksums, though for now the
 software focuses on predominantly human and mouse transcriptomes 
-(see **Next steps** below for details). 
+
 The following checksums are supported in this version of `tximeta`:
 
 ```{r echo=FALSE}
@@ -814,35 +814,6 @@ and other individuals in the community:
 * Ben Johnson
 * Tim Triche
 * Kristoffer Vitting-Seerup
-
-# Next steps
-
-**Integration with GA4GH / refget API**
-
-* We are collaborating and in communication with GA4GH working groups
-  to build out functionality to perform lookup on collections of
-  transcripts, i.e. transcriptomes, provided by Ensembl. This will
-  greatly expand the applicability of `tximeta`. The current version
-  of `tximeta` relies on hashing of common transcriptomes, which are
-  stored within the package's `extdata` directory in a CSV file, or
-  on the use of *linkedTxome* for any additional transcriptomes. 
-  However, with the GA4GH / `refget` API in place, `tximeta` will
-  be able to identify and access transcriptome metadata for vastly
-  more reference transcriptomes (collections of transcripts).
-
-**Facilitate plots and summaries**
-    
-* Basic plots across samples: abundances, mapping rates, rich bias model parameters
-* Time summaries: when quantified? when imported?
-
-**Extended functionality**
-
-* Facilitate functional annotation, either with vignettes/workflow or
-  with additional functionality. E.g.: 
-  housekeeping genes, arbitrary gene sets, genes expressed in GTEx tissues
-* `liftOver` is clunky and doesn't integrate with
-  *GenomeInfoDb*. It requires user input and there's a chance to
-  mis-annotate. Ideally this should all be automated.
 
 # Session info
 
