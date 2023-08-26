@@ -5,9 +5,12 @@ title: tximeta
 authors:
   Michael Love:
     href: https://mikelove.github.io
-  Charlotte Soneson
-  Peter Hickey
-  Rob Patro
+  Charlotte Soneson:
+    href: https://csoneson.github.io/
+  Peter Hickey:
+    href: https://www.peterhickey.org/
+  Rob Patro:
+    href: https://combine-lab.github.io/
 
 reference:
   - title: "Package overview"
@@ -17,3 +20,17 @@ reference:
     contents:
       - tximeta
       - starts_with("summarizeToGene")
+  - title: "Add info"
+    contents:
+      - starts_with("add")
+  - title: "linked"
+    contents:
+      - contains("linkedTxome")
+  - title: "Retrieve info"
+    contents:
+      - starts_with("retrieve")
+  - title: "Other helpers"
+    contents:
+      - splitSE
+      - makeDGEList
+      - getTximetaBFC
