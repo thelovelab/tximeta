@@ -312,6 +312,8 @@ gse <- summarizeToGene(se)
 rowRanges(gse)
 ```
 
+## Assign ranges by abundance
+
 We also offer a new type of range assignment, based on the most
 abundant isoform rather than the leftmost to rightmost coordinate. See
 the `assignRanges` argument of `?summarizeToGene`. Using the most
@@ -321,6 +323,22 @@ than the default option.
 ```{r eval=FALSE}
 # unevaluated code chunk
 gse <- summarizeToGene(se, assignRanges="abundant")
+```
+
+For more explanation about why this may be a better choice, see the
+following tutorial chapter:
+
+<https://tidyomics.github.io/tidy-ranges-tutorial/gene-ranges-in-tximeta.html>
+
+In the below diagram, the pink feature is the set of all exons
+belonging to any isoform of the gene, such that the TSS is on the
+right side of this minus strand feature. However, the blue feature is
+the most abundant isoform (the brown features are the next most
+abundant isoforms). The pink feature is therefore not a good
+representation for the locus.
+
+```{r echo=FALSE}
+knitr::include_graphics("images/assignRanges-abundant.png")
 ```
 
 # Add different identifiers
