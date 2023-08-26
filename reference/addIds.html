@@ -22,7 +22,7 @@ on use of multiVals.'><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tximeta</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.19.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.19.5</span>
       </span>
     </div>
 
@@ -32,6 +32,9 @@ on use of multiVals.'><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/thelovelab/tximeta/" class="external-link">
@@ -128,52 +131,23 @@ then it will try to use a <code>gene_id</code> column to map IDs to <code>column
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tximet&gt; makeLinkedTxome(indexDir=indexDir, source="LocalEnsembl", organism="Drosophila melanogaster",</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tximet+                 release="98", genome="BDGP6.22", fasta=fastaFTP, gtf=gtfPath, write=FALSE)</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> linkedTxome is same as already in bfc</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> saving linkedTxome in bfc (first time)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tximet&gt; se &lt;- tximeta(coldata)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> importing quantifications</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> reading in files with read_tsv</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> reading in files with read.delim (install 'readr' package for speed up)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> found matching linked transcriptome:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [ LocalEnsembl - Drosophila melanogaster - release 98 ]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> loading existing TxDb created: 2022-01-19 16:44:14</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: GenomicFeatures</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: BiocGenerics</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: 'BiocGenerics'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from 'package:stats':</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     IQR, mad, sd, var, xtabs</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from 'package:base':</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     Filter, Find, Map, Position, Reduce, anyDuplicated, aperm, append,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     as.data.frame, basename, cbind, colnames, dirname, do.call,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     duplicated, eval, evalq, get, grep, grepl, intersect, is.unsorted,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     lapply, mapply, match, mget, order, paste, pmax, pmax.int, pmin,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     pmin.int, rank, rbind, rownames, sapply, setdiff, sort, table,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     tapply, union, unique, unsplit, which.max, which.min</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: S4Vectors</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: stats4</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: 'S4Vectors'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from 'package:utils':</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     findMatches</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from 'package:base':</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     I, expand.grid, unname</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: IRanges</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: GenomeInfoDb</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: GenomicRanges</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: AnnotationDbi</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: Biobase</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Welcome to Bioconductor</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     Vignettes contain introductory material; view with</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     'browseVignettes()'. To cite Bioconductor, see</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     'citation("Biobase")', and for packages 'citation("pkgname")'.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> loading existing transcript ranges created: 2022-01-19 16:44:14</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> building TxDb with 'GenomicFeatures' package</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Import genomic features from the file as a GRanges object ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Prepare the 'metadata' data frame ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Make the TxDb object ... </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> generating transcript ranges</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Warning: the annotation is missing some transcripts that were quantified.</span>
@@ -194,6 +168,38 @@ then it will try to use a <code>gene_id</code> column to map IDs to <code>column
 <span class="r-out co"><span class="r-pr">#&gt;</span> tximet&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tximet&gt; </span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">org.Dm.eg.db</span><span class="op">)</span>  </span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: AnnotationDbi</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: stats4</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: BiocGenerics</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: 'BiocGenerics'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from 'package:stats':</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     IQR, mad, sd, var, xtabs</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from 'package:base':</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     Filter, Find, Map, Position, Reduce, anyDuplicated, aperm, append,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     as.data.frame, basename, cbind, colnames, dirname, do.call,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     duplicated, eval, evalq, get, grep, grepl, intersect, is.unsorted,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     lapply, mapply, match, mget, order, paste, pmax, pmax.int, pmin,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     pmin.int, rank, rbind, rownames, sapply, setdiff, sort, table,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     tapply, union, unique, unsplit, which.max, which.min</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: Biobase</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Welcome to Bioconductor</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     Vignettes contain introductory material; view with</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     'browseVignettes()'. To cite Bioconductor, see</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     'citation("Biobase")', and for packages 'citation("pkgname")'.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: IRanges</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: S4Vectors</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: 'S4Vectors'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from 'package:utils':</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     findMatches</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from 'package:base':</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     I, expand.grid, unname</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">addIds</span><span class="op">(</span><span class="va">se</span>, <span class="st">"REFSEQ"</span>, gene<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> mapping to new IDs using org.Dm.eg.db</span>
@@ -211,7 +217,7 @@ then it will try to use a <code>gene_id</code> column to map IDs to <code>column
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Michael Love, Charlotte Soneson, Peter Hickey, Rob Patro, NIH NHGRI, CZI.</p>
+  <p></p><p>Developed by <a href="https://mikelove.github.io" class="external-link">Michael Love</a>, <a href="https://csoneson.github.io/" class="external-link">Charlotte Soneson</a>, <a href="https://www.peterhickey.org/" class="external-link">Peter Hickey</a>, <a href="https://combine-lab.github.io/" class="external-link">Rob Patro</a>, NIH NHGRI, CZI.</p>
 </div>
 
 <div class="pkgdown">

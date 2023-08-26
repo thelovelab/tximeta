@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tximeta</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.19.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.19.5</span>
       </span>
     </div>
 
@@ -27,6 +27,9 @@
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/thelovelab/tximeta/" class="external-link">
@@ -47,7 +50,27 @@
     </div>
 
     <table class="ref-index"><colgroup><col class="alias"><col class="title"></colgroup><tbody><tr><th colspan="2">
-          <h2 id="all-functions">All functions <a href="#all-functions" class="anchor" aria-hidden="true"></a></h2>
+          <h2 id="package-overview">Package overview <a href="#package-overview" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="tximeta-package.html">tximeta-package</a></code> </p>
+        </td>
+        <td><p>Import transcript quantification with metadata</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="main-functions">Main functions <a href="#main-functions" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="tximeta.html">tximeta()</a></code> </p>
+        </td>
+        <td><p>Import transcript quantification with metadata</p></td>
+      </tr><tr><td>
+          <p><code><a href="summarizeToGene.html">summarizeToGene(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Summarize estimated quantitites to gene-level</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="add-information-to-se">Add information to SE <a href="#add-information-to-se" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
@@ -62,19 +85,11 @@
           <p><code><a href="addIds.html">addIds()</a></code> </p>
         </td>
         <td><p>Add IDs to rowRanges of a SummarizedExperiment</p></td>
-      </tr><tr><td>
-          <p><code><a href="getTximetaBFC.html">getTximetaBFC()</a></code> <code><a href="getTximetaBFC.html">setTximetaBFC()</a></code> </p>
-        </td>
-        <td><p>Get or set the directory of the BiocFileCache used by tximeta</p></td>
-      </tr><tr><td>
-          <p><code><a href="linkedTxome.html">makeLinkedTxome()</a></code> <code><a href="linkedTxome.html">loadLinkedTxome()</a></code> </p>
-        </td>
-        <td><p>Make and load linked transcriptomes ("linkedTxome")</p></td>
-      </tr><tr><td>
-          <p><code><a href="makeDGEList.html">makeDGEList()</a></code> </p>
-        </td>
-        <td><p>Make a DGEList from tximeta output</p></td>
-      </tr><tr><td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="retrieve-information-from-se">Retrieve information from SE <a href="#retrieve-information-from-se" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
           <p><code><a href="retrieveCDNA.html">retrieveCDNA()</a></code> </p>
         </td>
         <td><p>Retrieve the cDNA transcript sequence for a SummarizedExperiment</p></td>
@@ -82,22 +97,30 @@
           <p><code><a href="retrieveDb.html">retrieveDb()</a></code> </p>
         </td>
         <td><p>Retrieve the TxDb or EnsDb associated with a SummarizedExperiment</p></td>
-      </tr><tr><td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="linkedtxome-for-custom-transcriptomes">linkedTxome for custom transcriptomes <a href="#linkedtxome-for-custom-transcriptomes" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="linkedTxome.html">makeLinkedTxome()</a></code> <code><a href="linkedTxome.html">loadLinkedTxome()</a></code> </p>
+        </td>
+        <td><p>Make and load linked transcriptomes ("linkedTxome")</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="other-helpers">Other helpers <a href="#other-helpers" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
           <p><code><a href="splitSE.html">splitSE()</a></code> </p>
         </td>
         <td><p>Split SummarizedExperiment by gene categories</p></td>
       </tr><tr><td>
-          <p><code><a href="summarizeToGene.html">summarizeToGene(<i>&lt;SummarizedExperiment&gt;</i>)</a></code> </p>
+          <p><code><a href="makeDGEList.html">makeDGEList()</a></code> </p>
         </td>
-        <td><p>Summarize estimated quantitites to gene-level</p></td>
+        <td><p>Make a DGEList from tximeta output</p></td>
       </tr><tr><td>
-          <p><code><a href="tximeta-package.html">tximeta-package</a></code> </p>
+          <p><code><a href="getTximetaBFC.html">getTximetaBFC()</a></code> <code><a href="getTximetaBFC.html">setTximetaBFC()</a></code> </p>
         </td>
-        <td><p>Import transcript-level quantification data with automatic metadata</p></td>
-      </tr><tr><td>
-          <p><code><a href="tximeta.html">tximeta()</a></code> </p>
-        </td>
-        <td><p>tximeta: Transcript quantification import with automatic metadata</p></td>
+        <td><p>Get or set the directory of the BiocFileCache used by tximeta</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -107,7 +130,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Michael Love, Charlotte Soneson, Peter Hickey, Rob Patro, NIH NHGRI, CZI.</p>
+  <p></p><p>Developed by <a href="https://mikelove.github.io" class="external-link">Michael Love</a>, <a href="https://csoneson.github.io/" class="external-link">Charlotte Soneson</a>, <a href="https://www.peterhickey.org/" class="external-link">Peter Hickey</a>, <a href="https://combine-lab.github.io/" class="external-link">Rob Patro</a>, NIH NHGRI, CZI.</p>
 </div>
 
 <div class="pkgdown">

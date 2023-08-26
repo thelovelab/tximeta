@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">tximeta</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.19.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.19.5</span>
       </span>
     </div>
 
@@ -48,6 +48,9 @@
 </li>
 <li>
   <a href="reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -70,80 +73,45 @@
       </header><div class="row">
   <div class="contents col-md-9">
 
-<div class="section level2">
-<h2 id="tximeta-transcript-quantification-import-with-automatic-metadata">tximeta: Transcript Quantification Import with Automatic Metadata<a class="anchor" aria-label="anchor" href="#tximeta-transcript-quantification-import-with-automatic-metadata"></a>
-</h2>
-<p>For a reference and citation for <code>tximeta</code>:</p>
-<blockquote><p>Michael I. Love, Charlotte Soneson, Peter F. Hickey, Lisa K. Johnson, N. Tessa Pierce, Lori Shepherd, Martin Morgan, Rob Patro. “Tximeta: reference sequence checksums for provenance identification in RNA-seq” <em>PLOS Computational Biology</em> (2020) <a href="https://doi.org/10.1371/journal.pcbi.1007664" class="external-link">doi: 10.1371/journal.pcbi.1007664</a></p></blockquote>
-</div>
 <div class="section level1">
-<div class="page-header"><h1 id="idea-in-diagram">Idea in diagram<a class="anchor" aria-label="anchor" href="#idea-in-diagram"></a>
+<div class="page-header"><h1 id="tximeta-">tximeta <img id="tximeta_logo" src="reference/figures/tximeta.png" align="right" width="125"><a class="anchor" aria-label="anchor" href="#tximeta-"></a>
 </h1></div>
-<p><img src="articles/diagram.png"></p>
-<p>Quantification methods <em>Salmon</em> and <em>Alevin</em> propogate a <em>hashed checksum</em> of the transcriptome sequence into the index and quantification directories. The signature is a SHA256 hash of the transcriptome cDNA sequence, excluding transcript identifiers (this may change going forward, to enable coordination with larger efforts at data-driven identifiers for collections of sequences, see the last section of vignette for details).</p>
-<p>Following quantification, and even performed by a different analyst or at a different institute, when importing quantifications into R/Bioconductor, <code>tximeta</code> checks a local database of known transcriptome checksums (see the vignette for up-to-date list), and upon finding a match, automatically adds annotation and metadata to the quantifications, returning a <code>SummarizedExperiment</code> object. Examples of metadata include transcript locations, transcript and genome source and version, appropriate chromosome lengths, etc. This ensures computational reproducibility by attaching critical annotation information to the data object, such that exact quantifications can be reproduced from raw data (all software versions are also attached to the data object).</p>
-<p>Other quantifiers can also be used as long as these alternative tools are wrapped in workflows that include metadata information JSON files along with each quantification file, storing the reference transcript checksum. See vignette for details, and the <code>customMetaInfo</code> argument details in <code><a href="reference/tximeta.html">?tximeta</a></code>.</p>
+<p><a href="https://github.com/thelovelab/tximeta/actions/workflows/check-bioc.yml" class="external-link"><img src="https://github.com/thelovelab/tximeta/actions/workflows/check-bioc.yml/badge.svg" alt="R build status"></a></p>
 </div>
 <div class="section level1">
-<h1 id="idea-in-text">Idea in text<a class="anchor" aria-label="anchor" href="#idea-in-text"></a>
+<h1 id="automatic-metadata-for-rna-seq">Automatic metadata for RNA-seq<a class="anchor" aria-label="anchor" href="#automatic-metadata-for-rna-seq"></a>
 </h1>
-<p><code>tximeta</code> performs numerous annotation and metadata gathering tasks on behalf of users during the import of transcript quantifications from <em>Salmon</em> or <em>Alevin</em> into R/Bioconductor. The goal is to provide something similar to the experience of <code>GEOquery</code>, which downloaded microarray expression data from NCBI GEO and simultaneously brought along associated pieces of metadata. Doing this automatically helps to prevent costly bioinformatic errors. To use <code>tximeta</code>, all one needs is the <code>quant</code> directory output from <em>Salmon</em> or <em>Alevin</em>.</p>
-<p>The key idea within <code>tximeta</code> is to store a <em>hashed checksum</em> of the transcriptome sequence itself using the SHA256 hash, computed and stored by the <code>index</code> and <code>quant</code> functions of <em>Salmon</em> and <em>Alevin</em>. This checksum acts as the identifying information for later building out rich annotations and metadata in the background, on behalf of the user. This should greatly facilitate genomic workflows, where the user can immediately begin overlapping their transcriptomic data with other genomic datasets, e.g. epigenetic tracks such as ChIP or methylation, as the data has been embedded within an organism and genome context, including the proper genome version. We seek to reduce wasted time of bioinformatic analysts, prevent costly bioinformatic mistakes, and promote computational reproducibility by avoiding situations of annotation and metadata ambiguity, when files are shared publicly or among collaborators but critical details go missing.</p>
+<p><em>tximeta</em> provides a set of functions for conveniently working with metadata for transcript quantification data in Bioconductor. The <code><a href="reference/tximeta.html">tximeta()</a></code> function imports quantification data from <em>Salmon</em> or other quantifiers, and returns a <a href="https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html#anatomy-of-a-summarizedexperiment" class="external-link">SummarizedExperiment</a> object.</p>
+<p>If <code><a href="reference/tximeta.html">tximeta()</a></code> recognizes the reference transcripts used for quantification, it will automatically download relevant information about the location of the transcripts in the correct genome. <em>These actions happen in the background without requiring any extra effort or information from the user.</em></p>
+<p>This metadata is attached to the <em>SummarizedExperiment</em> in the <code>metadata()</code> and <code>rowRanges()</code> slots.</p>
+<p>For a list of the reference transcriptomes supported by <code><a href="reference/tximeta.html">tximeta()</a></code>, see the “Pre-computed checksums” section of the vignette in the <code>Get started</code> tab.</p>
+<p>Further steps are also facilitated, e.g. <code>summarizeToGene()</code>, <code><a href="reference/addIds.html">addIds()</a></code>, or even <code><a href="reference/retrieveCDNA.html">retrieveCDNA()</a></code> (the transcripts used for quantification) or <code><a href="reference/retrieveDb.html">retrieveDb()</a></code> (the correct <em>TxDb</em> or <em>EnsDb</em> to match the quantification data).</p>
 </div>
 <div class="section level1">
-<h1 id="do-i-have-to-use-r">Do I have to use R?<a class="anchor" aria-label="anchor" href="#do-i-have-to-use-r"></a>
+<h1 id="how-it-works">How it works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
 </h1>
-<p>Much of the power of <code>tximeta</code> leverages the rich data objects, annotation resources, and genomic range manipulation methods of the Bioconductor project, which is built on the R programming environment. However, it is possible to wrap up the relevant <code>tximeta</code> commands into an R script which can be called from command line, using <a href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/Rscript.html" class="external-link">Rscript</a>. This will create a <code>SummarizedExperiment</code> object with relevant metadata, then deconstruct the object and print its contents into multiple files. A simple example of such a script is:</p>
-<pre class="{r}"><code><span><span class="va">coldata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="st">"coldata.csv"</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/mikelove/tximeta" class="external-link">tximeta</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span></span>
-<span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tximeta.html">tximeta</a></span><span class="op">(</span><span class="va">coldata</span><span class="op">)</span></span>
-<span><span class="co"># write out the assay data</span></span>
-<span><span class="kw">for</span> <span class="op">(</span><span class="va">a</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assayNames</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assays</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">[[</span><span class="va">a</span><span class="op">]</span><span class="op">]</span>, file<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">a</span>,<span class="st">".csv"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="co"># write out the genomic ranges to BED file</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">rtracklayer</span><span class="op">)</span></span>
-<span><span class="fu">export</span><span class="op">(</span><span class="fu">rowRanges</span><span class="op">(</span><span class="va">se</span><span class="op">)</span>, con<span class="op">=</span><span class="st">"rowRanges.bed"</span><span class="op">)</span></span>
-<span><span class="co"># write out metadata about genomic ranges</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">seqinfo</span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">)</span>, file<span class="op">=</span><span class="st">"seqInfo.csv"</span><span class="op">)</span></span>
-<span><span class="co"># write out metadata about the transcriptome</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="fu">metadata</span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">$</span><span class="va">txomeInfo</span><span class="op">)</span>, file<span class="op">=</span><span class="st">"txomeInfo.csv"</span><span class="op">)</span></span></code></pre>
-<p>This script could be run with the following command line call:</p>
-<pre><code>Rscript tximeta.R</code></pre>
+<p>The key idea behind <em>tximeta</em> is that <em>Salmon</em> propagates a hash value summarizing the reference transcripts into each quantification directory it outputs. <em>tximeta</em> can be used with other tools as long as the <a href="https://github.com/COMBINE-lab/FastaDigest" class="external-link">hash of the transcripts</a> is also included in the output directories.</p>
+<p><img src="reference/figures/diagram.png"></p>
 </div>
 <div class="section level1">
-<h1 id="where-the-transcript-databases-are-stored">Where the transcript databases are stored<a class="anchor" aria-label="anchor" href="#where-the-transcript-databases-are-stored"></a>
+<h1 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
 </h1>
-<p><code>tximeta</code> makes use of the Bioconductor <em>TxDb</em> object, which can be saved and re-loaded from an <code>sqlite</code> file. These are saved in a specific location using the <em>BiocFileCache</em> package. Since these <em>TxDb</em> saved objects (sqlite databases) can be ~100 Mb, we want to make sure the user is OK with these being saved to a given location. Also we want to allow for the situation that multiple users share a <em>BiocFileCache</em> location, such that any <em>TxDb</em> / <em>EnsDb</em> objects or <em>linkedTxome</em> information can be shared, reducing unnecessary downloads or emails asking about the provenance of the transcriptome for a given set of quantification files.</p>
-<p>In order to allow that multiple users can read and write to the same location, one should set the BiocFileCache directory to have group write permissions (g+w). For use of <em>tximeta</em> across multiple groups, it is recommended to create a new UNIX group that encompasses multiple groups and assign the <em>tximeta</em> BiocFileCache location to this new group.</p>
-<p>We use the following logic to specify the location of the <em>BiocFileCache</em> used by <code>tximeta</code>:</p>
-<ul>
-<li>If run <strong>non-interactively</strong>, <code>tximeta</code> uses a temporary directory.</li>
-<li>If run <strong>interactively</strong>, and a location has not been previously saved, the user is prompted if she wants to use (1) the default directory or a (2) temporary directory.<ul>
-<li>If (1), then use the default directory, and save this choice.</li>
-<li>If (2), then use a temporary directory for the rest of this R session, and ask again next R session.</li>
-</ul>
-</li>
-<li>The prompt above also mentions that a specific function can be used to manually set the directory at any time point, and this choice is saved.</li>
-<li>The default directory is given by <code>rappdirs::user_cache_dir("BiocFileCache")</code>.</li>
-<li>The choice itself of the BiocFileCache directory that <code>tximeta</code> should use is saved in a JSON file here <code>rappdirs::user_cache_dir("tximeta")</code>.</li>
-</ul>
-</div>
-<div class="section level1">
-<h1 id="take-a-look-at-the-example">Take a look at the example<a class="anchor" aria-label="anchor" href="#take-a-look-at-the-example"></a>
-</h1>
-<p>We have a <em>tximeta</em> vignette for how <code>tximeta</code> would look, and some thoughts on next steps at the end of the document.</p>
+<p>A reference for <em>tximeta</em> package is:</p>
+<blockquote>
+<p>Michael I. Love, Charlotte Soneson, Peter F. Hickey, Lisa K. Johnson, N. Tessa Pierce, Lori Shepherd, Martin Morgan, Rob Patro. “Tximeta: reference sequence checksums for provenance identification in RNA-seq” <em>PLOS Computational Biology</em> (2020) <a href="https://doi.org/10.1371/journal.pcbi.1007664" class="external-link">doi: 10.1371/journal.pcbi.1007664</a></p>
+</blockquote>
 </div>
 <div class="section level1">
 <h1 id="feedback">Feedback<a class="anchor" aria-label="anchor" href="#feedback"></a>
 </h1>
-<p>We’d love to hear your feedback. Please file an <a href="https://github.com/mikelove/tximeta/issues" class="external-link">Issue on GitHub</a>, or feel free to <a href="https://twitter.com/mikelove" class="external-link">send us a tweet</a>.</p>
+<p>We would love to hear your feedback. Please post to <a href="https://support.bioconductor.org" class="external-link">Bioconductor support site</a> for software usage help or post an <a href="https://github.com/mikelove/tximeta/issues" class="external-link">Issue on GitHub</a>, for software development questions.</p>
 </div>
 <div class="section level1">
 <h1 id="funding">Funding<a class="anchor" aria-label="anchor" href="#funding"></a>
 </h1>
-<p>tximeta and its maintainers have been partially supported by NIH NHGRI R01-HG009937 and by a CZI EOSS award.</p>
+<p>tximeta was developed as part of NIH NHGRI R01-HG009937.</p>
+<p>tximeta was also supported by the Chan Zuckerberg Initiative as part of the EOSS grants.</p>
+<p><img src="reference/figures/czi.png"></p>
 </div>
 
   </div>
@@ -181,10 +149,14 @@
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li>Michael Love <br><small class="roles"> Author, maintainer </small>  </li>
-<li>Charlotte Soneson <br><small class="roles"> Author, contributor </small>  </li>
-<li>Peter Hickey <br><small class="roles"> Author, contributor </small>  </li>
-<li>Rob Patro <br><small class="roles"> Author, contributor </small>  </li>
+<li>
+<a href="https://mikelove.github.io" class="external-link">Michael Love</a> <br><small class="roles"> Author, maintainer </small>  </li>
+<li>
+<a href="https://csoneson.github.io/" class="external-link">Charlotte Soneson</a> <br><small class="roles"> Author, contributor </small>  </li>
+<li>
+<a href="https://www.peterhickey.org/" class="external-link">Peter Hickey</a> <br><small class="roles"> Author, contributor </small>  </li>
+<li>
+<a href="https://combine-lab.github.io/" class="external-link">Rob Patro</a> <br><small class="roles"> Author, contributor </small>  </li>
 <li>NIH NHGRI <br><small class="roles"> Funder </small>  </li>
 <li>CZI <br><small class="roles"> Funder </small>  </li>
 </ul>
@@ -198,7 +170,7 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Michael Love, Charlotte Soneson, Peter Hickey, Rob Patro, NIH NHGRI, CZI.</p>
+<p>Developed by <a href="https://mikelove.github.io" class="external-link">Michael Love</a>, <a href="https://csoneson.github.io/" class="external-link">Charlotte Soneson</a>, <a href="https://www.peterhickey.org/" class="external-link">Peter Hickey</a>, <a href="https://combine-lab.github.io/" class="external-link">Rob Patro</a>, NIH NHGRI, CZI.</p>
 </div>
 
 <div class="pkgdown">

@@ -21,7 +21,7 @@ operations."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tximeta</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.19.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.19.5</span>
       </span>
     </div>
 
@@ -31,6 +31,9 @@ operations."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs
 </li>
 <li>
   <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/thelovelab/tximeta/" class="external-link">
@@ -107,13 +110,16 @@ operations.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tximet&gt; se &lt;- tximeta(coldata)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> importing quantifications</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> reading in files with read_tsv</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> reading in files with read.delim (install 'readr' package for speed up)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 1 </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> found matching linked transcriptome:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [ LocalEnsembl - Drosophila melanogaster - release 98 ]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> loading existing TxDb created: 2022-01-19 16:44:14</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> loading existing transcript ranges created: 2022-01-19 16:44:14</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading existing TxDb created: 2023-08-26 19:49:47</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: GenomicFeatures</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: GenomeInfoDb</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: GenomicRanges</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading existing transcript ranges created: 2023-08-26 19:49:48</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Warning: the annotation is missing some transcripts that were quantified.</span>
@@ -134,7 +140,7 @@ operations.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tximet&gt; </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tximet&gt; </span>
 <span class="r-in"><span><span class="va">edb</span> <span class="op">&lt;-</span> <span class="fu">retrieveDb</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> loading existing TxDb created: 2022-01-19 16:44:14</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading existing TxDb created: 2023-08-26 19:49:47</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -146,7 +152,7 @@ operations.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Michael Love, Charlotte Soneson, Peter Hickey, Rob Patro, NIH NHGRI, CZI.</p>
+  <p></p><p>Developed by <a href="https://mikelove.github.io" class="external-link">Michael Love</a>, <a href="https://csoneson.github.io/" class="external-link">Charlotte Soneson</a>, <a href="https://www.peterhickey.org/" class="external-link">Peter Hickey</a>, <a href="https://combine-lab.github.io/" class="external-link">Rob Patro</a>, NIH NHGRI, CZI.</p>
 </div>
 
 <div class="pkgdown">
