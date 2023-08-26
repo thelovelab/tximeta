@@ -73,9 +73,6 @@ jobs:
           mkdir /__w/_temp/Library
           echo ".libPaths('/__w/_temp/Library')" > ~/.Rprofile
 
-      - name: work around permission issue
-        run: git config --global --add safe.directory /__w/nullranges/nullranges
-
       ## Most of these steps are the same as the ones in
       ## https://github.com/r-lib/actions/blob/master/examples/check-standard.yaml
       ## If they update their steps, we will also need to update ours.
@@ -185,15 +182,6 @@ jobs:
           # BiocManager::install("BiocCheck")
         shell: Rscript {0}
 
-      - name: Try downloading data
-        run: |
-          ## Attempt to download the data needed for vignette
-          library(nullrangesData)
-          dhs <- DHSA549Hg38()
-          bins <- hg19_10kb_bins()
-          binPairs <- hg19_10kb_ctcfBoundBinPairs()
-        shell: Rscript {0}
-
       - name: Install BiocGenerics
         if:  env.has_RUnit == 'true'
         run: |
@@ -287,7 +275,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: nullranges/nullranges
+          repository: thelovelab/tximeta
           tag_with_ref: true
           tag_with_sha: true
           tags: latest

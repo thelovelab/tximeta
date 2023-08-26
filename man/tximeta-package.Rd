@@ -3,7 +3,7 @@
 \docType{package}
 \name{tximeta-package}
 \alias{tximeta-package}
-\title{Import transcript-level quantification data with automatic metadata}
+\title{Import transcript quantification with metadata}
 \description{
 The tximeta package imports abundances (TPM), estimated counts,
 and effective lengths from Salmon, alevin, or other quantification
@@ -20,10 +20,9 @@ the sources: GENCODE, Ensembl, or RefSeq.
 The main functions are:
 \itemize{
 \item \code{\link{tximeta}} - with key argument: \code{coldata}
-\item \code{\link{summarizeToGene}} - summarize quants to gene-level
+\item \code{\link{summarizeToGene,SummarizedExperiment-method}} - summarize quants to gene-level
 \item \code{\link{retrieveDb}} - retrieve the transcript database
 \item \code{\link{addIds}} - add transcript or gene ID (see \code{gene} argument)
-\item \code{\link{addExons}} - convert from GRanges to GRangesList
 }
 
 All software-related questions should be posted to the Bioconductor Support Site:
@@ -33,7 +32,7 @@ All software-related questions should be posted to the Bioconductor Support Site
 The code can be viewed at the GitHub repository,
 which also lists the contributor code of conduct:
 
-\url{https://github.com/mikelove/tximeta}
+\url{https://github.com/thelovelab/tximeta}
 }
 \references{
 \strong{tximeta} reference:

@@ -1,4 +1,4 @@
-#' Import transcript-level quantification data with automatic metadata
+#' Import transcript quantification with metadata
 #' 
 #' The tximeta package imports abundances (TPM), estimated counts,
 #' and effective lengths from Salmon, alevin, or other quantification
@@ -14,10 +14,9 @@
 #' The main functions are:
 #' \itemize{
 #' \item \code{\link{tximeta}} - with key argument: \code{coldata}
-#' \item \code{\link{summarizeToGene}} - summarize quants to gene-level
+#' \item \code{\link{summarizeToGene,SummarizedExperiment-method}} - summarize quants to gene-level
 #' \item \code{\link{retrieveDb}} - retrieve the transcript database
 #' \item \code{\link{addIds}} - add transcript or gene ID (see \code{gene} argument)
-#' \item \code{\link{addExons}} - convert from GRanges to GRangesList
 #' }
 #' 
 #' All software-related questions should be posted to the Bioconductor Support Site:
@@ -27,7 +26,7 @@
 #' The code can be viewed at the GitHub repository,
 #' which also lists the contributor code of conduct:
 #'
-#' \url{https://github.com/mikelove/tximeta}
+#' \url{https://github.com/thelovelab/tximeta}
 #' 
 #' @references
 #'
@@ -54,8 +53,8 @@
 #' @keywords package
 NULL
 
-#' tximeta: Transcript quantification import with automatic metadata
-#'
+#' Import transcript quantification with metadata
+#' 
 #' \code{tximeta} leverages the hashed checksum of the Salmon index,
 #' in addition to a number of core Bioconductor packages (GenomicFeatures,
 #' ensembldb, AnnotationHub, GenomeInfoDb, BiocFileCache) to automatically

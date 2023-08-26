@@ -2,7 +2,7 @@
 % Please edit documentation in R/tximeta.R
 \name{tximeta}
 \alias{tximeta}
-\title{tximeta: Transcript quantification import with automatic metadata}
+\title{Import transcript quantification with metadata}
 \usage{
 tximeta(
   coldata,

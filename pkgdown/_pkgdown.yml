@@ -20,15 +20,15 @@ reference:
     contents:
       - tximeta
       - starts_with("summarizeToGene")
-  - title: "Add info"
+  - title: "Add information to SE"
     contents:
       - starts_with("add")
-  - title: "linked"
-    contents:
-      - contains("linkedTxome")
-  - title: "Retrieve info"
+  - title: "Retrieve information from SE"
     contents:
       - starts_with("retrieve")
+  - title: "linkedTxome for custom transcriptomes"
+    contents:
+      - contains("linkedTxome")
   - title: "Other helpers"
     contents:
       - splitSE
