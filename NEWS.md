@@ -12,6 +12,11 @@
   most abundant isoform in the data, averaging over samples.
   Information about the choice of range is included in `mcols`
 
+# tximeta 1.19.6
+
+* Fixed genome build for mouse M26 and higher to GRCm39,
+  thanks to Charlotte Soneson.
+
 # tximeta 1.14.0
 
 * Allow GTF specification in linkedTxome to be a serialized
