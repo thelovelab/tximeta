@@ -13,7 +13,11 @@ hashit <- function(source, organism, release, catNC=FALSE, ...) {
                       release,"/gencode.v",release,".transcripts.fa.gz")
       gtf <- paste0("ftp://ftp.ebi.ac.uk/pub/databases/gencode/Gencode_mouse/release_",
                     release,"/gencode.v",release,".annotation.gtf.gz")
-      genome <- "GRCm38"
+      if (as.numeric(sub("M", "", release)) >= 26) {
+        genome <- "GRCm39"
+      } else {
+        genome <- "GRCm38"
+      }
     }
   }
   
