@@ -535,6 +535,8 @@ genome2UCSC <- function(x) {
     "hg38"
   } else if (x == "GRCm38") {
     "mm10"
+  } else if (x == "GRCm39") {
+    "mm39"
   } else {
     x
   }
