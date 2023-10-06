@@ -6,9 +6,9 @@
 \title{Import transcript quantification with metadata}
 \description{
 The tximeta package imports abundances (TPM), estimated counts,
-and effective lengths from Salmon, alevin, or other quantification
-tools, and will output a SummarizedExperiment object. For Salmon
-and alevin quantification directories, \code{tximeta} will
+and effective lengths from Salmon, alevin, piscem or other quantification
+tools, and will output a SummarizedExperiment object. For
+Salmon / alevin / piscem quantification data, \code{tximeta} will
 try to identify the correct provenance of the reference transcripts
 and automatically attach the transcript ranges to the
 SummarizedExperiment, to facilitate downstream integration with

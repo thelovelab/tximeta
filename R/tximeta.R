@@ -1,9 +1,9 @@
 #' Import transcript quantification with metadata
 #' 
 #' The tximeta package imports abundances (TPM), estimated counts,
-#' and effective lengths from Salmon, alevin, or other quantification
-#' tools, and will output a SummarizedExperiment object. For Salmon
-#' and alevin quantification directories, \code{tximeta} will
+#' and effective lengths from Salmon, alevin, piscem or other quantification
+#' tools, and will output a SummarizedExperiment object. For
+#' Salmon / alevin / piscem quantification data, \code{tximeta} will
 #' try to identify the correct provenance of the reference transcripts
 #' and automatically attach the transcript ranges to the
 #' SummarizedExperiment, to facilitate downstream integration with
@@ -194,7 +194,7 @@ NULL
 #'
 #' @export
 tximeta <- function(coldata,
-                    type="salmon",
+                    type=NULL,
                     txOut=TRUE,
                     skipMeta=FALSE,
                     skipSeqinfo=FALSE,
@@ -217,6 +217,15 @@ tximeta <- function(coldata,
     stop("the files do not exist at the location specified by 'coldata$files'")
   }
 
+  # try to autodetect piscem, if not default to salmon
+  if (is.null(type)) {
+    if (grepl(".quant$",coldata$files[1])) {
+      type <- "piscem"
+    } else {    
+      type <- "salmon" # default
+    }
+  }
+  
   if (type == "alevin") {
     if (length(files) > 1) stop("alevin import currently only supports a single experiment")
   }
@@ -232,7 +241,7 @@ tximeta <- function(coldata,
   metadata <- list(tximetaInfo=tximetaInfo)
 
   skipMetaLogic <- skipMeta |
-    ( !type %in% c("salmon","sailfish","alevin") &
+    ( !type %in% c("salmon","sailfish","alevin","piscem") &
       is.null(customMetaInfo) )
   
   if (skipMetaLogic) {
@@ -244,23 +253,35 @@ tximeta <- function(coldata,
     se <- makeUnrangedSE(txi, coldata, metadata)
     return(se)
   } else {
-    if (!txOut) stop("tximeta is designed to have transcript-level output for Salmon/Sailfish.
+    if (!txOut) stop("tximeta is designed to have transcript-level output for Salmon and piscem.
   set txOut=TRUE and use summarizeToGene for gene-level summarization")
   }
 
   if (type == "alevin") {
     metaInfo <- list(getMetaInfo(dirname(files),
+                                 type=type,
                                  customMetaInfo=customMetaInfo))
   } else {
     # get quantifier metadata from JSON files within quant dirs
     metaInfo <- lapply(files, getMetaInfo,
+                       type=type,
                        customMetaInfo=customMetaInfo)
   }
+
+  if (type != "piscem") {
+    # Salmon's SHA-256 hash of the index is called "index_seq_hash" in the meta_info.json file
+    indexSeqHash <- metaInfo[[1]]$index_seq_hash # first sample
+  } else if (type == "piscem") {
+    # piscem has the SHA-256 hash slightly differently...
+    indexSeqHash <- metaInfo[[1]]$signatures$sha256_seqs # first sample
+  }
   
-  # Salmon's SHA-256 hash of the index is called "index_seq_hash" in the meta_info.json file
-  indexSeqHash <- metaInfo[[1]]$index_seq_hash # first sample  
   if (length(files) > 1) {
-    hashes <- sapply(metaInfo, function(x) x$index_seq_hash)
+    if (type != "piscem") {
+      hashes <- sapply(metaInfo, function(x) x$index_seq_hash)
+    } else if (type == "piscem") {
+      hashes <- sapply(metaInfo, function(x) x$signatures$sha256_seqs)
+    }
     if (!all(hashes == indexSeqHash)) {
       stop("the samples do not share the same index, and cannot be imported")
     }
@@ -471,41 +492,71 @@ missingMetadata <- function(se, summarize=FALSE) {
   If (2), use a linkedTxome to provide the missing metadata and rerun tximeta"
   if (summarize) {
     msg <- paste0(msg, "
-  or use tx2gene, txOut=FALSE (and skipMeta=TRUE if Salmon)")
+  or use tx2gene, txOut=FALSE (and skipMeta=TRUE if Salmon/piscem)")
   }
   if (is.null(metadata(se)$txomeInfo)) stop(msg)
 }
 
-# read metadata files from Salmon directory
+# read metadata files from Salmon/piscem directory
 # customMetaInfo = path of the custom metadata info file
-getMetaInfo <- function(file, customMetaInfo=NULL) {
+getMetaInfo <- function(file, type, customMetaInfo=NULL) {
   dir <- dirname(file)
-  if (is.null(customMetaInfo)) {
-    auxDir <- "aux_info" # the default auxiliary information location
-    if (!file.exists(file.path(dir, auxDir))) {
-      # just in case this was changed...
-      jsonPath <- file.path(dir, "cmd_info.json")
-      if (!file.exists(jsonPath)) {
-        stop("metadata files are missing, tximeta requires the full Salmon output directory")
-      }
-      cmd_info <- jsonlite::fromJSON(jsonPath)
-      if ("auxDir" %in% names(cmd_info)) {
-        auxDir <- cmd_info$auxDir
-      }
-    }
-    # ok now we read in the metadata
-    jsonPath <- file.path(dir, auxDir, "meta_info.json")
-  } else {
+
+  # users can specify any arbitrary location for the metadata,
+  # allowing for any quantification tool to be paired with tximeta.
+  # we first deal with this case, then move to Salmon and piscem
+  if (!is.null(customMetaInfo)) {
     jsonPath <- file.path(dir, customMetaInfo)
+
+    # salmon or piscem have different metadata locations,
+    # so we handle these separately...
+  } else {
+
+    # salmon:
+    if (type == "Salmon") {
+      # the default Salmon auxiliary information location
+      auxDir <- "aux_info" 
+      if (!file.exists(file.path(dir, auxDir))) {
+        auxDir <- customAuxDir(dir, auxDir)
+      }
+      # read in the metadata
+      jsonPath <- file.path(dir, auxDir, "meta_info.json")
+
+      # piscem:
+    } else if (type == "piscem") {
+
+      # read in the metadata
+      quantFile <- basename(file)
+      metadataFile <- sub(".quant", ".meta_info.json", quantFile)
+      jsonPath <- file.path(dir, metadataFile)
+      
+    } else {
+      stop("expected type = 'salmon' or 'piscem'")
+    }
   }
   if (!file.exists(jsonPath)) {
     stop("\n\n  the quantification files exist, but the metadata files are missing.
   tximeta (and other downstream software) require the entire output directory
-  of Salmon/alevin, including the quantification files and many other files
-  that contain critical metadata. make sure to preserve the entire directory
-  for use with tximeta (and other downstream software).\n\n") 
+  of Salmon/alevin, or for piscem the metadata files to be colocated with the
+  quant files. The total output of Salmon/alevin/piscem includes files with
+  critical metadata for tximeta to work. Alternatively, you can set
+  skipMeta=TRUE or use tximport \n\n") 
   }
   fromJSON(jsonPath)
+}
+
+# Salmon allows users to change the name of the auxiliary directory
+# just in case this was changed by the user...
+customAuxDir <- function(dir, auxDir) {
+  jsonPath <- file.path(dir, "cmd_info.json")
+  if (!file.exists(jsonPath)) {
+    stop("metadata files are missing, tximeta requires the full Salmon/piscem output files")
+  }
+  cmd_info <- jsonlite::fromJSON(jsonPath)
+  if ("auxDir" %in% names(cmd_info)) {
+    auxDir <- cmd_info$auxDir
+  }
+  auxDir
 }
 
 # reshape metadata info from Salmon

@@ -11,6 +11,13 @@
   The non-default "abundant" instead returns the range of the
   most abundant isoform in the data, averaging over samples.
   Information about the choice of range is included in `mcols`
+* Added support for piscem-infer: `type="piscem"` also 
+  auto-detected from file ending.
+
+# tximeta 1.19.8
+
+* Added support for piscem-infer: `type="piscem"` also 
+  auto-detected from file ending.
 
 # tximeta 1.19.6
 

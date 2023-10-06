@@ -6,7 +6,7 @@
 \usage{
 tximeta(
   coldata,
-  type = "salmon",
+  type = NULL,
   txOut = TRUE,
   skipMeta = FALSE,
   skipSeqinfo = FALSE,
