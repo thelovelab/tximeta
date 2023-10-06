@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tximeta</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.19.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.19.9</span>
       </span>
     </div>
 
@@ -54,6 +54,11 @@
 <h2 class="page-header" data-toc-text="1.20.0" id="tximeta-1200">tximeta 1.20.0<a class="anchor" aria-label="anchor" href="#tximeta-1200"></a></h2>
 <ul><li>Add argument to summarizeToGene(): <code>assignRanges</code> that takes either “range” (default) or “abundant”, and determines the ranges that are attached to the SE (rowRanges). Note that this new argument does not affect the data aggregation at all (counts and abundance are summarized to gene by <code>tximport</code>). The default behavior of summarizeToGene() returns ranges that correspond to the <code>range</code> of the isoforms of the gene, that is the leftmost basepair to the rightmost basepair of any isoform. The non-default “abundant” instead returns the range of the most abundant isoform in the data, averaging over samples. Information about the choice of range is included in <code>mcols</code>
 </li>
+<li>Added support for piscem-infer: <code>type="piscem"</code> also auto-detected from file ending.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.19.8" id="tximeta-1198">tximeta 1.19.8<a class="anchor" aria-label="anchor" href="#tximeta-1198"></a></h2>
+<ul><li>Added support for piscem-infer: <code>type="piscem"</code> also auto-detected from file ending.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.19.6" id="tximeta-1196">tximeta 1.19.6<a class="anchor" aria-label="anchor" href="#tximeta-1196"></a></h2>
