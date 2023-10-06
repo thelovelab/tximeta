@@ -513,7 +513,7 @@ getMetaInfo <- function(file, type, customMetaInfo=NULL) {
   } else {
 
     # salmon:
-    if (type == "Salmon") {
+    if (type == "salmon") {
       # the default Salmon auxiliary information location
       auxDir <- "aux_info" 
       if (!file.exists(file.path(dir, auxDir))) {
