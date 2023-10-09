@@ -1,9 +1,9 @@
 Package: tximeta
-Version: 1.19.9
+Version: 1.19.10
 Title: Transcript Quantification Import with Automatic Metadata
 Description: Transcript quantification import from Salmon and
-    alevin with automatic attachment of transcript ranges and
-    release information, and other associated metadata. De novo
+    other quantifiers with automatic attachment of transcript ranges
+    and release information, and other associated metadata. De novo
     transcriptomes can be linked to the appropriate sources with
     linkedTxomes and shared for computational reproducibility.
 Authors@R: c(

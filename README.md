@@ -9,7 +9,12 @@ metadata for transcript quantification data in Bioconductor. The
 `tximeta()` function imports quantification data from *Salmon* or
 other quantifiers, and returns a 
 [SummarizedExperiment](https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html#anatomy-of-a-summarizedexperiment)
-object.
+object. *tximeta* works natively with 
+[Salmon](https://salmon.readthedocs.io/en/latest/),
+[alevin](https://salmon.readthedocs.io/en/latest/alevin.html),
+or [piscem-infer](https://piscem-infer.readthedocs.io/en/latest/),
+but can easily be configured to work with any transcript
+quantification tool.
 
 If `tximeta()` recognizes the reference transcripts used
 for quantification, it will automatically download relevant
@@ -31,12 +36,14 @@ quantification data).
 
 # How it works
 
-The key idea behind *tximeta* is that *Salmon* propagates a hash value
+The key idea behind *tximeta* is that *Salmon*, *alevin*, and
+*piscem-infer* propagate a hash value
 summarizing the reference transcripts into each quantification
 directory it outputs. *tximeta* can be used with other tools as long
 as the 
 [hash of the transcripts](https://github.com/COMBINE-lab/FastaDigest) 
-is also included in the output directories. 
+is also included in the output directories. See `customMetaInfo`
+argument of `tximeta()` for more details.
 
 ![](man/figures/diagram.png)
 

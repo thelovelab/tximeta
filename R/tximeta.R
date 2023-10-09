@@ -55,13 +55,11 @@ NULL
 
 #' Import transcript quantification with metadata
 #' 
-#' \code{tximeta} leverages the hashed checksum of the Salmon index,
+#' \code{tximeta} leverages the hashed checksum of the Salmon or piscem index,
 #' in addition to a number of core Bioconductor packages (GenomicFeatures,
 #' ensembldb, AnnotationHub, GenomeInfoDb, BiocFileCache) to automatically
 #' populate metadata for the user, without additional effort from the user.
-#' Note that \code{tximeta} requires that the entire output directory of Salmon
-#' or alevin is present and unmodified in order to identify the provenance of the
-#' reference transcripts.
+#' For other quantifiers see the \code{customMetaInfo} argument below.
 #'
 #' Most of the code in \code{tximeta} works to add metadata and transcript ranges
 #' when the quantification was performed with Salmon. However,

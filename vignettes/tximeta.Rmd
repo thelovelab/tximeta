@@ -10,9 +10,9 @@ output:
 abstract: >
   Tximeta performs numerous annotation and metadata gathering tasks on
   behalf of users during the import of transcript quantifications from
-  *Salmon* or *alevin* into R/Bioconductor. Metadata and transcript
-  ranges are added automatically, facilitating genomic analyses and
-  assisting in computational reproducibility.
+  *Salmon*, *alevin*, or *piscem-infer* into R/Bioconductor. Metadata 
+  and transcript ranges are added automatically, facilitating genomic 
+  analyses and assisting in computational reproducibility.
 bibliography: library.bib
 vignette: |
   %\VignetteIndexEntry{Transcript quantification import with automatic metadata}
@@ -25,7 +25,8 @@ vignette: |
 The `tximeta` package [@Love2020] extends the `tximport` package
 [@Soneson2015] for import of transcript-level quantification data into
 R/Bioconductor. It automatically adds annotation metadata when the
-RNA-seq data has been quantified with *Salmon* [@Patro2017] or for
+RNA-seq data has been quantified with *Salmon* [@Patro2017] or 
+[piscem-infer](https://piscem-infer.readthedocs.io/en/latest/), or the
 scRNA-seq data quantified with *alevin* [@Srivastava2019]. To our
 knowledge, `tximeta` is the only package for RNA-seq data import that
 can automatically identify and attach transcriptome metadata based on
@@ -34,15 +35,15 @@ For more details on these packages -- including the motivation for
 `tximeta` and description of similar work -- consult the
 **References** below.
 
-**Note:** `tximeta` requires that the **entire output directory** of
-*Salmon* / *alevin* is present and unmodified in order to identify the
-provenance of the reference transcripts. In general, it's a good idea
-to not modify or re-arrange the output directory of bioinformatic
-software as other downstream software rely on and assume a consistent
-directory structure. For sharing multiple samples, one can use, for
-example, `tar -czf` to bundle up a set of Salmon output directories,
-or to bundle one alevin output directory. For tips on using `tximeta`
-with other quantifiers see the 
+**Note:** `tximeta` requires that the **entire output** of
+*Salmon* / *piscem-infer* / *alevin* is present and unmodified in
+order to identify the provenance of the reference transcripts. In
+general, it's a good idea to not modify or re-arrange the output
+directory of bioinformatic software as other downstream software rely
+on and assume a consistent directory structure. For sharing multiple
+samples, one can use, for example, `tar -czf` to bundle up a set of
+Salmon output directories, or to bundle one alevin output
+directory. For tips on using `tximeta` with other quantifiers see the
 [other quantifiers](#other_quantifiers) section below.
 
 ```{r echo=FALSE}
