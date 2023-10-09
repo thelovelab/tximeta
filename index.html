@@ -13,8 +13,8 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Transcript Quantification Import with Automatic Metadata">
 <meta property="og:description" content="Transcript quantification import from Salmon and
-    alevin with automatic attachment of transcript ranges and
-    release information, and other associated metadata. De novo
+    other quantifiers with automatic attachment of transcript ranges
+    and release information, and other associated metadata. De novo
     transcriptomes can be linked to the appropriate sources with
     linkedTxomes and shared for computational reproducibility.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">tximeta</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.19.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.19.10</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@
 <div class="section level1">
 <h1 id="automatic-metadata-for-rna-seq">Automatic metadata for RNA-seq<a class="anchor" aria-label="anchor" href="#automatic-metadata-for-rna-seq"></a>
 </h1>
-<p><em>tximeta</em> provides a set of functions for conveniently working with metadata for transcript quantification data in Bioconductor. The <code><a href="reference/tximeta.html">tximeta()</a></code> function imports quantification data from <em>Salmon</em> or other quantifiers, and returns a <a href="https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html#anatomy-of-a-summarizedexperiment" class="external-link">SummarizedExperiment</a> object.</p>
+<p><em>tximeta</em> provides a set of functions for conveniently working with metadata for transcript quantification data in Bioconductor. The <code><a href="reference/tximeta.html">tximeta()</a></code> function imports quantification data from <em>Salmon</em> or other quantifiers, and returns a <a href="https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html#anatomy-of-a-summarizedexperiment" class="external-link">SummarizedExperiment</a> object. <em>tximeta</em> works natively with <a href="https://salmon.readthedocs.io/en/latest/" class="external-link">Salmon</a>, <a href="https://salmon.readthedocs.io/en/latest/alevin.html" class="external-link">alevin</a>, or <a href="https://piscem-infer.readthedocs.io/en/latest/" class="external-link">piscem-infer</a>, but can easily be configured to work with any transcript quantification tool.</p>
 <p>If <code><a href="reference/tximeta.html">tximeta()</a></code> recognizes the reference transcripts used for quantification, it will automatically download relevant information about the location of the transcripts in the correct genome. <em>These actions happen in the background without requiring any extra effort or information from the user.</em></p>
 <p>This metadata is attached to the <em>SummarizedExperiment</em> in the <code>metadata()</code> and <code>rowRanges()</code> slots.</p>
 <p>For a list of the reference transcriptomes supported by <code><a href="reference/tximeta.html">tximeta()</a></code>, see the “Pre-computed checksums” section of the vignette in the <code>Get started</code> tab.</p>
@@ -90,7 +90,7 @@
 <div class="section level1">
 <h1 id="how-it-works">How it works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
 </h1>
-<p>The key idea behind <em>tximeta</em> is that <em>Salmon</em> propagates a hash value summarizing the reference transcripts into each quantification directory it outputs. <em>tximeta</em> can be used with other tools as long as the <a href="https://github.com/COMBINE-lab/FastaDigest" class="external-link">hash of the transcripts</a> is also included in the output directories.</p>
+<p>The key idea behind <em>tximeta</em> is that <em>Salmon</em>, <em>alevin</em>, and <em>piscem-infer</em> propagate a hash value summarizing the reference transcripts into each quantification directory it outputs. <em>tximeta</em> can be used with other tools as long as the <a href="https://github.com/COMBINE-lab/FastaDigest" class="external-link">hash of the transcripts</a> is also included in the output directories. See <code>customMetaInfo</code> argument of <code><a href="reference/tximeta.html">tximeta()</a></code> for more details.</p>
 <p><img src="reference/figures/diagram.png"></p>
 </div>
 <div class="section level1">
