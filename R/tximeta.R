@@ -257,8 +257,8 @@ tximeta <- function(coldata,
 
   if (type == "alevin") {
     metaInfo <- list(getMetaInfo(dirname(files),
-                                 type=type,
-                                 customMetaInfo=customMetaInfo))
+                                 type = "salmon",
+                                 customMetaInfo = customMetaInfo))
   } else {
     # get quantifier metadata from JSON files within quant dirs
     metaInfo <- lapply(files, getMetaInfo,
