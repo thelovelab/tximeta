@@ -33,7 +33,9 @@ hashit <- function(source, organism, release, catNC=FALSE, ...) {
                   "GRCm38"
                 }
               } else if (organism == "Drosophila melanogaster") {
-                if (as.numeric(release) >= 103) {
+                if (as.numeric(release) >= 110) {
+                  "BDGP6.46"
+                } else if (as.numeric(release) >= 103) {
                   "BDGP6.32"
                 } else if (as.numeric(release) >= 99) {
                   "BDGP6.28"
@@ -105,12 +107,12 @@ hashit <- function(source, organism, release, catNC=FALSE, ...) {
 # download method
 m <- "wget"
 
-i <- 44
+i <- 45
 hashit("GENCODE", "Homo sapiens", i, method=m)
-i <- 33
+i <- 34
 hashit("GENCODE", "Mus musculus", paste0("M",i), method=m)
 #
-i <- 110
+i <- 111
 hashit("Ensembl", "Homo sapiens", i, method=m)
 hashit("Ensembl", "Mus musculus", i, method=m)
 hashit("Ensembl", "Drosophila melanogaster", i, method=m)
