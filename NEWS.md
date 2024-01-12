@@ -1,3 +1,7 @@
+# tximeta 1.21.2
+
+* GENCODE 44 (H.s.), M34 (M.m), and Ensembl 111
+
 # tximeta 1.20.0
 
 * Add argument to summarizeToGene(): `assignRanges` that takes
