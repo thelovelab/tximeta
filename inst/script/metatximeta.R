@@ -122,5 +122,5 @@ hashit("Ensembl", "Mus musculus", i, catNC=TRUE, method=m)
 hashit("Ensembl", "Drosophila melanogaster", i, catNC=TRUE, method=m)
 #
 # RefSeq permalink transcriptomes are rarely updated
-# hashit("RefSeq", "Homo sapiens", paste0("GRCh38.p",i), method=m)
-# hashit("RefSeq", "Mus musculus", paste0("GRCm38.p",i), method=m)
+hashit("RefSeq", "Homo sapiens", paste0("GRCh38.p",i), method=m)
+hashit("RefSeq", "Mus musculus", paste0("GRCm38.p",i), method=m)

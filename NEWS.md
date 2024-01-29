@@ -1,6 +1,7 @@
-# tximeta 1.21.2
+# tximeta 1.21.3
 
 * GENCODE 44 (H.s.), M34 (M.m), and Ensembl 111
+* RefSeq p13 for human, p6 for mouse
 
 # tximeta 1.20.0
 
