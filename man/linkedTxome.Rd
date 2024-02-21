@@ -60,7 +60,7 @@ on Zenodo. This enables consistent annotation and downstream annotation
 tasks, such as by \code{summarizeToGene}.}
 
 \item{write}{logical, should a JSON file be written out
-which documents the transcriptome checksum and metadata? (default is TRUE)}
+which documents the transcriptome digest and metadata? (default is TRUE)}
 
 \item{jsonFile}{the path to the json file for the linkedTxome}
 }
@@ -68,7 +68,7 @@ which documents the transcriptome checksum and metadata? (default is TRUE)}
 nothing, the function is run for its side effects
 }
 \description{
-\code{makeLinkedTxome} reads the checksum associated with a Salmon
+\code{makeLinkedTxome} reads the digest associated with a Salmon
 index at \code{indexDir}, and links it to key information
 about the transcriptome, including the \code{source}, \code{organism},
 \code{release}, and \code{genome} (these are custom character strings),

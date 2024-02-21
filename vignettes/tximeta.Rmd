@@ -125,10 +125,16 @@ se <- tximeta(coldata)
 
 # What happened? 
 
-`tximeta` recognized the hashed checksum of the transcriptome that the files
-were quantified against, it accessed the GTF file of the transcriptome
-source, found and attached the transcript ranges, and added the
-appropriate transcriptome and genome metadata.  A remote GTF is only
+`tximeta` recognized the computed *digest* of the transcriptome that
+the files were quantified against, it accessed the GTF file of the
+transcriptome source, found and attached the transcript ranges, and
+added the appropriate transcriptome and genome metadata.
+A *digest* is a small string of alphanumeric characters that uniquely
+identifies the collection of sequences that were used for
+quantification (it is the application of a hash function). We
+sometimes also call this value a "checksum" (in the tximeta paper).
+
+A remote GTF is only
 downloaded once, and a local or remote GTF is only parsed to build a
 *TxDb* or *EnsDb* once: if `tximeta` recognizes that it has seen this *Salmon*
 index before, it will use a cached version of the metadata and
@@ -158,13 +164,13 @@ downloading the GTF file. Again, the download/construction of a
 transcript database occurs only once, and upon subsequent usage of
 *tximeta* functions, the cached version will be used.
 
-# Pre-computed checksums
+# Pre-computed digests
 
 We plan to support a wide variety of sources and organisms for
-transcriptomes with pre-computed checksums, though for now the
+transcriptomes with pre-computed digests, though for now the
 software focuses on predominantly human and mouse transcriptomes 
 
-The following checksums are supported in this version of `tximeta`:
+The following digests are supported in this version of `tximeta`:
 
 ```{r echo=FALSE}
 dir2 <- system.file("extdata", package="tximeta")
@@ -492,11 +498,11 @@ e.g. if R gave an error when trying to connect to the TxDb associated
 with GENCODE v99 human transcripts, you should look for the `rid` of
 the entry associated with the human v99 GTF from GENCODE.
 
-# What if checksum isn't known?
+# What if digest isn't known?
 
 `tximeta` automatically imports relevant metadata when the
 transcriptome matches a known source -- *known* in the sense that it
-is in the set of pre-computed hashed checksums in `tximeta` (GENCODE,
+is in the set of pre-computed hashed digests in `tximeta` (GENCODE,
 Ensembl, and RefSeq for human and mouse). `tximeta` also facilitates the
 linking of transcriptomes used in building the *Salmon* index with
 relevant public sources, in the case that these are not part of this
@@ -511,7 +517,7 @@ automatically recognized by `tximeta` and does not require making a
 out support for all common transcriptomes, from all sources.
 
 **Note:** if you are using Salmon in alignment mode, then there is no
-Salmon index, and without the Salmon index, there is no checksum. We
+Salmon index, and without the Salmon index, there is no digest. We
 don't have a perfect solution for this yet, but you can still
 summarize transcript counts to gene with a `tx2gene` table that you
 construct manually (see `tximport` vignette for example code). 
@@ -562,7 +568,7 @@ of these cases.
 To make this quantification reproducible, we make a `linkedTxome`
 which records key information about the sources of the transcript
 FASTA files, and the location of the relevant GTF file. It also
-records the checksum of the transcriptome that was computed by
+records the digest of the transcriptome that was computed by
 *Salmon* during the `index` step.
 
 **Source:** when creating the `linkedTxome` one must specify the 
@@ -595,7 +601,7 @@ the gene identifier to an underscore. See
 
 
 By default, `linkedTxome` will write out a JSON file which can be
-shared with others, linking the checksum of the index with the other
+shared with others, linking the digest of the index with the other
 metadata, including FASTA and GTF sources. By default, it will write
 out to a file with the same name as the `indexDir`, but with a `.json`
 extension added. This can be prevented with `write=FALSE`, and the
@@ -669,7 +675,7 @@ makeLinkedTxome(indexDir=indexDir,
 ```
 
 After running `makeLinkedTxome`, the connection between this *Salmon*
-index (and its checksum) with the sources is saved for persistent
+index (and its digest) with the sources is saved for persistent
 usage. Note that because we added a single transcript of 960bp to the
 FASTA file used for quantification, `tximeta` could tell that this was
 not quantified against release 98 of the Ensembl transcripts for

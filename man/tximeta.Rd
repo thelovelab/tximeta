@@ -75,12 +75,12 @@ reference transcripts with the \code{index_seq_hash} tag
 }
 \value{
 a SummarizedExperiment with metadata on the \code{rowRanges}.
-(if the hashed checksum in the Salmon or Sailfish index does not match
+(if the hashed digest in the Salmon or Sailfish index does not match
 any known transcriptomes, or any locally saved \code{linkedTxome},
 \code{tximeta} will just return a non-ranged SummarizedExperiment)
 }
 \description{
-\code{tximeta} leverages the hashed checksum of the Salmon or piscem index,
+\code{tximeta} leverages the hashed digest of the Salmon or piscem index,
 in addition to a number of core Bioconductor packages (GenomicFeatures,
 ensembldb, AnnotationHub, GenomeInfoDb, BiocFileCache) to automatically
 populate metadata for the user, without additional effort from the user.
@@ -92,11 +92,11 @@ when the quantification was performed with Salmon. However,
 \code{tximeta} can be used with any quantification \code{type} that is supported
 by \code{\link{tximport}}, where it will return an non-ranged SummarizedExperiment.
 
-\code{tximeta} performs a lookup of the hashed checksum of the index
+\code{tximeta} performs a lookup of the hashed digest of the index
 (stored in an auxilary information directory of the Salmon output)
 against a database of known transcriptomes, which lives within the tximeta
 package and is continually updated on Bioconductor's release schedule.
-In addition, \code{tximeta} performs a lookup of the checksum against a
+In addition, \code{tximeta} performs a lookup of the digest against a
 locally stored table of \code{linkedTxome}'s (see \code{link{makeLinkedTxome}}).
 If \code{tximeta} detects a match, it will automatically populate,
 e.g. the transcript locations, the transcriptome release,

@@ -26,8 +26,9 @@ This metadata is attached to the *SummarizedExperiment* in the
 `metadata()` and `rowRanges()` slots.
 
 For a list of the reference transcriptomes supported by `tximeta()`,
-see the "Pre-computed checksums" section of the vignette in the 
-`Get started` tab.
+see the "Pre-computed digests" section of the vignette in the 
+`Get started` tab. We call the computed identifier for the reference
+transcriptome a "digest" or sometimes a "checksum".
 
 Further steps are also facilitated, e.g. `summarizeToGene()`, `addIds()`,
 or even `retrieveCDNA()` (the transcripts used for quantification) or

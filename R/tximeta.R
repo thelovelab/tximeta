@@ -55,7 +55,7 @@ NULL
 
 #' Import transcript quantification with metadata
 #' 
-#' \code{tximeta} leverages the hashed checksum of the Salmon or piscem index,
+#' \code{tximeta} leverages the hashed digest of the Salmon or piscem index,
 #' in addition to a number of core Bioconductor packages (GenomicFeatures,
 #' ensembldb, AnnotationHub, GenomeInfoDb, BiocFileCache) to automatically
 #' populate metadata for the user, without additional effort from the user.
@@ -66,11 +66,11 @@ NULL
 #' \code{tximeta} can be used with any quantification \code{type} that is supported
 #' by \code{\link{tximport}}, where it will return an non-ranged SummarizedExperiment.
 #' 
-#' \code{tximeta} performs a lookup of the hashed checksum of the index
+#' \code{tximeta} performs a lookup of the hashed digest of the index
 #' (stored in an auxilary information directory of the Salmon output)
 #' against a database of known transcriptomes, which lives within the tximeta
 #' package and is continually updated on Bioconductor's release schedule.
-#' In addition, \code{tximeta} performs a lookup of the checksum against a
+#' In addition, \code{tximeta} performs a lookup of the digest against a
 #' locally stored table of \code{linkedTxome}'s (see \code{link{makeLinkedTxome}}).
 #' If \code{tximeta} detects a match, it will automatically populate,
 #' e.g. the transcript locations, the transcriptome release,
@@ -142,7 +142,7 @@ NULL
 #' @param ... arguments passed to \code{tximport}
 #' 
 #' @return a SummarizedExperiment with metadata on the \code{rowRanges}.
-#' (if the hashed checksum in the Salmon or Sailfish index does not match
+#' (if the hashed digest in the Salmon or Sailfish index does not match
 #' any known transcriptomes, or any locally saved \code{linkedTxome},
 #' \code{tximeta} will just return a non-ranged SummarizedExperiment)
 #'
@@ -486,7 +486,7 @@ may lead to errors in object construction, unless 'dropInfReps=TRUE'")
 missingMetadata <- function(se, summarize=FALSE) {
   msg <- "use of this function requires transcriptome metadata which is missing.
   either: (1) the object was not produced by tximeta, or
-  (2) tximeta could not recognize the checksum of the transcriptome.
+  (2) tximeta could not recognize the digest of the transcriptome.
   If (2), use a linkedTxome to provide the missing metadata and rerun tximeta"
   if (summarize) {
     msg <- paste0(msg, "

@@ -1,3 +1,7 @@
+# tximeta 1.21.4
+
+* Changing language in docs to "digest" instead of "checksum".
+
 # tximeta 1.21.3
 
 * GENCODE 44 (H.s.), M34 (M.m), and Ensembl 111
