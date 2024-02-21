@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">tximeta</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.21.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.21.4</span>
       </span>
     </div>
 
@@ -84,7 +84,7 @@
 <p><em>tximeta</em> provides a set of functions for conveniently working with metadata for transcript quantification data in Bioconductor. The <code><a href="reference/tximeta.html">tximeta()</a></code> function imports quantification data from <em>Salmon</em> or other quantifiers, and returns a <a href="https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html#anatomy-of-a-summarizedexperiment" class="external-link">SummarizedExperiment</a> object. <em>tximeta</em> works natively with <a href="https://salmon.readthedocs.io/en/latest/" class="external-link">Salmon</a>, <a href="https://salmon.readthedocs.io/en/latest/alevin.html" class="external-link">alevin</a>, or <a href="https://piscem-infer.readthedocs.io/en/latest/" class="external-link">piscem-infer</a>, but can easily be configured to work with any transcript quantification tool.</p>
 <p>If <code><a href="reference/tximeta.html">tximeta()</a></code> recognizes the reference transcripts used for quantification, it will automatically download relevant information about the location of the transcripts in the correct genome. <em>These actions happen in the background without requiring any extra effort or information from the user.</em></p>
 <p>This metadata is attached to the <em>SummarizedExperiment</em> in the <code>metadata()</code> and <code>rowRanges()</code> slots.</p>
-<p>For a list of the reference transcriptomes supported by <code><a href="reference/tximeta.html">tximeta()</a></code>, see the “Pre-computed checksums” section of the vignette in the <code>Get started</code> tab.</p>
+<p>For a list of the reference transcriptomes supported by <code><a href="reference/tximeta.html">tximeta()</a></code>, see the “Pre-computed digests” section of the vignette in the <code>Get started</code> tab. We call the computed identifier for the reference transcriptome a “digest” or sometimes a “checksum”.</p>
 <p>Further steps are also facilitated, e.g. <code>summarizeToGene()</code>, <code><a href="reference/addIds.html">addIds()</a></code>, or even <code><a href="reference/retrieveCDNA.html">retrieveCDNA()</a></code> (the transcripts used for quantification) or <code><a href="reference/retrieveDb.html">retrieveDb()</a></code> (the correct <em>TxDb</em> or <em>EnsDb</em> to match the quantification data).</p>
 </div>
 <div class="section level1">
