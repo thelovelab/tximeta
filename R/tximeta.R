@@ -179,7 +179,8 @@ NULL
 #' @importFrom tximport tximport summarizeToGene
 #' @importFrom jsonlite fromJSON toJSON
 #' @importFrom AnnotationDbi loadDb saveDb select keys mapIds
-#' @importFrom GenomicFeatures makeTxDbFromGFF makeTxDbFromGRanges transcripts genes exonsBy cdsBy
+#' @importFrom GenomicFeatures transcripts genes exonsBy cdsBy
+#' @importFrom txdbmaker makeTxDbFromGFF makeTxDbFromGRanges
 #' @importFrom ensembldb ensDbFromGtf EnsDb
 #' @importFrom BiocFileCache BiocFileCache bfcquery bfcnew bfcadd bfccount bfcrpath
 #' @importFrom AnnotationHub AnnotationHub query dbconn dbfile
@@ -739,7 +740,7 @@ this may produce errors if the GTF is not from Ensembl, or has been modified")
     # 1) Neither Ensembl or GENCODE source
     # 2) GENCODE source but AHub didn't work
     if ((!srcName %in% hubSources) | (srcName == "GENCODE" & !hubWorked)) {
-      message("building TxDb with 'GenomicFeatures' package")
+      message("building TxDb with 'txdbmaker' package")
       # allow .rds instead of GTF
       if (tools::file_ext(txomeInfo$gtf) == "rds") {
         gtf2gr <- readRDS(txomeInfo$gtf)

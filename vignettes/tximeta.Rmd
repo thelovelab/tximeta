@@ -150,7 +150,7 @@ coming from the annotation source, and not easily avoided by
 `tximeta` makes use of Bioconductor packages for storing
 transcript databases as *TxDb* or *EnsDb* objects, which both are 
 connected by default to `sqlite` backends.
-For GENCODE and RefSeq GTF files, `tximeta` uses the *GenomicFeatures*
+For GENCODE and RefSeq GTF files, `tximeta` uses the *txdbmaker*
 package [@granges] to parse the GTF and build a *TxDb*. For Ensembl
 GTF files, `tximeta` will first attempt to obtain the correct *EnsDb*
 object using *AnnotationHub*. The *ensembldb* package [@ensembldb]
