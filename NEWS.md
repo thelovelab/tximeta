@@ -1,3 +1,7 @@
+# tximeta 1.23.1
+
+* GENCODE 46 (H.s.), M35 (M.m), and Ensembl 112
+
 # tximeta 1.21.4
 
 * Changing language in docs to "digest" instead of "checksum".
