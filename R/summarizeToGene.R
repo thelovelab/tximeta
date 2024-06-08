@@ -50,9 +50,11 @@ summarizeToGene.SummarizedExperiment <- function(object,
 
   # note here about how ranges are assigned
   if (assignRanges == "abundant") {
-    message("gene ranges assigned by isoform abundance, see `assignRanges`")
+    message("assignRanges='abundant': gene ranges assigned by isoform abundance
+  see details at: ?summarizeToGene,SummarizedExperiment-method")
   } else {
-    message("gene ranges assigned by total range of isoforms, see `assignRanges`")
+    message("assignRanges='range': gene ranges assigned by total range of isoforms
+  see details at: ?summarizeToGene,SummarizedExperiment-method")
   }
   
   txi.gene <- summarizeToGene(object=txi, tx2gene=tx2gene, varReduce=varReduce, ...)
