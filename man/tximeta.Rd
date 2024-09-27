@@ -14,6 +14,7 @@ tximeta(
   markDuplicateTxps = FALSE,
   cleanDuplicateTxps = FALSE,
   customMetaInfo = NULL,
+  skipFtp = FALSE,
   ...
 )
 }
@@ -70,6 +71,9 @@ files in \code{files}, there are custom metadata information
 JSON files. These should contain the SHA-256 hash of the
 reference transcripts with the \code{index_seq_hash} tag
 (see details in vignette).}
+
+\item{skipFtp}{whether to avoid \code{ftp://} in case of
+firewall, default is FALSE}
 
 \item{...}{arguments passed to \code{tximport}}
 }
