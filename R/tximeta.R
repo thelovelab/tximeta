@@ -47,11 +47,10 @@
 #'
 #' @author Michael I. Love, Charlotte Soneson, Peter Hickey, Rob Patro
 #' 
-#' @docType package
 #' @name tximeta-package
 #' @aliases tximeta-package
 #' @keywords package
-NULL
+"_PACKAGE"
 
 #' Import transcript quantification with metadata
 #' 
