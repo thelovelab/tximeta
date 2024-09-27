@@ -139,6 +139,8 @@ NULL
 #' JSON files. These should contain the SHA-256 hash of the
 #' reference transcripts with the \code{index_seq_hash} tag
 #' (see details in vignette).
+#' @param skipFtp whether to avoid \code{ftp://} in case of
+#' firewall, default is FALSE
 #' @param ... arguments passed to \code{tximport}
 #' 
 #' @return a SummarizedExperiment with metadata on the \code{rowRanges}.
@@ -201,6 +203,7 @@ tximeta <- function(coldata,
                     markDuplicateTxps=FALSE,
                     cleanDuplicateTxps=FALSE,
                     customMetaInfo=NULL,
+                    skipFtp=FALSE,
                     ...) {
 
   if (is(coldata, "vector")) {
@@ -319,7 +322,7 @@ may lead to errors in object construction, unless 'dropInfReps=TRUE'")
   }
 
   # build or load a TxDb from the gtf
-  txdb <- getTxDb(txomeInfo, useHub=useHub)
+  txdb <- getTxDb(txomeInfo, useHub=useHub, skipFtp=skipFtp)
 
   # build or load transcript ranges (alevin gets gene ranges instead)
   if (type != "alevin") {
@@ -652,7 +655,7 @@ getTxomeInfo <- function(indexSeqHash) {
 }
 
 # build or load a TxDb/EnsDb for the dataset
-getTxDb <- function(txomeInfo, useHub=TRUE) {
+getTxDb <- function(txomeInfo, useHub=TRUE, skipFtp=FALSE) {
   # TODO what if there are multiple GTF files?
   stopifnot(length(txomeInfo$gtf) == 1)
   stopifnot(txomeInfo$gtf != "")
@@ -663,6 +666,10 @@ getTxDb <- function(txomeInfo, useHub=TRUE) {
   q <- bfcquery(bfc, txdbName)
   # then filter for equality with rname
   q <- q[q$rname==txdbName,]
+
+  if (skipFtp) {
+    txomeInfo$gtf <- sub("ftp://","https://",txomeInfo$gtf)
+  }
 
   ### No TxDb was found in the BiocFilecache ###
   if (bfccount(q) == 0) {
