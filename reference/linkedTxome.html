@@ -9,7 +9,7 @@ information from a JSON file. See Details."><!-- mathjax --><script src="https:/
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -23,7 +23,7 @@ information from a JSON file. See Details."><!-- mathjax --><script src="https:/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tximeta</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.23.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.23.4</span>
       </span>
     </div>
 
@@ -40,20 +40,20 @@ information from a JSON file. See Details."><!-- mathjax --><script src="https:/
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/thelovelab/tximeta/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Make and load linked transcriptomes ("linkedTxome")</h1>
-    <small class="dont-index">Source: <a href="https://github.com/thelovelab/tximeta/blob/HEAD/R/linkedTxome.R" class="external-link"><code>R/linkedTxome.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/thelovelab/tximeta/blob/devel/R/linkedTxome.R" class="external-link"><code>R/linkedTxome.R</code></a></small>
     <div class="hidden name"><code>linkedTxome.Rd</code></div>
     </div>
 
@@ -85,11 +85,13 @@ information from a JSON file. See Details.</p>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>indexDir</dt>
+
+
+<dl><dt id="arg-indexdir">indexDir<a class="anchor" aria-label="anchor" href="#arg-indexdir"></a></dt>
 <dd><p>the local path to the Salmon index</p></dd>
 
 
-<dt>source</dt>
+<dt id="arg-source">source<a class="anchor" aria-label="anchor" href="#arg-source"></a></dt>
 <dd><p>the source of transcriptome (e.g. "de-novo").
 Note: if you specify "GENCODE" or "Ensembl", this will trigger
 behavior by tximeta that may not be desired: e.g. attempts to
@@ -103,25 +105,25 @@ version numbers from the FASTA transcript IDs to enable matching
 with the Ensembl GTF.</p></dd>
 
 
-<dt>organism</dt>
+<dt id="arg-organism">organism<a class="anchor" aria-label="anchor" href="#arg-organism"></a></dt>
 <dd><p>organism (e.g. "Homo sapiens")</p></dd>
 
 
-<dt>release</dt>
+<dt id="arg-release">release<a class="anchor" aria-label="anchor" href="#arg-release"></a></dt>
 <dd><p>release number (e.g. "27")</p></dd>
 
 
-<dt>genome</dt>
+<dt id="arg-genome">genome<a class="anchor" aria-label="anchor" href="#arg-genome"></a></dt>
 <dd><p>genome (e.g. "GRCh38", or "none")</p></dd>
 
 
-<dt>fasta</dt>
+<dt id="arg-fasta">fasta<a class="anchor" aria-label="anchor" href="#arg-fasta"></a></dt>
 <dd><p>location(s) for the FASTA transcript sequences
 (of which the transcripts used to build the index is equal or a subset).
 This can be a local path, or an HTTP or FTP URL</p></dd>
 
 
-<dt>gtf</dt>
+<dt id="arg-gtf">gtf<a class="anchor" aria-label="anchor" href="#arg-gtf"></a></dt>
 <dd><p>location for the GTF/GFF file
 (of which the transcripts used to build the index is equal or a subset).
 This can be a local path, or an HTTP or FTP URL
@@ -137,20 +139,18 @@ on Zenodo. This enables consistent annotation and downstream annotation
 tasks, such as by <code>summarizeToGene</code>.</p></dd>
 
 
-<dt>write</dt>
+<dt id="arg-write">write<a class="anchor" aria-label="anchor" href="#arg-write"></a></dt>
 <dd><p>logical, should a JSON file be written out
 which documents the transcriptome digest and metadata? (default is TRUE)</p></dd>
 
 
-<dt>jsonFile</dt>
+<dt id="arg-jsonfile">jsonFile<a class="anchor" aria-label="anchor" href="#arg-jsonfile"></a></dt>
 <dd><p>the path to the json file for the linkedTxome</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>nothing, the function is run for its side effects</p>
+    <p>nothing, the function is run for its side effects</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -220,15 +220,15 @@ section of the tximeta vignette.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 

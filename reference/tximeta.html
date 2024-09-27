@@ -7,7 +7,7 @@ For other quantifiers see the customMetaInfo argument below."><!-- mathjax --><s
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -21,7 +21,7 @@ For other quantifiers see the customMetaInfo argument below."><!-- mathjax --><s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tximeta</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.23.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.23.4</span>
       </span>
     </div>
 
@@ -38,20 +38,20 @@ For other quantifiers see the customMetaInfo argument below."><!-- mathjax --><s
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/thelovelab/tximeta/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Import transcript quantification with metadata</h1>
-    <small class="dont-index">Source: <a href="https://github.com/thelovelab/tximeta/blob/HEAD/R/tximeta.R" class="external-link"><code>R/tximeta.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/thelovelab/tximeta/blob/devel/R/tximeta.R" class="external-link"><code>R/tximeta.R</code></a></small>
     <div class="hidden name"><code>tximeta.Rd</code></div>
     </div>
 
@@ -74,24 +74,27 @@ For other quantifiers see the <code>customMetaInfo</code> argument below.</p>
 <span>  markDuplicateTxps <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  cleanDuplicateTxps <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  customMetaInfo <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  skipFtp <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>coldata</dt>
+
+
+<dl><dt id="arg-coldata">coldata<a class="anchor" aria-label="anchor" href="#arg-coldata"></a></dt>
 <dd><p>a data.frame with at least two columns (others will propogate to object):</p><ul><li><p><code>files</code> - character, paths of quantification files</p></li>
 <li><p><code>names</code> - character, sample names</p></li>
 </ul><p>if <code>coldata</code> is a vector, it is assumed to be the paths of quantification files
 and unique sample names are created</p></dd>
 
 
-<dt>type</dt>
+<dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>what quantifier was used (see <code>tximport</code>)</p></dd>
 
 
-<dt>txOut</dt>
+<dt id="arg-txout">txOut<a class="anchor" aria-label="anchor" href="#arg-txout"></a></dt>
 <dd><p>whether to output transcript-level data.
 <code>tximeta</code> is designed to have transcript-level output
 with Salmon, so default is <code>TRUE</code>,
@@ -102,27 +105,27 @@ gene level counts ignoring this argument (alevin
 produces only gene-level quantification).</p></dd>
 
 
-<dt>skipMeta</dt>
+<dt id="arg-skipmeta">skipMeta<a class="anchor" aria-label="anchor" href="#arg-skipmeta"></a></dt>
 <dd><p>whether to skip metadata generation
 (e.g. to avoid errors if not connected to internet).
 This calls <code>tximport</code> directly and so either
 <code>txOut=TRUE</code> or <code>tx2gene</code> should be specified.</p></dd>
 
 
-<dt>skipSeqinfo</dt>
+<dt id="arg-skipseqinfo">skipSeqinfo<a class="anchor" aria-label="anchor" href="#arg-skipseqinfo"></a></dt>
 <dd><p>whether to skip the addition of Seqinfo,
 which requires an internet connection to download the
 relevant chromosome information table from UCSC</p></dd>
 
 
-<dt>useHub</dt>
+<dt id="arg-usehub">useHub<a class="anchor" aria-label="anchor" href="#arg-usehub"></a></dt>
 <dd><p>whether to first attempt to download a TxDb/EnsDb
 object from AnnotationHub, rather than creating from a
 GTF file from FTP (default is TRUE). If FALSE, it will
 force <code>tximeta</code> to download and parse the GTF</p></dd>
 
 
-<dt>markDuplicateTxps</dt>
+<dt id="arg-markduplicatetxps">markDuplicateTxps<a class="anchor" aria-label="anchor" href="#arg-markduplicatetxps"></a></dt>
 <dd><p>whether to mark the status
 (<code>hasDuplicate</code>) and names of duplicate transcripts
 (<code>duplicates</code>) in the rowData of the SummarizedExperiment output.
@@ -130,14 +133,14 @@ Subsequent summarization to gene level will keep track
 of the number of transcripts sets per gene (<code>numDupSets</code>)</p></dd>
 
 
-<dt>cleanDuplicateTxps</dt>
+<dt id="arg-cleanduplicatetxps">cleanDuplicateTxps<a class="anchor" aria-label="anchor" href="#arg-cleanduplicatetxps"></a></dt>
 <dd><p>whether to try to clean
 duplicate transcripts (exact sequence duplicates) by replacing
 the transcript names that do not appear in the GTF
 with those that do appear in the GTF</p></dd>
 
 
-<dt>customMetaInfo</dt>
+<dt id="arg-custommetainfo">customMetaInfo<a class="anchor" aria-label="anchor" href="#arg-custommetainfo"></a></dt>
 <dd><p>the relative path to a custom metadata
 information JSON file, relative to the paths in <code>files</code> of
 <code>coldata</code>. For example, <code>customMetaInfo="meta_info.json"</code>
@@ -148,15 +151,18 @@ reference transcripts with the <code>index_seq_hash</code> tag
 (see details in vignette).</p></dd>
 
 
-<dt>...</dt>
+<dt id="arg-skipftp">skipFtp<a class="anchor" aria-label="anchor" href="#arg-skipftp"></a></dt>
+<dd><p>whether to avoid <code>ftp://</code> in case of
+firewall, default is FALSE</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>arguments passed to <code>tximport</code></p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>a SummarizedExperiment with metadata on the <code>rowRanges</code>.
+    <p>a SummarizedExperiment with metadata on the <code>rowRanges</code>.
 (if the hashed digest in the Salmon or Sailfish index does not match
 any known transcriptomes, or any locally saved <code>linkedTxome</code>,
 <code>tximeta</code> will just return a non-ranged SummarizedExperiment)</p>
@@ -222,8 +228,8 @@ have group write permissions (g+w).</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> found matching linked transcriptome:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [ LocalEnsembl - Drosophila melanogaster - release 98 ]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> loading existing TxDb created: 2024-06-08 13:08:47</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> loading existing transcript ranges created: 2024-06-08 13:08:48</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading existing TxDb created: 2024-09-27 15:45:09</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loading existing transcript ranges created: 2024-09-27 15:45:09</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> Warning: the annotation is missing some transcripts that were quantified.</span>
@@ -254,15 +260,15 @@ have group write permissions (g+w).</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 

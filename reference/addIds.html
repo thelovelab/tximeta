@@ -8,7 +8,7 @@ on use of multiVals.'><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -22,7 +22,7 @@ on use of multiVals.'><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tximeta</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.23.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.23.4</span>
       </span>
     </div>
 
@@ -39,20 +39,20 @@ on use of multiVals.'><!-- mathjax --><script src="https://cdnjs.cloudflare.com/
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/thelovelab/tximeta/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Add IDs to rowRanges of a SummarizedExperiment</h1>
-    <small class="dont-index">Source: <a href="https://github.com/thelovelab/tximeta/blob/HEAD/R/addIds.R" class="external-link"><code>R/addIds.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/thelovelab/tximeta/blob/devel/R/addIds.R" class="external-link"><code>R/addIds.R</code></a></small>
     <div class="hidden name"><code>addIds.Rd</code></div>
     </div>
 
@@ -71,38 +71,38 @@ on use of <code>multiVals</code>.</p>
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>se</dt>
+
+
+<dl><dt id="arg-se">se<a class="anchor" aria-label="anchor" href="#arg-se"></a></dt>
 <dd><p>the SummarizedExperiment</p></dd>
 
 
-<dt>column</dt>
+<dt id="arg-column">column<a class="anchor" aria-label="anchor" href="#arg-column"></a></dt>
 <dd><p>the name of the new ID to add (a <code>column</code> of the org package
 database or of the TxDb/EnsDb is <code>fromDb=TRUE</code>)</p></dd>
 
 
-<dt>fromDb</dt>
+<dt id="arg-fromdb">fromDb<a class="anchor" aria-label="anchor" href="#arg-fromdb"></a></dt>
 <dd><p>logical, whether to use the TxDb/EnsDb that is associated
 with <code>se</code>. Default is FALSE, and an org package is used.
 Currently only implemented for transcript level (gene=FALSE).
 Column names can be viewed with <code>columns(retrieveDb(se))</code></p></dd>
 
 
-<dt>gene</dt>
+<dt id="arg-gene">gene<a class="anchor" aria-label="anchor" href="#arg-gene"></a></dt>
 <dd><p>logical, whether to map by genes or transcripts (default is FALSE).
 if rows are genes, and easily detected as such (ENSG or ENSMUSG), it will
 automatically switch to TRUE. if rows are transcripts and <code>gene=TRUE</code>,
 then it will try to use a <code>gene_id</code> column to map IDs to <code>column</code></p></dd>
 
 
-<dt>...</dt>
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>arguments passed to <code>mapIds</code></p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>a SummarizedExperiment</p>
+    <p>a SummarizedExperiment</p>
     </div>
 
     <div id="ref-examples">
@@ -221,15 +221,15 @@ then it will try to use a <code>gene_id</code> column to map IDs to <code>column
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 

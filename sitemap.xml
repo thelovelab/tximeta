@@ -1,63 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/404.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/articles/tximeta.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/index.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/reference/addCDS.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/reference/addExons.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/reference/addIds.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/reference/getTximetaBFC.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/reference/linkedTxome.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/reference/makeDGEList.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/reference/retrieveCDNA.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/reference/retrieveDb.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/reference/splitSE.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/reference/summarizeToGene.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/reference/tximeta-package.html</loc>
-  </url>
-  <url>
-    <loc>https://thelovelab.github.io/tximeta/reference/tximeta.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://thelovelab.github.io/tximeta/404.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/articles/index.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/articles/tximeta.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/authors.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/index.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/news/index.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/addCDS.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/addExons.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/addIds.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/getTximetaBFC.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/index.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/linkedTxome.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/makeDGEList.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/retrieveCDNA.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/retrieveDb.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/splitSE.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/summarizeToGene.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/tximeta-package.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/tximeta.html</loc></url>
 </urlset>
+
