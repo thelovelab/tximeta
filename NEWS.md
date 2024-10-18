@@ -1,3 +1,7 @@
+# tximeta 1.23.5
+
+* GENCODE 47 (H.s.), M36 (M.m), and Ensembl 113
+
 # tximeta 1.23.1
 
 * GENCODE 46 (H.s.), M35 (M.m), and Ensembl 112
