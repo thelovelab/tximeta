@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   tximeta: tximeta.html
-last_built: 2024-09-27T15:44Z
+last_built: 2024-10-18T15:13Z
 urls:
   reference: https://thelovelab.github.io/tximeta/reference
   article: https://thelovelab.github.io/tximeta/articles
