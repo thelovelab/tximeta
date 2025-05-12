@@ -1,4 +1,4 @@
-# tximeta 1.25.2
+# tximeta 1.27.1
 
 * GENCODE 48 (H.s.), M37 (M.m), and Ensembl 114
 
