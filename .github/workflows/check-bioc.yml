@@ -40,7 +40,7 @@ env:
   run_covr: 'false'
   run_pkgdown: 'true'
   has_RUnit: 'false'
-  cache-version: 'cache-v2'
+  cache-version: 'cache-v4'
   run_docker: 'false'
 
 jobs:
@@ -103,7 +103,7 @@ jobs:
 
       - name: Cache R packages
         if: "!contains(github.event.head_commit.message, '/nocache') && runner.os != 'Linux'"
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ env.R_LIBS_USER }}
           key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-RELEASE_3_19-r-4.4-${{ hashFiles('.github/depends.Rds') }}
@@ -111,7 +111,7 @@ jobs:
 
       - name: Cache R packages on Linux
         if: "!contains(github.event.head_commit.message, '/nocache') && runner.os == 'Linux' "
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: /home/runner/work/_temp/Library
           key: ${{ env.cache-version }}-${{ runner.os }}-biocversion-RELEASE_3_19-r-4.4-${{ hashFiles('.github/depends.Rds') }}
