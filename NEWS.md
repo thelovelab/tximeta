@@ -1,3 +1,7 @@
+# tximeta 1.25.2
+
+* GENCODE 48 (H.s.), M37 (M.m), and Ensembl 114
+
 # tximeta 1.25.1
 
 * Added `skipRanges` to `summarizeToGene` which allows
