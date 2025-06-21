@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 1.27.1
+Version: 1.27.2
 Title: Transcript Quantification Import with Automatic Metadata
 Description: Transcript quantification import from Salmon and
     other quantifiers with automatic attachment of transcript ranges
@@ -18,10 +18,10 @@ Maintainer: Michael Love <michaelisaiahlove@gmail.com>
 License: GPL-2
 VignetteBuilder: knitr
 Imports:
-    SummarizedExperiment, tximport, jsonlite, S4Vectors,
-    IRanges, GenomicRanges, AnnotationDbi, GenomicFeatures,
+    SummarizedExperiment (>= 1.39.1), tximport, jsonlite, S4Vectors,
+    IRanges, GenomicRanges (>= 1.61.1), AnnotationDbi, GenomicFeatures,
     txdbmaker, ensembldb, BiocFileCache, AnnotationHub, Biostrings,
-    tibble, GenomeInfoDb, tools, utils, methods, Matrix
+    tibble, Seqinfo, tools, utils, methods, Matrix
 Suggests: knitr, rmarkdown, testthat, tximportData, org.Dm.eg.db,
     DESeq2, fishpond, edgeR, limma, devtools
 URL: https://github.com/thelovelab/tximeta
