@@ -226,6 +226,8 @@ tximeta <- function(coldata,
       type <- "salmon" # default
     }
   }
+
+  message(paste("importing",type,"quantification files"))
   
   if (type == "alevin") {
     if (length(files) > 1) stop("alevin import currently only supports a single experiment")
@@ -235,12 +237,8 @@ tximeta <- function(coldata,
   coldata <- subset(coldata, select=-files)
 
   # tximeta metadata
-  tximetaInfo <- list(version=packageVersion("tximeta"),
-                      type=type,
-                      importTime=Sys.time())
-
-  metadata <- list(tximetaInfo=tximetaInfo)
-
+  metadata <- makeMetadata(type)
+  
   skipMetaLogic <- skipMeta |
     ( !type %in% c("salmon","sailfish","alevin","piscem") &
       is.null(customMetaInfo) )
@@ -305,7 +303,6 @@ may lead to errors in object construction, unless 'dropInfReps=TRUE'")
   
   # try to import files early, so we don't waste user time
   # with metadata magic before a tximport error
-  message("importing quantifications")
   txi <- tximport(files, type=type, txOut=TRUE, ...)
   metadata$countsFromAbundance <- txi$countsFromAbundance
 
@@ -484,6 +481,13 @@ may lead to errors in object construction, unless 'dropInfReps=TRUE'")
                              metadata=metadata)
   se
   
+}
+
+makeMetadata <- function(type) {
+  tximetaInfo <- list(version=packageVersion("tximeta"),
+                      type=type,
+                      importTime=Sys.time())
+  list(tximetaInfo=tximetaInfo)
 }
 
 missingMetadata <- function(se, summarize=FALSE) {
