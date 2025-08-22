@@ -16,14 +16,20 @@
 #' @export
 tximix <- function(coldata, type="oarfish", ...) {
   stopifnot(type == "oarfish")
-
+  if (type == "alevin") stop("use tximeta for alevin")
   # tximeta metadata
   metadata <- makeMetadata(type)
 
+  files <- as.character(coldata$files)
+  names(files) <- coldata$names
   txi <- tximport(files, type=type, txOut=TRUE, ...)
   metadata$countsFromAbundance <- txi$countsFromAbundance
 
-  se <- makeUnrangedSE(txi, coldata, metadata)
+  metaInfo <- lapply(files, getMetaInfo, type=type)
+  metaInfo <- reshapeMetaInfo(metaInfo)
+  metadata$quantInfo <- metaInfo
 
+  se <- makeUnrangedSE(txi, coldata, metadata)
+  
   return(se)
 }
