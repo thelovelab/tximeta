@@ -229,10 +229,10 @@ tximeta <- function(coldata,
     return(se)
   }
 
-  # try to autodetect piscem, if not default to salmon
+  # default to salmon but print an error if files look non-salmon
   if (is.null(type)) {
-    if (grepl(".quant$",coldata$files[1])) {
-      type <- "piscem"
+    if (grepl(".quant(\\.gz)?$",coldata$files[1])) {
+      stop("specify the 'type' of file to import if not salmon")
     } else {    
       type <- "salmon" # default
     }
@@ -264,7 +264,8 @@ tximeta <- function(coldata,
   set txOut=TRUE and use summarizeToGene for gene-level summarization")
   }
 
-  # get quantifier metadata from JSON files within quant dirs
+  # `metaInfo` = list with quantification tool metadata from JSON files
+  # either in specific directories (salmon) or alongside quantification files (newer tools)
   metaInfo <- lapply(
     files,
     getMetaInfo,
@@ -298,18 +299,21 @@ tximeta <- function(coldata,
     }
     checkInfReps(metaInfo)
   }
-  # reshape
+
+  # reshape this list object, invert the JSON hierarchy 
+  # and examine consistency of the digest 'index_seq_hash'
+  # TODO: what happens here for piscem/oarfish?
   metaInfo <- reshapeMetaInfo(metaInfo)
 
-  # add to metadata list
+  # add the per-sample metadata from JSON to the metadata list object
   metadata$quantInfo <- metaInfo
   
-  # try to import files early, so we don't waste user time
-  # with metadata magic before a tximport error
+  # try to import files early to expose and tximport() related erreors
   txi <- tximport(files, type=type, txOut=TRUE, ...)
   metadata$countsFromAbundance <- txi$countsFromAbundance
 
-  # try and find a matching txome
+  # use the reference seqeuence digest (hash) to try to find a match 
+  # in the hash table of known and linked transcriptomes
   txomeInfo <- getTxomeInfo(indexSeqHash)
   if (is.null(txomeInfo)) {
     message("couldn't find matching transcriptome, returning non-ranged SummarizedExperiment")
@@ -317,12 +321,12 @@ tximeta <- function(coldata,
     return(se)
   }
 
-  # build or load a TxDb from the gtf
+  # build or load a TxDb using the GTF filename as the identifier
   txdb <- getTxDb(txomeInfo, useHub=useHub, skipFtp=skipFtp)
 
   # build or load transcript ranges
   txps <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="txp")
-  metadata$level <- "txp"
+  metadata$level <- "txp" # this marks the level of summarization of the SE: txp / gene
 
   # package up the assays from the list `txi`
   # put 'counts' in front to facilitate DESeqDataSet construction
@@ -352,7 +356,12 @@ tximeta <- function(coldata,
 
   # the following function modifies assays and txps to mark and/or clean duplicate txps 
   # (this occurs when salmon collapses identical transcripts during indexing)
-  dup.output.list <- duplicateTxpLogic(assays, txps, markDuplicateTxps, cleanDuplicateTxps)
+  dup.output.list <- duplicateTxps(
+    assays, 
+    txps, 
+    markDuplicateTxps, 
+    cleanDuplicateTxps
+  )
   assays <- dup.output.list$assays
   txps <- dup.output.list$txps
   
@@ -371,7 +380,7 @@ tximeta <- function(coldata,
     try(seqinfo(txps) <- refseq.genome[seqlevels(txps)])
   }
   
-  # add more metadata
+  # add the txome information and TxDb information to the metadata list
   txdbInfo <- metadata(txdb)$value
   names(txdbInfo) <- metadata(txdb)$name
   metadata$txomeInfo <- txomeInfo
