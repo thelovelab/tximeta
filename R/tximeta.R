@@ -218,6 +218,17 @@ tximeta <- function(coldata,
     stop("the files do not exist at the location specified by 'coldata$files'")
   }
 
+  # split out all alevin code to R/alevin.R
+  # tests are in tests/testthat/test_alevin.R
+  if (type == "alevin") {
+    # note that `txOut` is ignored, alevin produces gene-level quantification only
+    se <- tximetaAlevin(coldata = coldata, type = type, txOut = txOut,
+      skipMeta = skipMeta, skipSeqinfo = skipSeqinfo, useHub = useHub, 
+      markDuplicateTxps = markDuplicateTxps, cleanDuplicateTxps = cleanDuplicateTxps,
+      customMetaInfo = customMetaInfo, skipFtp = skipFtp, ...)
+    return(se)
+  }
+
   # try to autodetect piscem, if not default to salmon
   if (is.null(type)) {
     if (grepl(".quant$",coldata$files[1])) {
@@ -228,10 +239,6 @@ tximeta <- function(coldata,
   }
 
   message(paste("importing",type,"quantification files"))
-  
-  if (type == "alevin") {
-    if (length(files) > 1) stop("alevin import currently only supports a single experiment")
-  }
   
   # remove the files column from colData
   coldata <- subset(coldata, select=-files)
@@ -244,15 +251,12 @@ tximeta <- function(coldata,
   # - type is not a fish-method AND
   # - custom metadata file info not provided
   skipMetaLogic <- skipMeta |
-    ( !type %in% c("salmon","sailfish","alevin","piscem") &
+    ( !type %in% c("salmon","sailfish","piscem") &
       is.null(customMetaInfo) )
   
   if (skipMetaLogic) {
     txi <- tximport(files, type=type, txOut=txOut, ...)
     metadata$countsFromAbundance <- txi$countsFromAbundance
-    if (type == "alevin") {
-      coldata <- data.frame(row.names=colnames(txi[["counts"]]))
-    }
     se <- makeUnrangedSE(txi, coldata, metadata)
     return(se)
   } else {
@@ -260,16 +264,13 @@ tximeta <- function(coldata,
   set txOut=TRUE and use summarizeToGene for gene-level summarization")
   }
 
-  if (type == "alevin") {
-    metaInfo <- list(getMetaInfo(dirname(files),
-                                 type = "salmon",
-                                 customMetaInfo = customMetaInfo))
-  } else {
-    # get quantifier metadata from JSON files within quant dirs
-    metaInfo <- lapply(files, getMetaInfo,
-                       type=type,
-                       customMetaInfo=customMetaInfo)
-  }
+  # get quantifier metadata from JSON files within quant dirs
+  metaInfo <- lapply(
+    files,
+    getMetaInfo,
+    type = type,
+    customMetaInfo = customMetaInfo
+  )
 
   # piscem and oarfish store the hash of the transcriptome differently
   if (!type %in% c("piscem","oarfish")) {
@@ -295,20 +296,11 @@ tximeta <- function(coldata,
     if (!all(hashes == indexSeqHash)) {
       stop("the samples do not share the same index, and cannot be imported")
     }
-    if ("num_bootstraps" %in% names(metaInfo[[1]])) {
-      nboot <- sapply(metaInfo, function(x) x$num_bootstraps)
-      if (!all(nboot == nboot[1])) {
-        message("\nNOTE: inferential replicate number not equal across files,
-may lead to errors in object construction, unless 'dropInfReps=TRUE'")
-        if (any(nboot == 0)) {
-          message(paste("\nNOTE: the following files (by #) have 0 inferential replicates:
-  ",paste(which(nboot == 0),collapse=",")),"\n")
-        }
-      }
-    }
+    checkInfReps(metaInfo)
   }
   # reshape
   metaInfo <- reshapeMetaInfo(metaInfo)
+
   # add to metadata list
   metadata$quantInfo <- metaInfo
   
@@ -321,9 +313,6 @@ may lead to errors in object construction, unless 'dropInfReps=TRUE'")
   txomeInfo <- getTxomeInfo(indexSeqHash)
   if (is.null(txomeInfo)) {
     message("couldn't find matching transcriptome, returning non-ranged SummarizedExperiment")
-    if (type == "alevin") {
-      coldata <- data.frame(row.names=colnames(txi[["counts"]]))
-    }
     se <- makeUnrangedSE(txi, coldata, metadata)
     return(se)
   }
@@ -331,56 +320,24 @@ may lead to errors in object construction, unless 'dropInfReps=TRUE'")
   # build or load a TxDb from the gtf
   txdb <- getTxDb(txomeInfo, useHub=useHub, skipFtp=skipFtp)
 
-  # build or load transcript ranges (alevin gets gene ranges instead)
-  if (type != "alevin") {
-    txps <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="txp")
-    metadata$level <- "txp"
-  } else if (type == "alevin") {
-    # alevin gets gene ranges instead
-    message("generating gene ranges")
-    # here gene ranges are named 'txps' for compatibility with code below...
-    txps <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="gene")
-    metadata$level <- "gene"
-  }
+  # build or load transcript ranges
+  txps <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="txp")
+  metadata$level <- "txp"
 
-  # package up the assays
-  if (type == "alevin") {
-    # special alevin code
-    if ("variance" %in% names(txi)) {
-      if ("infReps" %in% names(txi)) {
-        assays <- c(txi[c("counts","variance")], txi$infReps)
-        names(assays) <- c("counts", "variance", paste0("infRep", seq_along(txi$infReps)))
-      } else {
-        assays <- txi[c("counts","variance")]
-      }
-    } else {
-      assays <- txi["counts"]
-    }
-    # add mean information as well if it exists in the list
-    if ("mean" %in% names(txi)) {
-      assays <- c(assays, txi["mean"])
-    }
-    # add tier information as well if it exists in the list
-    if ("tier" %in% names(txi)) {
-      assays <- c(assays, txi["tier"])
-    }
-    coldata <- data.frame(row.names=colnames(assays[["counts"]]))
-  } else {
-    # for methods other than alevin...
-    # put 'counts' in front to facilitate DESeqDataSet construction
-    # and remove countsFromAbundance
-    txi.nms <- c("counts", c(setdiff(names(txi), c("counts","countsFromAbundance","infReps"))))
-    assays <- txi[txi.nms]
-    # if there are inferential replicates
-    if ("infReps" %in% names(txi)) {
-      infReps <- rearrangeInfReps(txi$infReps)
-      infReps <- lapply(infReps, function(mat) {
-        rownames(mat) <- rownames(assays[["counts"]])
-        colnames(mat) <- colnames(assays[["counts"]])
-        mat
-      })
-      assays <- c(assays, infReps)
-    }
+  # package up the assays from the list `txi`
+  # put 'counts' in front to facilitate DESeqDataSet construction
+  # and remove countsFromAbundance and infReps from assay list
+  txi.nms <- c(
+    "counts",
+    c(setdiff(names(txi), c("counts", "countsFromAbundance", "infReps")))
+  )
+  assays <- txi[txi.nms]
+
+  # if there are inferential replicates, add using rearrangeInfReps()
+  if ("infReps" %in% names(txi)) {
+    infReps <- rearrangeInfReps(txi$infReps)
+    infReps <- addInfRepDimnames(infReps, assays)
+    assays <- c(assays, infReps)
   }
   
   # Ensembl FASTA has txp version numbers,
@@ -393,77 +350,11 @@ may lead to errors in object construction, unless 'dropInfReps=TRUE'")
     }
   }
 
-  # code for marking or cleaning duplicate txps
-  assay.nms <- rownames(assays[["counts"]])
-  txps.missing <- !assay.nms %in% names(txps)
-  # either we want to mark duplicates, or clean up duplicates (if we can)
-  if (markDuplicateTxps | (cleanDuplicateTxps & sum(txps.missing) > 0)) {
-    dup.list <- makeDuplicateTxpsList(txomeInfo)
-  }
-  if (cleanDuplicateTxps & sum(txps.missing) > 0) {
-    # this function swaps out rows missing in `txps`
-    # for duplicate txps which are in `txps`. needed bc
-    # Ensembl includes haplotype chromosome txps that duplicate
-    # standard chromosome txps (identical sequence)
-    missing.txps <- assay.nms[txps.missing]
-    dup.table <- makeDuplicateTxpsTable(missing.txps, dup.list, names(txps))
-    if (is.null(dup.table)) {
-      message("no duplicated transcripts to clean")
-    } else {
-      message(paste("cleaning",nrow(dup.table),"duplicate transcript names"))
-      # which rownames to fix
-      m <- match(dup.table$dups.to.fix, assay.nms)
-      stopifnot(all(!is.na(m)))
-      # change the rownames to alternatives that are in `txps`
-      for (nm in names(assays)) {
-        assay.nms[m] <- dup.table$alts
-        rownames(assays[[nm]]) <- assay.nms
-      }
-    }
-  }
-
-  # special edits to rownames for GENCODE to remove chars after `|`
-  # (and user didn't use --gencode when building Salmon index)
-  testTxp <- rownames(assays[[1]])[1]
-  if (grepl("ENST|ENSMUST", testTxp) & grepl("\\|", testTxp)) {
-    for (i in names(assays)) {
-      rownames(assays[[i]]) <- sub("\\|.*","",rownames(assays[[i]]))
-    }
-  }
-
-  assays <- checkAssays2Txps(assays, txps)
-  
-  # TODO we could give a warning here if there are txps in TxDb not in index
-  txps <- txps[rownames(assays[["counts"]])]
-
-  # mark duplicates in the rowData
-  if (markDuplicateTxps) {
-    # assay names could have changed due to cleanDuplicateTxps
-    assay.nms <- rownames(assays[["counts"]])
-    dups.in.rownms <- unlist(dup.list) %in% assay.nms
-    dups.in.rownms <- LogicalList(split(dups.in.rownms, rep(seq_along(dup.list), lengths(dup.list))))
-    names(dups.in.rownms) <- NULL
-    num.dups.in.rownms <- sapply(dups.in.rownms, sum)
-    just.one <- num.dups.in.rownms == 1
-    if (!all(just.one)) {
-      dup.list <- dup.list[just.one]
-      dups.in.rownms <- dups.in.rownms[just.one]
-    }
-    duplicates <- dup.list[ !dups.in.rownms ]
-    duplicates.id <- as.character(dup.list[ dups.in.rownms ])
-    mcols(txps)$hasDuplicate <- FALSE
-    mcols(txps)$duplicates <- CharacterList(as.list(rep("",length(txps))))
-    if (length(duplicates) > 0) {
-      message(paste(length(duplicates), "duplicate set founds"))
-      mcols(txps)$hasDuplicate[ names(txps) %in% duplicates.id ] <- TRUE
-      # if necessary remove any of these not in txps
-      duplicates <- duplicates[ duplicates.id %in% names(txps) ]
-      duplicates.id <- duplicates.id[ duplicates.id %in% names(txps) ]
-      mcols(txps)$duplicates[ match(duplicates.id, names(txps)) ] <- duplicates
-    } else {
-      message("no duplicates found")
-    }
-  }
+  # the following function modifies assays and txps to mark and/or clean duplicate txps 
+  # (this occurs when salmon collapses identical transcripts during indexing)
+  dup.output.list <- duplicateTxpLogic(assays, txps, markDuplicateTxps, cleanDuplicateTxps)
+  assays <- dup.output.list$assays
+  txps <- dup.output.list$txps
   
   # Ensembl already has nice seqinfo attached...
   # if GENCODE, and not from AHub (which have seqinfo)
@@ -760,6 +651,20 @@ makeUnrangedSE <- function(txi, coldata, metadata) {
                        metadata=metadata)
 }
 
+checkInfReps <- function(metaInfo) {
+  if ("num_bootstraps" %in% names(metaInfo[[1]])) {
+    nboot <- sapply(metaInfo, function(x) x$num_bootstraps)
+    if (!all(nboot == nboot[1])) {
+      message("\nNOTE: inferential replicate number not equal across files,
+  may lead to errors in object construction, unless 'dropInfReps=TRUE'")
+      if (any(nboot == 0)) {
+        message(paste("\nNOTE: the following files (by #) have 0 inferential replicates:
+  ",paste(which(nboot == 0),collapse=",")),"\n")
+      }
+    }
+  }
+}
+
 # arrange list of inferential replicate matrices (per sample)
 # into per replicate (infRep1, infRep2, ...)
 rearrangeInfReps <- function(infReps) {
@@ -769,6 +674,15 @@ rearrangeInfReps <- function(infReps) {
   infReps <- lapply(seq_len(nreps), getCols, infReps)
   names(infReps) <- paste0("infRep",seq_len(nreps))
   infReps
+}
+
+# add dimnames from "counts" assay to list of infRep matrices
+addInfRepDimnames <- function(infReps, assays) {
+  lapply(infReps, function(mat) {
+      rownames(mat) <- rownames(assays[["counts"]])
+      colnames(mat) <- colnames(assays[["counts"]])
+      mat
+  })
 }
 
 # split list of inferential replicate matrices (per replicate)
