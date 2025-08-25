@@ -218,6 +218,15 @@ tximeta <- function(coldata,
     stop("the files do not exist at the location specified by 'coldata$files'")
   }
 
+# default to salmon but print an error if files look non-salmon
+  if (is.null(type)) {
+    if (grepl(".quant(\\.gz)?$",coldata$files[1])) {
+      stop("specify the 'type' of file to import if not salmon")
+    } else {    
+      type <- "salmon" # default
+    }
+  }
+
   # split out all alevin code to R/alevin.R
   # tests are in tests/testthat/test_alevin.R
   if (type == "alevin") {
@@ -227,15 +236,6 @@ tximeta <- function(coldata,
       markDuplicateTxps = markDuplicateTxps, cleanDuplicateTxps = cleanDuplicateTxps,
       customMetaInfo = customMetaInfo, skipFtp = skipFtp, ...)
     return(se)
-  }
-
-  # default to salmon but print an error if files look non-salmon
-  if (is.null(type)) {
-    if (grepl(".quant(\\.gz)?$",coldata$files[1])) {
-      stop("specify the 'type' of file to import if not salmon")
-    } else {    
-      type <- "salmon" # default
-    }
   }
 
   message(paste("importing",type,"quantification files"))
@@ -365,20 +365,9 @@ tximeta <- function(coldata,
   assays <- dup.output.list$assays
   txps <- dup.output.list$txps
   
-  # Ensembl already has nice seqinfo attached...
-  # if GENCODE, and not from AHub (which have seqinfo)
-  missingSeqinfo <- any(is.na(seqlengths(txps)))
-  if (txomeInfo$source == "GENCODE" & !skipSeqinfo & missingSeqinfo) {
-    message("fetching genome info for GENCODE")
-    ucsc.genome <- genome2UCSC(txomeInfo$genome)
-    try(seqinfo(txps) <- Seqinfo(genome=ucsc.genome)[seqlevels(txps)])
-  } else if (txomeInfo$source == "RefSeq" & !skipSeqinfo & missingSeqinfo) {
-    # if RefSeq...
-    message("fetching genome info for RefSeq")
-    refseq.genome <- gtf2RefSeq(txomeInfo$gtf, txomeInfo$genome)
-    stopifnot(all(seqlevels(txps) %in% seqnames(refseq.genome)))
-    try(seqinfo(txps) <- refseq.genome[seqlevels(txps)])
-  }
+  # GENCODE and RefSeq needed Seqinfo added to seqinfo(txps)
+  # function defined in `metadata_helpers.R`
+  txps <- updateTxpsSeqinfo(txps, txomeInfo, skipSeqinfo)
   
   # add the txome information and TxDb information to the metadata list
   txdbInfo <- metadata(txdb)$value

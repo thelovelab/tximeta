@@ -97,3 +97,25 @@ reshapeMetaInfo <- function(metaInfo) {
   out$index_name_hash <- out$index_name_hash[1]
   out
 }
+
+updateTxpsSeqinfo <- function(txps, txomeInfo, skipSeqinfo) {
+  # Ensembl already has nice seqinfo attached, nothing needed
+
+  missingSeqinfo <- any(is.na(seqlengths(txps)))
+
+  # if GENCODE, and not from AHub (which have seqinfo)...
+  if (txomeInfo$source == "GENCODE" & !skipSeqinfo & missingSeqinfo) {
+    message("fetching genome info for GENCODE")
+    ucsc.genome <- genome2UCSC(txomeInfo$genome)
+    try(seqinfo(txps) <- Seqinfo(genome=ucsc.genome)[seqlevels(txps)])
+  } else if (txomeInfo$source == "RefSeq" & !skipSeqinfo & missingSeqinfo) {
+    
+    # if RefSeq...
+    message("fetching genome info for RefSeq")
+    refseq.genome <- gtf2RefSeq(txomeInfo$gtf, txomeInfo$genome)
+    stopifnot(all(seqlevels(txps) %in% seqnames(refseq.genome)))
+    try(seqinfo(txps) <- refseq.genome[seqlevels(txps)])
+  }
+
+  txps
+}
