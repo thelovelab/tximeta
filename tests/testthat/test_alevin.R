@@ -10,6 +10,6 @@ test_that("tximeta can import alevin", {
 
   #se <- tximeta(coldata, type="alevin")
   se <- tximeta(coldata, type="alevin", skipMeta=TRUE)
+  expect_true(metadata(se)$tximetaInfo$type == "alevin")
   
 })
-

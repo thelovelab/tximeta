@@ -23,7 +23,7 @@ Imports:
     txdbmaker, ensembldb, BiocFileCache, AnnotationHub, Biostrings,
     tibble, GenomeInfoDb, tools, utils, methods, Matrix
 Suggests: knitr, rmarkdown, testthat, tximportData, org.Dm.eg.db,
-    DESeq2, fishpond, edgeR, limma, devtools
+    DESeq2, fishpond, edgeR, limma, devtools, macrophage
 URL: https://github.com/thelovelab/tximeta
 biocViews: Annotation, GenomeAnnotation, DataImport, Preprocessing,
     RNASeq, SingleCell, Transcriptomics, Transcription, GeneExpression,

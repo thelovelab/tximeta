@@ -359,6 +359,7 @@ tximeta <- function(coldata,
   dup.output.list <- duplicateTxps(
     assays, 
     txps, 
+    txomeInfo,
     markDuplicateTxps, 
     cleanDuplicateTxps
   )

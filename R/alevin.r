@@ -116,9 +116,10 @@ tximetaAlevin <- function(
 
   # following function modifies assays and txps to mark and/or clean duplicate txps
   # (this occurs when salmon collapses identical transcripts during indexing)
-  dup.output.list <- duplicateTxpLogic(
+  dup.output.list <- duplicateTxps(
     assays,
     txps,
+    txomeInfo,
     markDuplicateTxps,
     cleanDuplicateTxps
   )

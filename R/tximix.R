@@ -16,7 +16,7 @@
 #' @export
 tximix <- function(coldata, type="oarfish", ...) {
   stopifnot(type == "oarfish")
-  if (type == "alevin") stop("use tximeta for alevin")
+  
   # tximeta metadata
   metadata <- makeMetadata(type)
 

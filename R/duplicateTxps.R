@@ -1,5 +1,5 @@
 # code for marking or cleaning duplicate txps
-duplicateTxps <- function(assays, txps, markDuplicateTxps, cleanDuplicateTxps) {
+duplicateTxps <- function(assays, txps, txomeInfo, markDuplicateTxps, cleanDuplicateTxps) {
   assay.nms <- rownames(assays[["counts"]])
   txps.missing <- !assay.nms %in% names(txps)
   # either we want to mark duplicates, or clean up duplicates (if we can)
