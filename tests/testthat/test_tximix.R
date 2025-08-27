@@ -7,6 +7,9 @@ test_that("tximix works as expected", {
   coldata <- data.frame(files, names)
   se <- tximeta(coldata, type="oarfish", skipMeta=TRUE)
 
+  # check reshape!
+  se <- tximeta(coldata, type="oarfish")
+
   se <- tximix(coldata, type="oarfish")
   
 })

@@ -80,8 +80,9 @@ customAuxDir <- function(dir, auxDir) {
 }
 
 # reshape metadata info from Salmon
-reshapeMetaInfo <- function(metaInfo) {
+reshapeMetaInfo <- function(metaInfo, hashType) {
   unionTags <- unique(unlist(lapply(metaInfo, names)))
+  # re-order by tag t, then sample i
   out <- lapply(unionTags, function(t) {
     sapply(seq_along(metaInfo), function(i) {
       metaInfo[[i]][[t]]
@@ -91,10 +92,12 @@ reshapeMetaInfo <- function(metaInfo) {
   if (all(out$eq_class_properties == list())) {
     out$eq_class_properties <- NULL
   }
-  stopifnot(all(out$index_seq_hash == out$index_seq_hash[1]))
-  stopifnot(all(out$index_name_hash == out$index_name_hash[1]))
-  out$index_seq_hash <- out$index_seq_hash[1]
-  out$index_name_hash <- out$index_name_hash[1]
+  if (hashType == "salmon") {
+    stopifnot(all(out$index_seq_hash == out$index_seq_hash[1]))
+    stopifnot(all(out$index_name_hash == out$index_name_hash[1]))
+    out$index_seq_hash <- out$index_seq_hash[1]
+    out$index_name_hash <- out$index_name_hash[1]
+  }
   out
 }
 

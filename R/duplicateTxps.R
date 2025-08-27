@@ -1,12 +1,10 @@
 # code for marking or cleaning duplicate txps
-duplicateTxps <- function(assays, txps, txomeInfo, markDuplicateTxps, cleanDuplicateTxps) {
+duplicateTxpsPass1 <- function(assays, txps, txomeInfo, markDuplicateTxps, cleanDuplicateTxps) {
   assay.nms <- rownames(assays[["counts"]])
-  txps.missing <- !assay.nms %in% names(txps)
+  txps.missing <- !assay.nms %in% names(txps) # logical vector
   # either we want to mark duplicates, or clean up duplicates (if we can)
-  if (markDuplicateTxps | (cleanDuplicateTxps & sum(txps.missing) > 0)) {
+  if (sum(txps.missing) > 0) {
     dup.list <- makeDuplicateTxpsList(txomeInfo)
-  }
-  if (cleanDuplicateTxps & sum(txps.missing) > 0) {
     # this function swaps out rows missing in `txps`
     # for duplicate txps which are in `txps`. needed bc
     # Ensembl includes haplotype chromosome txps that duplicate
@@ -27,51 +25,41 @@ duplicateTxps <- function(assays, txps, txomeInfo, markDuplicateTxps, cleanDupli
       }
     }
   }
-
-  # special edits to rownames for GENCODE to remove chars after `|`
-  # (and user didn't use --gencode when building Salmon index)
-  testTxp <- rownames(assays[[1]])[1]
-  if (grepl("ENST|ENSMUST", testTxp) & grepl("\\|", testTxp)) {
-    for (i in names(assays)) {
-      rownames(assays[[i]]) <- sub("\\|.*","",rownames(assays[[i]]))
-    }
-  }
-
-  assays <- checkAssays2Txps(assays, txps)
-  
-  # TODO we could give a warning here if there are txps in TxDb not in index
-  txps <- txps[rownames(assays[["counts"]])]
-
-  # mark duplicates in the rowData
-  if (markDuplicateTxps) {
-    # assay names could have changed due to cleanDuplicateTxps
-    assay.nms <- rownames(assays[["counts"]])
-    dups.in.rownms <- unlist(dup.list) %in% assay.nms
-    dups.in.rownms <- LogicalList(split(dups.in.rownms, rep(seq_along(dup.list), lengths(dup.list))))
-    names(dups.in.rownms) <- NULL
-    num.dups.in.rownms <- sapply(dups.in.rownms, sum)
-    just.one <- num.dups.in.rownms == 1
-    if (!all(just.one)) {
-      dup.list <- dup.list[just.one]
-      dups.in.rownms <- dups.in.rownms[just.one]
-    }
-    duplicates <- dup.list[ !dups.in.rownms ]
-    duplicates.id <- as.character(dup.list[ dups.in.rownms ])
-    mcols(txps)$hasDuplicate <- FALSE
-    mcols(txps)$duplicates <- CharacterList(as.list(rep("",length(txps))))
-    if (length(duplicates) > 0) {
-      message(paste(length(duplicates), "duplicate set founds"))
-      mcols(txps)$hasDuplicate[ names(txps) %in% duplicates.id ] <- TRUE
-      # if necessary remove any of these not in txps
-      duplicates <- duplicates[ duplicates.id %in% names(txps) ]
-      duplicates.id <- duplicates.id[ duplicates.id %in% names(txps) ]
-      mcols(txps)$duplicates[ match(duplicates.id, names(txps)) ] <- duplicates
-    } else {
-      message("no duplicates found")
-    }
-  }
-  
   return(list(assays=assays, txps=txps))
+}
+
+duplicateTxpsPass2 <- function(assays, txps, txomeInfo, markDuplicateTxps, cleanDuplicateTxps) {
+  # mark duplicates in the rowData
+  dup.list <- makeDuplicateTxpsList(txomeInfo)
+  # assay names could have changed due to cleanDuplicateTxps
+  assay.nms <- rownames(assays[["counts"]])
+  dups.in.rownms <- unlist(dup.list) %in% assay.nms
+  dups.in.rownms <- LogicalList(split(
+    dups.in.rownms,
+    rep(seq_along(dup.list), lengths(dup.list))
+  ))
+  names(dups.in.rownms) <- NULL
+  num.dups.in.rownms <- sapply(dups.in.rownms, sum)
+  just.one <- num.dups.in.rownms == 1
+  if (!all(just.one)) {
+    dup.list <- dup.list[just.one]
+    dups.in.rownms <- dups.in.rownms[just.one]
+  }
+  duplicates <- dup.list[!dups.in.rownms]
+  duplicates.id <- as.character(dup.list[dups.in.rownms])
+  mcols(txps)$hasDuplicate <- FALSE
+  mcols(txps)$duplicates <- CharacterList(as.list(rep("", length(txps))))
+  if (length(duplicates) > 0) {
+    message(paste(length(duplicates), "duplicate set founds"))
+    mcols(txps)$hasDuplicate[names(txps) %in% duplicates.id] <- TRUE
+    # if necessary remove any of these not in txps
+    duplicates <- duplicates[duplicates.id %in% names(txps)]
+    duplicates.id <- duplicates.id[duplicates.id %in% names(txps)]
+    mcols(txps)$duplicates[match(duplicates.id, names(txps))] <- duplicates
+  } else {
+    message("no duplicates found")
+  }
+  return(list(assays = assays, txps = txps))
 }
 
 makeDuplicateTxpsList <- function(txomeInfo) {

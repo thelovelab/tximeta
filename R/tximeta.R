@@ -251,7 +251,7 @@ tximeta <- function(coldata,
   # - type is not a fish-method AND
   # - custom metadata file info not provided
   skipMetaLogic <- skipMeta |
-    ( !type %in% c("salmon","sailfish","piscem") &
+    ( !type %in% c("salmon","sailfish","piscem","oarfish") &
       is.null(customMetaInfo) )
   
   if (skipMetaLogic) {
@@ -273,27 +273,14 @@ tximeta <- function(coldata,
     customMetaInfo = customMetaInfo
   )
 
-  # piscem and oarfish store the hash of the transcriptome differently
-  if (!type %in% c("piscem","oarfish")) {
-    # Salmon's SHA-256 hash of the index is called "index_seq_hash" in the meta_info.json file
-    indexSeqHash <- metaInfo[[1]]$index_seq_hash # first sample
-  } else if (type == "piscem") {
-    # piscem has the SHA-256 hash slightly differently...
-    indexSeqHash <- metaInfo[[1]]$signatures$sha256_seqs # first sample
-  } else if (type == "oarfish") {
-    # TODO
-    stop("this needs to be implemented")
-  }
-  
+  # quantifiers have different location of storing index digest (hash)
+  hashType <- if (!type %in% c("piscem","oarfish")) "salmon" else type
+
+  # Check the sequence digest (hash) of the transcriptome index with 1st sample
+  # readIndexSeqHash() returns a list of functions
+  indexSeqHash <- readIndexSeqHash()[[hashType]](metaInfo[[1]])
   if (length(files) > 1) {
-    if (!type %in% c("piscem","oarfish")) {
-      hashes <- sapply(metaInfo, function(x) x$index_seq_hash)
-    } else if (type == "piscem") {
-      hashes <- sapply(metaInfo, function(x) x$signatures$sha256_seqs)
-    } else if (type == "oarfish") {
-      # TODO
-      stop("this needs to be implemented")
-    }
+    hashes <- sapply(metaInfo, readIndexSeqHash()[[hashType]])
     if (!all(hashes == indexSeqHash)) {
       stop("the samples do not share the same index, and cannot be imported")
     }
@@ -303,9 +290,9 @@ tximeta <- function(coldata,
   # reshape this list object, invert the JSON hierarchy 
   # and examine consistency of the digest 'index_seq_hash'
   # TODO: what happens here for piscem/oarfish?
-  metaInfo <- reshapeMetaInfo(metaInfo)
+  metaInfo <- reshapeMetaInfo(metaInfo, hashType)
 
-  # add the per-sample metadata from JSON to the metadata list object
+  # add the per-sample metadata from quantification JSON files to the metadata list object
   metadata$quantInfo <- metaInfo
   
   # try to import files early to expose and tximport() related erreors
@@ -354,17 +341,40 @@ tximeta <- function(coldata,
     }
   }
 
-  # the following function modifies assays and txps to mark and/or clean duplicate txps 
+  # the following function modifies assays and txps to clean duplicate txps 
   # (this occurs when salmon collapses identical transcripts during indexing)
-  dup.output.list <- duplicateTxps(
-    assays, 
-    txps, 
-    txomeInfo,
-    markDuplicateTxps, 
-    cleanDuplicateTxps
-  )
-  assays <- dup.output.list$assays
-  txps <- dup.output.list$txps
+  if (cleanDuplicateTxps) {
+    dup.output.list <- duplicateTxpsPass1(
+      assays, txps, txomeInfo,
+      markDuplicateTxps, cleanDuplicateTxps
+    )
+    assays <- dup.output.list$assays
+    txps <- dup.output.list$txps
+  }
+
+  # special edits to rownames for GENCODE to remove chars after `|`
+  # (and user didn't use --gencode when building Salmon index)
+  testTxp <- rownames(assays[[1]])[1]
+  if (grepl("ENST|ENSMUST", testTxp) & grepl("\\|", testTxp)) {
+    for (i in names(assays)) {
+      rownames(assays[[i]]) <- sub("\\|.*","",rownames(assays[[i]]))
+    }
+  }
+
+  assays <- checkAssays2Txps(assays, txps)
+  
+  # TODO we could give a warning here if there are txps in TxDb not in index
+  txps <- txps[rownames(assays[["counts"]])]
+
+  # another pass to mark duplicate transcripts
+  if (markDuplicateTxps) {
+    dup.output.list <- duplicateTxpsPass2(
+      assays, txps, txomeInfo,
+      markDuplicateTxps, cleanDuplicateTxps
+    )
+    assays <- dup.output.list$assays
+    txps <- dup.output.list$txps
+  }
   
   # GENCODE and RefSeq needed Seqinfo added to seqinfo(txps)
   # function defined in `metadata_helpers.R`
@@ -380,8 +390,16 @@ tximeta <- function(coldata,
                              rowRanges=txps,
                              colData=coldata,
                              metadata=metadata)
-  se
-  
+  se  
+}
+
+# helper to swap across quantifiers that vary in location of the index sequence digest (hash)
+readIndexSeqHash <- function() {
+  list(
+    salmon = function(m) m$index_seq_hash,
+    piscem = function(m) m$signatures$sha256_seqs,
+    oarfish = function(m) m$digest$annotated_transcripts_digest$sha256_digests$sha256_seqs
+  )
 }
 
 # temporary function to map from GRCh38 to hg38 to allow easy
@@ -611,8 +629,8 @@ checkAssays2Txps <- function(assays, txps) {
 
 Warning: the annotation is missing some transcripts that were quantified.
 ", sum(txps.missing), " out of ", nrow(assays[["counts"]]),
-" txps were missing from GTF/GFF but were in the indexed FASTA.
-(This occurs sometimes with Ensembl txps on haplotype chromosomes.)
+" txps were missing from GTF/GFF but were in the indexed FASTA
+(e.g. this can occur with transcripts located on haplotype chromosomes).
 In order to build a ranged SummarizedExperiment, these txps were removed.
 To keep these txps, and to skip adding ranges, use skipMeta=TRUE
 
@@ -771,3 +789,4 @@ getRanges <- function(txdb=txdb, txomeInfo=txomeInfo, type=c("txp","exon","cds",
   }
   rngs
 }
+

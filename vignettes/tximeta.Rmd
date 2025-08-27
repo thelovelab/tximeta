@@ -1,3 +1,4 @@
+
 ---
 title: "Tximeta: transcript quantification import with automatic metadata"
 author: "Michael I. Love, Charlotte Soneson, Peter F. Hickey, Rob Patro"
@@ -9,10 +10,11 @@ output:
     toc_float: true
 abstract: >
   Tximeta performs numerous annotation and metadata gathering tasks on
-  behalf of users during the import of transcript quantifications from
-  *Salmon*, *alevin*, or *piscem-infer* into R/Bioconductor. Metadata 
-  and transcript ranges are added automatically, facilitating genomic 
-  analyses and assisting in computational reproducibility.
+  behalf of users during the import of transcript counts and abundance
+  from quantification tools such as salmon into Bioconductor objects
+  (SummarizedExperiment) with associated range-based metadata (GenomicRanges).
+  Correct metadata is added automatically via reference sequence digests, 
+  facilitating genomic analyses and assisting in computational reproducibility.
 bibliography: library.bib
 vignette: |
   %\VignetteIndexEntry{Transcript quantification import with automatic metadata}
