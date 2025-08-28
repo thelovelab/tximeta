@@ -26,10 +26,16 @@ tximix <- function(coldata, type="oarfish", ...) {
   metadata$countsFromAbundance <- txi$countsFromAbundance
 
   metaInfo <- lapply(files, getMetaInfo, type=type)
-  metaInfo <- reshapeMetaInfo(metaInfo)
+  metaInfo <- reshapeMetaInfo(metaInfo, hashType="oarfish")
   metadata$quantInfo <- metaInfo
 
-  se <- makeUnrangedSE(txi, coldata, metadata)
+  assays <- txi[c("counts","abundance","length")]
+
+  # GENCODE usually has characters after the ENST... 
+  # these disrupt metadata operations (adding ranges or IDs)
+  assays <- stripAllCharsAfterBar(assays)
+
+  se <- makeUnrangedSE(assays, coldata, metadata)
   
   return(se)
 }

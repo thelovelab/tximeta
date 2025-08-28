@@ -354,13 +354,9 @@ tximeta <- function(coldata,
 
   # special edits to rownames for GENCODE to remove chars after `|`
   # (and user didn't use --gencode when building Salmon index)
-  testTxp <- rownames(assays[[1]])[1]
-  if (grepl("ENST|ENSMUST", testTxp) & grepl("\\|", testTxp)) {
-    for (i in names(assays)) {
-      rownames(assays[[i]]) <- sub("\\|.*","",rownames(assays[[i]]))
-    }
-  }
-
+  assays <- stripAllCharsAfterBar(assay)
+  
+  # check concordance
   assays <- checkAssays2Txps(assays, txps)
   
   # TODO we could give a warning here if there are txps in TxDb not in index
@@ -597,6 +593,16 @@ this may produce errors if the GTF is not from Ensembl, or has been modified")
   }
   
   txdb
+}
+
+stripAllCharsAfterBar <- function(assays) {
+  testTxp <- rownames(assays[[1]])[1]
+  if (grepl("ENST|ENSMUST", testTxp) & grepl("\\|", testTxp)) {
+    for (i in names(assays)) {
+      rownames(assays[[i]]) <- sub("\\|.*","",rownames(assays[[i]]))
+    }
+  }
+  assays
 }
 
 # check to see if there are any missing transcripts not available
