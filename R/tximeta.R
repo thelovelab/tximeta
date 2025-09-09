@@ -56,7 +56,7 @@
 #' 
 #' \code{tximeta} leverages the hashed digest of the Salmon or piscem index,
 #' in addition to a number of core Bioconductor packages (GenomicFeatures,
-#' ensembldb, AnnotationHub, GenomeInfoDb, BiocFileCache) to automatically
+#' ensembldb, AnnotationHub, Seqinfo, BiocFileCache) to automatically
 #' populate metadata for the user, without additional effort from the user.
 #' For other quantifiers see the \code{customMetaInfo} argument below.
 #'
@@ -187,7 +187,7 @@
 #' @importFrom AnnotationHub AnnotationHub query dbconn dbfile
 #' @importFrom Biostrings readDNAStringSet %in%
 #' @importFrom tibble tibble
-#' @importFrom GenomeInfoDb Seqinfo genome<- seqlengths seqinfo seqinfo<- seqlevels
+#' @importFrom Seqinfo Seqinfo genome<- seqlengths seqinfo seqinfo<- seqlevels
 #' @importFrom tools R_user_dir file_ext
 #' @importFrom utils menu packageVersion read.csv read.delim head
 #' @importFrom methods is as

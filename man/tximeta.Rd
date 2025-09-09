@@ -86,7 +86,7 @@ any known transcriptomes, or any locally saved \code{linkedTxome},
 \description{
 \code{tximeta} leverages the hashed digest of the Salmon or piscem index,
 in addition to a number of core Bioconductor packages (GenomicFeatures,
-ensembldb, AnnotationHub, GenomeInfoDb, BiocFileCache) to automatically
+ensembldb, AnnotationHub, Seqinfo, BiocFileCache) to automatically
 populate metadata for the user, without additional effort from the user.
 For other quantifiers see the \code{customMetaInfo} argument below.
 }
