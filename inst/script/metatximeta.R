@@ -109,12 +109,12 @@ hashit <- function(source, organism, release, catNC=FALSE, ...) {
 # download method
 m <- "wget"
 
-i <- 48
+i <- 49
 hashit("GENCODE", "Homo sapiens", i, method=m)
-i <- 37
+i <- 38
 hashit("GENCODE", "Mus musculus", paste0("M",i), method=m)
 #
-i <- 114
+i <- 115
 hashit("Ensembl", "Homo sapiens", i, method=m)
 hashit("Ensembl", "Mus musculus", i, method=m)
 hashit("Ensembl", "Drosophila melanogaster", i, method=m)
