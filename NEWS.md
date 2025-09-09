@@ -1,6 +1,10 @@
+# tximeta 1.27.2
+
+* GENCODE 49 (H.s.), M38 (M.m), and Ensembl 115 (Sep 2025)
+
 # tximeta 1.27.1
 
-* GENCODE 48 (H.s.), M37 (M.m), and Ensembl 114
+* GENCODE 48 (H.s.), M37 (M.m), and Ensembl 114 (May 2025)
 
 # tximeta 1.25.1
 
@@ -11,11 +15,11 @@
 
 # tximeta 1.23.5
 
-* GENCODE 47 (H.s.), M36 (M.m), and Ensembl 113
+* GENCODE 47 (H.s.), M36 (M.m), and Ensembl 113 (Oct 2024)
 
 # tximeta 1.23.1
 
-* GENCODE 46 (H.s.), M35 (M.m), and Ensembl 112
+* GENCODE 46 (H.s.), M35 (M.m), and Ensembl 112 (May 2024)
 
 # tximeta 1.21.4
 
@@ -23,7 +27,7 @@
 
 # tximeta 1.21.3
 
-* GENCODE 44 (H.s.), M34 (M.m), and Ensembl 111
+* GENCODE 44 (H.s.), M34 (M.m), and Ensembl 111 (Jan 2024)
 * RefSeq p13 for human, p6 for mouse
 
 # tximeta 1.20.0
