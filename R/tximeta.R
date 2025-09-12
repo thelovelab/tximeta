@@ -272,11 +272,11 @@ tximeta <- function(coldata,
     type = type,
     customMetaInfo = customMetaInfo
   )
+  
+  # different styles of storing hash value by method
+  hashType <- type2hashType(type)
 
-  # quantifiers have different location of storing index digest (hash)
-  hashType <- if (!type %in% c("piscem","oarfish")) "salmon" else type
-
-  # Check the sequence digest (hash) of the transcriptome index with 1st sample
+  # check the sequence digest (hash) of the transcriptome index with 1st sample
   # readIndexSeqHash() returns a list of functions
   indexSeqHash <- readIndexSeqHash()[[hashType]](metaInfo[[1]])
   if (length(files) > 1) {
@@ -289,7 +289,6 @@ tximeta <- function(coldata,
 
   # reshape this list object, invert the JSON hierarchy 
   # and examine consistency of the digest 'index_seq_hash'
-  # TODO: what happens here for piscem/oarfish?
   metaInfo <- reshapeMetaInfo(metaInfo, hashType)
 
   # add the per-sample metadata from quantification JSON files to the metadata list object
@@ -354,7 +353,7 @@ tximeta <- function(coldata,
 
   # special edits to rownames for GENCODE to remove chars after `|`
   # (and user didn't use --gencode when building Salmon index)
-  assays <- stripAllCharsAfterBar(assay)
+  assays <- stripAllCharsAfterBar(assays)
   
   # check concordance
   assays <- checkAssays2Txps(assays, txps)
@@ -388,6 +387,9 @@ tximeta <- function(coldata,
                              metadata=metadata)
   se  
 }
+
+# quantifiers have different location of storing index digest (hash)
+type2hashType <- function(type) if (!type %in% c("piscem","oarfish")) "salmon" else type
 
 # helper to swap across quantifiers that vary in location of the index sequence digest (hash)
 readIndexSeqHash <- function() {
