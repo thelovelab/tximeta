@@ -432,7 +432,7 @@ gtf2RefSeq <- function(gtf, genome) {
 # identify the txome based on the indexSeqHash
 # - first look into the linkedTxomeTbl
 # - secondly look into the pre-computed hash table in `extdata`
-getTxomeInfo <- function(indexSeqHash) {
+getTxomeInfo <- function(indexSeqHash, quiet=FALSE) {
 
   # first try to find any linkedTxomes in the linkedTxomeTbl
   bfcloc <- getBFCLoc()
@@ -441,19 +441,24 @@ getTxomeInfo <- function(indexSeqHash) {
   # there should only be one such entry in the tximeta bfc
   stopifnot(bfccount(q) < 2)
   if (bfccount(q) == 1) {
+
+    # first check linkedTxomes, which should take priority over pre-computed
     loadpath <- bfcrpath(bfc, "linkedTxomeTbl")
     linkedTxomeTbl <- readRDS(loadpath)
     m <- match(indexSeqHash, linkedTxomeTbl$sha256)
     if (!is.na(m)) {
       txomeInfo <- as.list(linkedTxomeTbl[m,])
       txomeInfo$linkedTxome <- TRUE
-      message(paste0("found matching linked transcriptome:\n[ ",
-                     txomeInfo$source," - ",txomeInfo$organism," - release ",txomeInfo$release," ]"))
+      if (!quiet) {
+        message(paste0("found matching linked transcriptome:\n[ ",
+                txomeInfo$source, " - ", txomeInfo$organism,
+                " - release ", txomeInfo$release," ]"))
+      }
       return(txomeInfo)
-    }
+      }
   }
 
-  # if not in linkedTxomes try the pre-computed hashtable...
+  # if not in linkedTxomes try the pre-computed hash table...
 
   # TODO best this would be an external data package / future GA4GH RefGet API
   hashfile <- file.path(system.file("extdata",package="tximeta"),"hashtable.csv")
@@ -466,9 +471,14 @@ getTxomeInfo <- function(indexSeqHash) {
       txomeInfo$fasta <- strsplit(txomeInfo$fasta, " ")
     }
     txomeInfo$linkedTxome <- FALSE
-    message(paste0("found matching transcriptome:\n[ ",
-                   txomeInfo$source," - ",txomeInfo$organism," - release ",txomeInfo$release," ]"))
+    if (!quiet) {
+      message(paste0("found matching transcriptome:\n[ ",
+                     txomeInfo$source, " - ", txomeInfo$organism,
+                     " - release ", txomeInfo$release," ]"))
+    }
+    
     return(txomeInfo)
+    
   }
   
   return(NULL)

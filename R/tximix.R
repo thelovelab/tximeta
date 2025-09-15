@@ -87,7 +87,23 @@ tximixInspect <- function(se, type="oarfish") {
   )
 
   indexSeqSubstr <- substr(indexSeqHashes, 1, 6)
+ 
+  names(indexSeqHashes) <- c("annotated","novel")
 
-  tibble(index=c("annotated","novel"), indexSeqSubstr, indexSeqHashes)
+  txomeInfo <- sapply(indexSeqHashes, getTxomeInfo, quiet=TRUE)
+
+  # put whether it exists in the hash table?
+  # put the number of rows from this resource?
+
+  out <- tibble(index=c("annotated","novel"), 
+  source=NA, organism=NA, release=NA, linkedTxome=NA,
+  indexSeqSubstr, indexSeqHashes)
+  for (i in c("annotated","novel")) {
+    if (!is.null(txomeInfo[[i]])) {
+      cols <- c("source","organism","release","linkedTxome")
+      out[match(i,out$index),cols] <- txomeInfo[[i]][cols]
+    }
+  }
   
+  out
 }
