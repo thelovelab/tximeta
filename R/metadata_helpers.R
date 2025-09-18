@@ -1,20 +1,9 @@
+# this initializes the metadata list with basic info
 makeMetadata <- function(type) {
   tximetaInfo <- list(version=packageVersion("tximeta"),
                       type=type,
                       importTime=Sys.time())
   list(tximetaInfo=tximetaInfo)
-}
-
-missingMetadata <- function(se, summarize=FALSE) {
-  msg <- "use of this function requires transcriptome metadata which is missing.
-  either: (1) the object was not produced by tximeta, or
-  (2) tximeta could not recognize the digest of the transcriptome.
-  If (2), use a linkedTxome to provide the missing metadata and rerun tximeta"
-  if (summarize) {
-    msg <- paste0(msg, "
-  or provide a `tx2gene` data.frame and set `skipRanges=TRUE`")
-  }
-  if (is.null(metadata(se)$txomeInfo)) stop(msg)
 }
 
 # read metadata files from Salmon/piscem/oarfish output
@@ -121,4 +110,16 @@ updateTxpsSeqinfo <- function(txps, txomeInfo, skipSeqinfo) {
   }
 
   txps
+}
+
+missingMetadata <- function(se, summarize=FALSE) {
+  msg <- "use of this function requires transcriptome metadata which is missing.
+  either: (1) the object was not produced by tximeta, or
+  (2) tximeta could not recognize the digest of the transcriptome.
+  If (2), use a linkedTxome to provide the missing metadata and rerun tximeta"
+  if (summarize) {
+    msg <- paste0(msg, "
+  or provide a `tx2gene` data.frame and set `skipRanges=TRUE`")
+  }
+  if (is.null(metadata(se)$txomeInfo)) stop(msg)
 }

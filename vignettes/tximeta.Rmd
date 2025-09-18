@@ -605,8 +605,6 @@ can be done before building the Salmon index, by changing periods in
 the gene identifier to an underscore. See 
 [this GitHub issue](https://github.com/thelovelab/tximeta/issues/68) for details.
 
-
-
 By default, `linkedTxome` will write out a JSON file which can be
 shared with others, linking the digest of the index with the other
 metadata, including FASTA and GTF sources. By default, it will write
@@ -672,7 +670,7 @@ index to its sources, and (2) it creates a JSON file such that this
 *linkedTxome* can be shared.
 
 ```{r}
-tmp <- tempdir()
+tmp <- tempdir() # just for vignette demo, make temp directory
 jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
 makeLinkedTxome(indexDir=indexDir,
                 source="LocalEnsembl", organism="Drosophila melanogaster",
@@ -731,6 +729,7 @@ if (interactive()) {
 }
 bfc <- BiocFileCache(bfcloc)
 bfcinfo(bfc)
+# only run the next line if you want to remove your linkedTxome table!
 bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 bfcinfo(bfc)
 ```
@@ -779,6 +778,7 @@ if (interactive()) {
 }
 bfc <- BiocFileCache(bfcloc)
 bfcinfo(bfc)
+# only run the next line if you want to remove your linkedTxome table!
 bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 bfcinfo(bfc)
 ```

@@ -243,7 +243,7 @@ tximeta <- function(coldata,
   # remove the files column from colData
   coldata <- subset(coldata, select=-files)
 
-  # tximeta metadata
+  # metadata list with the tximeta package version, import type, and timestamp
   metadata <- makeMetadata(type)
 
   # when to skip attempting to load metadata
@@ -277,13 +277,17 @@ tximeta <- function(coldata,
   hashType <- type2hashType(type)
 
   # check the sequence digest (hash) of the transcriptome index with 1st sample
-  # readIndexSeqHash() returns a list of functions
+  # readIndexSeqHash() returns a list of functions.
+  # note that for oarfish, we are only looking at the `annotated_transcripts_digest`
+  # for annotated + novel, use tximix...
   indexSeqHash <- readIndexSeqHash()[[hashType]](metaInfo[[1]])
   if (length(files) > 1) {
     hashes <- sapply(metaInfo, readIndexSeqHash()[[hashType]])
     if (!all(hashes == indexSeqHash)) {
       stop("the samples do not share the same index, and cannot be imported")
     }
+    if (hashType == "oarfish") 
+      message("using `annotated_transcripts_digest` to match digests, see also `tximix()`")
     checkInfReps(metaInfo)
   }
 

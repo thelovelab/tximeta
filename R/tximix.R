@@ -67,37 +67,46 @@ tximix <- function(coldata, type="oarfish", ...) {
   return(se)
 }
 
-#' Inspect the annotations of a tximix-imported SE object
+#' Inspect digest matches of a tximix-imported SE object
 #'
-#' @param se the SummarizedExperiment
+#' @param se the SummarizedExperiment, or alternatively just
+#' `metadata(se)$quantInfo`, a list of metadata
+#' information from the quantification tool 
 #' @param type what quantifier was used (see \code{\link{tximport}})
-#'
+#' @param expanded_digest whether to include the full digest in the output, 
+#' or just a shortened 6-char version
+#' 
 #' @return a tibble of the annotated and novel transcriptome information,
-#' e.g. the hash, and if there is a match in the hash tables
+#' e.g. the index sequence digest, and if there is a match in the hash tables
 #' 
 #' @export
-tximixInspect <- function(se, type="oarfish") {
+tximixInspectDigests <- function(se, type="oarfish", expanded_digest=FALSE) {
   
   # take from first sample
-  indexSeqHashList <- metadata(se)$quantInfo$digest[,1]
-
-  indexSeqHashes <- c(
-    indexSeqHashList$annotated_transcripts_digest$sha256_digests$sha256_seqs,
-    indexSeqHashList$novel_transcripts_digest$sha256_digests$sha256_seqs
+  if (is(se, "SummarizedExperiment")) {
+    digestList <- metadata(se)$quantInfo$digest[,1]
+  } else {
+    # assume `se` isn't SE but the `quantInfo` item
+    digestList <- se$digest[,1]
+  }
+  
+  digests <- c(
+    annotated = digestList$annotated_transcripts_digest$sha256_digests$sha256_seqs,
+    novel = digestList$novel_transcripts_digest$sha256_digests$sha256_seqs
   )
 
-  indexSeqSubstr <- substr(indexSeqHashes, 1, 6)
+  small_digest <- substr(digests, 1, 6)
  
-  names(indexSeqHashes) <- c("annotated","novel")
+  txomeInfo <- sapply(digests, getTxomeInfo, quiet=TRUE)
 
-  txomeInfo <- sapply(indexSeqHashes, getTxomeInfo, quiet=TRUE)
-
-  # put whether it exists in the hash table?
-  # put the number of rows from this resource?
-
-  out <- tibble(index=c("annotated","novel"), 
-  source=NA, organism=NA, release=NA, linkedTxome=NA,
-  indexSeqSubstr, indexSeqHashes)
+  out <- tibble(
+    index=c("annotated","novel"), 
+    source=NA, organism=NA, release=NA, 
+    linkedTxome=NA, small_digest
+  )
+  if (expanded_digest) {
+    out$digest <- digests
+  }
   for (i in c("annotated","novel")) {
     if (!is.null(txomeInfo[[i]])) {
       cols <- c("source","organism","release","linkedTxome")

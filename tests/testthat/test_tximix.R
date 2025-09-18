@@ -5,30 +5,57 @@ test_that("tximix works as expected", {
   names <- paste0("rep", 2:4)
   files <- file.path(dir, paste0("sgnex_h9_", names, ".quant.gz"))
   coldata <- data.frame(files, names)
+
+  # skipMeta: we get back the quantification counts but no metadata
   se0 <- tximeta(coldata, type="oarfish", skipMeta=TRUE)
 
-  # warning: the annotation is missing some transcripts
-  se <- tximeta(coldata, type="oarfish")
+  # try to import metadata: it will look only at the annotated digest
+  expect_warning({
+    se <- tximeta(coldata, type="oarfish")
+  }, "the annotation is missing some transcripts")
 
   not_in_annotated <- rownames(se0)[!rownames(se0) %in% rownames(se)]
-  table(grepl("novel",not_in_annotated)) # 11000 missing (500 x 22 chroms)
+  
+  # 22 chr x 500 txps per chrom = 11000 novel txps
+  expect_equal(sum(grepl("novel",not_in_annotated)), 11000L)
 
-  rowData(se) # has tx_id, gene_id, tx_name from TxDb also ranges
+  # rowData(se) # has tx_id, gene_id, tx_name from TxDb also ranges
 
-  novel <- data.frame(
-    seqnames = rep(1:22, each=500),
+  # define novel set so we can add metadata
+ novel <- data.frame(
+    seqnames = paste0("chr", rep(1:22, each=500)),
     start = 1e6 + 1 + 0:499 * 1000,
     width = 1000, strand = "+",
-    id = paste0("novel", 1:(22*500))
+    tx_id = paste0("novel", 1:(22*500)),
+    tx_name = paste0("novel", 1:(22*500)),
+    gene_id = paste0("novel_gene", rep(1:(22*10), each=50)),
+    type = "protein_coding"
   )
   novel$end <- novel$start + novel$width - 1
+  novel$exon_id <- novel$tx_id
+  head(novel)
   library(GenomicRanges)
-  novel <- as(novel, "GRanges")
+  novel_gr <- as(novel, "GRanges")
+  seqinfo(novel_gr) <- seqinfo(se)
 
-  # just an unranged SE
-  se <- tximix(coldata, type="oarfish")
+  # first step just returns an unranged SE
+  se_mix <- tximix(coldata, type="oarfish")
   
-  # shows the indices and their hash
-  tximixInspect(se)
+  # shows the indices and their digests
+  tximixInspectDigests(se_mix)
+
+  # maybe then the user wants to add metadata via:
+  # linkedTxome
+  # TxDb
+  # GRanges
+  # tibble or data.frame or DataFrame
+
+  # try this: make a GRanges for the novel, make a TxDb, write a GTF...
+  library(txdbmaker)
+  #txdb <- txdbmaker::makeTxDbFromGRanges(
+  #  novel_gr,
+  #  metadata = data.frame(name=c("organism","genome"), value=c("Homo sapiens","hg38"))
+  #)
+
 
 })
