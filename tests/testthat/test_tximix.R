@@ -27,12 +27,10 @@ test_that("tximix works as expected", {
     start = 1e6 + 1 + 0:499 * 1000,
     width = 1000, strand = "+",
     tx_id = paste0("novel", 1:(22*500)),
-    tx_name = paste0("novel", 1:(22*500)),
     gene_id = paste0("novel_gene", rep(1:(22*10), each=50)),
     type = "protein_coding"
   )
   novel$end <- novel$start + novel$width - 1
-  novel$exon_id <- novel$tx_id
   head(novel)
   library(GenomicRanges)
   novel_gr <- as(novel, "GRanges")
@@ -44,18 +42,15 @@ test_that("tximix works as expected", {
   # shows the indices and their digests
   tximixInspectDigests(se_mix)
 
+  # populate what transcript metadata we can find:
+  se_update <- tximixUpdateTxpData(se_mix)
+  mcols(se_update)
+
   # maybe then the user wants to add metadata via:
-  # linkedTxome
-  # TxDb
+  # linkedTxome -- they can go do this
+  # linkedTxpData -- they can go do this
   # GRanges
-  # tibble or data.frame or DataFrame
-
-  # try this: make a GRanges for the novel, make a TxDb, write a GTF...
-  library(txdbmaker)
-  #txdb <- txdbmaker::makeTxDbFromGRanges(
-  #  novel_gr,
-  #  metadata = data.frame(name=c("organism","genome"), value=c("Homo sapiens","hg38"))
-  #)
-
+  # data.frame
+  tximixAddTxpData(se_mix, txpData=novel)
 
 })

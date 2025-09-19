@@ -116,3 +116,81 @@ tximixInspectDigests <- function(se, type="oarfish", expanded_digest=FALSE) {
   
   out
 }
+
+#' Update transcript metadatda for a tximix-imported SE object
+#' 
+#' Will update the metadata on the SE object, using either
+#' linkedTxome or linkedTxpData (preference to the former)
+#'
+#' @param se the SummarizedExperiment
+#' @param ranges logical, whether to add rowRanges or rowData
+#' @param key the name of the column to use as the key
+#' for merging metadata, default to `tx_name` which 
+#' often matches the transcript names in GENCODE
+#' 
+#' @return a SummarizedExperiment with additional rowData,
+#' or a RangedSummarizedExperiment
+#' 
+#' @export
+tximixUpdateTxpData <- function(se, ranges=FALSE, key="tx_name") {
+
+  # pull out digest list information from quantification tool
+  digestList <- metadata(se)$quantInfo$digest[,1]
+  digests <- c(
+    annotated = digestList$annotated_transcripts_digest$sha256_digests$sha256_seqs,
+    novel = digestList$novel_transcripts_digest$sha256_digests$sha256_seqs
+  )
+
+  # pull out the txomeInfo for each
+  txomeInfo <- sapply(digests, getTxomeInfo, quiet=TRUE)
+
+  for (i in c("annotated","novel")) {
+    if (!is.null(txomeInfo[[i]])) {
+      # get the txdb
+      txdb <- getTxDb(txomeInfo[[i]], useHub=FALSE, skipFtp=FALSE)
+      txps <- getRanges(txdb=txdb, txomeInfo=txomeInfo[[i]], type="txp")
+      matches <- intersect(rownames(se), names(txps))
+      if (length(matches) > 0) {
+        idx_txps <- match(matches, names(txps)) # index of the matches in the ranges
+        rowdata <- rowData(se)
+        if (ncol(rowdata) == 0) {
+          rowdata[[key]] <- rownames(se)
+        }
+        txpDataToAdd <- mcols(txps)[idx_txps,]
+        # doing something manual instead of using `merge`
+        # which converts everything to data.frame
+        for (col in colnames(txpDataToAdd)) {
+          if (!col %in% colnames(rowdata)) {
+            rowdata[col] <- NA
+          }
+          idx_rowdata <- match(matches, rownames(se))
+          rowdata[idx_rowdata,col] <- txpDataToAdd[,col]
+        }
+      } else {
+        message(paste("no matching transcripts for the",i,"index"))
+      }
+      SummarizedExperiment::rowData(se) <- rowdata
+    }
+  }
+  se
+}
+
+#' Add transcript metadatda to a tximix-imported SE object
+#' 
+#' The user can provide txpData to be added to the object.
+#' For persistent storage and retrieval of this metadata,
+#' use `linkedTxpData` instead.
+#'
+#' @param se the SummarizedExperiment
+#' @param txpData a data.frame or the like with 
+#' columns of metadata to add, or alternatively
+#' a GRanges corresponding to rows of the SE
+#' 
+#' @return a SummarizedExperiment with additional rowData,
+#' or a RangedSummarizedExperiment
+#' 
+#' @export
+tximixAddTxpData <- function(se, txpData) {
+  se
+}
+

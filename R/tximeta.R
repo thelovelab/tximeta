@@ -489,6 +489,8 @@ getTxomeInfo <- function(indexSeqHash, quiet=FALSE) {
 }
 
 # build or load a TxDb/EnsDb for the dataset
+# useHub = whether to look in AnnotationHub for a resoruce
+# skipFtp = whether to replace \code{ftp} with \code{https}
 getTxDb <- function(txomeInfo, useHub=TRUE, skipFtp=FALSE) {
   # TODO what if there are multiple GTF files?
   stopifnot(length(txomeInfo$gtf) == 1)
