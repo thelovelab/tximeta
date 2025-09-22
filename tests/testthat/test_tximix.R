@@ -26,7 +26,7 @@ test_that("tximix works as expected", {
     seqnames = paste0("chr", rep(1:22, each=500)),
     start = 1e6 + 1 + 0:499 * 1000,
     width = 1000, strand = "+",
-    tx_id = paste0("novel", 1:(22*500)),
+    tx_name = paste0("novel", 1:(22*500)),
     gene_id = paste0("novel_gene", rep(1:(22*10), each=50)),
     type = "protein_coding"
   )
@@ -34,6 +34,7 @@ test_that("tximix works as expected", {
   head(novel)
   library(GenomicRanges)
   novel_gr <- as(novel, "GRanges")
+  names(novel_gr) <- novel$tx_name
   seqinfo(novel_gr) <- seqinfo(se)
 
   # first step just returns an unranged SE
@@ -46,11 +47,17 @@ test_that("tximix works as expected", {
   se_update <- tximixUpdateTxpData(se_mix)
   mcols(se_update)
 
+  # can add ranges, but that requires subsetting to a smaller object 
+  # as we can't have a mix of ranges + no-range-data rows
+  se_update_w_ranges <- tximixUpdateTxpData(se_mix, ranges=TRUE)
+  mcols(se_update_w_ranges)
+
   # maybe then the user wants to add metadata via:
   # linkedTxome -- they can go do this
   # linkedTxpData -- they can go do this
   # GRanges
   # data.frame
-  tximixAddTxpData(se_mix, txpData=novel)
+  se_update <- tximixUpdateTxpData(se_mix, novel_gr)
+  mcols(se_update)
 
 })
