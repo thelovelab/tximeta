@@ -4,7 +4,7 @@
 \alias{tximixInspectDigests}
 \title{Inspect digest matches of a tximix-imported SE object}
 \usage{
-tximixInspectDigests(se, type = "oarfish", expanded_digest = FALSE)
+tximixInspectDigests(se, type = "oarfish", expanded = FALSE, count = FALSE)
 }
 \arguments{
 \item{se}{the SummarizedExperiment, or alternatively just
@@ -13,8 +13,11 @@ information from the quantification tool}
 
 \item{type}{what quantifier was used (see \code{\link{tximport}})}
 
-\item{expanded_digest}{whether to include the full digest in the output, 
+\item{expanded}{whether to include the expanded (full) digest string in the output, 
 or just a shortened 6-char version}
+
+\item{count}{whether to count the number of transcripts associated with 
+metadata present in transcriptomes that match the digest(s)}
 }
 \value{
 a tibble of the annotated and novel transcriptome information,
