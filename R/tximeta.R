@@ -286,8 +286,15 @@ tximeta <- function(coldata,
     if (!all(hashes == indexSeqHash)) {
       stop("the samples do not share the same index, and cannot be imported")
     }
-    if (hashType == "oarfish") 
-      message("using `annotated_transcripts_digest` to match digests, see also `tximix()`")
+    if (hashType == "oarfish") { 
+      message("\nNote: tximeta() uses the `annotated` index digest to attach metadata,\n",
+      "discarding transcripts not associated with the `annotated` index.")
+      # custom check: if user is importing oarfish data and using the 'novel' flag... prompt about tximix()
+      if ("novel_transcripts_digest" %in% names(metaInfo[[1]]$digest)) {
+        message("\nNote: `novel` digest detected in quantification files.\n",
+        "Use instead tximix(), which imports data and metadata from multiple indices.\n")
+      }
+    }
     checkInfReps(metaInfo)
   }
 

@@ -6,10 +6,14 @@ test_that("tximix works as expected", {
   files <- file.path(dir, paste0("sgnex_h9_", names, ".quant.gz"))
   coldata <- data.frame(files, names)
 
+  # setting: user has run oarfish with, e.g. 
+  # --annotated gencode.v48.transcripts.fa.gz 
+  # --novel novel.fa.gz
+
   # skipMeta: we get back the quantification counts but no metadata
   se0 <- tximeta(coldata, type="oarfish", skipMeta=TRUE)
 
-  # try to import metadata: it will look only at the annotated digest
+  # this prompts them to use tximix()
   expect_warning({
     se <- tximeta(coldata, type="oarfish")
   }, "the annotation is missing some transcripts")
@@ -25,12 +29,12 @@ test_that("tximix works as expected", {
  novel <- data.frame(
     seqnames = paste0("chr", rep(1:22, each=500)),
     start = 1e6 + 1 + 0:499 * 1000,
-    width = 1000, strand = "+",
+    end = 1e6 + 1 + 0:499 * 1000 + 1000 - 1,
+    strand = "+",
     tx_name = paste0("novel", 1:(22*500)),
     gene_id = paste0("novel_gene", rep(1:(22*10), each=50)),
     type = "protein_coding"
   )
-  novel$end <- novel$start + novel$width - 1
   head(novel)
   library(GenomicRanges)
   novel_gr <- as(novel, "GRanges")
@@ -52,12 +56,15 @@ test_that("tximix works as expected", {
   se_update_w_ranges <- tximixUpdateTxpData(se_mix, ranges=TRUE)
   mcols(se_update_w_ranges)
 
-  # maybe then the user wants to add metadata via:
-  # linkedTxome -- they can go do this
-  # linkedTxpData -- they can go do this
-  # GRanges
-  # data.frame
-  se_update <- tximixUpdateTxpData(se_mix, novel_gr)
+  # the user then can add metadata via:
+  # linkedTxome() / linkedTxpData() -- they can go do this
+  # GRanges or data.frame-like thing
+  se_update <- tximixUpdateTxpData(se_mix, novel[,-(1:4)])
   mcols(se_update)
+  table(mcols(se_update)$index)
+
+  se_update_w_ranges <- tximixUpdateTxpData(se_mix, novel_gr, ranges=TRUE)
+  mcols(se_update_w_ranges)
+  table(mcols(se_update_w_ranges)$index)
 
 })

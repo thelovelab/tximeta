@@ -4,13 +4,15 @@
 \alias{tximix}
 \title{Import transcript quantification across sets of transcripts}
 \usage{
-tximix(coldata, type = "oarfish", ...)
+tximix(coldata, type = "oarfish", quiet = FALSE, ...)
 }
 \arguments{
 \item{coldata}{data.frame with columns \code{files} and \code{names}
 as in \code{\link{tximeta}}}
 
 \item{type}{what quantifier was used (see \code{\link{tximport}})}
+
+\item{quiet}{whether to suppress messages}
 
 \item{...}{passed to tximport}
 }

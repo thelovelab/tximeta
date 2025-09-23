@@ -9,12 +9,13 @@
 #' @param coldata data.frame with columns \code{files} and \code{names}
 #' as in \code{\link{tximeta}}
 #' @param type what quantifier was used (see \code{\link{tximport}})
+#' @param quiet whether to suppress messages
 #' @param ... passed to tximport
 #'
 #' @return an unranged SummarizedExperiment
 #'
 #' @export
-tximix <- function(coldata, type="oarfish", ...) {
+tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
   stopifnot(type == "oarfish")
   
   # tximeta metadata
@@ -64,6 +65,13 @@ tximix <- function(coldata, type="oarfish", ...) {
 
   se <- makeUnrangedSE(assays, coldata, metadata)
   
+  if (!quiet)
+    message("returning unranged SummarizedExperiment, other tximix functions:\n",
+            "-- tximixInspectDigests() to check matching digests\n",
+            "-- linkedTxome() / linkedTxpData() to link new digests to GTF / custom metadata\n",
+            "-- tximixUpdateTxpData() to update metadata and optionally add ranges"
+          )
+
   return(se)
 }
 
@@ -124,8 +132,10 @@ tximixInspectDigests <- function(se, type="oarfish", expanded_digest=FALSE) {
 #'
 #' @param se the SummarizedExperiment
 #' @param txpData either GRanges or data.frame-type object
-#' to use if there is not a match. This is used on a one-time
-#' basis, see `linkedTxome` or `linkedTxpData` for persistent
+#' to use if there is not a match based on digest. 
+#' This is used on a one-time basis, and transcripts
+#' will be marked in metadata columns as `index = "user"``.
+#' See `linkedTxome` or `linkedTxpData` for persistent
 #' metadata storage/retrieval
 #' @param ranges logical, whether to add rowRanges or rowData
 #' @param order order in which to update the metadata
@@ -192,7 +202,8 @@ tximixUpdateTxpData <- function(
         if (ncol(rowdata) == 0) {
           rowdata[[key]] <- rownames(se)
         }
-        rowdata <- mergeTxpDataIntoRowData(rowdata, txpDataToAdd, matches)
+        # add in the metadata to the matching rows, and the index name
+        rowdata <- mergeTxpDataIntoRowData(rowdata, txpDataToAdd, matches, indexName=i)
 
       } else {
         # matches of the transcripts from TxDb to the rows of SE was 0
@@ -202,15 +213,17 @@ tximixUpdateTxpData <- function(
       # there was no linkedTxome to find
       message(
         paste0("--", i, " index: no transcript metadata found\n"),
-        "  add a 'linkedTxome', 'linkedTxpData', or provide 'txpData' to this function"
+        "  consider to add a 'linkedTxome', 'linkedTxpData'"
       )
     }
     # add the newly updated rowdata back to the SE
     SummarizedExperiment::rowData(se) <- rowdata
   }
 
-  # aside from the above which looks up in BiocFileCache, 
-  # here user can provide data on a one-time basis
+  ### txpData ###
+
+  # the above code looks up digests in the information stored with BiocFileCache, 
+  # here user can provide 'txpData' on a one-time basis, labelled `index = "user"`
   if (!is.null(txpData)) {
     if (is(txpData, "GRanges")) {
       txps <- txpData # these will be used for the ranges
@@ -231,7 +244,7 @@ tximixUpdateTxpData <- function(
         ranges_to_add <- c(ranges_to_add, txps[idx_txps])
       }
       rowdata <- rowData(se)
-      rowdata <- mergeTxpDataIntoRowData(rowdata, txpDataToAdd, matches)
+      rowdata <- mergeTxpDataIntoRowData(rowdata, txpDataToAdd, matches, indexName="user")
       SummarizedExperiment::rowData(se) <- rowdata
     } else {
       if (is(txpData, "GRanges")) {
@@ -266,14 +279,19 @@ tximixUpdateTxpData <- function(
 }
 
 # txpDataToAdd and matches are in same order, not true for rowdata
-mergeTxpDataIntoRowData <- function(rowdata, txpDataToAdd, matches) {
+mergeTxpDataIntoRowData <- function(rowdata, txpDataToAdd, matches, indexName) {
+  # store the new transcript data back in the appropriate rows of the SE
+  idx_rowdata <- match(matches, rownames(rowdata)) # index of the matches in the SE
   for (col in colnames(txpDataToAdd)) {
     if (!col %in% colnames(rowdata)) {
       rowdata[col] <- NA
     }
-    # store the new transcript data back in the appropriate rows of the SE
-    idx_rowdata <- match(matches, rownames(rowdata)) # index of the matches in the SE
     rowdata[idx_rowdata, col] <- txpDataToAdd[, col]
   }
+  # add the 'index' column and the indexName to the matching rows
+  if (!"index" %in% colnames(rowdata)) {
+    rowdata["index"] <- NA
+  }
+  rowdata[idx_rowdata, "index"] <- indexName
   rowdata
 }

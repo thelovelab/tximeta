@@ -16,8 +16,10 @@ tximixUpdateTxpData(
 \item{se}{the SummarizedExperiment}
 
 \item{txpData}{either GRanges or data.frame-type object
-to use if there is not a match. This is used on a one-time
-basis, see `linkedTxome` or `linkedTxpData` for persistent
+to use if there is not a match based on digest. 
+This is used on a one-time basis, and transcripts
+will be marked in metadata columns as `index = "user"``.
+See `linkedTxome` or `linkedTxpData` for persistent
 metadata storage/retrieval}
 
 \item{ranges}{logical, whether to add rowRanges or rowData}
