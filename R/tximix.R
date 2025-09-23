@@ -81,19 +81,22 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 #' `metadata(se)$quantInfo`, a list of metadata
 #' information from the quantification tool 
 #' @param type what quantifier was used (see \code{\link{tximport}})
-#' @param expanded_digest whether to include the full digest in the output, 
+#' @param expanded whether to include the expanded (full) digest string in the output, 
 #' or just a shortened 6-char version
+#' @param count whether to count the number of transcripts associated with 
+#' metadata present in transcriptomes that match the digest(s)
 #' 
 #' @return a tibble of the annotated and novel transcriptome information,
 #' e.g. the index sequence digest, and if there is a match in the hash tables
 #' 
 #' @export
-tximixInspectDigests <- function(se, type="oarfish", expanded_digest=FALSE) {
+tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE) {
   
   # take from first sample
   if (is(se, "SummarizedExperiment")) {
     digestList <- metadata(se)$quantInfo$digest[,1]
   } else {
+    stopifnot(!count) # counting transcripts to indices requires rownames of an SE
     # assume `se` isn't SE but the `quantInfo` item
     digestList <- se$digest[,1]
   }
@@ -112,16 +115,34 @@ tximixInspectDigests <- function(se, type="oarfish", expanded_digest=FALSE) {
     source=NA, organism=NA, release=NA, 
     linkedTxome=NA, small_digest
   )
-  if (expanded_digest) {
+
+  # put in the full digest if requested
+  if (expanded) {
     out$digest <- digests
   }
+
+  # columns to pull from the txomeInfo item
+  cols <- c("source","organism","release","linkedTxome")
   for (i in c("annotated","novel")) {
     if (!is.null(txomeInfo[[i]])) {
-      cols <- c("source","organism","release","linkedTxome")
       out[match(i,out$index),cols] <- txomeInfo[[i]][cols]
     }
   }
-  
+
+  if (count) {
+    out$count <- 0
+    for (i in c("annotated","novel")) {
+      if (!is.null(txomeInfo[[i]])) {
+        suppressMessages({
+          txdb <- getTxDb(txomeInfo[[i]], useHub = FALSE, skipFtp = FALSE)
+          txps <- getRanges(txdb = txdb, txomeInfo = txomeInfo[[i]], type = "txp")
+        })
+        # TODO this assumes ranged, what about linkedTxpData
+        out[match(i,out$index),"count"] <- sum(names(txps) %in% rownames(se))
+      }
+    }
+  }
+
   out
 }
 

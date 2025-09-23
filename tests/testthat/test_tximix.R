@@ -46,6 +46,8 @@ test_that("tximix works as expected", {
   
   # shows the indices and their digests
   tximixInspectDigests(se_mix)
+  # this is slower, requires loading the TxDb and ranges...
+  tximixInspectDigests(se_mix, count=TRUE)
 
   # populate what transcript metadata we can find:
   se_update <- tximixUpdateTxpData(se_mix)
