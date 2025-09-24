@@ -48,6 +48,14 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
       stop("the samples do not share the same index, and cannot be imported")
     }
   }
+
+  digestList <- names(metaInfo[[1]]$digest)
+  if (!all(paste0(c("annotated","novel"),"_transcripts_digest") %in% digestList))
+      stop(
+      "tximix() is designed for mixed `annotated` and `novel` transcript references\n",
+      "otherwise use tximeta() which will prioritize the `annotated` transcript set\n",
+      "or tximeta(..., skipMeta=TRUE) to import all transcripts"
+    )
   
   # reshape this list object, invert the JSON hierarchy 
   # and examine consistency of the digest 'index_seq_hash'
@@ -66,7 +74,7 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
   se <- makeUnrangedSE(assays, coldata, metadata)
   
   if (!quiet)
-    message("returning unranged SummarizedExperiment, other tximix functions:\n",
+    message("returning un-ranged SummarizedExperiment, other tximix functions:\n",
             "-- tximixInspectDigests() to check matching digests\n",
             "-- linkedTxome() / linkedTxpData() to link new digests to GTF / custom metadata\n",
             "-- tximixUpdateTxpData() to update metadata and optionally add ranges"
@@ -101,6 +109,9 @@ tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE
     digestList <- se$digest[,1]
   }
   
+  # need to check, even though tximix would have thrown error
+  stopifnot(all(paste0(c("annotated","novel"),"_transcripts_digest") %in% names(digestList)))
+
   digests <- c(
     annotated = digestList$annotated_transcripts_digest$sha256_digests$sha256_seqs,
     novel = digestList$novel_transcripts_digest$sha256_digests$sha256_seqs
@@ -110,6 +121,7 @@ tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE
  
   txomeInfo <- sapply(digests, getTxomeInfo, quiet=TRUE)
 
+  # this is the tibble the function will return
   out <- tibble(
     index=c("annotated","novel"), 
     source=NA, organism=NA, release=NA, 
@@ -124,6 +136,7 @@ tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE
   # columns to pull from the txomeInfo item
   cols <- c("source","organism","release","linkedTxome")
   for (i in c("annotated","novel")) {
+    # if there is a txomeInfo match, populate the outgoing tibble
     if (!is.null(txomeInfo[[i]])) {
       out[match(i,out$index),cols] <- txomeInfo[[i]][cols]
     }
@@ -180,6 +193,7 @@ tximixUpdateTxpData <- function(
 
   # pull out digest list information from quantification tool
   digestList <- metadata(se)$quantInfo$digest[, 1]
+  stopifnot(all(paste0(c("annotated","novel"),"_transcripts_digest") %in% names(digestList)))
   digests <- c(
     annotated = digestList$annotated_transcripts_digest$sha256_digests$sha256_seqs,
     novel = digestList$novel_transcripts_digest$sha256_digests$sha256_seqs
@@ -234,7 +248,7 @@ tximixUpdateTxpData <- function(
       # there was no linkedTxome to find
       message(
         paste0("--", i, " index: no transcript metadata found\n"),
-        "  consider to add a 'linkedTxome', 'linkedTxpData'"
+        "  consider to add a 'linkedTxome', or 'linkedTxpData'"
       )
     }
     # add the newly updated rowdata back to the SE

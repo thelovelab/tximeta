@@ -1,7 +1,9 @@
 # breaking out a lot of alevin specific code that was in main tximeta() body
+# Sep 2025 -- this could be cleaned up more...
+# mostly this is being preserved as legacy code for importing alevin as SE/SCE
 tximetaAlevin <- function(
   coldata,
-  type,
+  type = "alevin",
   txOut,
   skipMeta,
   skipSeqinfo,
@@ -13,6 +15,8 @@ tximetaAlevin <- function(
   ...
 ) {
   message(paste("importing", type, "quantification files"))
+
+  files <- as.character(coldata$files)
 
   if (length(files) > 1) {
     stop("alevin import currently only supports a single experiment")
