@@ -13,9 +13,9 @@ test_that("tximeta works as expected", {
   makeLinkedTxome(indexDir=indexDir, source="LocalEnsembl", organism="Drosophila melanogaster",
                   release="98", genome="BDGP6.22", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
 
-  # TODO why not throwing warnings on Bioc
-  #expect_warning({se <- tximeta(coldata)}, "annotation is missing")
-  se <- tximeta(coldata)
+  # TODO not throwing warnings on Bioc machines?
+  expect_warning({se <- tximeta(coldata)}, "the annotation is missing")
+  #se <- tximeta(coldata)
 
   # check adding IDs
   library(org.Dm.eg.db)
@@ -55,10 +55,7 @@ test_that("tximeta works as expected", {
     cdna <- retrieveCDNA(se)
   }
   
-  # just a vector of file paths is ok...
-  # TODO why not throwing warnings on Bioc
-  #expect_warning({se <- tximeta(files)})
-  se <- tximeta(files)
+  expect_warning({se <- tximeta(files)}, "the annotation is missing")
 
   # check error on txOut=FALSE
   expect_error({se <- tximeta(coldata, txOut=FALSE)},
@@ -70,7 +67,10 @@ test_that("tximeta works as expected", {
   expect_error({addIds(se)}, "transcriptome metadata")
 
   # check customMetaInfo
-  se <- tximeta(coldata, customMetaInfo="aux_info/meta_info.json")
+  expect_warning(
+    {se <- tximeta(coldata, customMetaInfo="aux_info/meta_info.json")}, 
+    "the annotation is missing"
+  )
   expect_error(tximeta(coldata, customMetaInfo="foobar.json"),
                "metadata files are missing")
 
@@ -82,6 +82,7 @@ test_that("tximeta works as expected", {
 
 test_that("tximeta can import GENCODE and Ensembl", {
 
+  # breaks with no internet
   if (FALSE) {
 
     ### GENCODE ###
@@ -92,6 +93,8 @@ test_that("tximeta can import GENCODE and Ensembl", {
 
     # with AnnotationHub (default)
     se <- tximeta(coldata)
+    expect_true(metadata(se)$txomeInfo$source == "GENCODE")
+    
     gse <- summarizeToGene(se)
 
     # check adding IDs from TxDb/EnsDb
@@ -130,7 +133,7 @@ test_that("tximeta can import GENCODE and Ensembl", {
 
 test_that("tximeta can import inferential replicates", {
 
-  # don't want to rely on internet connection for tests...
+  # breaks with no internet
   if (FALSE) {
     library(SummarizedExperiment)
 
@@ -152,6 +155,7 @@ test_that("tximeta can import inferential replicates", {
     expect_true("variance" %in% assayNames(gse))
 
     # check the macrophage dataset with Salmon Gibbs samples
+
     dir <- system.file("extdata", package="macrophage")
     coldata <- read.csv(file.path(dir, "coldata.csv"))
     coldata$files <- file.path(dir, "quants", coldata$names, "quant.sf.gz")
@@ -163,34 +167,19 @@ test_that("tximeta can import inferential replicates", {
   
 })
 
-test_that("tximeta can import alevin", {
+# refseq GTF files can't be imported by txdbmaker::makeTxDbFromGFF (August 2025)...
+# so then tximeta won't really work anymore
 
-  dir <- system.file("extdata", package="tximportData")
-  samps <- list.files(file.path(dir, "alevin"))
-  files <- file.path(dir,"alevin",samps[1],"alevin/quants_mat.gz")
-  file.exists(files)
-  coldata <- data.frame(files, names="neurons")
-
-  #se <- tximeta(coldata, type="alevin")
-  se <- tximeta(coldata, type="alevin", skipMeta=TRUE)
-  
-})
-
-test_that("tximeta can import refseq", {
-
-  if (FALSE) {
-    dir <- system.file("extdata", package="tximportData")
-    files <- file.path(dir,"refseq/ERR188021/quant.sf.gz")
-    file.exists(files)
-    coldata <- data.frame(files, names="A")
-
-    # here the important test is if we can pull down seqinfo
-    # (sequence names and lengths) from RefSeq FTP site
-    se <- tximeta(coldata)
-    seqinfo(se)
-  }
-    
-})
+# test_that("tximeta can import refseq", {
+#     dir <- system.file("extdata", package="tximportData")
+#     files <- file.path(dir,"refseq/ERR188021/quant.sf.gz")
+#     file.exists(files)
+#     coldata <- data.frame(files, names="A")
+#     # here the important test is if we can pull down seqinfo
+#     # (sequence names and lengths) from RefSeq FTP site
+#     se <- tximeta(coldata)
+#     seqinfo(se)
+# })
 
 test_that("tximeta can import kallisto", {
 
