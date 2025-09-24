@@ -16,19 +16,22 @@ reference:
   - title: "Package overview"
     contents:
       - tximeta-package
-  - title: "Main functions"
+  - title: "Main import functions"
     contents:
       - tximeta
       - starts_with("summarizeToGene")
-  - title: "Add information to SE"
-    contents:
-      - starts_with("add")
-  - title: "Retrieve information from SE"
-    contents:
-      - starts_with("retrieve")
-  - title: "linkedTxome for custom transcriptomes"
+  - title: "linkedTxome: linking data to metadata"
     contents:
       - contains("linkedTxome")
+  - title: "Import data with mixed transcriptome"
+    contents:
+      - starts_with("tximix")
+  - title: "Add information to object"
+    contents:
+      - starts_with("add")
+  - title: "Retrieve information from object"
+    contents:
+      - starts_with("retrieve")
   - title: "Other helpers"
     contents:
       - splitSE
