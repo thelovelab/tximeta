@@ -411,7 +411,7 @@ database with the following helper function. In this case,
 retrieve and use in our R session:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">edb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/retrieveDb.html">retrieveDb</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-25 15:26:59</span></span></code></pre>
+<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-25 20:50:05</span></span></code></pre>
 <pre><code><span><span class="co">## Loading required package: GenomicFeatures</span></span></code></pre>
 <pre><code><span><span class="co">## Loading required package: AnnotationDbi</span></span></code></pre>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
@@ -446,7 +446,7 @@ out the transcript <em>GRanges</em> for exons-by-transcript
 element of the list gives the exons for a particular transcript).</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">se.exons</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addExons.html">addExons</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-25 15:26:59</span></span></code></pre>
+<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-25 20:50:05</span></span></code></pre>
 <pre><code><span><span class="co">## generating exon ranges</span></span></code></pre>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rowRanges</span><span class="op">(</span><span class="va">se.exons</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
@@ -490,7 +490,7 @@ does not have ranges or an associated <em>TxDb</em> by setting
 table which is passed to <code>tximport</code>.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gse</span> <span class="op">&lt;-</span> <span class="fu">summarizeToGene</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-25 15:26:59</span></span></code></pre>
+<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-25 20:50:05</span></span></code></pre>
 <pre><code><span><span class="co">## obtaining transcript-to-gene mapping from database</span></span></code></pre>
 <pre><code><span><span class="co">## generating gene ranges</span></span></code></pre>
 <pre><code><span><span class="co">## assignRanges='range': gene ranges assigned by total range of isoforms</span></span>
@@ -648,9 +648,9 @@ in the <em>tximport</em> vignette to generate counts-from-abundance
 instead of providing an offset for average transcript length.</p>
 <div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gse</span> <span class="op">&lt;-</span> <span class="fu">summarizeToGene</span><span class="op">(</span><span class="va">se</span>, countsFromAbundance<span class="op">=</span><span class="st">"lengthScaledTPM"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-25 15:26:59</span></span></code></pre>
+<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-25 20:50:05</span></span></code></pre>
 <pre><code><span><span class="co">## obtaining transcript-to-gene mapping from database</span></span></code></pre>
-<pre><code><span><span class="co">## loading existing gene ranges created: 2025-09-25 15:27:03</span></span></code></pre>
+<pre><code><span><span class="co">## loading existing gene ranges created: 2025-09-25 20:50:08</span></span></code></pre>
 <pre><code><span><span class="co">## assignRanges='range': gene ranges assigned by total range of isoforms</span></span>
 <span><span class="co">##   see details at: ?summarizeToGene,SummarizedExperiment-method</span></span></code></pre>
 <pre><code><span><span class="co">## summarizing abundance</span></span></code></pre>
@@ -730,7 +730,7 @@ stored in the metadata:</p>
 <span><span class="co">##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1</span></span>
 <span><span class="co">##   ..$ : int [1:3] 1 27 4</span></span>
 <span><span class="co">##  $ type      : chr "salmon"</span></span>
-<span><span class="co">##  $ importTime: POSIXct[1:1], format: "2025-09-25 15:26:51"</span></span></code></pre>
+<span><span class="co">##  $ importTime: POSIXct[1:1], format: "2025-09-25 20:49:56"</span></span></code></pre>
 <div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html" class="external-link">metadata</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">[[</span><span class="st">"txdbInfo"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  Named chr [1:12] "TxDb" "GenomicFeatures" ...</span></span>
@@ -928,7 +928,7 @@ such that this <em>linkedTxome</em> can be shared.</p>
 <span>                release<span class="op">=</span><span class="st">"98"</span>, genome<span class="op">=</span><span class="st">"BDGP6.22"</span>,</span>
 <span>                fasta<span class="op">=</span><span class="va">fastaFTP</span>, gtf<span class="op">=</span><span class="va">gtfPath</span>,</span>
 <span>                jsonFile<span class="op">=</span><span class="va">jsonFile</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## writing linkedTxome to /tmp/RtmpQN9zWy/Dm.BDGP6.22.98.plus_salmon-0.14.1.json</span></span></code></pre>
+<pre><code><span><span class="co">## writing linkedTxome to /tmp/RtmpYz6Xfx/Dm.BDGP6.22.98.plus_salmon-0.14.1.json</span></span></code></pre>
 <pre><code><span><span class="co">## saving linkedTxome in bfc</span></span></code></pre>
 <p>After running <code>makeLinkedTxome</code>, the connection between
 this <em>Salmon</em> index (and its digest) with the sources is saved
@@ -1090,8 +1090,8 @@ the user’s behalf.</p>
 <pre><code><span><span class="co">## 1 </span></span>
 <span><span class="co">## found matching linked transcriptome:</span></span>
 <span><span class="co">## [ LocalEnsembl - Drosophila melanogaster - release 98 ]</span></span>
-<span><span class="co">## loading existing TxDb created: 2025-09-25 15:27:14</span></span>
-<span><span class="co">## loading existing transcript ranges created: 2025-09-25 15:27:14</span></span></code></pre>
+<span><span class="co">## loading existing TxDb created: 2025-09-25 20:50:20</span></span>
+<span><span class="co">## loading existing transcript ranges created: 2025-09-25 20:50:21</span></span></code></pre>
 <pre><code><span><span class="co">## Warning in checkAssays2Txps(assays, txps): </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Warning: the annotation is missing some transcripts that were quantified.</span></span>
