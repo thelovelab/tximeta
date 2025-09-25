@@ -2,27 +2,51 @@
 % Please edit documentation in R/tximix.R
 \name{tximix}
 \alias{tximix}
-\title{Import transcript quantification across sets of transcripts}
+\title{Import transcript quantification with mixed reference transcript sets}
 \usage{
 tximix(coldata, type = "oarfish", quiet = FALSE, ...)
 }
 \arguments{
-\item{coldata}{data.frame with columns \code{files} and \code{names}
-as in \code{\link{tximeta}}}
+\item{coldata}{data.frame with columns \code{files} and \code{names} as in \code{tximeta()}}
 
-\item{type}{what quantifier was used (see \code{\link{tximport}})}
+\item{type}{what quantifier was used (see \code{\link[tximport:tximport]{tximport::tximport()}}), for now
+\code{tximix()} works for \code{"oarfish"} files}
 
-\item{quiet}{whether to suppress messages}
+\item{quiet}{whether to suppress printed messages}
 
-\item{...}{passed to tximport}
+\item{...}{arguments passed to \code{\link[tximport:tximport]{tximport::tximport()}}}
 }
 \value{
-an unranged SummarizedExperiment
+an un-ranged SummarizedExperiment (SE) object, for
+use with subsequent functions described in \emph{See also} section
 }
 \description{
-tximix allows separation of annotated and novel transcripts
-during transcript quantification import and addition of metadata.
-This function supports quantification in the case of mixed
-transcriptomes, including additions from de novo assembly,
-as well as transgenes and spike-ins.
+The \emph{oarfish} quantification tools allows a mix of
+\code{--annotated} reference transcripts (e.g. GENCODE, Ensembl) and
+\code{--novel} or custom transcripts (e.g. de novo assembled transcripts not present
+in the annotated set) to be used as the index for quantification.
+\code{tximix()} and associated functions facilitate import, reference identification,
+and addition of metadata across \code{annotated} and/or \code{novel} transcripts.
+The \code{tximix()} function alone imports the data, while inspection of the
+recognized digests and updating of transcript metadata is handled by subsequent functions
+(listed in \emph{See also} below).
+}
+\examples{
+
+# oarfish files using a mix of --annotated and --novel transcripts
+dir <- system.file("extdata/oarfish", package="tximportData")
+names <- paste0("rep", 2:4)
+files <- file.path(dir, paste0("sgnex_h9_", names, ".quant.gz"))
+coldata <- data.frame(files, names)
+
+# returns an un-ranged SE object
+se <- tximix(coldata, type="oarfish")
+
+}
+\seealso{
+\code{tximixInspectDigests()} and \code{tximixUpdateTxpData()} for subsequent tasks.
+\code{makeLinkedTxome()} can be used to add custom metadata into the registry used
+for inspecting digests and then updating transcript data. A user may
+follow the workflow \code{tximix()} -> \code{tximixInspectDigests()} ->
+\code{makeLinkedTxome()} -> \code{tximixInspectDigests()}, etc.
 }

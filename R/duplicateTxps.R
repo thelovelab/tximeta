@@ -1,5 +1,5 @@
-# code for marking or cleaning duplicate txps
-duplicateTxpsPass1 <- function(assays, txps, txomeInfo, markDuplicateTxps, cleanDuplicateTxps) {
+# cleaning duplicate txps
+duplicateTxpsClean <- function(assays, txps, txomeInfo, markDuplicateTxps, cleanDuplicateTxps) {
   assay.nms <- rownames(assays[["counts"]])
   txps.missing <- !assay.nms %in% names(txps) # logical vector
   # either we want to mark duplicates, or clean up duplicates (if we can)
@@ -28,7 +28,8 @@ duplicateTxpsPass1 <- function(assays, txps, txomeInfo, markDuplicateTxps, clean
   return(list(assays=assays, txps=txps))
 }
 
-duplicateTxpsPass2 <- function(assays, txps, txomeInfo, markDuplicateTxps, cleanDuplicateTxps) {
+# marking duplicate txps
+duplicateTxpsMark <- function(assays, txps, txomeInfo, markDuplicateTxps, cleanDuplicateTxps) {
   # mark duplicates in the rowData
   dup.list <- makeDuplicateTxpsList(txomeInfo)
   # assay names could have changed due to cleanDuplicateTxps

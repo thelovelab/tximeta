@@ -2,7 +2,7 @@
 % Please edit documentation in R/tximix.R
 \name{tximixUpdateTxpData}
 \alias{tximixUpdateTxpData}
-\title{Update transcript metadatda for a tximix-imported SE object}
+\title{Update transcript metadatda for a \code{tximix()}-imported SummarizedExperiment}
 \usage{
 tximixUpdateTxpData(
   se,
@@ -16,10 +16,9 @@ tximixUpdateTxpData(
 \item{se}{the SummarizedExperiment}
 
 \item{txpData}{either GRanges or data.frame-type object
-to use if there is not a match based on digest. 
+to use if there is not a match based on digest.
 This is used on a one-time basis, and transcripts
-will be marked in metadata columns as `index = "user"``.
-See `linkedTxome` or `linkedTxpData` for persistent
+will be marked in metadata columns as \verb{index = "user"``. See }linkedTxome\code{or}linkedTxpData` for persistent
 metadata storage/retrieval}
 
 \item{ranges}{logical, whether to add rowRanges or rowData}
@@ -27,8 +26,8 @@ metadata storage/retrieval}
 \item{order}{order in which to update the metadata}
 
 \item{key}{the name of the column to use as the key
-for merging metadata with the SE, which uses `rownames(se)`.
-defaults to `tx_name` which often matches the transcript 
+for merging metadata with the SE, which uses \code{rownames(se)}.
+defaults to \code{tx_name} which often matches the transcript
 names in GENCODE}
 }
 \value{

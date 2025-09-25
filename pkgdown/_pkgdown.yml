@@ -23,7 +23,7 @@ reference:
   - title: "linkedTxome: linking data to metadata"
     contents:
       - contains("linkedTxome")
-  - title: "Import data with mixed transcriptome"
+  - title: "Import data with mixed reference transcript sets"
     contents:
       - starts_with("tximix")
   - title: "Add information to object"

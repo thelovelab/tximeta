@@ -84,42 +84,46 @@ any known transcriptomes, or any locally saved \code{linkedTxome},
 \code{tximeta} will just return a non-ranged SummarizedExperiment)
 }
 \description{
-\code{tximeta} leverages the hashed digest of the Salmon or piscem index,
-in addition to a number of core Bioconductor packages (GenomicFeatures,
+\code{tximeta} leverages the digest (or hash value)
+of the sequence collection of reference transcripts used for indexing
+to identify metadata from the output of quantification tools.
+After identification, tximeta uses a number of core Bioconductor packages (GenomicFeatures,
 ensembldb, AnnotationHub, Seqinfo, BiocFileCache) to automatically
 populate metadata for the user, without additional effort from the user.
-For other quantifiers see the \code{customMetaInfo} argument below.
 }
 \details{
-Most of the code in \code{tximeta} works to add metadata and transcript ranges
-when the quantification was performed with Salmon. However,
-\code{tximeta} can be used with any quantification \code{type} that is supported
-by \code{\link{tximport}}, where it will return an non-ranged SummarizedExperiment.
+Most of the code in tximeta works to add metadata and transcript ranges
+when the quantification was performed with Salmon or related tools. However,
+tximeta can be used with any quantification type that is supported
+by \code{\link[tximport:tximport]{tximport::tximport()}}, where it will return an non-ranged SummarizedExperiment.
+For other quantification tools see also the \code{customMetaInfo} argument below.
+This behavior can also be triggered with \code{skipMeta=TRUE}.
 
-\code{tximeta} performs a lookup of the hashed digest of the index
-(stored in an auxilary information directory of the Salmon output)
-against a database of known transcriptomes, which lives within the tximeta
-package and is continually updated on Bioconductor's release schedule.
-In addition, \code{tximeta} performs a lookup of the digest against a
-locally stored table of \code{linkedTxome}'s (see \code{link{makeLinkedTxome}}).
-If \code{tximeta} detects a match, it will automatically populate,
-e.g. the transcript locations, the transcriptome release,
-the genome with correct chromosome lengths, etc. It allows for automatic
-and correct summarization of transcript-level quantifications to the gene-level
-via \code{\link{summarizeToGene}} without the need to manually build
-a \code{tx2gene} table.
+tximeta performs a lookup of the digest (or hash value) of the index
+stored in an auxilary information directory of the quantification tool's output
+against a database of known transcriptomes, which is stored within the tximeta
+package (\code{extdata/hashtable.csv}) and is continually updated to match Ensembl
+and GENCODE releases, with updates pushed to Bioconductor current release branch.
+In addition, tximeta performs a lookup of the digest against a
+locally stored table of linkedTxome references, see \code{\link[=makeLinkedTxome]{makeLinkedTxome()}}.
+If tximeta detects a match in either source, it will automatically populate
+the transcript locations, the transcriptome release,
+the genome with correct chromosome lengths, and connect the SE object to locally
+cached derived metadata. tximeta also facilitates automatic summarization of
+transcript-level quantifications to the gene-level via \code{\link[=summarizeToGene]{summarizeToGene()}} without the need to
+manually build the correct \code{tx2gene} table for the reference used for indexing.
 
-\code{tximeta} on the first run will ask where the BiocFileCache for
-this package should be kept, either using a default location or a temporary
+tximeta on the first run will ask where the \code{\link[BiocFileCache:BiocFileCache-class]{BiocFileCache::BiocFileCache()}}
+location for this package (\emph{tximeta}) should be kept, either using a default location or a temporary
 directory. At any point, the user can specify a location using
-\code{\link{setTximetaBFC}} and this choice will be saved for future sessions.
+\code{\link[=setTximetaBFC]{setTximetaBFC()}} and this choice will be saved for future sessions.
 Multiple users can point to the same BiocFileCache, such that
-transcript databases (TxDb or EnsDb) associated with certain Salmon indices
-and \code{linkedTxomes} can be accessed by different users without additional
+transcript databases (TxDb or EnsDb) associated with certain salmon indices
+and linkedTxomes can be accessed by different users without additional
 effort or time spent downloading and building the relevant TxDb / EnsDb.
-Note that, if the TxDb or EnsDb is present in AnnotationHub, \code{tximeta} will
+Note that, if the TxDb or EnsDb is present in AnnotationHub, tximeta will
 use this object instead of downloading and building a TxDb/EnsDb from GTF
-(to disable this set useHub=FALSE).
+(to disable this set \code{useHub=FALSE}).
 
 In order to allow that multiple users can read and write to the
 same location, one should set the BiocFileCache directory to

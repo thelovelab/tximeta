@@ -9,28 +9,28 @@ splitSE(se, splitDf, assayName)
 \arguments{
 \item{se}{A \code{SummarizedExperiment} object.}
 
-\item{splitDf}{A \code{data.frame} with feature IDs. Each column 
-represents a separate feature type, and the features in a given 
-row are considered representatives of the same feature (and will 
+\item{splitDf}{A \code{data.frame} with feature IDs. Each column
+represents a separate feature type, and the features in a given
+row are considered representatives of the same feature (and will
 be represented as one feature in the output object).}
 
 \item{assayName}{A character scalar, indicating the assay of \code{se}
 that will be split. Must be one of \code{assayNames(se)}.}
 }
 \value{
-A \code{SummarizedExperiment} object with the same columns 
-  as the input object, and the same number of assays as the number 
-  of columns in \code{splitDf}. The assays will be named by the 
-  column names of \code{splitDf}. The \code{colData} and \code{metadata}
-  of the input \code{SummarizedExperiment} object are copied to the 
-  output object. The row names are set to the feature IDs in the 
-  first column of \code{splitDf}.
+A \code{SummarizedExperiment} object with the same columns
+as the input object, and the same number of assays as the number
+of columns in \code{splitDf}. The assays will be named by the
+column names of \code{splitDf}. The \code{colData} and \code{metadata}
+of the input \code{SummarizedExperiment} object are copied to the
+output object. The row names are set to the feature IDs in the
+first column of \code{splitDf}.
 }
 \description{
-Construct a new SummarizedExperiment by splitting one of the assays 
-into a list of assays, each of which contains features of a given 
-'type'. It is assumed that there is a one-to-one correspondence 
-between feature sets of different types; for example, these can be 
+Construct a new SummarizedExperiment by splitting one of the assays
+into a list of assays, each of which contains features of a given
+'type'. It is assumed that there is a one-to-one correspondence
+between feature sets of different types; for example, these can be
 spliced and unspliced variants of the same transcripts. The type of
 each feature in the original SummarizedExperiment, and the correspondence
 between the features of different types, are given in a \code{data.frame}.

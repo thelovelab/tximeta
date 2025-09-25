@@ -6,13 +6,14 @@
 
 *tximeta* provides a set of functions for conveniently working with
 metadata for transcript quantification data in Bioconductor. The
-`tximeta()` function imports quantification data from *Salmon* or
-other quantifiers, and returns a 
+`tximeta()` function imports quantification data from *salmon* or
+related quantifiers, and returns a 
 [SummarizedExperiment](https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html#anatomy-of-a-summarizedexperiment)
 object. *tximeta* works natively with 
-[Salmon](https://salmon.readthedocs.io/en/latest/),
+[salmon](https://salmon.readthedocs.io/en/latest/),
 [alevin](https://salmon.readthedocs.io/en/latest/alevin.html),
-or [piscem-infer](https://piscem-infer.readthedocs.io/en/latest/),
+[piscem-infer](https://piscem-infer.readthedocs.io/en/latest/), and
+[oarfish](https://github.com/COMBINE-lab/oarfish),
 but can easily be configured to work with any transcript
 quantification tool.
 
@@ -23,7 +24,7 @@ information about the location of the transcripts in the correct genome.
 effort or information from the user.*
 
 This metadata is attached to the *SummarizedExperiment* in the
-`metadata()` and `rowRanges()` slots.
+`metadata()` and `rowRanges()` or `rowData()` slots.
 
 For a list of the reference transcriptomes supported by `tximeta()`,
 see the "Pre-computed digests" section of the vignette in the 
@@ -34,6 +35,10 @@ Further steps are also facilitated, e.g. `summarizeToGene()`, `addIds()`,
 or even `retrieveCDNA()` (the transcripts used for quantification) or
 `retrieveDb()` (the correct *TxDb* or *EnsDb* to match the
 quantification data).
+
+For _oarfish_ quantification files: if a mix of `annotated` and `novel`
+reference transcript sets have been used, `tximix()` and related functions
+facilitate the import of data and addition of metadata from multiple sources.
 
 # How it works
 

@@ -41,7 +41,7 @@ test_that("tximix works as expected", {
   names(novel_gr) <- novel$tx_name
   seqinfo(novel_gr) <- seqinfo(se)
 
-  # first step just returns an unranged SE
+  # first step just returns an un-ranged SE
   se_mix <- tximix(coldata, type="oarfish")
   
   # shows the indices and their digests

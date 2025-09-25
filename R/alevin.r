@@ -118,17 +118,27 @@ tximetaAlevin <- function(
     }
   }
 
-  # following function modifies assays and txps to mark and/or clean duplicate txps
+  # the following functions modifies assays and txps to clean/mark duplicate txps 
   # (this occurs when salmon collapses identical transcripts during indexing)
-  dup.output.list <- duplicateTxps(
-    assays,
-    txps,
-    txomeInfo,
-    markDuplicateTxps,
-    cleanDuplicateTxps
-  )
-  assays <- dup.output.list$assays
-  txps <- dup.output.list$txps
+  if (cleanDuplicateTxps) {
+    dup.output.list <- duplicateTxpsClean(
+      assays, txps, txomeInfo,
+      markDuplicateTxps, cleanDuplicateTxps
+    )
+    assays <- dup.output.list$assays
+    txps <- dup.output.list$txps
+  }
+  assays <- stripAllCharsAfterBar(assays)
+  assays <- checkAssays2Txps(assays, txps)
+  txps <- txps[rownames(assays[["counts"]])]
+  if (markDuplicateTxps) {
+    dup.output.list <- duplicateTxpsMark(
+      assays, txps, txomeInfo,
+      markDuplicateTxps, cleanDuplicateTxps
+    )
+    assays <- dup.output.list$assays
+    txps <- dup.output.list$txps
+  }
 
   # Ensembl already has nice seqinfo attached...
   # if GENCODE, and not from AHub (which have seqinfo)

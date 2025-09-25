@@ -1,4 +1,4 @@
-#' Make and load linked transcriptomes ("linkedTxome")
+#' Make and load linked transcriptomes, linking data to metadata
 #'
 #' \code{makeLinkedTxome} reads the digest associated with a Salmon
 #' index at \code{indexDir}, and links it to key information

@@ -1,3 +1,16 @@
+# tximeta 1.27.4
+
+* Addition of `tximix()` and associated functions, 
+  allowing import of _oarfish_ (v0.9.0) quantification files 
+  when `annotated` and `novel` reference transcript sets
+  have been mixed. 
+  TODO: As of _tximeta_ v1.27.4, some more work 
+  to do is the development of linkedTxpData and resolving
+  how the `add*()` and `retrieve*()` functions will work,
+  as well as `summarizeToGene()`.
+* Major code reorganiziation, splitting out alevin-processing 
+  code and moving a number of metadata sub-routines to `metadata_helpers.R`.
+
 # tximeta 1.27.2
 
 * GENCODE 49 (H.s.), M38 (M.m), and Ensembl 115 (Sep 2025)

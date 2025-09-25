@@ -1,49 +1,48 @@
 #' Import transcript quantification with metadata
 #' 
 #' The tximeta package imports abundances (TPM), estimated counts,
-#' and effective lengths from Salmon, alevin, piscem or other quantification
-#' tools, and will output a SummarizedExperiment object. For
-#' Salmon / alevin / piscem quantification data, \code{tximeta} will
-#' try to identify the correct provenance of the reference transcripts
+#' and effective lengths from quantification tools, 
+#' and will output a _SummarizedExperiment_ (SE) object. 
+#' For salmon and related quantification tools, [tximeta()] will
+#' attempt to identify the correct provenance of the reference transcripts
 #' and automatically attach the transcript ranges to the
 #' SummarizedExperiment, to facilitate downstream integration with
 #' other datasets. The automatic identification of reference transcripts
 #' should work out-of-the-box for human or mouse transcriptomes from
-#' the sources: GENCODE, Ensembl, or RefSeq.
+#' the sources: GENCODE, Ensembl, or RefSeq. See also [tximix()] for
+#' importing data when the reference transcripts were derived from 
+#' a mix of annotated (e.g. GENCODE) and novel or custom transcripts.
 #'
 #' The main functions are:
-#' \itemize{
-#' \item \code{\link{tximeta}} - with key argument: \code{coldata}
-#' \item \code{\link{summarizeToGene,SummarizedExperiment-method}} - summarize quants to gene-level
-#' \item \code{\link{retrieveDb}} - retrieve the transcript database
-#' \item \code{\link{addIds}} - add transcript or gene ID (see \code{gene} argument)
-#' }
+#'   - [tximeta()] - with key argument \code{coldata} specifying sample information
+#'   - [`summarizeToGene()`][summarizeToGene,SummarizedExperiment-method] - summarize quantification to gene-level
+#'   - [tximix()] - import quantification with mixed reference transcript sets
 #' 
 #' All software-related questions should be posted to the Bioconductor Support Site:
 #' 
-#' \url{https://support.bioconductor.org}
+#' <https://support.bioconductor.org>
 #'
 #' The code can be viewed at the GitHub repository,
 #' which also lists the contributor code of conduct:
 #'
-#' \url{https://github.com/thelovelab/tximeta}
+#' <https://github.com/thelovelab/tximeta>
 #' 
 #' @references
 #'
-#' \strong{tximeta} reference:
+#'   - _tximeta_ reference:
 #' 
 #' Michael I. Love, Charlotte Soneson, Peter F. Hickey, Lisa K. Johnson
 #' N. Tessa Pierce, Lori Shepherd, Martin Morgan, Rob Patro (2020)
-#' Tximeta: reference sequence checksums for provenance identification
-#' in RNA-seq. PLOS Computational Biology.
-#' \url{https://doi.org/10.1371/journal.pcbi.1007664}
+#' _Tximeta: reference sequence checksums for provenance identification
+#' in RNA-seq_. PLOS Computational Biology.
+#' <https://doi.org/10.1371/journal.pcbi.1007664>
 #'
-#' \strong{tximport} reference (the effective length offset and counts-from-abundance):
+#'   - _tximport_ reference (the effective length GLM offset and counts-from-abundance):
 #' 
 #' Charlotte Soneson, Michael I. Love, Mark D. Robinson (2015)
-#' Differential analyses for RNA-seq: transcript-level estimates
-#' improve gene-level inferences. F1000Research.
-#' \url{http://doi.org/10.12688/f1000research.7563}
+#' _Differential analyses for RNA-seq: transcript-level estimates
+#' improve gene-level inferences_. F1000Research.
+#' <http://doi.org/10.12688/f1000research.7563>
 #'
 #' @author Michael I. Love, Charlotte Soneson, Peter Hickey, Rob Patro
 #' 
@@ -54,41 +53,45 @@
 
 #' Import transcript quantification with metadata
 #' 
-#' \code{tximeta} leverages the hashed digest of the Salmon or piscem index,
-#' in addition to a number of core Bioconductor packages (GenomicFeatures,
+#' `tximeta` leverages the digest (or hash value) 
+#' of the sequence collection of reference transcripts used for indexing
+#' to identify metadata from the output of quantification tools. 
+#' After identification, tximeta uses a number of core Bioconductor packages (GenomicFeatures,
 #' ensembldb, AnnotationHub, Seqinfo, BiocFileCache) to automatically
 #' populate metadata for the user, without additional effort from the user.
-#' For other quantifiers see the \code{customMetaInfo} argument below.
-#'
-#' Most of the code in \code{tximeta} works to add metadata and transcript ranges
-#' when the quantification was performed with Salmon. However,
-#' \code{tximeta} can be used with any quantification \code{type} that is supported
-#' by \code{\link{tximport}}, where it will return an non-ranged SummarizedExperiment.
 #' 
-#' \code{tximeta} performs a lookup of the hashed digest of the index
-#' (stored in an auxilary information directory of the Salmon output)
-#' against a database of known transcriptomes, which lives within the tximeta
-#' package and is continually updated on Bioconductor's release schedule.
-#' In addition, \code{tximeta} performs a lookup of the digest against a
-#' locally stored table of \code{linkedTxome}'s (see \code{link{makeLinkedTxome}}).
-#' If \code{tximeta} detects a match, it will automatically populate,
-#' e.g. the transcript locations, the transcriptome release,
-#' the genome with correct chromosome lengths, etc. It allows for automatic
-#' and correct summarization of transcript-level quantifications to the gene-level
-#' via \code{\link{summarizeToGene}} without the need to manually build
-#' a \code{tx2gene} table.
+#' Most of the code in tximeta works to add metadata and transcript ranges
+#' when the quantification was performed with Salmon or related tools. However,
+#' tximeta can be used with any quantification type that is supported
+#' by [tximport::tximport()], where it will return an non-ranged SummarizedExperiment.
+#' For other quantification tools see also the `customMetaInfo` argument below.
+#' This behavior can also be triggered with `skipMeta=TRUE`.
+#' 
+#' tximeta performs a lookup of the digest (or hash value) of the index
+#' stored in an auxilary information directory of the quantification tool's output
+#' against a database of known transcriptomes, which is stored within the tximeta
+#' package (`extdata/hashtable.csv`) and is continually updated to match Ensembl 
+#' and GENCODE releases, with updates pushed to Bioconductor current release branch.
+#' In addition, tximeta performs a lookup of the digest against a
+#' locally stored table of linkedTxome references, see [makeLinkedTxome()].
+#' If tximeta detects a match in either source, it will automatically populate
+#' the transcript locations, the transcriptome release,
+#' the genome with correct chromosome lengths, and connect the SE object to locally
+#' cached derived metadata. tximeta also facilitates automatic summarization of 
+#' transcript-level quantifications to the gene-level via [summarizeToGene()] without the need to 
+#' manually build the correct `tx2gene` table for the reference used for indexing.
 #'
-#' \code{tximeta} on the first run will ask where the BiocFileCache for
-#' this package should be kept, either using a default location or a temporary
+#' tximeta on the first run will ask where the [BiocFileCache::BiocFileCache()] 
+#' location for this package (_tximeta_) should be kept, either using a default location or a temporary
 #' directory. At any point, the user can specify a location using
-#' \code{\link{setTximetaBFC}} and this choice will be saved for future sessions.
+#' [setTximetaBFC()] and this choice will be saved for future sessions.
 #' Multiple users can point to the same BiocFileCache, such that
-#' transcript databases (TxDb or EnsDb) associated with certain Salmon indices
-#' and \code{linkedTxomes} can be accessed by different users without additional
+#' transcript databases (TxDb or EnsDb) associated with certain salmon indices
+#' and linkedTxomes can be accessed by different users without additional
 #' effort or time spent downloading and building the relevant TxDb / EnsDb.
-#' Note that, if the TxDb or EnsDb is present in AnnotationHub, \code{tximeta} will
+#' Note that, if the TxDb or EnsDb is present in AnnotationHub, tximeta will
 #' use this object instead of downloading and building a TxDb/EnsDb from GTF
-#' (to disable this set useHub=FALSE).
+#' (to disable this set `useHub=FALSE`).
 #'
 #' In order to allow that multiple users can read and write to the
 #' same location, one should set the BiocFileCache directory to
@@ -354,7 +357,7 @@ tximeta <- function(coldata,
   # the following function modifies assays and txps to clean duplicate txps 
   # (this occurs when salmon collapses identical transcripts during indexing)
   if (cleanDuplicateTxps) {
-    dup.output.list <- duplicateTxpsPass1(
+    dup.output.list <- duplicateTxpsClean(
       assays, txps, txomeInfo,
       markDuplicateTxps, cleanDuplicateTxps
     )
@@ -374,7 +377,7 @@ tximeta <- function(coldata,
 
   # another pass to mark duplicate transcripts
   if (markDuplicateTxps) {
-    dup.output.list <- duplicateTxpsPass2(
+    dup.output.list <- duplicateTxpsMark(
       assays, txps, txomeInfo,
       markDuplicateTxps, cleanDuplicateTxps
     )

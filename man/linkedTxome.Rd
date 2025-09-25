@@ -4,7 +4,7 @@
 \alias{linkedTxome}
 \alias{makeLinkedTxome}
 \alias{loadLinkedTxome}
-\title{Make and load linked transcriptomes ("linkedTxome")}
+\title{Make and load linked transcriptomes, linking data to metadata}
 \usage{
 makeLinkedTxome(
   indexDir,
@@ -79,18 +79,20 @@ information from a JSON file. See Details.
 \details{
 \code{makeLinkedTxome} links the information about the transcriptome
 used for quantification in two ways:
-1) the function will store a record in tximeta's cache such that
+\enumerate{
+\item the function will store a record in tximeta's cache such that
 future import of quantification data will automatically access and
 parse the GTF as if the transcriptome were one of those automatically
 detected by tximeta. Then all features of tximeta (e.g. summarization
 to gene, programmatic adding of IDs or metadata) will be available;
-2) it will by default write out a JSON file
+\item it will by default write out a JSON file
 that can be shared, or posted online, and which can be read by
 \code{loadLinkedTxome} which will store the information in tximeta's
 cache. This should make the full quantification-import pipeline
 computationally reproducible / auditable even for transcriptomes
 which differ from those provided by references (GENCODE, Ensembl,
 RefSeq).
+}
 
 For further details please see the "Linked transcriptomes"
 section of the tximeta vignette.

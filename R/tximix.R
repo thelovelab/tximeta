@@ -1,19 +1,41 @@
-#' Import transcript quantification across sets of transcripts
+#' Import transcript quantification with mixed reference transcript sets
 #'
-#' tximix allows separation of annotated and novel transcripts
-#' during transcript quantification import and addition of metadata.
-#' This function supports quantification in the case of mixed
-#' transcriptomes, including additions from de novo assembly,
-#' as well as transgenes and spike-ins.
+#' The _oarfish_ quantification tools allows a mix of 
+#' `--annotated` reference transcripts (e.g. GENCODE, Ensembl) and 
+#' `--novel` or custom transcripts (e.g. de novo assembled transcripts not present 
+#' in the annotated set) to be used as the index for quantification.
+#' `tximix()` and associated functions facilitate import, reference identification, 
+#' and addition of metadata across `annotated` and/or `novel` transcripts.
+#' The `tximix()` function alone imports the data, while inspection of the 
+#' recognized digests and updating of transcript metadata is handled by subsequent functions
+#' (listed in _See also_ below).
 #'
-#' @param coldata data.frame with columns \code{files} and \code{names}
-#' as in \code{\link{tximeta}}
-#' @param type what quantifier was used (see \code{\link{tximport}})
-#' @param quiet whether to suppress messages
-#' @param ... passed to tximport
+#' @param coldata data.frame with columns `files` and `names` as in `tximeta()`
+#' @param type what quantifier was used (see [tximport::tximport()]), for now 
+#' `tximix()` works for `"oarfish"` files
+#' @param quiet whether to suppress printed messages
+#' @param ... arguments passed to [tximport::tximport()]
 #'
-#' @return an unranged SummarizedExperiment
+#' @return an un-ranged SummarizedExperiment (SE) object, for 
+#' use with subsequent functions described in _See also_ section
 #'
+#' @seealso `tximixInspectDigests()` and `tximixUpdateTxpData()` for subsequent tasks.
+#' `makeLinkedTxome()` can be used to add custom metadata into the registry used
+#' for inspecting digests and then updating transcript data. A user may 
+#' follow the workflow `tximix()` -> `tximixInspectDigests()` -> 
+#' `makeLinkedTxome()` -> `tximixInspectDigests()`, etc.
+#' 
+#' @examples
+#' 
+#' # oarfish files using a mix of --annotated and --novel transcripts
+#' dir <- system.file("extdata/oarfish", package="tximportData")
+#' names <- paste0("rep", 2:4)
+#' files <- file.path(dir, paste0("sgnex_h9_", names, ".quant.gz"))
+#' coldata <- data.frame(files, names)
+#' 
+#' # returns an un-ranged SE object
+#' se <- tximix(coldata, type="oarfish")
+#' 
 #' @export
 tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
   stopifnot(type == "oarfish")
@@ -76,14 +98,14 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
   if (!quiet)
     message("returning un-ranged SummarizedExperiment, other tximix functions:\n",
             "-- tximixInspectDigests() to check matching digests\n",
-            "-- linkedTxome() / linkedTxpData() to link new digests to GTF / custom metadata\n",
+            "-- makelinkedTxome/makeLinkedTxpData() to link digests to metadata\n",
             "-- tximixUpdateTxpData() to update metadata and optionally add ranges"
           )
 
   return(se)
 }
 
-#' Inspect digest matches of a tximix-imported SE object
+#' Inspect digest matches of a `tximix()`-imported SummarizedExperiment
 #'
 #' @param se the SummarizedExperiment, or alternatively just
 #' `metadata(se)$quantInfo`, a list of metadata
@@ -159,7 +181,7 @@ tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE
   out
 }
 
-#' Update transcript metadatda for a tximix-imported SE object
+#' Update transcript metadatda for a `tximix()`-imported SummarizedExperiment
 #'
 #' Will update the metadata on the SE object, using either
 #' linkedTxome or linkedTxpData (preference to the former)

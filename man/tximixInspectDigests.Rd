@@ -2,21 +2,21 @@
 % Please edit documentation in R/tximix.R
 \name{tximixInspectDigests}
 \alias{tximixInspectDigests}
-\title{Inspect digest matches of a tximix-imported SE object}
+\title{Inspect digest matches of a \code{tximix()}-imported SummarizedExperiment}
 \usage{
 tximixInspectDigests(se, type = "oarfish", expanded = FALSE, count = FALSE)
 }
 \arguments{
 \item{se}{the SummarizedExperiment, or alternatively just
-`metadata(se)$quantInfo`, a list of metadata
+\code{metadata(se)$quantInfo}, a list of metadata
 information from the quantification tool}
 
 \item{type}{what quantifier was used (see \code{\link{tximport}})}
 
-\item{expanded}{whether to include the expanded (full) digest string in the output, 
+\item{expanded}{whether to include the expanded (full) digest string in the output,
 or just a shortened 6-char version}
 
-\item{count}{whether to count the number of transcripts associated with 
+\item{count}{whether to count the number of transcripts associated with
 metadata present in transcriptomes that match the digest(s)}
 }
 \value{
@@ -24,5 +24,5 @@ a tibble of the annotated and novel transcriptome information,
 e.g. the index sequence digest, and if there is a match in the hash tables
 }
 \description{
-Inspect digest matches of a tximix-imported SE object
+Inspect digest matches of a \code{tximix()}-imported SummarizedExperiment
 }

@@ -6,23 +6,24 @@
 \title{Import transcript quantification with metadata}
 \description{
 The tximeta package imports abundances (TPM), estimated counts,
-and effective lengths from Salmon, alevin, piscem or other quantification
-tools, and will output a SummarizedExperiment object. For
-Salmon / alevin / piscem quantification data, \code{tximeta} will
-try to identify the correct provenance of the reference transcripts
+and effective lengths from quantification tools,
+and will output a \emph{SummarizedExperiment} (SE) object.
+For salmon and related quantification tools, \code{\link[=tximeta]{tximeta()}} will
+attempt to identify the correct provenance of the reference transcripts
 and automatically attach the transcript ranges to the
 SummarizedExperiment, to facilitate downstream integration with
 other datasets. The automatic identification of reference transcripts
 should work out-of-the-box for human or mouse transcriptomes from
-the sources: GENCODE, Ensembl, or RefSeq.
+the sources: GENCODE, Ensembl, or RefSeq. See also \code{\link[=tximix]{tximix()}} for
+importing data when the reference transcripts were derived from
+a mix of annotated (e.g. GENCODE) and novel or custom transcripts.
 }
 \details{
 The main functions are:
 \itemize{
-\item \code{\link{tximeta}} - with key argument: \code{coldata}
-\item \code{\link{summarizeToGene,SummarizedExperiment-method}} - summarize quants to gene-level
-\item \code{\link{retrieveDb}} - retrieve the transcript database
-\item \code{\link{addIds}} - add transcript or gene ID (see \code{gene} argument)
+\item \code{\link[=tximeta]{tximeta()}} - with key argument \code{coldata} specifying sample information
+\item \code{\link[=summarizeToGene,SummarizedExperiment-method]{summarizeToGene()}} - summarize quantification to gene-level
+\item \code{\link[=tximix]{tximix()}} - import quantification with mixed reference transcript sets
 }
 
 All software-related questions should be posted to the Bioconductor Support Site:
@@ -35,19 +36,22 @@ which also lists the contributor code of conduct:
 \url{https://github.com/thelovelab/tximeta}
 }
 \references{
-\strong{tximeta} reference:
+\itemize{
+\item \emph{tximeta} reference:
+}
 
 Michael I. Love, Charlotte Soneson, Peter F. Hickey, Lisa K. Johnson
 N. Tessa Pierce, Lori Shepherd, Martin Morgan, Rob Patro (2020)
-Tximeta: reference sequence checksums for provenance identification
-in RNA-seq. PLOS Computational Biology.
+\emph{Tximeta: reference sequence checksums for provenance identification
+in RNA-seq}. PLOS Computational Biology.
 \url{https://doi.org/10.1371/journal.pcbi.1007664}
-
-\strong{tximport} reference (the effective length offset and counts-from-abundance):
+\itemize{
+\item \emph{tximport} reference (the effective length GLM offset and counts-from-abundance):
+}
 
 Charlotte Soneson, Michael I. Love, Mark D. Robinson (2015)
-Differential analyses for RNA-seq: transcript-level estimates
-improve gene-level inferences. F1000Research.
+\emph{Differential analyses for RNA-seq: transcript-level estimates
+improve gene-level inferences}. F1000Research.
 \url{http://doi.org/10.12688/f1000research.7563}
 }
 \seealso{
