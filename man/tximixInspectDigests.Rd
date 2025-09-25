@@ -11,18 +11,36 @@ tximixInspectDigests(se, type = "oarfish", expanded = FALSE, count = FALSE)
 \code{metadata(se)$quantInfo}, a list of metadata
 information from the quantification tool}
 
-\item{type}{what quantifier was used (see \code{\link{tximport}})}
+\item{type}{what quantifier was used (see \code{\link[tximport:tximport]{tximport::tximport()}})}
 
 \item{expanded}{whether to include the expanded (full) digest string in the output,
-or just a shortened 6-char version}
+in addition to the shortened 6-char version}
 
-\item{count}{whether to count the number of transcripts associated with
-metadata present in transcriptomes that match the digest(s)}
+\item{count}{whether to count the number of matching transcripts ID to each index
+(only possible for those indices that have matching metadata)}
 }
 \value{
-a tibble of the annotated and novel transcriptome information,
-e.g. the index sequence digest, and if there is a match in the hash tables
+a 2-row tibble of the \code{annotated} and \code{novel} index,
+their matching information if available
+(source, organism, release), for matches,
+whether it is a \code{linkedTxome} (FALSE for pre-computed),
+and a small 6 character version of the digest itself.
 }
 \description{
-Inspect digest matches of a \code{tximix()}-imported SummarizedExperiment
+This function can be run iteratively to check if one or more
+of the digests used in the mixed reference transcript set
+have a match against tximeta's pre-computed digests representing
+reference transcript sets (see listing in the package vignette) or
+those added by the user to the registry via \code{makeLinkedTxome()}.
+The output is a tibble with summary data, with optional columns
+specified by \code{expanded=TRUE} (full digest) and \code{count=TRUE}
+(add matching transcript ID counts per index).
+}
+\examples{
+\dontrun{
+example(tximix)
+# now we have an `se` created by tximix()...
+tximixInspectDigests(se)
+# can then update the registry via makeLinkedTxome() and re-run inspection
+}
 }

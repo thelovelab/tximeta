@@ -106,19 +106,38 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 }
 
 #' Inspect digest matches of a `tximix()`-imported SummarizedExperiment
+#' 
+#' This function can be run iteratively to check if one or more
+#' of the digests used in the mixed reference transcript set 
+#' have a match against tximeta's pre-computed digests representing 
+#' reference transcript sets (see listing in the package vignette) or
+#' those added by the user to the registry via `makeLinkedTxome()`. 
+#' The output is a tibble with summary data, with optional columns
+#' specified by `expanded=TRUE` (full digest) and `count=TRUE` 
+#' (add matching transcript ID counts per index).
 #'
 #' @param se the SummarizedExperiment, or alternatively just
 #' `metadata(se)$quantInfo`, a list of metadata
 #' information from the quantification tool 
-#' @param type what quantifier was used (see \code{\link{tximport}})
+#' @param type what quantifier was used (see [tximport::tximport()])
 #' @param expanded whether to include the expanded (full) digest string in the output, 
-#' or just a shortened 6-char version
-#' @param count whether to count the number of transcripts associated with 
-#' metadata present in transcriptomes that match the digest(s)
+#' in addition to the shortened 6-char version
+#' @param count whether to count the number of matching transcripts ID to each index
+#' (only possible for those indices that have matching metadata)
 #' 
-#' @return a tibble of the annotated and novel transcriptome information,
-#' e.g. the index sequence digest, and if there is a match in the hash tables
+#' @return a 2-row tibble of the `annotated` and `novel` index, 
+#' their matching information if available
+#' (source, organism, release), for matches, 
+#' whether it is a `linkedTxome` (FALSE for pre-computed), 
+#' and a small 6 character version of the digest itself.
 #' 
+#' @examples
+#' \dontrun{
+#' example(tximix)
+#' # now we have an `se` created by tximix()...
+#' tximixInspectDigests(se)
+#' # can then update the registry via makeLinkedTxome() and re-run inspection
+#' }
 #' @export
 tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE) {
   
