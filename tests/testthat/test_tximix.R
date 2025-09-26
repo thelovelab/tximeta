@@ -50,22 +50,22 @@ test_that("tximix works as expected", {
   tximixInspectDigests(se_mix, count=TRUE)
 
   # populate what transcript metadata we can find:
-  se_update <- tximixUpdateTxpData(se_mix)
+  se_update <- tximixUpdate(se_mix)
   mcols(se_update)
 
   # can add ranges, but that requires subsetting to a smaller object 
   # as we can't have a mix of ranges + no-range-data rows
-  se_update_w_ranges <- tximixUpdateTxpData(se_mix, ranges=TRUE)
+  se_update_w_ranges <- tximixUpdate(se_mix, ranges=TRUE)
   mcols(se_update_w_ranges)
 
   # the user then can add metadata via:
   # linkedTxome() / linkedTxpData() -- they can go do this
   # GRanges or data.frame-like thing
-  se_update <- tximixUpdateTxpData(se_mix, novel[,-(1:4)])
+  se_update <- tximixUpdate(se_mix, novel[,-(1:4)])
   mcols(se_update)
   table(mcols(se_update)$index)
 
-  se_update_w_ranges <- tximixUpdateTxpData(se_mix, novel_gr, ranges=TRUE)
+  se_update_w_ranges <- tximixUpdate(se_mix, novel_gr, ranges=TRUE)
   mcols(se_update_w_ranges)
   table(mcols(se_update_w_ranges)$index)
 

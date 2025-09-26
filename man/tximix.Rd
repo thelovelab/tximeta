@@ -2,7 +2,7 @@
 % Please edit documentation in R/tximix.R
 \name{tximix}
 \alias{tximix}
-\title{Import transcript quantification with mixed reference transcript sets}
+\title{Import quantification across mixed reference transcripts}
 \usage{
 tximix(coldata, type = "oarfish", quiet = FALSE, ...)
 }
@@ -44,9 +44,10 @@ se <- tximix(coldata, type="oarfish")
 
 }
 \seealso{
-\code{tximixInspectDigests()} and \code{tximixUpdateTxpData()} for subsequent tasks.
+\code{tximixInspectDigests()} and \code{tximixUpdate()} for subsequent tasks
+of inspecting digest matches and updating metadata, respectively.
 \code{makeLinkedTxome()} can be used to add custom metadata into the registry used
 for inspecting digests and then updating transcript data. A user may
-follow the workflow \code{tximix()} -> \code{tximixInspectDigests()} ->
-\code{makeLinkedTxome()} -> \code{tximixInspectDigests()}, etc.
+follow the workflow \code{tximix()} > \code{tximixInspectDigests()} >
+\code{makeLinkedTxome()} > \code{tximixInspectDigests()} > \code{tximixUpdate()}.
 }

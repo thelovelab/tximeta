@@ -1,4 +1,4 @@
-#' Import transcript quantification with mixed reference transcript sets
+#' Import quantification across mixed reference transcripts
 #'
 #' The _oarfish_ quantification tools allows a mix of 
 #' `--annotated` reference transcripts (e.g. GENCODE, Ensembl) and 
@@ -19,11 +19,12 @@
 #' @return an un-ranged SummarizedExperiment (SE) object, for 
 #' use with subsequent functions described in _See also_ section
 #'
-#' @seealso `tximixInspectDigests()` and `tximixUpdateTxpData()` for subsequent tasks.
+#' @seealso `tximixInspectDigests()` and `tximixUpdate()` for subsequent tasks
+#' of inspecting digest matches and updating metadata, respectively.
 #' `makeLinkedTxome()` can be used to add custom metadata into the registry used
 #' for inspecting digests and then updating transcript data. A user may 
-#' follow the workflow `tximix()` -> `tximixInspectDigests()` -> 
-#' `makeLinkedTxome()` -> `tximixInspectDigests()`, etc.
+#' follow the workflow `tximix()` > `tximixInspectDigests()` > 
+#' `makeLinkedTxome()` > `tximixInspectDigests()` > `tximixUpdate()`.
 #' 
 #' @examples
 #' 
@@ -99,7 +100,7 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
     message("returning un-ranged SummarizedExperiment, other tximix functions:\n",
             "-- tximixInspectDigests() to check matching digests\n",
             "-- makelinkedTxome/makeLinkedTxpData() to link digests to metadata\n",
-            "-- tximixUpdateTxpData() to update metadata and optionally add ranges"
+            "-- tximixUpdate() to update metadata and optionally add ranges"
           )
 
   return(se)
@@ -119,7 +120,7 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 #' Optional columns may be added if specified by 
 #' `expanded=TRUE` (include the full digest) and/or 
 #' `count=TRUE` (add matching transcript ID counts per index).
-#' Following inspection, one can run `tximixUpdateTxpData()` to automatically update
+#' Following inspection, one can run `tximixUpdate()` to automatically update
 #' the transcript metadata using the sources indicated by this function.
 #'
 #' @param se the _SummarizedExperiment_ output by `tximix()`,
@@ -234,8 +235,8 @@ tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE
 #' Defaults to `key="tx_name"` which often matches the transcript 
 #' names in GENCODE
 #'
-#' @return a _SummarizedExperiment_ with additional `rowData`,
-#' or a _RangedSummarizedExperiment_ with additional ranges/data
+#' @return a _SummarizedExperiment_ with new `rowData`,
+#' or a _RangedSummarizedExperiment_ with new metadata
 #'
 #' @examples
 #' 
@@ -254,14 +255,14 @@ tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE
 #' seqinfo(novel_gr) <- seqinfo(se) # needs to have consistent seqinfo with `se`
 #' 
 #' # now update the metadata + ranges:
-#' se_with_ranges <- tximixUpdateTxpData(
+#' se_with_ranges <- tximixUpdate(
 #'   se, novel_gr, ranges=TRUE
 #' )
 #' mcols(se_with_ranges)
 #' }
 #' 
 #' @export
-tximixUpdateTxpData <- function(
+tximixUpdate <- function(
   se,
   txpData = NULL,
   ranges = FALSE,

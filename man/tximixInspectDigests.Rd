@@ -41,7 +41,7 @@ or 2) digests added by the user to a local registry with \code{makeLinkedTxome()
 Optional columns may be added if specified by
 \code{expanded=TRUE} (include the full digest) and/or
 \code{count=TRUE} (add matching transcript ID counts per index).
-Following inspection, one can run \code{tximixUpdateTxpData()} to automatically update
+Following inspection, one can run \code{tximixUpdate()} to automatically update
 the transcript metadata using the sources indicated by this function.
 }
 \examples{

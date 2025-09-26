@@ -27,7 +27,7 @@ vignette: |
 The `tximeta` package [@Love2020] extends the `tximport` package
 [@Soneson2015] for import of transcript-level quantification data into
 R/Bioconductor. It automatically adds annotation metadata when the
-RNA-seq data has been quantified with *Salmon* [@Patro2017] or 
+RNA-seq data has been quantified with *salmon* [@Patro2017] or 
 [piscem-infer](https://piscem-infer.readthedocs.io/en/latest/), or the
 scRNA-seq data quantified with *alevin* [@Srivastava2019]. To our
 knowledge, `tximeta` is the only package for RNA-seq data import that
@@ -38,17 +38,17 @@ For more details on these packages -- including the motivation for
 **References** below.
 
 **Note:** `tximeta` requires that the **entire output** of
-*Salmon* / *piscem-infer* / *alevin* is present and unmodified in
+*salmon* / *piscem-infer* / *alevin* is present and unmodified in
 order to identify the provenance of the reference transcripts. In
 general, it's a good idea to not modify or re-arrange the output
 directory of bioinformatic software as other downstream software rely
 on and assume a consistent directory structure. For sharing multiple
 samples, one can use, for example, `tar -czf` to bundle up a set of
-Salmon output directories, or to bundle one alevin output
+salmon output directories, or to bundle one alevin output
 directory. For tips on using `tximeta` with other quantifiers see the
 [other quantifiers](#other_quantifiers) section below.
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.alt="How tximeta works"}
 knitr::include_graphics("images/diagram.png")
 ```
 
@@ -57,7 +57,7 @@ knitr::include_graphics("images/diagram.png")
 The first step using `tximeta` is to read in the sample table, which
 will become the *column data*, `colData`, of the final object,
 a *SummarizedExperiment*. The sample table should contain all the
-information we need to identify the *Salmon* quantification
+information we need to identify the *salmon* quantification
 directories. 
 For *alevin* quantification, one should point to the `quants_mat.gz`
 file that contains the counts for all of the cells (also, in order to
@@ -65,7 +65,7 @@ file that contains the counts for all of the cells (also, in order to
 *alevin* was run using gene IDs in the `tgMap` step and not gene
 symbols).
 
-Here we will use a *Salmon* quantification file in the
+Here we will use a *salmon* quantification file in the
 *tximportData* package to demonstrate the usage of `tximeta`. We do
 not have a sample table, so we construct one in R. It is recommended
 to keep a sample table as a CSV or TSV file while working on an
@@ -95,11 +95,17 @@ se <- tximeta(coldata)
 
 However, to avoid downloading remote GTF files during this vignette,
 we will point to a GTF file saved locally (in the *tximportData*
-package). We link the transcriptome of the *Salmon* index to its
+package). We link the transcriptome of the *salmon* index to its
 locally saved GTF. The standard recommended usage of `tximeta` would
 be the code chunk above, or to specify a remote GTF source, not a
 local one. **This following code is therefore not recommended for a
 typically workflow, but is particular to the vignette code.**
+
+```{r echo=FALSE}
+suppressPackageStartupMessages({
+  library(GenomicFeatures)
+  })
+```
 
 ```{r}
 indexDir <- file.path(dir, "Dm.BDGP6.22.98_salmon-0.14.1")
@@ -125,7 +131,7 @@ library(tximeta)
 se <- tximeta(coldata)
 ```
 
-# What happened? 
+# How does it work? 
 
 `tximeta` recognized the computed *digest* of the transcriptome that
 the files were quantified against, it accessed the GTF file of the
@@ -133,12 +139,13 @@ transcriptome source, found and attached the transcript ranges, and
 added the appropriate transcriptome and genome metadata.
 A *digest* is a small string of alphanumeric characters that uniquely
 identifies the collection of sequences that were used for
-quantification (it is the application of a hash function). We
-sometimes also call this value a "checksum" (in the tximeta paper).
+quantification (it is the hash value from applying the hash function to 
+a particular collection of nucleotide sequences). 
+We sometimes also call this value a "checksum" (in the tximeta paper).
 
 A remote GTF is only
 downloaded once, and a local or remote GTF is only parsed to build a
-*TxDb* or *EnsDb* once: if `tximeta` recognizes that it has seen this *Salmon*
+*TxDb* or *EnsDb* once: if `tximeta` recognizes that it has seen this *salmon*
 index before, it will use a cached version of the metadata and
 transcript ranges.
 
@@ -351,7 +358,7 @@ the most abundant isoform (the brown features are the next most
 abundant isoforms). The pink feature is therefore not a good
 representation for the locus.
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.alt="Transcripts compared to whole gene extent"}
 knitr::include_graphics("images/assignRanges-abundant.png")
 ```
 
@@ -509,9 +516,9 @@ the entry associated with the human v99 GTF from GENCODE.
 
 `tximeta` automatically imports relevant metadata when the
 transcriptome matches a known source -- *known* in the sense that it
-is in the set of pre-computed hashed digests in `tximeta` (GENCODE,
+is in the set of pre-computed digests in `tximeta` (GENCODE,
 Ensembl, and RefSeq for human and mouse). `tximeta` also facilitates the
-linking of transcriptomes used in building the *Salmon* index with
+linking of transcriptomes used in building the *salmon* index with
 relevant public sources, in the case that these are not part of this
 pre-computed set known to `tximeta`.
 The linking of the transcriptome source with the quantification files is
@@ -523,8 +530,8 @@ automatically recognized by `tximeta` and does not require making a
 *linkedTxome*. As the package is further developed, we plan to roll
 out support for all common transcriptomes, from all sources.
 
-**Note:** if you are using Salmon in alignment mode, then there is no
-Salmon index, and without the Salmon index, there is no digest. We
+**Note:** if you are using salmon in alignment mode, then there is no
+salmon index, and without the salmon index, there is no digest. We
 don't have a perfect solution for this yet, but you can still
 summarize transcript counts to gene with a `tx2gene` table that you
 construct manually (see `tximport` vignette for example code). 
@@ -535,7 +542,7 @@ as in `tximport`.
 
 We now demonstrate how to make a *linkedTxome* and how to share and
 load a *linkedTxome*.
-We point to a *Salmon* quantification file which was quantified
+We point to a *salmon* quantification file which was quantified
 against a transcriptome that included the coding and non-coding
 *Drosophila melanogaster* transcripts, as well as an artificial
 transcript of 960 bp (for demonstration purposes only).
@@ -557,7 +564,7 @@ se <- tximeta(coldata)
 
 # Linked transcriptomes
 
-If the transcriptome used to generate the *Salmon* index does not
+If the transcriptome used to generate the *salmon* index does not
 match any transcriptomes from known sources (e.g. from combining or
 filtering known transcriptome files), there is not much that can be
 done to automatically populate the metadata during quantification
@@ -576,7 +583,7 @@ To make this quantification reproducible, we make a `linkedTxome`
 which records key information about the sources of the transcript
 FASTA files, and the location of the relevant GTF file. It also
 records the digest of the transcriptome that was computed by
-*Salmon* during the `index` step.
+*salmon* during the `index` step.
 
 **Source:** when creating the `linkedTxome` one must specify the 
 `source` of the transcriptome. See `?linkedTxome` for a note on 
@@ -601,7 +608,7 @@ or feature requests.
 Stringtie-generated transcripts: it is a good idea to change gene
 identifiers, to _not_ include a period `.`, as the period will later
 be used to separate transcript versions from gene identifiers. This
-can be done before building the Salmon index, by changing periods in
+can be done before building the salmon index, by changing periods in
 the gene identifier to an underscore. See 
 [this GitHub issue](https://github.com/thelovelab/tximeta/issues/68) for details.
 
@@ -612,12 +619,12 @@ out to a file with the same name as the `indexDir`, but with a `.json`
 extension added. This can be prevented with `write=FALSE`, and the
 file location can be changed with `jsonFile`.
 
-First we specify the path where the *Salmon* index is located. 
+First we specify the path where the *salmon* index is located. 
 
 Typically you would not use `system.file` and `file.path` to locate
 this directory, but simply define `indexDir` to be the path of the
-*Salmon* directory on your machine. Here we use `system.file` and
-`file.path` because we have included parts of a *Salmon* index
+*salmon* directory on your machine. Here we use `system.file` and
+`file.path` because we have included parts of a *salmon* index
 directory in the *tximeta* package itself for demonstration of
 functionality in this vignette.
 
@@ -661,11 +668,11 @@ gtfPath <- file.path(dir,"Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz")
 
 Finally, we create a *linkedTxome*.  In this vignette, we point to a
 temporary directory for the JSON file, but a more typical workflow
-would write the JSON file to the same location as the *Salmon* index
+would write the JSON file to the same location as the *salmon* index
 by not specifying `jsonFile`.
 
 `makeLinkedTxome` performs two operation: (1) it creates a new entry in
-an internal table that links the transcriptome used in the *Salmon*
+an internal table that links the transcriptome used in the *salmon*
 index to its sources, and (2) it creates a JSON file such that this
 *linkedTxome* can be shared.
 
@@ -679,7 +686,7 @@ makeLinkedTxome(indexDir=indexDir,
                 jsonFile=jsonFile)
 ```
 
-After running `makeLinkedTxome`, the connection between this *Salmon*
+After running `makeLinkedTxome`, the connection between this *salmon*
 index (and its digest) with the sources is saved for persistent
 usage. Note that because we added a single transcript of 960bp to the
 FASTA file used for quantification, `tximeta` could tell that this was
@@ -741,7 +748,7 @@ If a collaborator or the Suppmentary Files for a publication shares a
 automatically assemble the relevant metadata and transcript
 ranges. This implies that the other person has used `tximeta` with the
 function `makeLinkedTxome` demonstrated above, pointing to their
-*Salmon* index and to the FASTA and GTF source(s).
+*salmon* index and to the FASTA and GTF source(s).
 
 We point to the JSON file and use `loadLinkedTxome` and then the
 relevant metadata is saved for persistent usage. In this case, we
@@ -786,7 +793,7 @@ bfcinfo(bfc)
 # Other quantifiers
 
 `tximeta` can import the output from any quantifiers that are
-supported by `tximport`, and if these are not *Salmon*, *alevin*, or
+supported by `tximport`, and if these are not *salmon*, *alevin*, or
 *Sailfish* output, it will simply return a non-ranged
 *SummarizedExperiment* by default.
 
@@ -797,10 +804,10 @@ quantification file. One can place these files in
 `customMetaInfo`, for example `customMetaInfo="meta_info.json"`. This
 JSON file is located relative to the quantification file and should
 contain a tag `index_seq_hash` with an associated value of the SHA-256
-hash of the reference transcripts. For computing the hash value of the
+hash (digest) of the reference transcripts. For computing the hash value of the
 reference transcripts, see the
 [FastaDigest](https://github.com/COMBINE-lab/FastaDigest) python
-package. The hash value used by *Salmon* is the SHA-256 hash value
+package. The hash value used by *salmon* is the SHA-256 hash value
 of the reference sequences stripped of the header lines, and
 concatenated together with the empty string (so only cDNA sequences
 combined without any new line characters). *FastaDigest* can be
