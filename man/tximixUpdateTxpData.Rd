@@ -2,7 +2,7 @@
 % Please edit documentation in R/tximix.R
 \name{tximixUpdateTxpData}
 \alias{tximixUpdateTxpData}
-\title{Update transcript metadatda for a \code{tximix()}-imported SummarizedExperiment}
+\title{Update transcript metadatda for \code{tximix()} imported data}
 \usage{
 tximixUpdateTxpData(
   se,
@@ -13,28 +13,59 @@ tximixUpdateTxpData(
 )
 }
 \arguments{
-\item{se}{the SummarizedExperiment}
+\item{se}{the \emph{SummarizedExperiment} (SE) output by \code{tximix()}}
 
-\item{txpData}{either GRanges or data.frame-type object
+\item{txpData}{either \emph{GRanges} or \emph{data.frame}-type object
 to use if there is not a match based on digest.
 This is used on a one-time basis, and transcripts
 will be marked in metadata columns as \verb{index = "user"``. See }linkedTxome\code{or}linkedTxpData` for persistent
 metadata storage/retrieval}
 
-\item{ranges}{logical, whether to add rowRanges or rowData}
+\item{ranges}{logical, whether to add \code{rowRanges} (or just \code{rowData})}
 
-\item{order}{order in which to update the metadata}
+\item{order}{order in which to update the metadata, by default
+\code{annotation} then \code{novel}}
 
 \item{key}{the name of the column to use as the key
-for merging metadata with the SE, which uses \code{rownames(se)}.
-defaults to \code{tx_name} which often matches the transcript
+for merging metadata with \code{rownames(se)}.
+Defaults to \code{key="tx_name"} which often matches the transcript
 names in GENCODE}
 }
 \value{
-a SummarizedExperiment with additional rowData,
-or a RangedSummarizedExperiment
+a \emph{SummarizedExperiment} with additional \code{rowData},
+or a \emph{RangedSummarizedExperiment} with additional ranges/data
 }
 \description{
-Will update the metadata on the SE object, using either
-linkedTxome or linkedTxpData (preference to the former)
+This function expects a \emph{SummarizedExperiment} as output by \code{tximix()},
+and if possible, it will update the metadata on the transcripts
+(\code{rowData} and/or \code{rowRanges} depending on the value of \code{ranges}),
+using metadata where the index digest matches those in \emph{tximeta} locations.
+Additionally, \emph{GRanges} or \emph{data.frame}-type data can be provided directly to \code{txpData},
+although this is not a persistent method for linking data to metadata.
+See \code{tximixInspectDigests()} for information on ascertaining which sources are present,
+and how to link data to local metadata.
+}
+\examples{
+
+\dontrun{
+example(tximix)
+
+# build custom novel GRanges data
+novel <- data.frame(
+  seqnames = paste0("chr", rep(1:22, each=500)),  
+  start = 1e6 + 1 + 0:499 * 1000, end = 1e6 + 1 + 0:499 * 1000 + 1000 - 1,
+  strand = "+", tx_name = paste0("novel", 1:(22*500)),
+  gene_id = paste0("novel_gene", rep(1:(22*10), each=50)), type = "protein_coding"
+)
+novel_gr <- as(novel, "GRanges")
+names(novel_gr) <- novel$tx_name
+seqinfo(novel_gr) <- seqinfo(se) # needs to have consistent seqinfo with `se`
+
+# now update the metadata + ranges:
+se_with_ranges <- tximixUpdateTxpData(
+  se, novel_gr, ranges=TRUE
+)
+mcols(se_with_ranges)
+}
+
 }

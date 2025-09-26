@@ -53,15 +53,16 @@
 
 #' Import transcript quantification with metadata
 #' 
-#' `tximeta` leverages the digest (or hash value) 
-#' of the sequence collection of reference transcripts used for indexing
-#' to identify metadata from the output of quantification tools. 
+#' `tximeta` leverages the digest of the reference transcripts that were indexed
+#' in order to identify metadata from the output of quantification tools. 
+#' A computed digest (a hash value) can be used to uniquely identify the collection 
+#' of reference sequences, and associate the dataset with other useful metadata.
 #' After identification, tximeta uses a number of core Bioconductor packages (GenomicFeatures,
 #' ensembldb, AnnotationHub, Seqinfo, BiocFileCache) to automatically
-#' populate metadata for the user, without additional effort from the user.
+#' populate metadata for the user.
 #' 
 #' Most of the code in tximeta works to add metadata and transcript ranges
-#' when the quantification was performed with Salmon or related tools. However,
+#' when the quantification was performed with salmon or related tools. However,
 #' tximeta can be used with any quantification type that is supported
 #' by [tximport::tximport()], where it will return an non-ranged SummarizedExperiment.
 #' For other quantification tools see also the `customMetaInfo` argument below.
@@ -107,7 +108,7 @@
 #' @param type what quantifier was used (see \code{\link{tximport}})
 #' @param txOut whether to output transcript-level data.
 #' \code{tximeta} is designed to have transcript-level output
-#' with Salmon, so default is \code{TRUE},
+#' with salmon, so default is \code{TRUE},
 #' and it's recommended to use \code{\link{summarizeToGene}}
 #' following \code{tximeta} for gene-level summarization.
 #' For an alevin file, \code{tximeta} will import the
@@ -146,13 +147,13 @@
 #' @param ... arguments passed to \code{tximport}
 #' 
 #' @return a SummarizedExperiment with metadata on the \code{rowRanges}.
-#' (if the hashed digest in the Salmon or Sailfish index does not match
+#' (if the hashed digest in the salmon or Sailfish index does not match
 #' any known transcriptomes, or any locally saved \code{linkedTxome},
 #' \code{tximeta} will just return a non-ranged SummarizedExperiment)
 #'
 #' @examples
 #'
-#' # point to a Salmon quantification file:
+#' # point to a salmon quantification file:
 #' dir <- system.file("extdata/salmon_dm", package="tximportData")
 #' files <- file.path(dir, "SRR1197474", "quant.sf") 
 #' coldata <- data.frame(files, names="SRR1197474", condition="A", stringsAsFactors=FALSE)
@@ -263,7 +264,7 @@ tximeta <- function(coldata,
     se <- makeUnrangedSE(txi, coldata, metadata)
     return(se)
   } else {
-    if (!txOut) stop("tximeta is designed to have transcript-level output for Salmon and piscem.
+    if (!txOut) stop("tximeta is designed to have transcript-level output for salmon and piscem.
   set txOut=TRUE and use summarizeToGene for gene-level summarization")
   }
 
@@ -366,7 +367,7 @@ tximeta <- function(coldata,
   }
 
   # special edits to rownames for GENCODE to remove chars after `|`
-  # (and user didn't use --gencode when building Salmon index)
+  # (and user didn't use --gencode when building salmon index)
   assays <- stripAllCharsAfterBar(assays)
   
   # check concordance

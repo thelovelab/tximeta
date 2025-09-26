@@ -31,7 +31,7 @@ and unique sample names are created}
 
 \item{txOut}{whether to output transcript-level data.
 \code{tximeta} is designed to have transcript-level output
-with Salmon, so default is \code{TRUE},
+with salmon, so default is \code{TRUE},
 and it's recommended to use \code{\link{summarizeToGene}}
 following \code{tximeta} for gene-level summarization.
 For an alevin file, \code{tximeta} will import the
@@ -79,21 +79,22 @@ firewall, default is FALSE}
 }
 \value{
 a SummarizedExperiment with metadata on the \code{rowRanges}.
-(if the hashed digest in the Salmon or Sailfish index does not match
+(if the hashed digest in the salmon or Sailfish index does not match
 any known transcriptomes, or any locally saved \code{linkedTxome},
 \code{tximeta} will just return a non-ranged SummarizedExperiment)
 }
 \description{
-\code{tximeta} leverages the digest (or hash value)
-of the sequence collection of reference transcripts used for indexing
-to identify metadata from the output of quantification tools.
+\code{tximeta} leverages the digest of the reference transcripts that were indexed
+in order to identify metadata from the output of quantification tools.
+A computed digest (a hash value) can be used to uniquely identify the collection
+of reference sequences, and associate the dataset with other useful metadata.
 After identification, tximeta uses a number of core Bioconductor packages (GenomicFeatures,
 ensembldb, AnnotationHub, Seqinfo, BiocFileCache) to automatically
-populate metadata for the user, without additional effort from the user.
+populate metadata for the user.
 }
 \details{
 Most of the code in tximeta works to add metadata and transcript ranges
-when the quantification was performed with Salmon or related tools. However,
+when the quantification was performed with salmon or related tools. However,
 tximeta can be used with any quantification type that is supported
 by \code{\link[tximport:tximport]{tximport::tximport()}}, where it will return an non-ranged SummarizedExperiment.
 For other quantification tools see also the \code{customMetaInfo} argument below.
@@ -131,7 +132,7 @@ have group write permissions (g+w).
 }
 \examples{
 
-# point to a Salmon quantification file:
+# point to a salmon quantification file:
 dir <- system.file("extdata/salmon_dm", package="tximportData")
 files <- file.path(dir, "SRR1197474", "quant.sf") 
 coldata <- data.frame(files, names="SRR1197474", condition="A", stringsAsFactors=FALSE)

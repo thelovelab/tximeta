@@ -2,14 +2,16 @@
 % Please edit documentation in R/tximix.R
 \name{tximixInspectDigests}
 \alias{tximixInspectDigests}
-\title{Inspect digest matches of a \code{tximix()}-imported SummarizedExperiment}
+\title{Inspect digest matches from \code{tximix()} imported data}
 \usage{
 tximixInspectDigests(se, type = "oarfish", expanded = FALSE, count = FALSE)
 }
 \arguments{
-\item{se}{the SummarizedExperiment, or alternatively just
+\item{se}{the \emph{SummarizedExperiment} output by \code{tximix()},
+or alternatively just
 \code{metadata(se)$quantInfo}, a list of metadata
-information from the quantification tool}
+information from the quantification tool
+(assuming \code{annotated} and \code{novel} indices both used)}
 
 \item{type}{what quantifier was used (see \code{\link[tximport:tximport]{tximport::tximport()}})}
 
@@ -27,14 +29,20 @@ whether it is a \code{linkedTxome} (FALSE for pre-computed),
 and a small 6 character version of the digest itself.
 }
 \description{
-This function can be run iteratively to check if one or more
-of the digests used in the mixed reference transcript set
-have a match against tximeta's pre-computed digests representing
-reference transcript sets (see listing in the package vignette) or
-those added by the user to the registry via \code{makeLinkedTxome()}.
-The output is a tibble with summary data, with optional columns
-specified by \code{expanded=TRUE} (full digest) and \code{count=TRUE}
-(add matching transcript ID counts per index).
+This function expects a \emph{SummarizedExperiment} as output by \code{tximix()}
+and returns a tibble with information about the two
+indices (\code{annotated} and \code{novel}) and their digests,
+and potentially matching metadata found in \emph{tximeta} locations.
+Inspection of index digests can be run iteratively, checking if
+the digests used in the mixed reference transcript set
+have a match against 1) pre-computed digests representing
+standard annotated sets (e.g. GENCODE, Ensembl, see full listing in the package vignette)
+or 2) digests added by the user to a local registry with \code{makeLinkedTxome()}.
+Optional columns may be added if specified by
+\code{expanded=TRUE} (include the full digest) and/or
+\code{count=TRUE} (add matching transcript ID counts per index).
+Following inspection, one can run \code{tximixUpdateTxpData()} to automatically update
+the transcript metadata using the sources indicated by this function.
 }
 \examples{
 \dontrun{

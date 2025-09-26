@@ -4,11 +4,11 @@
 #' `--annotated` reference transcripts (e.g. GENCODE, Ensembl) and 
 #' `--novel` or custom transcripts (e.g. de novo assembled transcripts not present 
 #' in the annotated set) to be used as the index for quantification.
-#' `tximix()` and associated functions facilitate import, reference identification, 
+#' `tximix()` and associated `tximix*` functions facilitate import, reference identification, 
 #' and addition of metadata across `annotated` and/or `novel` transcripts.
 #' The `tximix()` function alone imports the data, while inspection of the 
 #' recognized digests and updating of transcript metadata is handled by subsequent functions
-#' (listed in _See also_ below).
+#' (listed in _See also_ section below).
 #'
 #' @param coldata data.frame with columns `files` and `names` as in `tximeta()`
 #' @param type what quantifier was used (see [tximport::tximport()]), for now 
@@ -105,20 +105,28 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
   return(se)
 }
 
-#' Inspect digest matches of a `tximix()`-imported SummarizedExperiment
+#' Inspect digest matches from `tximix()` imported data
 #' 
-#' This function can be run iteratively to check if one or more
-#' of the digests used in the mixed reference transcript set 
-#' have a match against tximeta's pre-computed digests representing 
-#' reference transcript sets (see listing in the package vignette) or
-#' those added by the user to the registry via `makeLinkedTxome()`. 
-#' The output is a tibble with summary data, with optional columns
-#' specified by `expanded=TRUE` (full digest) and `count=TRUE` 
-#' (add matching transcript ID counts per index).
+#' This function expects a _SummarizedExperiment_ as output by `tximix()`
+#' and returns a tibble with information about the two
+#' indices (`annotated` and `novel`) and their digests, 
+#' and potentially matching metadata found in _tximeta_ locations.
+#' Inspection of index digests can be run iteratively, checking if
+#' the digests used in the mixed reference transcript set 
+#' have a match against 1) pre-computed digests representing 
+#' standard annotated sets (e.g. GENCODE, Ensembl, see full listing in the package vignette) 
+#' or 2) digests added by the user to a local registry with `makeLinkedTxome()`. 
+#' Optional columns may be added if specified by 
+#' `expanded=TRUE` (include the full digest) and/or 
+#' `count=TRUE` (add matching transcript ID counts per index).
+#' Following inspection, one can run `tximixUpdateTxpData()` to automatically update
+#' the transcript metadata using the sources indicated by this function.
 #'
-#' @param se the SummarizedExperiment, or alternatively just
+#' @param se the _SummarizedExperiment_ output by `tximix()`,
+#'  or alternatively just
 #' `metadata(se)$quantInfo`, a list of metadata
 #' information from the quantification tool 
+#' (assuming `annotated` and `novel` indices both used)
 #' @param type what quantifier was used (see [tximport::tximport()])
 #' @param expanded whether to include the expanded (full) digest string in the output, 
 #' in addition to the shortened 6-char version
@@ -200,28 +208,58 @@ tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE
   out
 }
 
-#' Update transcript metadatda for a `tximix()`-imported SummarizedExperiment
+#' Update transcript metadatda for `tximix()` imported data
 #'
-#' Will update the metadata on the SE object, using either
-#' linkedTxome or linkedTxpData (preference to the former)
+#' This function expects a _SummarizedExperiment_ as output by `tximix()`,
+#' and if possible, it will update the metadata on the transcripts 
+#' (`rowData` and/or `rowRanges` depending on the value of `ranges`), 
+#' using metadata where the index digest matches those in _tximeta_ locations.
+#' Additionally, _GRanges_ or _data.frame_-type data can be provided directly to `txpData`,
+#' although this is not a persistent method for linking data to metadata.
+#' See `tximixInspectDigests()` for information on ascertaining which sources are present, 
+#' and how to link data to local metadata.
 #'
-#' @param se the SummarizedExperiment
-#' @param txpData either GRanges or data.frame-type object
+#' @param se the _SummarizedExperiment_ (SE) output by `tximix()`
+#' @param txpData either _GRanges_ or _data.frame_-type object
 #' to use if there is not a match based on digest. 
 #' This is used on a one-time basis, and transcripts
 #' will be marked in metadata columns as `index = "user"``.
 #' See `linkedTxome` or `linkedTxpData` for persistent
 #' metadata storage/retrieval
-#' @param ranges logical, whether to add rowRanges or rowData
-#' @param order order in which to update the metadata
+#' @param ranges logical, whether to add `rowRanges` (or just `rowData`)
+#' @param order order in which to update the metadata, by default 
+#' `annotation` then `novel`
 #' @param key the name of the column to use as the key
-#' for merging metadata with the SE, which uses `rownames(se)`.
-#' defaults to `tx_name` which often matches the transcript 
+#' for merging metadata with `rownames(se)`.
+#' Defaults to `key="tx_name"` which often matches the transcript 
 #' names in GENCODE
 #'
-#' @return a SummarizedExperiment with additional rowData,
-#' or a RangedSummarizedExperiment
+#' @return a _SummarizedExperiment_ with additional `rowData`,
+#' or a _RangedSummarizedExperiment_ with additional ranges/data
 #'
+#' @examples
+#' 
+#' \dontrun{
+#' example(tximix)
+#' 
+#' # build custom novel GRanges data
+#' novel <- data.frame(
+#'   seqnames = paste0("chr", rep(1:22, each=500)),  
+#'   start = 1e6 + 1 + 0:499 * 1000, end = 1e6 + 1 + 0:499 * 1000 + 1000 - 1,
+#'   strand = "+", tx_name = paste0("novel", 1:(22*500)),
+#'   gene_id = paste0("novel_gene", rep(1:(22*10), each=50)), type = "protein_coding"
+#' )
+#' novel_gr <- as(novel, "GRanges")
+#' names(novel_gr) <- novel$tx_name
+#' seqinfo(novel_gr) <- seqinfo(se) # needs to have consistent seqinfo with `se`
+#' 
+#' # now update the metadata + ranges:
+#' se_with_ranges <- tximixUpdateTxpData(
+#'   se, novel_gr, ranges=TRUE
+#' )
+#' mcols(se_with_ranges)
+#' }
+#' 
 #' @export
 tximixUpdateTxpData <- function(
   se,

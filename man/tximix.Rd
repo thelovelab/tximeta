@@ -25,11 +25,11 @@ The \emph{oarfish} quantification tools allows a mix of
 \code{--annotated} reference transcripts (e.g. GENCODE, Ensembl) and
 \code{--novel} or custom transcripts (e.g. de novo assembled transcripts not present
 in the annotated set) to be used as the index for quantification.
-\code{tximix()} and associated functions facilitate import, reference identification,
+\code{tximix()} and associated \verb{tximix*} functions facilitate import, reference identification,
 and addition of metadata across \code{annotated} and/or \code{novel} transcripts.
 The \code{tximix()} function alone imports the data, while inspection of the
 recognized digests and updating of transcript metadata is handled by subsequent functions
-(listed in \emph{See also} below).
+(listed in \emph{See also} section below).
 }
 \examples{
 
