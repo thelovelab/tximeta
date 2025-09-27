@@ -26,7 +26,7 @@ test_that("tximix works as expected", {
   # rowData(se) # has tx_id, gene_id, tx_name from TxDb also ranges
 
   # define novel set so we can add metadata
- novel <- data.frame(
+  novel <- data.frame(
     seqnames = paste0("chr", rep(1:22, each=500)),
     start = 1e6 + 1 + 0:499 * 1000,
     end = 1e6 + 1 + 0:499 * 1000 + 1000 - 1,

@@ -45,10 +45,10 @@ Following inspection, one can run \code{tximixUpdate()} to automatically update
 the transcript metadata using the sources indicated by this function.
 }
 \examples{
-\dontrun{
+
 example(tximix)
 # now we have an `se` created by tximix()...
 tximixInspectDigests(se)
 # can then update the registry via makeLinkedTxome() and re-run inspection
-}
+
 }

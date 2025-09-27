@@ -47,7 +47,6 @@ and how to link data to local metadata.
 }
 \examples{
 
-\dontrun{
 example(tximix)
 
 # build custom novel GRanges data
@@ -59,13 +58,11 @@ novel <- data.frame(
 )
 novel_gr <- as(novel, "GRanges")
 names(novel_gr) <- novel$tx_name
-seqinfo(novel_gr) <- seqinfo(se) # needs to have consistent seqinfo with `se`
 
 # now update the metadata + ranges:
 se_with_ranges <- tximixUpdate(
   se, novel_gr, ranges=TRUE
 )
 mcols(se_with_ranges)
-}
 
 }

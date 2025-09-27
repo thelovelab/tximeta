@@ -11,8 +11,8 @@ output:
 abstract: >
   Tximeta performs numerous annotation and metadata gathering tasks on
   behalf of users during the import of transcript counts and abundance
-  from quantification tools such as salmon into Bioconductor objects
-  (SummarizedExperiment) with associated range-based metadata (GenomicRanges).
+  from quantification tools such as salmon. Data are imported as
+  SummarizedExperiment objects with associated GenomicRanges metadata.
   Correct metadata is added automatically via reference sequence digests, 
   facilitating genomic analyses and assisting in computational reproducibility.
 bibliography: library.bib
@@ -24,46 +24,39 @@ vignette: |
 
 # Introduction
 
-The `tximeta` package [@Love2020] extends the `tximport` package
+The _tximeta_ package [@Love2020] extends the _tximport_ package
 [@Soneson2015] for import of transcript-level quantification data into
 R/Bioconductor. It automatically adds annotation metadata when the
-RNA-seq data has been quantified with *salmon* [@Patro2017] or 
-[piscem-infer](https://piscem-infer.readthedocs.io/en/latest/), or the
-scRNA-seq data quantified with *alevin* [@Srivastava2019]. To our
-knowledge, `tximeta` is the only package for RNA-seq data import that
+RNA-seq data has been quantified with _salmon_ [@Patro2017] our related tools. 
+To our knowledge, _tximeta_ is the only package for RNA-seq data import that
 can automatically identify and attach transcriptome metadata based on
-the unique sequence of the reference transcripts.
+the unique sequence collection of the reference transcripts.
 For more details on these packages -- including the motivation for
-`tximeta` and description of similar work -- consult the
+_tximeta_ and description of similar work -- consult the
 **References** below.
 
-**Note:** `tximeta` requires that the **entire output** of
-*salmon* / *piscem-infer* / *alevin* is present and unmodified in
-order to identify the provenance of the reference transcripts. In
-general, it's a good idea to not modify or re-arrange the output
-directory of bioinformatic software as other downstream software rely
+**Note:** `tximeta()` requires that the **entire output** of
+the quantificaation tool is present in the output directories 
+and unmodified in order to identify the provenance of the reference transcripts. 
+In general, it's a good idea to not modify or re-arrange the output
+directory of bioinformatic software as other downstream software often rely
 on and assume a consistent directory structure. For sharing multiple
 samples, one can use, for example, `tar -czf` to bundle up a set of
-salmon output directories, or to bundle one alevin output
-directory. For tips on using `tximeta` with other quantifiers see the
-[other quantifiers](#other_quantifiers) section below.
+_salmon_ output directories. 
+For tips on using `tximeta()` with other quantifiers see the
+[other quantifiers](#other-quantifiers) section below.
 
 ```{r echo=FALSE, fig.alt="How tximeta works"}
 knitr::include_graphics("images/diagram.png")
 ```
 
-# Tximeta import starts with sample table
+# `tximeta()` import starts with sample table
 
-The first step using `tximeta` is to read in the sample table, which
+The first step using `tximeta()` is to read in the sample table, which
 will become the *column data*, `colData`, of the final object,
 a *SummarizedExperiment*. The sample table should contain all the
 information we need to identify the *salmon* quantification
 directories. 
-For *alevin* quantification, one should point to the `quants_mat.gz`
-file that contains the counts for all of the cells (also, in order to
-`tximeta` to work with *alevin* quantification, it requires that
-*alevin* was run using gene IDs in the `tgMap` step and not gene
-symbols).
 
 Here we will use a *salmon* quantification file in the
 *tximportData* package to demonstrate the usage of `tximeta`. We do
@@ -79,12 +72,14 @@ coldata <- data.frame(files, names="SRR1197474", condition="A", stringsAsFactors
 coldata
 ```
 
-`tximeta` expects at least two columns in `coldata`: 
+`tximeta()` expects at least two columns in `coldata`: 
 
 1. `files` - a pointer to the `quant.sf` files
 2. `names` - the unique names that should be used to identify samples
 
-# Running tximeta
+Other columns will be propagated to `colData` of the _SummarizedExperiment_ output.
+
+# Running `tximeta()`
 
 Normally, we would just run `tximeta` like so:
 
@@ -96,10 +91,14 @@ se <- tximeta(coldata)
 However, to avoid downloading remote GTF files during this vignette,
 we will point to a GTF file saved locally (in the *tximportData*
 package). We link the transcriptome of the *salmon* index to its
-locally saved GTF. The standard recommended usage of `tximeta` would
-be the code chunk above, or to specify a remote GTF source, not a
-local one. **This following code is therefore not recommended for a
-typically workflow, but is particular to the vignette code.**
+locally saved GTF. The standard recommended usage of `tximeta()`,  
+in particular for quantifiction with reference transcripts 
+with a [pre-computed digest](#pre-computed-digests), 
+would be the code chunk above. 
+If one were adding another set of reference transcripts, 
+one would normally specify a remote GTF source, not a local one.
+**This following code is therefore not recommended for a
+typical workflow, but is particular to the vignette code.**
 
 ```{r echo=FALSE}
 suppressPackageStartupMessages({
@@ -131,9 +130,15 @@ library(tximeta)
 se <- tximeta(coldata)
 ```
 
+This warning, 
+"_Warning: the annotation is missing some transcripts that were quantified._",
+is common and occurs when annotation sources provide transcripts in the FASTA 
+file that aren't annotated in the GTF file. This is upstream of `tximeta()`,
+but this package will notify you the number of transcripts for which this is the case.
+
 # How does it work? 
 
-`tximeta` recognized the computed *digest* of the transcriptome that
+`tximeta()` recognized the computed *digest* of the transcriptome that
 the files were quantified against, it accessed the GTF file of the
 transcriptome source, found and attached the transcript ranges, and
 added the appropriate transcriptome and genome metadata.
@@ -141,45 +146,39 @@ A *digest* is a small string of alphanumeric characters that uniquely
 identifies the collection of sequences that were used for
 quantification (it is the hash value from applying the hash function to 
 a particular collection of nucleotide sequences). 
-We sometimes also call this value a "checksum" (in the tximeta paper).
+We sometimes also call this value a "checksum" (in the tximeta paper),
+and we sometimes call the table of pre-computed digests or linked digests 
+a "hash table".
 
-A remote GTF is only
+Note that a remote GTF is only
 downloaded once, and a local or remote GTF is only parsed to build a
-*TxDb* or *EnsDb* once: if `tximeta` recognizes that it has seen this *salmon*
+*TxDb* or *EnsDb* once: if `tximeta()` recognizes that it has seen this *salmon*
 index before, it will use a cached version of the metadata and
-transcript ranges.
-
-Note the warning above that 5 of the transcripts are missing from the
-GTF file and so are dropped from the final output. This is a problem
-coming from the annotation source, and not easily avoided by
-`tximeta`. 
+transcript ranges. 
 
 # TxDb, EnsDb, and AnnotationHub
 
-`tximeta` makes use of Bioconductor packages for storing
+`tximeta()` makes use of Bioconductor packages for storing
 transcript databases as *TxDb* or *EnsDb* objects, which both are 
 connected by default to `sqlite` backends.
-For GENCODE and RefSeq GTF files, `tximeta` uses the *txdbmaker*
-package [@granges] to parse the GTF and build a *TxDb*. For Ensembl
-GTF files, `tximeta` will first attempt to obtain the correct *EnsDb*
+For GENCODE and RefSeq GTF files, `tximeta()` uses the *txdbmaker*
+package to parse the GTF and build a *TxDb*. For Ensembl
+GTF files, `tximeta()` will first attempt to obtain the correct *EnsDb*
 object using *AnnotationHub*. The *ensembldb* package [@ensembldb]
 contains classes and methods for extracting relevant data from Ensembl
 files. If the *EnsDb* has already been made available on
-AnnotationHub, `tximeta` will download the database directly, which
+AnnotationHub, `tximeta()` will download the database directly, which
 saves the user time parsing the GTF into a database (to avoid this,
 set `useHub=FALSE`). If the relevant *EnsDb* is not available on
-AnnotationHub, `tximeta` will build an *EnsDb* using *ensembldb* after
+AnnotationHub, `tximeta()` will build an *EnsDb* using *ensembldb* after
 downloading the GTF file. Again, the download/construction of a
 transcript database occurs only once, and upon subsequent usage of
 *tximeta* functions, the cached version will be used.
 
 # Pre-computed digests
 
-We plan to support a wide variety of sources and organisms for
-transcriptomes with pre-computed digests, though for now the
-software focuses on predominantly human and mouse transcriptomes 
-
-The following digests are supported in this version of `tximeta`:
+The following digests for human, mouse, and drosophila reference transcripts
+are supported in this version of `tximeta()`:
 
 ```{r echo=FALSE}
 dir2 <- system.file("extdata", package="tximeta")
@@ -212,11 +211,17 @@ For Ensembl transcriptomes, we support the combined protein coding
 alone (although the former approach combining coding and non-coding
 transcripts is recommended for more accurate quantification).
 
-`tximeta` also has functions to support *linked transcriptomes*,
-where one or more sources for transcript sequences have been combined
-or filtered. See the **Linked transcriptome** section below for a
+`tximeta()` also supports *linked transcriptomes*, a mechanism to
+link quantification data to key metadata. This can be used to resolve
+many potential situations where one of the above pre-computed digests
+won't be a match (due to modifying, re-ordering, adding, or removing 
+transcripts, which changes the value of the compute digest).
+See the [Linked transcriptomes](#linked-transcriptomes) section below for a
 demonstration. (The *makeLinkedTxome* function was used above to avoid
 downloading the GTF during the vignette building process.)
+
+For _oarfish_ quantification [@oarfish] using the `--annotated` and `--novel`
+reference transcripts, use the `tximix()` function described [below](#tximix-for-mixed-references).
 
 # SummarizedExperiment output
 
@@ -237,7 +242,7 @@ If there were inferential replicates (Gibbs samples or
 bootstrap samples), these would be imported as additional assays named
 `"infRep1"`, `"infRep2"`, ...
 
-`tximeta` has imported the correct ranges for the transcripts:
+`tximeta()` has imported the correct ranges for the transcripts:
 
 ```{r}
 rowRanges(se)
@@ -397,12 +402,13 @@ inferential replicates, e.g. bootstrap or Gibbs samples, which are
 imported and arranged by `tximeta` if these were generated during
 quantification.
 
-```{r}
+```{r eval=FALSE}
+# un-evaluated code
 library(fishpond)
 y <- se
-# y <- scaleInfReps(y)
-# y <- labelKeep(y)
-# y <- swish(y, x="condition")
+y <- scaleInfReps(y)
+y <- labelKeep(y)
+y <- swish(y, x="condition")
 # ... see Swish vignette in fishpond package
 ```
 
@@ -426,23 +432,6 @@ o <- log(calcNormFactors(cts/normMat)) + log(colSums(cts/normMat))
 y <- DGEList(cts)
 y <- scaleOffset(y, t(t(log(normMat)) + o))
 # ... see edgeR User's Guide for further steps
-```
-
-The following code chunk demonstrates how one could use the *Swish*
-method in the fishpond Bioconductor package. Here we use the
-transcript-level object `se`. This dataset only has a single sample
-and no inferential replicates, but the analysis would begin with such
-code. See the Swish vignette in the fishpond package for a complete
-example: 
-
-```{r eval=FALSE}
-y <- se # rename the object to 'y'
-library(fishpond)
-# if inferential replicates existed in the data,
-# analysis would begin with:
-#
-# y <- scaleInfReps(y)
-# ... see Swish vignette in the fishpond package
 ```
 
 For *limma* with *voom* transformation we recommend, as in the
@@ -475,6 +464,46 @@ str(metadata(se)[["quantInfo"]])
 str(metadata(se)[["txomeInfo"]])
 str(metadata(se)[["tximetaInfo"]])
 str(metadata(se)[["txdbInfo"]])
+```
+
+# tximix with mixed references
+
+```{r}
+dir <- system.file("extdata/oarfish", package="tximportData")
+names <- paste0("rep", 2:4)
+files <- file.path(dir, paste0("sgnex_h9_", names, ".quant.gz"))
+coldata <- data.frame(files, names)
+se <- tximix(coldata, type="oarfish")
+```
+
+```{r}
+tximixInspectDigests(se)
+```
+
+```{r}
+se_update <- tximixUpdate(se)
+mcols(se_update)
+```
+
+```{r}
+# define novel set so we can add metadata
+novel <- data.frame(
+  seqnames = paste0("chr", rep(1:22, each = 500)),
+  start = 1e6 + 1 + 0:499 * 1000,
+  end = 1e6 + 1 + 0:499 * 1000 + 1000 - 1,
+  strand = "+",
+  tx_name = paste0("novel", 1:(22 * 500)),
+  gene_id = paste0("novel_gene", rep(1:(22 * 10), each = 50)),
+  type = "protein_coding"
+)
+head(novel)
+library(GenomicRanges)
+novel_gr <- as(novel, "GRanges")
+names(novel_gr) <- novel$tx_name
+```
+
+```{r}
+se_with_ranges <- tximixUpdate(se, novel_gr, ranges=TRUE)
 ```
 
 # Errors connecting to a database
@@ -530,7 +559,7 @@ automatically recognized by `tximeta` and does not require making a
 *linkedTxome*. As the package is further developed, we plan to roll
 out support for all common transcriptomes, from all sources.
 
-**Note:** if you are using salmon in alignment mode, then there is no
+**Note:** if you are using _salmon_ in alignment mode, then there is no
 salmon index, and without the salmon index, there is no digest. We
 don't have a perfect solution for this yet, but you can still
 summarize transcript counts to gene with a `tx2gene` table that you
@@ -789,6 +818,14 @@ bfcinfo(bfc)
 bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 bfcinfo(bfc)
 ```
+
+# alevin details
+
+For *alevin* quantification, one should point to the `quants_mat.gz`
+file that contains the counts for all of the cells. In order to
+`tximeta()` to work with *alevin* quantification, it requires that
+*alevin* was run using gene IDs in the `tgMap` step and not gene
+symbols.
 
 # Other quantifiers
 

@@ -1,5 +1,4 @@
 *.sqlite
-vignettes
 docs
 inst/script/newrows.csv
 .Rproj.user

@@ -16,19 +16,19 @@ Authors@R: c(
     )
 Maintainer: Michael Love <michaelisaiahlove@gmail.com>
 License: GPL-2
-VignetteBuilder: knitr
+VignetteBuilder: knitr, rmarkdown
 Imports:
     SummarizedExperiment (>= 1.39.1), tximport, jsonlite, S4Vectors,
     IRanges, GenomicRanges (>= 1.61.1), AnnotationDbi, GenomicFeatures,
     txdbmaker, ensembldb, BiocFileCache, AnnotationHub, Biostrings,
     tibble, Seqinfo, tools, utils, methods, Matrix
 Suggests: knitr, rmarkdown, testthat, tximportData, org.Dm.eg.db,
-    DESeq2, fishpond, edgeR, limma, devtools, macrophage
+    DESeq2, edgeR, limma, devtools, macrophage
 URL: https://github.com/thelovelab/tximeta
 biocViews: Annotation, GenomeAnnotation, DataImport, Preprocessing,
     RNASeq, SingleCell, Transcriptomics, Transcription, GeneExpression,
     FunctionalGenomics, ReproducibleResearch, ReportWriting,
     ImmunoOncology
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Encoding: UTF-8

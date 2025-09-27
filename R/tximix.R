@@ -141,12 +141,12 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 #' and a small 6 character version of the digest itself.
 #' 
 #' @examples
-#' \dontrun{
+#' 
 #' example(tximix)
 #' # now we have an `se` created by tximix()...
 #' tximixInspectDigests(se)
 #' # can then update the registry via makeLinkedTxome() and re-run inspection
-#' }
+#' 
 #' @export
 tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE) {
   
@@ -240,7 +240,6 @@ tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE
 #'
 #' @examples
 #' 
-#' \dontrun{
 #' example(tximix)
 #' 
 #' # build custom novel GRanges data
@@ -252,14 +251,12 @@ tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE
 #' )
 #' novel_gr <- as(novel, "GRanges")
 #' names(novel_gr) <- novel$tx_name
-#' seqinfo(novel_gr) <- seqinfo(se) # needs to have consistent seqinfo with `se`
 #' 
 #' # now update the metadata + ranges:
 #' se_with_ranges <- tximixUpdate(
 #'   se, novel_gr, ranges=TRUE
 #' )
 #' mcols(se_with_ranges)
-#' }
 #' 
 #' @export
 tximixUpdate <- function(
