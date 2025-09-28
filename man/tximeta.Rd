@@ -27,12 +27,12 @@ tximeta(
 if \code{coldata} is a vector, it is assumed to be the paths of quantification files
 and unique sample names are created}
 
-\item{type}{what quantifier was used (see \code{\link{tximport}})}
+\item{type}{what quantifier was used, see \code{\link[tximport:tximport]{tximport::tximport()}}}
 
 \item{txOut}{whether to output transcript-level data.
 \code{tximeta} is designed to have transcript-level output
 with salmon, so default is \code{TRUE},
-and it's recommended to use \code{\link{summarizeToGene}}
+and it's recommended to use \code{summarizeToGene}
 following \code{tximeta} for gene-level summarization.
 For an alevin file, \code{tximeta} will import the
 gene level counts ignoring this argument (alevin
@@ -111,8 +111,7 @@ If tximeta detects a match in either source, it will automatically populate
 the transcript locations, the transcriptome release,
 the genome with correct chromosome lengths, and connect the SE object to locally
 cached derived metadata. tximeta also facilitates automatic summarization of
-transcript-level quantifications to the gene-level via \code{\link[=summarizeToGene]{summarizeToGene()}} without the need to
-manually build the correct \code{tx2gene} table for the reference used for indexing.
+transcript-level quantifications to the gene-level via \verb{summarizeToGene`` without the need to  manually build the correct }tx2gene` table for the reference used for indexing.
 
 tximeta on the first run will ask where the \code{\link[BiocFileCache:BiocFileCache-class]{BiocFileCache::BiocFileCache()}}
 location for this package (\emph{tximeta}) should be kept, either using a default location or a temporary

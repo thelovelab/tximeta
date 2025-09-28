@@ -79,7 +79,7 @@
 #' the transcript locations, the transcriptome release,
 #' the genome with correct chromosome lengths, and connect the SE object to locally
 #' cached derived metadata. tximeta also facilitates automatic summarization of 
-#' transcript-level quantifications to the gene-level via [summarizeToGene()] without the need to 
+#' transcript-level quantifications to the gene-level via `summarizeToGene`` without the need to 
 #' manually build the correct `tx2gene` table for the reference used for indexing.
 #'
 #' tximeta on the first run will ask where the [BiocFileCache::BiocFileCache()] 
@@ -105,11 +105,11 @@
 #' }
 #' if \code{coldata} is a vector, it is assumed to be the paths of quantification files
 #' and unique sample names are created
-#' @param type what quantifier was used (see \code{\link{tximport}})
+#' @param type what quantifier was used, see [tximport::tximport()]
 #' @param txOut whether to output transcript-level data.
 #' \code{tximeta} is designed to have transcript-level output
 #' with salmon, so default is \code{TRUE},
-#' and it's recommended to use \code{\link{summarizeToGene}}
+#' and it's recommended to use `summarizeToGene`
 #' following \code{tximeta} for gene-level summarization.
 #' For an alevin file, \code{tximeta} will import the
 #' gene level counts ignoring this argument (alevin

@@ -243,6 +243,7 @@ tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE
 #' example(tximix)
 #' 
 #' # build custom novel GRanges data
+#' library(GenomicRanges)
 #' novel <- data.frame(
 #'   seqnames = paste0("chr", rep(1:22, each=500)),  
 #'   start = 1e6 + 1 + 0:499 * 1000, end = 1e6 + 1 + 0:499 * 1000 + 1000 - 1,
