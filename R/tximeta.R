@@ -14,7 +14,7 @@
 #' a mix of annotated (e.g. GENCODE) and novel or custom transcripts.
 #'
 #' The main functions are:
-#'   - [tximeta()] - with key argument \code{coldata} specifying sample information
+#'   - [tximeta()] - with key argument `coldata` specifying sample information
 #'   - [`summarizeToGene()`][summarizeToGene,SummarizedExperiment-method] - summarize quantification to gene-level
 #'   - [tximix()] - import quantification with mixed reference transcript sets
 #' 
@@ -99,57 +99,55 @@
 #' have group write permissions (g+w).
 #'
 #' @param coldata a data.frame with at least two columns (others will propogate to object):
-#' \itemize{
-#' \item{\code{files} - character, paths of quantification files}
-#' \item{\code{names} - character, sample names}
-#' }
-#' if \code{coldata} is a vector, it is assumed to be the paths of quantification files
+#'   - `files` - character, paths of quantification files
+#'   - `names` - character, sample names
+#' if `coldata` is a vector, it is assumed to be the paths of quantification files
 #' and unique sample names are created
 #' @param type what quantifier was used, see [tximport::tximport()]
 #' @param txOut whether to output transcript-level data.
-#' \code{tximeta} is designed to have transcript-level output
-#' with salmon, so default is \code{TRUE},
+#' `tximeta` is designed to have transcript-level output
+#' with salmon, so default is `TRUE`,
 #' and it's recommended to use `summarizeToGene`
-#' following \code{tximeta} for gene-level summarization.
-#' For an alevin file, \code{tximeta} will import the
+#' following `tximeta` for gene-level summarization.
+#' For an alevin file, `tximeta` will import the
 #' gene level counts ignoring this argument (alevin
 #' produces only gene-level quantification).
 #' @param skipMeta whether to skip metadata generation
 #' (e.g. to avoid errors if not connected to internet).
-#' This calls \code{tximport} directly and so either
-#' \code{txOut=TRUE} or \code{tx2gene} should be specified.
+#' This calls `tximport` directly and so either
+#' `txOut=TRUE` or `tx2gene` should be specified.
 #' @param skipSeqinfo whether to skip the addition of Seqinfo,
 #' which requires an internet connection to download the
 #' relevant chromosome information table from UCSC
 #' @param useHub whether to first attempt to download a TxDb/EnsDb
 #' object from AnnotationHub, rather than creating from a
 #' GTF file from FTP (default is TRUE). If FALSE, it will
-#' force \code{tximeta} to download and parse the GTF
+#' force `tximeta` to download and parse the GTF
 #' @param markDuplicateTxps whether to mark the status
-#' (\code{hasDuplicate}) and names of duplicate transcripts
-#' (\code{duplicates}) in the rowData of the SummarizedExperiment output.
+#' (`hasDuplicate`) and names of duplicate transcripts
+#' (`duplicates`) in the rowData of the SummarizedExperiment output.
 #' Subsequent summarization to gene level will keep track
-#' of the number of transcripts sets per gene (\code{numDupSets})
+#' of the number of transcripts sets per gene (`numDupSets`)
 #' @param cleanDuplicateTxps whether to try to clean
 #' duplicate transcripts (exact sequence duplicates) by replacing
 #' the transcript names that do not appear in the GTF
 #' with those that do appear in the GTF
 #' @param customMetaInfo the relative path to a custom metadata
-#' information JSON file, relative to the paths in \code{files} of
-#' \code{coldata}. For example, \code{customMetaInfo="meta_info.json"}
+#' information JSON file, relative to the paths in `files` of
+#' `coldata`. For example, `customMetaInfo="meta_info.json"`
 #' would indicate that in the same directory as the quantification
-#' files in \code{files}, there are custom metadata information
+#' files in `files`, there are custom metadata information
 #' JSON files. These should contain the SHA-256 hash of the
-#' reference transcripts with the \code{index_seq_hash} tag
+#' reference transcripts with the `index_seq_hash` tag
 #' (see details in vignette).
-#' @param skipFtp whether to avoid \code{ftp://} in case of
+#' @param skipFtp whether to avoid `ftp://` in case of
 #' firewall, default is FALSE
-#' @param ... arguments passed to \code{tximport}
+#' @param ... arguments passed to `tximport`
 #' 
-#' @return a SummarizedExperiment with metadata on the \code{rowRanges}.
+#' @return a SummarizedExperiment with metadata on the `rowRanges`.
 #' (if the hashed digest in the salmon or Sailfish index does not match
-#' any known transcriptomes, or any locally saved \code{linkedTxome},
-#' \code{tximeta} will just return a non-ranged SummarizedExperiment)
+#' any known transcriptomes, or any locally saved `linkedTxome`,
+#' `tximeta` will just return a non-ranged SummarizedExperiment)
 #'
 #' @examples
 #'
@@ -501,7 +499,7 @@ getTxomeInfo <- function(indexSeqHash, quiet=FALSE) {
 
 # build or load a TxDb/EnsDb for the dataset
 # useHub = whether to look in AnnotationHub for a resoruce
-# skipFtp = whether to replace \code{ftp} with \code{https}
+# skipFtp = whether to replace `ftp` with `https`
 getTxDb <- function(txomeInfo, useHub=TRUE, skipFtp=FALSE) {
   # TODO what if there are multiple GTF files?
   stopifnot(length(txomeInfo$gtf) == 1)

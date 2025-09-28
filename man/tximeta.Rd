@@ -21,11 +21,11 @@ tximeta(
 \arguments{
 \item{coldata}{a data.frame with at least two columns (others will propogate to object):
 \itemize{
-\item{\code{files} - character, paths of quantification files}
-\item{\code{names} - character, sample names}
-}
+\item \code{files} - character, paths of quantification files
+\item \code{names} - character, sample names
 if \code{coldata} is a vector, it is assumed to be the paths of quantification files
-and unique sample names are created}
+and unique sample names are created
+}}
 
 \item{type}{what quantifier was used, see \code{\link[tximport:tximport]{tximport::tximport()}}}
 
@@ -72,7 +72,7 @@ JSON files. These should contain the SHA-256 hash of the
 reference transcripts with the \code{index_seq_hash} tag
 (see details in vignette).}
 
-\item{skipFtp}{whether to avoid \code{ftp://} in case of
+\item{skipFtp}{whether to avoid \verb{ftp://} in case of
 firewall, default is FALSE}
 
 \item{...}{arguments passed to \code{tximport}}
