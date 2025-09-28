@@ -577,6 +577,7 @@ against a transcriptome that included the coding and non-coding
 transcript of 960 bp (for demonstration purposes only).
 
 ```{r}
+dir <- system.file("extdata/salmon_dm", package="tximportData")
 file <- file.path(dir, "SRR1197474.plus", "quant.sf")
 file.exists(file)
 coldata <- data.frame(files=file, names="SRR1197474", sample="1",
