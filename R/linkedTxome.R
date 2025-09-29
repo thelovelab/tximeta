@@ -26,7 +26,14 @@
 #' For further details please see the "Linked transcriptomes"
 #' section of the tximeta vignette.
 #' 
-#' @param indexDir the local path to the Salmon index
+#' @param indexDir the local path to the Salmon index 
+#' (this or `digest` is required, only one should be specified)
+#' @param digest the full digest as character string,
+#' (this or `indexDir` is required, only one should be specified)
+#' @param indexName a name for the `index` when storing the linkedTxome,
+#' required if providing the `digest` string, suggest using the
+#' basename of the FASTA file and the software used, 
+#' e.g. "gencode.vXX_salmon-0.XX.Y"
 #' @param source the source of transcriptome (e.g. "de-novo").
 #' Note: if you specify "GENCODE" or "Ensembl", this will trigger
 #' behavior by tximeta that may not be desired: e.g. attempts to
@@ -95,24 +102,41 @@
 #' # bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
 #' 
 #' @export
-makeLinkedTxome <- function(indexDir, source, organism, release,
-                            genome, fasta, gtf, write=TRUE, jsonFile) {
-  indexJson <- file.path(indexDir, "info.json")
-  if (!file.exists(indexJson)) {
-    indexJson <- file.path(indexDir, "header.json")
-  }
-  indexList <- fromJSON(indexJson)
-  # Salmon's SHA-256 hash of the index is called "SeqHash" in the index JSON
-  # Pre-Salmon 1.0.0 the header.json file has a "value0" sublist, 
-  # from Salmon 1.0.0 the info.json file doesn't
-  if ("value0" %in% names(indexList)) {
-    indexSeqHash <- indexList$value0$SeqHash
+makeLinkedTxome <- function(
+  digest=NULL,
+  indexName,
+  indexDir=NULL,
+  source, organism, release,
+  genome, fasta, gtf, write=TRUE, jsonFile
+) {
+  
+  # only one or the other is specified
+  stopifnot(xor(is.null(digest), is.null(indexDir)))
+  
+  if (!is.null(indexDir)) {
+    indexJson <- file.path(indexDir, "info.json")
+    # backup spot for information...
+    if (!file.exists(indexJson)) {
+      indexJson <- file.path(indexDir, "header.json")
+    }
+    indexList <- fromJSON(indexJson)
+    # Salmon's SHA-256 hash of the index is called "SeqHash" in the index JSON
+    # Pre-Salmon 1.0.0 the header.json file has a "value0" sublist, 
+    # from Salmon 1.0.0 the info.json file doesn't
+    if ("value0" %in% names(indexList)) {
+      digest <- indexList$value0$SeqHash
+    } else {
+      digest <- indexList$SeqHash
+    }
+    # here and in the data frame where we record linkedTxome's,
+    # 'index' is just the basename of the Salmon index
+    index <- basename(indexDir)
   } else {
-    indexSeqHash <- indexList$SeqHash
+    # digest was specified, so use the indexName provided
+    stopifnot(!missing(indexName))
+    index <- indexName
   }
-  # here and in the data frame where we record linkedTxome's,
-  # 'index' is just the basename of the Salmon index
-  index <- basename(indexDir)
+
   # standardize capitalization
   std.sources <- c("GENCODE","Ensembl")
   for (src in std.sources) {
@@ -140,7 +164,7 @@ alternatively use a different string for source argument")
                genome=genome,
                fasta=list(fasta),
                gtf=gtf,
-               sha256=indexSeqHash)
+               sha256=digest)
   stopifnot(nrow(lt) == 1)
   if (write) {
     if (missing(jsonFile)) {

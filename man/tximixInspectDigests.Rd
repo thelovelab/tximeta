@@ -4,7 +4,7 @@
 \alias{tximixInspectDigests}
 \title{Inspect digest matches from \code{tximix()} imported data}
 \usage{
-tximixInspectDigests(se, type = "oarfish", expanded = FALSE, count = FALSE)
+tximixInspectDigests(se, type = "oarfish", fullDigest = FALSE, count = FALSE)
 }
 \arguments{
 \item{se}{the \emph{SummarizedExperiment} output by \code{tximix()},
@@ -15,7 +15,7 @@ information from the quantification tool
 
 \item{type}{what quantifier was used (see \code{\link[tximport:tximport]{tximport::tximport()}})}
 
-\item{expanded}{whether to include the expanded (full) digest string in the output,
+\item{fullDigest}{whether to include the full digest string in the output,
 in addition to the shortened 6-char version}
 
 \item{count}{whether to count the number of matching transcripts ID to each index

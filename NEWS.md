@@ -1,3 +1,8 @@
+# tximeta 1.27.6
+
+* `makeLinkedTxome()` will now accept a `digest` and `indexName`,
+  as an alternative to pointing to a `indexDir`.
+
 # tximeta 1.27.4
 
 * Addition of `tximix()` and associated functions, 

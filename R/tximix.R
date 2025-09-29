@@ -129,7 +129,7 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 #' information from the quantification tool 
 #' (assuming `annotated` and `novel` indices both used)
 #' @param type what quantifier was used (see [tximport::tximport()])
-#' @param expanded whether to include the expanded (full) digest string in the output, 
+#' @param fullDigest whether to include the full digest string in the output, 
 #' in addition to the shortened 6-char version
 #' @param count whether to count the number of matching transcripts ID to each index
 #' (only possible for those indices that have matching metadata)
@@ -148,7 +148,7 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 #' # can then update the registry via makeLinkedTxome() and re-run inspection
 #' 
 #' @export
-tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE) {
+tximixInspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FALSE) {
   
   # take from first sample
   if (is(se, "SummarizedExperiment")) {
@@ -174,17 +174,17 @@ tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE
   # this is the tibble the function will return
   out <- tibble(
     index=c("annotated","novel"), 
-    source=NA, organism=NA, release=NA, 
+    source=NA, organism=NA, release=NA, genome=NA,
     linkedTxome=NA, small_digest
   )
 
   # put in the full digest if requested
-  if (expanded) {
+  if (fullDigest) {
     out$digest <- digests
   }
 
   # columns to pull from the txomeInfo item
-  cols <- c("source","organism","release","linkedTxome")
+  cols <- c("source","organism","release","genome","linkedTxome")
   for (i in c("annotated","novel")) {
     # if there is a txomeInfo match, populate the outgoing tibble
     if (!is.null(txomeInfo[[i]])) {
@@ -255,6 +255,7 @@ tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE
 #' 
 #' # now update the metadata + ranges:
 #' \dontrun{
+#' # this requires connection to internet (will download GENCODE GTF via FTP)
 #' se_with_ranges <- tximixUpdate(
 #'   se, novel_gr, ranges=TRUE
 #' )

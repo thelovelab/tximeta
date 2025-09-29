@@ -7,7 +7,9 @@
 \title{Make and load linked transcriptomes, linking data to metadata}
 \usage{
 makeLinkedTxome(
-  indexDir,
+  digest = NULL,
+  indexName,
+  indexDir = NULL,
   source,
   organism,
   release,
@@ -21,7 +23,16 @@ makeLinkedTxome(
 loadLinkedTxome(jsonFile)
 }
 \arguments{
-\item{indexDir}{the local path to the Salmon index}
+\item{digest}{the full digest as character string,
+(this or \code{indexDir} is required, only one should be specified)}
+
+\item{indexName}{a name for the \code{index} when storing the linkedTxome,
+required if providing the \code{digest} string, suggest using the
+basename of the FASTA file and the software used,
+e.g. "gencode.vXX_salmon-0.XX.Y"}
+
+\item{indexDir}{the local path to the Salmon index
+(this or \code{digest} is required, only one should be specified)}
 
 \item{source}{the source of transcriptome (e.g. "de-novo").
 Note: if you specify "GENCODE" or "Ensembl", this will trigger

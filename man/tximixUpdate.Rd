@@ -62,6 +62,7 @@ names(novel_gr) <- novel$tx_name
 
 # now update the metadata + ranges:
 \dontrun{
+# this requires connection to internet (will download GENCODE GTF via FTP)
 se_with_ranges <- tximixUpdate(
   se, novel_gr, ranges=TRUE
 )

@@ -476,6 +476,23 @@ coldata <- data.frame(files, names)
 se <- tximix(coldata, type="oarfish")
 ```
 
+```{r echo=FALSE, messages=FALSE}
+# this chunk is required to avoiding downloading GTF file from FTP
+gtf_dir <- system.file("extdata/gencode", package="tximportData")
+gtf <- file.path(gtf_dir, "gencode.v48.annotation.gtf.gz")
+makeLinkedTxome(
+  digest = "6fc626c828b7a342ab0c6ff753055761989bf0e2306370e8766fedf45ad3adb3",
+  indexName = "gencode.v48",
+  source = "LocalGENCODE",
+  organism = "Homo sapeins",
+  release = "48",
+  genome = "GRCh38",
+  fasta = "/path/to/fasta.fa",
+  gtf = gtf,
+  write = FALSE
+)
+```
+
 ```{r}
 tximixInspectDigests(se)
 ```
