@@ -140,7 +140,7 @@ or a <em>RangedSummarizedExperiment</em> with new metadata</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> returning un-ranged SummarizedExperiment, other tximix functions:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -- tximixInspectDigests() to check matching digests</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> -- makelinkedTxome/makeLinkedTxpData() to link digests to metadata</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> -- makeLinkedTxome/makeLinkedTxpData() to link digests to metadata</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -- tximixUpdate() to update metadata and optionally add ranges</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># build custom novel GRanges data</span></span></span>
@@ -155,53 +155,12 @@ or a <em>RangedSummarizedExperiment</em> with new metadata</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">novel_gr</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">novel</span><span class="op">$</span><span class="va">tx_name</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># now update the metadata + ranges:</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
 <span class="r-in"><span><span class="va">se_with_ranges</span> <span class="op">&lt;-</span> <span class="fu">tximixUpdate</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  <span class="va">se</span>, <span class="va">novel_gr</span>, ranges<span class="op">=</span><span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> building TxDb with 'txdbmaker' package</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Import genomic features from the file as a GRanges object ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Prepare the 'metadata' data frame ... </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Make the TxDb object ... </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The "phase" metadata column contains non-NA values for features of type</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   stop_codon. This information was ignored.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>genome version information is not available for this TxDb object</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> OK</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> generating transcript ranges</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> --annotated index: adding metadata for 385669 transcripts</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> --novel index: no transcript metadata found</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   consider to add a 'linkedTxome', or 'linkedTxpData'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> txpData: adding transcript metadata for 11000 transcripts</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> building RangedSE: subsetting to 396669 out of 423044 rows with range data</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">se_with_ranges</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> DataFrame with 396669 rows and 5 columns</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             tx_name     tx_id           gene_id       index</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         &lt;character&gt; &lt;integer&gt;            &lt;list&gt; &lt;character&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENST00000832824.1 ENST00000832824.1         1 ENSG00000290825.2   annotated</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENST00000832825.1 ENST00000832825.1         2 ENSG00000290825.2   annotated</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENST00000832826.1 ENST00000832826.1         3 ENSG00000290825.2   annotated</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENST00000832827.1 ENST00000832827.1         4 ENSG00000290825.2   annotated</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENST00000832828.1 ENST00000832828.1         5 ENSG00000290825.2   annotated</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ...                             ...       ...               ...         ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> novel10996               novel10996        NA     novel_gene220        user</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> novel10997               novel10997        NA     novel_gene220        user</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> novel10998               novel10998        NA     novel_gene220        user</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> novel10999               novel10999        NA     novel_gene220        user</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> novel11000               novel11000        NA     novel_gene220        user</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                             type</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                      &lt;character&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENST00000832824.1             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENST00000832825.1             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENST00000832826.1             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENST00000832827.1             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ENST00000832828.1             NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ...                          ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> novel10996        protein_coding</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> novel10997        protein_coding</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> novel10998        protein_coding</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> novel10999        protein_coding</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> novel11000        protein_coding</span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

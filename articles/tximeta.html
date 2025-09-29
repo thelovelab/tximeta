@@ -73,7 +73,7 @@ automatic metadata</h1>
                         <h4 data-toc-skip class="author">Michael I.
 Love, Charlotte Soneson, Peter F. Hickey, Rob Patro</h4>
             
-            <h4 data-toc-skip class="date">09/28/2025</h4>
+            <h4 data-toc-skip class="date">09/29/2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/thelovelab/tximeta/blob/devel/vignettes/tximeta.Rmd" class="external-link"><code>vignettes/tximeta.Rmd</code></a></small>
       <div class="hidden name"><code>tximeta.Rmd</code></div>
@@ -415,7 +415,7 @@ database with the following helper function. In this case,
 retrieve and use in our R session:</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">edb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/retrieveDb.html">retrieveDb</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-28 15:47:51</span></span></code></pre>
+<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-29 16:18:08</span></span></code></pre>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">edb</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "TxDb"</span></span>
@@ -448,7 +448,7 @@ out the transcript <em>GRanges</em> for exons-by-transcript
 element of the list gives the exons for a particular transcript).</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">se.exons</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addExons.html">addExons</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-28 15:47:51</span></span></code></pre>
+<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-29 16:18:08</span></span></code></pre>
 <pre><code><span><span class="co">## generating exon ranges</span></span></code></pre>
 <div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rowRanges</span><span class="op">(</span><span class="va">se.exons</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
@@ -492,7 +492,7 @@ does not have ranges or an associated <em>TxDb</em> by setting
 table which is passed to <code>tximport</code>.</p>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gse</span> <span class="op">&lt;-</span> <span class="fu">summarizeToGene</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-28 15:47:51</span></span></code></pre>
+<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-29 16:18:08</span></span></code></pre>
 <pre><code><span><span class="co">## obtaining transcript-to-gene mapping from database</span></span></code></pre>
 <pre><code><span><span class="co">## generating gene ranges</span></span></code></pre>
 <pre><code><span><span class="co">## assignRanges='range': gene ranges assigned by total range of isoforms</span></span>
@@ -637,9 +637,9 @@ in the <em>tximport</em> vignette to generate counts-from-abundance
 instead of providing an offset for average transcript length.</p>
 <div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gse</span> <span class="op">&lt;-</span> <span class="fu">summarizeToGene</span><span class="op">(</span><span class="va">se</span>, countsFromAbundance<span class="op">=</span><span class="st">"lengthScaledTPM"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-28 15:47:51</span></span></code></pre>
+<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-29 16:18:08</span></span></code></pre>
 <pre><code><span><span class="co">## obtaining transcript-to-gene mapping from database</span></span></code></pre>
-<pre><code><span><span class="co">## loading existing gene ranges created: 2025-09-28 15:47:54</span></span></code></pre>
+<pre><code><span><span class="co">## loading existing gene ranges created: 2025-09-29 16:18:12</span></span></code></pre>
 <pre><code><span><span class="co">## assignRanges='range': gene ranges assigned by total range of isoforms</span></span>
 <span><span class="co">##   see details at: ?summarizeToGene,SummarizedExperiment-method</span></span></code></pre>
 <pre><code><span><span class="co">## summarizing abundance</span></span></code></pre>
@@ -719,7 +719,7 @@ stored in the metadata:</p>
 <span><span class="co">##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1</span></span>
 <span><span class="co">##   ..$ : int [1:3] 1 27 4</span></span>
 <span><span class="co">##  $ type      : chr "salmon"</span></span>
-<span><span class="co">##  $ importTime: POSIXct[1:1], format: "2025-09-28 15:47:43"</span></span></code></pre>
+<span><span class="co">##  $ importTime: POSIXct[1:1], format: "2025-09-29 16:18:00"</span></span></code></pre>
 <div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html" class="external-link">metadata</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">[[</span><span class="st">"txdbInfo"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  Named chr [1:12] "TxDb" "GenomicFeatures" ...</span></span>
@@ -738,7 +738,7 @@ stored in the metadata:</p>
 <pre><code><span><span class="co">## 1 2 3 </span></span>
 <span><span class="co">## returning un-ranged SummarizedExperiment, other tximix functions:</span></span>
 <span><span class="co">## -- tximixInspectDigests() to check matching digests</span></span>
-<span><span class="co">## -- makelinkedTxome/makeLinkedTxpData() to link digests to metadata</span></span>
+<span><span class="co">## -- makeLinkedTxome/makeLinkedTxpData() to link digests to metadata</span></span>
 <span><span class="co">## -- tximixUpdate() to update metadata and optionally add ranges</span></span></code></pre>
 <div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/tximixInspectDigests.html">tximixInspectDigests</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
@@ -748,37 +748,11 @@ stored in the metadata:</p>
 <span><span class="co">## <span style="color: #BCBCBC;">1</span> annotated GENCODE Homo sapiens 48      FALSE       6fc626      </span></span>
 <span><span class="co">## <span style="color: #BCBCBC;">2</span> novel     <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>           <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>          43158f</span></span></code></pre>
 <div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">se_update</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tximixUpdate.html">tximixUpdate</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## building TxDb with 'txdbmaker' package</span></span></code></pre>
-<pre><code><span><span class="co">## Import genomic features from the file as a GRanges object ... OK</span></span>
-<span><span class="co">## Prepare the 'metadata' data frame ... OK</span></span>
-<span><span class="co">## Make the TxDb object ...</span></span></code></pre>
-<pre><code><span><span class="co">## Warning in .get_cds_IDX(mcols0$type, mcols0$phase): The "phase" metadata column contains non-NA values for features of type</span></span>
-<span><span class="co">##   stop_codon. This information was ignored.</span></span></code></pre>
-<pre><code><span><span class="co">## Warning in .makeTxDb_normarg_chrominfo(chrominfo): genome version information</span></span>
-<span><span class="co">## is not available for this TxDb object</span></span></code></pre>
-<pre><code><span><span class="co">## OK</span></span>
-<span><span class="co">## generating transcript ranges</span></span>
-<span><span class="co">## --annotated index: adding metadata for 385669 transcripts</span></span>
-<span><span class="co">## --novel index: no transcript metadata found</span></span>
-<span><span class="co">##   consider to add a 'linkedTxome', or 'linkedTxpData'</span></span></code></pre>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">se_update</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## DataFrame with 423044 rows and 4 columns</span></span>
-<span><span class="co">##                             tx_name     tx_id           gene_id       index</span></span>
-<span><span class="co">##                         &lt;character&gt; &lt;integer&gt;            &lt;list&gt; &lt;character&gt;</span></span>
-<span><span class="co">## ENST00000832824.1 ENST00000832824.1         1 ENSG00000290825.2   annotated</span></span>
-<span><span class="co">## ENST00000832825.1 ENST00000832825.1         2 ENSG00000290825.2   annotated</span></span>
-<span><span class="co">## ENST00000832826.1 ENST00000832826.1         3 ENSG00000290825.2   annotated</span></span>
-<span><span class="co">## ENST00000832827.1 ENST00000832827.1         4 ENSG00000290825.2   annotated</span></span>
-<span><span class="co">## ENST00000832828.1 ENST00000832828.1         5 ENSG00000290825.2   annotated</span></span>
-<span><span class="co">## ...                             ...       ...               ...         ...</span></span>
-<span><span class="co">## novel10996               novel10996        NA                NA          NA</span></span>
-<span><span class="co">## novel10997               novel10997        NA                NA          NA</span></span>
-<span><span class="co">## novel10998               novel10998        NA                NA          NA</span></span>
-<span><span class="co">## novel10999               novel10999        NA                NA          NA</span></span>
-<span><span class="co">## novel11000               novel11000        NA                NA          NA</span></span></code></pre>
-<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># this chunk not evaluated as it involves </span></span>
+<span><span class="co"># downloading 56 Mb file from ftp.ebi.ac.uk</span></span>
+<span><span class="va">se_update</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tximixUpdate.html">tximixUpdate</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">se_update</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># define novel set so we can add metadata</span></span>
 <span><span class="va">novel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  seqnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"chr"</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">22</span>, each <span class="op">=</span> <span class="fl">500</span><span class="op">)</span><span class="op">)</span>,</span>
@@ -797,19 +771,27 @@ stored in the metadata:</p>
 <span><span class="co">## 4     chr1 1003001 1004000      +  novel4 novel_gene1 protein_coding</span></span>
 <span><span class="co">## 5     chr1 1004001 1005000      +  novel5 novel_gene1 protein_coding</span></span>
 <span><span class="co">## 6     chr1 1005001 1006000      +  novel6 novel_gene1 protein_coding</span></span></code></pre>
-<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/GenomicRanges" class="external-link">GenomicRanges</a></span><span class="op">)</span></span>
 <span><span class="va">novel_gr</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/as.html" class="external-link">as</a></span><span class="op">(</span><span class="va">novel</span>, <span class="st">"GRanges"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">novel_gr</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">novel</span><span class="op">$</span><span class="va">tx_name</span></span></code></pre></div>
-<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">se_with_ranges</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tximixUpdate.html">tximixUpdate</a></span><span class="op">(</span><span class="va">se</span>, <span class="va">novel_gr</span>, ranges<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## loading existing TxDb created: 2025-09-28 15:49:24</span></span></code></pre>
-<pre><code><span><span class="co">## loading existing transcript ranges created: 2025-09-28 15:49:26</span></span></code></pre>
-<pre><code><span><span class="co">## --annotated index: adding metadata for 385669 transcripts</span></span></code></pre>
-<pre><code><span><span class="co">## --novel index: no transcript metadata found</span></span>
-<span><span class="co">##   consider to add a 'linkedTxome', or 'linkedTxpData'</span></span></code></pre>
-<pre><code><span><span class="co">## txpData: adding transcript metadata for 11000 transcripts</span></span></code></pre>
-<pre><code><span><span class="co">## building RangedSE: subsetting to 396669 out of 423044 rows with range data</span></span></code></pre>
+<pre><code><span><span class="co">## building TxDb with 'txdbmaker' package</span></span></code></pre>
+<pre><code><span><span class="co">## Import genomic features from the file as a GRanges object ... OK</span></span>
+<span><span class="co">## Prepare the 'metadata' data frame ... OK</span></span>
+<span><span class="co">## Make the TxDb object ...</span></span></code></pre>
+<pre><code><span><span class="co">## Warning in .get_cds_IDX(mcols0$type, mcols0$phase): The "phase" metadata column contains non-NA values for features of type</span></span>
+<span><span class="co">##   stop_codon. This information was ignored.</span></span></code></pre>
+<pre><code><span><span class="co">## Warning in .makeTxDb_normarg_chrominfo(chrominfo): genome version information</span></span>
+<span><span class="co">## is not available for this TxDb object</span></span></code></pre>
+<pre><code><span><span class="co">## OK</span></span>
+<span><span class="co">## generating transcript ranges</span></span>
+<span><span class="co">## --annotated index: adding metadata for 385669 transcripts</span></span>
+<span><span class="co">## --novel index: no transcript metadata found</span></span>
+<span><span class="co">##   consider to add a 'linkedTxome', or 'linkedTxpData'</span></span>
+<span><span class="co">## txpData: adding transcript metadata for 11000 transcripts</span></span>
+<span><span class="co">## building RangedSE: subsetting to 396669 out of 423044 rows with range data</span></span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="errors-connecting-to-a-database">Errors connecting to a database<a class="anchor" aria-label="anchor" href="#errors-connecting-to-a-database"></a>
@@ -825,10 +807,10 @@ location. In each of these cases, it is easy to remove the entry in the
 regenerate the transcript database or any other missing database.</p>
 <p>If you have used the default cache location, then you can obtain
 access to your BiocFileCache with:</p>
-<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BiocFileCache</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Loading required package: dbplyr</span></span></code></pre>
-<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bfc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html" class="external-link">BiocFileCache</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>Otherwise, you can recall your particular <code>tximeta</code> cache
 location with <code><a href="../reference/getTximetaBFC.html">getTximetaBFC()</a></code>.</p>
@@ -878,18 +860,18 @@ quantification file which was quantified against a transcriptome that
 included the coding and non-coding <em>Drosophila melanogaster</em>
 transcripts, as well as an artificial transcript of 960 bp (for
 demonstration purposes only).</p>
-<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/salmon_dm"</span>, package<span class="op">=</span><span class="st">"tximportData"</span><span class="op">)</span></span>
 <span><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"SRR1197474.plus"</span>, <span class="st">"quant.sf"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/files.html" class="external-link">file.exists</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] TRUE</span></span></code></pre>
-<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">coldata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>files<span class="op">=</span><span class="va">file</span>, names<span class="op">=</span><span class="st">"SRR1197474"</span>, sample<span class="op">=</span><span class="st">"1"</span>,</span>
 <span>                      stringsAsFactors<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Trying to import the files gives a message that <code>tximeta</code>
 couldn’t find a matching transcriptome, so it returns an non-ranged
 <em>SummarizedExperiment</em>.</p>
-<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tximeta.html">tximeta</a></span><span class="op">(</span><span class="va">coldata</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## importing salmon quantification files</span></span></code></pre>
 <pre><code><span><span class="co">## reading in files with read.delim (install 'readr' package for speed up)</span></span></code></pre>
@@ -959,7 +941,7 @@ your machine. Here we use <code>system.file</code> and
 <code>file.path</code> because we have included parts of a
 <em>salmon</em> index directory in the <em>tximeta</em> package itself
 for demonstration of functionality in this vignette.</p>
-<div class="sourceCode" id="cb111"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">indexDir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>, <span class="st">"Dm.BDGP6.22.98.plus_salmon-0.14.1"</span><span class="op">)</span></span></code></pre></div>
 <p>Now we provide the location of the FASTA files and the GTF file for
 this transcriptome.</p>
@@ -972,7 +954,7 @@ filename,
 e.g. <code>Drosophila_melanogaster.BDGP6.22.98.gtf.gz</code>.</p>
 <p>The recommended usage of <code>tximeta</code> would be to specify a
 remote GTF source, as seen in the commented-out line below:</p>
-<div class="sourceCode" id="cb112"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fastaFTP</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz"</span>,</span>
 <span>              <span class="st">"ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz"</span>,</span>
 <span>              <span class="st">"extra_transcript.fa.gz"</span><span class="op">)</span></span>
@@ -986,7 +968,7 @@ following GTF file is a modified version of the release 98 from Ensembl,
 which includes description of a one transcript, one exon artificial gene
 which was inserted into the transcriptome (for demonstration purposes
 only).</p>
-<div class="sourceCode" id="cb113"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gtfPath</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">dir</span>,<span class="st">"Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz"</span><span class="op">)</span></span></code></pre></div>
 <p>Finally, we create a <em>linkedTxome</em>. In this vignette, we point
 to a temporary directory for the JSON file, but a more typical workflow
@@ -996,7 +978,7 @@ index by not specifying <code>jsonFile</code>.</p>
 new entry in an internal table that links the transcriptome used in the
 <em>salmon</em> index to its sources, and (2) it creates a JSON file
 such that this <em>linkedTxome</em> can be shared.</p>
-<div class="sourceCode" id="cb114"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># just for vignette demo, make temp directory</span></span>
 <span><span class="va">jsonFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmp</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">basename</a></span><span class="op">(</span><span class="va">indexDir</span><span class="op">)</span>, <span class="st">".json"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/linkedTxome.html">makeLinkedTxome</a></span><span class="op">(</span>indexDir<span class="op">=</span><span class="va">indexDir</span>,</span>
@@ -1004,7 +986,7 @@ such that this <em>linkedTxome</em> can be shared.</p>
 <span>                release<span class="op">=</span><span class="st">"98"</span>, genome<span class="op">=</span><span class="st">"BDGP6.22"</span>,</span>
 <span>                fasta<span class="op">=</span><span class="va">fastaFTP</span>, gtf<span class="op">=</span><span class="va">gtfPath</span>,</span>
 <span>                jsonFile<span class="op">=</span><span class="va">jsonFile</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## writing linkedTxome to /tmp/RtmpgTeQzX/Dm.BDGP6.22.98.plus_salmon-0.14.1.json</span></span></code></pre>
+<pre><code><span><span class="co">## writing linkedTxome to /tmp/RtmpoWkLSy/Dm.BDGP6.22.98.plus_salmon-0.14.1.json</span></span></code></pre>
 <pre><code><span><span class="co">## saving linkedTxome in bfc</span></span></code></pre>
 <p>After running <code>makeLinkedTxome</code>, the connection between
 this <em>salmon</em> index (and its digest) with the sources is saved
@@ -1022,7 +1004,7 @@ the pre-computed metadata and transcript ranges.</p>
 file and so are dropped from the final output. This is a problem coming
 from the annotation source, and not easily avoided by
 <code>tximeta</code>.</p>
-<div class="sourceCode" id="cb117"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tximeta.html">tximeta</a></span><span class="op">(</span><span class="va">coldata</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## importing salmon quantification files</span></span></code></pre>
 <pre><code><span><span class="co">## reading in files with read.delim (install 'readr' package for speed up)</span></span></code></pre>
@@ -1048,7 +1030,7 @@ from the annotation source, and not easily avoided by
 <span><span class="co">## Example missing txps: [FBtr0307759, FBtr0084079, FBtr0084080, ...]</span></span></code></pre>
 <p>We can see that the appropriate metadata and transcript ranges are
 attached.</p>
-<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb116"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rowRanges</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## GRanges object with 33702 ranges and 3 metadata columns:</span></span>
 <span><span class="co">##               seqnames            ranges strand |     tx_id         gene_id</span></span>
@@ -1079,7 +1061,7 @@ attached.</p>
 <span><span class="co">##   FBtr0113600 FBtr0113600</span></span>
 <span><span class="co">##   -------</span></span>
 <span><span class="co">##   seqinfo: 25 sequences from an unspecified genome; no seqlengths</span></span></code></pre>
-<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb118"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/Seqinfo/man/seqinfo.html" class="external-link">seqinfo</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Seqinfo object with 25 sequences from an unspecified genome; no seqlengths:</span></span>
 <span><span class="co">##   seqnames             seqlengths isCircular genome</span></span>
@@ -1104,7 +1086,7 @@ can show how to load a JSON file below.</p>
 <p><strong>Note:</strong> Running this code will clear any information
 about <em>linkedTxomes</em>. Don’t run this unless you really want to
 clear this table!</p>
-<div class="sourceCode" id="cb128"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb120"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">BiocFileCache</span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">bfcloc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTximetaBFC.html">getTximetaBFC</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -1116,31 +1098,31 @@ clear this table!</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 9 × 10</span></span></span>
 <span><span class="co">##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC1  link… 2025-09-28… 2025-09-28… /tmp… rela… bb97…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC2  Dros… 2025-09-28… 2025-09-28… /tmp… rela… bb95…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC3  txpR… 2025-09-28… 2025-09-28… /tmp… rela… bb96…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC4  exon… 2025-09-28… 2025-09-28… /tmp… rela… bb92…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC5  gene… 2025-09-28… 2025-09-28… /tmp… rela… bb92…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC6  genc… 2025-09-28… 2025-09-28… /tmp… rela… bb91…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC7  txpR… 2025-09-28… 2025-09-28… /tmp… rela… bb95…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC8  Dros… 2025-09-28… 2025-09-28… /tmp… rela… bb97…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">9</span> BFC9  txpR… 2025-09-28… 2025-09-28… /tmp… rela… bb94…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC1  link… 2025-09-29… 2025-09-29… /tmp… rela… bcb3…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC2  Dros… 2025-09-29… 2025-09-29… /tmp… rela… bcb5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC3  txpR… 2025-09-29… 2025-09-29… /tmp… rela… bcb7…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC4  exon… 2025-09-29… 2025-09-29… /tmp… rela… bcb5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC5  gene… 2025-09-29… 2025-09-29… /tmp… rela… bcb1…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC6  genc… 2025-09-29… 2025-09-29… /tmp… rela… bcb4…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC7  txpR… 2025-09-29… 2025-09-29… /tmp… rela… bcb7…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC8  Dros… 2025-09-29… 2025-09-29… /tmp… rela… bcb3…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">9</span> BFC9  txpR… 2025-09-29… 2025-09-29… /tmp… rela… bcb7…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: expires &lt;dbl&gt;</span></span></span></code></pre>
-<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb122"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># only run the next line if you want to remove your linkedTxome table!</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html" class="external-link">bfcremove</a></span><span class="op">(</span><span class="va">bfc</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html" class="external-link">bfcquery</a></span><span class="op">(</span><span class="va">bfc</span>, <span class="st">"linkedTxomeTbl"</span><span class="op">)</span><span class="op">$</span><span class="va">rid</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html" class="external-link">bfcinfo</a></span><span class="op">(</span><span class="va">bfc</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 10</span></span></span>
 <span><span class="co">##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC2  Dros… 2025-09-28… 2025-09-28… /tmp… rela… bb95…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC3  txpR… 2025-09-28… 2025-09-28… /tmp… rela… bb96…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC4  exon… 2025-09-28… 2025-09-28… /tmp… rela… bb92…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC5  gene… 2025-09-28… 2025-09-28… /tmp… rela… bb92…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC6  genc… 2025-09-28… 2025-09-28… /tmp… rela… bb91…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC7  txpR… 2025-09-28… 2025-09-28… /tmp… rela… bb95…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC8  Dros… 2025-09-28… 2025-09-28… /tmp… rela… bb97…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC9  txpR… 2025-09-28… 2025-09-28… /tmp… rela… bb94…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC2  Dros… 2025-09-29… 2025-09-29… /tmp… rela… bcb5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC3  txpR… 2025-09-29… 2025-09-29… /tmp… rela… bcb7…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC4  exon… 2025-09-29… 2025-09-29… /tmp… rela… bcb5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC5  gene… 2025-09-29… 2025-09-29… /tmp… rela… bcb1…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC6  genc… 2025-09-29… 2025-09-29… /tmp… rela… bcb4…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC7  txpR… 2025-09-29… 2025-09-29… /tmp… rela… bcb7…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC8  Dros… 2025-09-29… 2025-09-29… /tmp… rela… bcb3…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC9  txpR… 2025-09-29… 2025-09-29… /tmp… rela… bcb7…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: expires &lt;dbl&gt;</span></span></span></code></pre>
 </div>
 <div class="section level2">
@@ -1156,22 +1138,22 @@ FASTA and GTF source(s).</p>
 <p>We point to the JSON file and use <code>loadLinkedTxome</code> and
 then the relevant metadata is saved for persistent usage. In this case,
 we saved the JSON file in a temporary directory.</p>
-<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb124"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">jsonFile</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">tmp</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/path.html" class="external-link">basename</a></span><span class="op">(</span><span class="va">indexDir</span><span class="op">)</span>, <span class="st">".json"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/linkedTxome.html">loadLinkedTxome</a></span><span class="op">(</span><span class="va">jsonFile</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## saving linkedTxome in bfc (first time)</span></span></code></pre>
 <p>Again, using <code>tximeta</code> figures out whether it needs to
 access the remote GTF or not, and assembles the appropriate object on
 the user’s behalf.</p>
-<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb126"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tximeta.html">tximeta</a></span><span class="op">(</span><span class="va">coldata</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## importing salmon quantification files</span></span></code></pre>
 <pre><code><span><span class="co">## reading in files with read.delim (install 'readr' package for speed up)</span></span></code></pre>
 <pre><code><span><span class="co">## 1 </span></span>
 <span><span class="co">## found matching linked transcriptome:</span></span>
 <span><span class="co">## [ LocalEnsembl - Drosophila melanogaster - release 98 ]</span></span>
-<span><span class="co">## loading existing TxDb created: 2025-09-28 15:49:36</span></span>
-<span><span class="co">## loading existing transcript ranges created: 2025-09-28 15:49:36</span></span></code></pre>
+<span><span class="co">## loading existing TxDb created: 2025-09-29 16:19:57</span></span>
+<span><span class="co">## loading existing transcript ranges created: 2025-09-29 16:19:57</span></span></code></pre>
 <pre><code><span><span class="co">## Warning in checkAssays2Txps(assays, txps): </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Warning: the annotation is missing some transcripts that were quantified.</span></span>
@@ -1191,7 +1173,7 @@ part of a typical workflow.</p>
 <p><strong>Note:</strong> Running this code will clear any information
 about <em>linkedTxomes</em>. Don’t run this unless you really want to
 clear this table!</p>
-<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">bfcloc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getTximetaBFC.html">getTximetaBFC</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span> <span class="kw">else</span> <span class="op">{</span></span>
@@ -1202,31 +1184,31 @@ clear this table!</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 9 × 10</span></span></span>
 <span><span class="co">##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC2  Dros… 2025-09-28… 2025-09-28… /tmp… rela… bb95…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC3  txpR… 2025-09-28… 2025-09-28… /tmp… rela… bb96…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC4  exon… 2025-09-28… 2025-09-28… /tmp… rela… bb92…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC5  gene… 2025-09-28… 2025-09-28… /tmp… rela… bb92…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC6  genc… 2025-09-28… 2025-09-28… /tmp… rela… bb91…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC7  txpR… 2025-09-28… 2025-09-28… /tmp… rela… bb95…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC8  Dros… 2025-09-28… 2025-09-28… /tmp… rela… bb97…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC9  txpR… 2025-09-28… 2025-09-28… /tmp… rela… bb94…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">9</span> BFC10 link… 2025-09-28… 2025-09-28… /tmp… rela… bb94…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC2  Dros… 2025-09-29… 2025-09-29… /tmp… rela… bcb5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC3  txpR… 2025-09-29… 2025-09-29… /tmp… rela… bcb7…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC4  exon… 2025-09-29… 2025-09-29… /tmp… rela… bcb5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC5  gene… 2025-09-29… 2025-09-29… /tmp… rela… bcb1…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC6  genc… 2025-09-29… 2025-09-29… /tmp… rela… bcb4…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC7  txpR… 2025-09-29… 2025-09-29… /tmp… rela… bcb7…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC8  Dros… 2025-09-29… 2025-09-29… /tmp… rela… bcb3…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC9  txpR… 2025-09-29… 2025-09-29… /tmp… rela… bcb7…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">9</span> BFC10 link… 2025-09-29… 2025-09-29… /tmp… rela… bcb1…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: expires &lt;dbl&gt;</span></span></span></code></pre>
-<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># only run the next line if you want to remove your linkedTxome table!</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html" class="external-link">bfcremove</a></span><span class="op">(</span><span class="va">bfc</span>, <span class="fu"><a href="https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html" class="external-link">bfcquery</a></span><span class="op">(</span><span class="va">bfc</span>, <span class="st">"linkedTxomeTbl"</span><span class="op">)</span><span class="op">$</span><span class="va">rid</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html" class="external-link">bfcinfo</a></span><span class="op">(</span><span class="va">bfc</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 10</span></span></span>
 <span><span class="co">##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC2  Dros… 2025-09-28… 2025-09-28… /tmp… rela… bb95…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC3  txpR… 2025-09-28… 2025-09-28… /tmp… rela… bb96…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC4  exon… 2025-09-28… 2025-09-28… /tmp… rela… bb92…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC5  gene… 2025-09-28… 2025-09-28… /tmp… rela… bb92…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC6  genc… 2025-09-28… 2025-09-28… /tmp… rela… bb91…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC7  txpR… 2025-09-28… 2025-09-28… /tmp… rela… bb95…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC8  Dros… 2025-09-28… 2025-09-28… /tmp… rela… bb97…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC9  txpR… 2025-09-28… 2025-09-28… /tmp… rela… bb94…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC2  Dros… 2025-09-29… 2025-09-29… /tmp… rela… bcb5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC3  txpR… 2025-09-29… 2025-09-29… /tmp… rela… bcb7…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC4  exon… 2025-09-29… 2025-09-29… /tmp… rela… bcb5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC5  gene… 2025-09-29… 2025-09-29… /tmp… rela… bcb1…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC6  genc… 2025-09-29… 2025-09-29… /tmp… rela… bcb4…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC7  txpR… 2025-09-29… 2025-09-29… /tmp… rela… bcb7…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC8  Dros… 2025-09-29… 2025-09-29… /tmp… rela… bcb3…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC9  txpR… 2025-09-29… 2025-09-29… /tmp… rela… bcb7…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: expires &lt;dbl&gt;</span></span></span></code></pre>
 </div>
 <div class="section level2">
@@ -1308,10 +1290,10 @@ from these and other individuals in the community:</p>
 <div class="section level2">
 <h2 id="session-info">Session info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
-<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://devtools.r-lib.org/" class="external-link">devtools</a></span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Loading required package: usethis</span></span></code></pre>
-<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://sessioninfo.r-lib.org/reference/session_info.html" class="external-link">session_info</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## <span style="color: #00BBBB; font-weight: bold;">─ Session info ───────────────────────────────────────────────────────────────</span></span></span>
 <span><span class="co">##  <span style="color: #555555; font-style: italic;">setting </span> <span style="color: #555555; font-style: italic;">value</span></span></span>
@@ -1323,7 +1305,7 @@ from these and other individuals in the community:</p>
 <span><span class="co">##  collate  en_US.UTF-8</span></span>
 <span><span class="co">##  ctype    en_US.UTF-8</span></span>
 <span><span class="co">##  tz       UTC</span></span>
-<span><span class="co">##  date     2025-09-28</span></span>
+<span><span class="co">##  date     2025-09-29</span></span>
 <span><span class="co">##  pandoc   3.8 @ /usr/bin/ (via rmarkdown)</span></span>
 <span><span class="co">##  quarto   1.7.32 @ /usr/local/bin/quarto</span></span>
 <span><span class="co">## </span></span>
@@ -1404,7 +1386,7 @@ from these and other individuals in the community:</p>
 <span><span class="co">##  pillar                 1.11.1     <span style="color: #555555;">2025-09-17</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  pkgbuild               1.4.8      <span style="color: #555555;">2025-05-26</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  pkgconfig              2.0.3      <span style="color: #555555;">2019-09-22</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
-<span><span class="co">##  pkgdown                <span style="color: #BB00BB; font-weight: bold;">2.1.3.9000</span> <span style="color: #555555;">2025-09-28</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Github (r-lib/pkgdown@fe04924)</span></span></span>
+<span><span class="co">##  pkgdown                <span style="color: #BB00BB; font-weight: bold;">2.1.3.9000</span> <span style="color: #555555;">2025-09-29</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">Github (r-lib/pkgdown@fe04924)</span></span></span>
 <span><span class="co">##  pkgload                1.4.1      <span style="color: #555555;">2025-09-23</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  png                    0.1-8      <span style="color: #555555;">2022-11-29</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  prettyunits            1.2.0      <span style="color: #555555;">2023-09-24</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
@@ -1423,7 +1405,7 @@ from these and other individuals in the community:</p>
 <span><span class="co">##  restfulr               0.0.16     <span style="color: #555555;">2025-06-27</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.1)</span></span></span>
 <span><span class="co">##  rjson                  0.2.23     <span style="color: #555555;">2024-09-16</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  rlang                  1.1.6      <span style="color: #555555;">2025-04-11</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
-<span><span class="co">##  rmarkdown              2.29       <span style="color: #555555;">2024-11-04</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
+<span><span class="co">##  rmarkdown              2.30       <span style="color: #555555;">2025-09-28</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  Rsamtools              2.25.3     <span style="color: #555555;">2025-09-03</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.22 (R 4.5.1)</span></span></span>
 <span><span class="co">##  RSQLite                2.4.3      <span style="color: #555555;">2025-08-20</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  rtracklayer            1.69.1     <span style="color: #555555;">2025-06-22</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.22 (R 4.5.1)</span></span></span>
@@ -1445,7 +1427,7 @@ from these and other individuals in the community:</p>
 <span><span class="co">##  tibble                 3.3.0      <span style="color: #555555;">2025-06-08</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  tidyselect             1.2.1      <span style="color: #555555;">2024-03-11</span> <span style="color: #555555;">[1]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
 <span><span class="co">##  txdbmaker              1.5.6      <span style="color: #555555;">2025-06-23</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.22 (R 4.5.1)</span></span></span>
-<span><span class="co">##  tximeta              * 1.27.4     <span style="color: #555555;">2025-09-28</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
+<span><span class="co">##  tximeta              * 1.27.4     <span style="color: #555555;">2025-09-29</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
 <span><span class="co">##  tximport               1.37.2     <span style="color: #555555;">2025-08-13</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.22 (R 4.5.1)</span></span></span>
 <span><span class="co">##  UCSC.utils             1.5.0      <span style="color: #555555;">2025-04-17</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.22 (R 4.5.0)</span></span></span>
 <span><span class="co">##  urlchecker             1.0.1      <span style="color: #555555;">2021-11-30</span> <span style="color: #555555;">[2]</span> <span style="color: #BB00BB; font-weight: bold;">RSPM (R 4.5.0)</span></span></span>
