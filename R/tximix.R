@@ -99,7 +99,7 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
   if (!quiet)
     message("returning un-ranged SummarizedExperiment, other tximix functions:\n",
             "-- tximixInspectDigests() to check matching digests\n",
-            "-- makelinkedTxome/makeLinkedTxpData() to link digests to metadata\n",
+            "-- makeLinkedTxome/makeLinkedTxpData() to link digests to metadata\n",
             "-- tximixUpdate() to update metadata and optionally add ranges"
           )
 

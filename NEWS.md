@@ -7,7 +7,8 @@
   TODO: As of _tximeta_ v1.27.4, some more work 
   to do is the development of linkedTxpData and resolving
   how the `add*()` and `retrieve*()` functions will work,
-  as well as `summarizeToGene()`.
+  as well as `summarizeToGene()`. In addition, `makeLinkedTxome()`
+  should be changed to read in a simple digest string.
 * Major code reorganiziation, splitting out alevin-processing 
   code and moving a number of metadata sub-routines to `metadata_helpers.R`.
 
