@@ -61,9 +61,11 @@ novel_gr <- as(novel, "GRanges")
 names(novel_gr) <- novel$tx_name
 
 # now update the metadata + ranges:
+\dontrun{
 se_with_ranges <- tximixUpdate(
   se, novel_gr, ranges=TRUE
 )
 mcols(se_with_ranges)
+}
 
 }

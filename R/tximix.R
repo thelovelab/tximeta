@@ -254,10 +254,12 @@ tximixInspectDigests <- function(se, type="oarfish", expanded=FALSE, count=FALSE
 #' names(novel_gr) <- novel$tx_name
 #' 
 #' # now update the metadata + ranges:
+#' \dontrun{
 #' se_with_ranges <- tximixUpdate(
 #'   se, novel_gr, ranges=TRUE
 #' )
 #' mcols(se_with_ranges)
+#' }
 #' 
 #' @export
 tximixUpdate <- function(

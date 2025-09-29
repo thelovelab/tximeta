@@ -480,7 +480,9 @@ se <- tximix(coldata, type="oarfish")
 tximixInspectDigests(se)
 ```
 
-```{r}
+```{r eval=FALSE}
+# this chunk not evaluated as it involves 
+# downloading 56 Mb file from ftp.ebi.ac.uk
 se_update <- tximixUpdate(se)
 mcols(se_update)
 ```
