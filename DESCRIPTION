@@ -17,6 +17,7 @@ Authors@R: c(
 Maintainer: Michael Love <michaelisaiahlove@gmail.com>
 License: GPL-2
 VignetteBuilder: knitr, rmarkdown
+Depends: R (>= 4.1.0)
 Imports:
     SummarizedExperiment (>= 1.39.1), tximport, jsonlite, S4Vectors,
     IRanges, GenomicRanges (>= 1.61.1), AnnotationDbi, GenomicFeatures,
