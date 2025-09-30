@@ -60,6 +60,8 @@ test_that("tximix works as expected", {
   
   # shows the indices and their digests
   tximixInspectDigests(se_mix)
+  # show full digest
+  tximixInspectDigests(se_mix, fullDigest=TRUE)
   # this is slower, requires loading the TxDb and ranges...
   tximixInspectDigests(se_mix, count=TRUE)
 
@@ -75,12 +77,18 @@ test_that("tximix works as expected", {
   # the user then can add metadata via:
   # linkedTxome() / linkedTxpData() -- they can go do this
   # GRanges or data.frame-like thing
-  se_update <- tximixUpdate(se_mix, novel[,-(1:4)])
+  se_update <- tximixUpdate(se_mix, txpData=novel[,-(1:4)])
   mcols(se_update)
   table(mcols(se_update)$index)
 
-  se_update_w_ranges <- tximixUpdate(se_mix, novel_gr, ranges=TRUE)
+  se_update_w_ranges <- tximixUpdate(se_mix, txpData=novel_gr, ranges=TRUE)
   mcols(se_update_w_ranges)
   table(mcols(se_update_w_ranges)$index)
+
+  # try out makeLinkedTxpData
+  makeLinkedTxpData(
+    digest = "43158f2c8e88e3acd77c22aee557625a6f1b6a5038cfc7deb5e64903892d8070",
+    txpData = novel_gr
+  )
 
 })

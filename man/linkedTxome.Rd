@@ -4,7 +4,7 @@
 \alias{linkedTxome}
 \alias{makeLinkedTxome}
 \alias{loadLinkedTxome}
-\title{Make and load linked transcriptomes, linking data to metadata}
+\title{Make and load linked transcriptomes (linked GTF and FASTA)}
 \usage{
 makeLinkedTxome(
   digest = NULL,
@@ -31,7 +31,7 @@ required if providing the \code{digest} string, suggest using the
 basename of the FASTA file and the software used,
 e.g. "gencode.vXX_salmon-0.XX.Y"}
 
-\item{indexDir}{the local path to the Salmon index
+\item{indexDir}{the local path to the salmon index
 (this or \code{digest} is required, only one should be specified)}
 
 \item{source}{the source of transcriptome (e.g. "de-novo").
@@ -68,7 +68,8 @@ If transcripts were added to a standard set of reference transcripts (e.g. fusio
 or pathogen transcripts), it is recommended that the tximeta user would manually
 add these to the GTF/GFF file, and post the modified GTF/GFF publicly, such as
 on Zenodo. This enables consistent annotation and downstream annotation
-tasks, such as by \code{summarizeToGene}.}
+tasks, such as by
+\code{\link[=summarizeToGene,SummarizedExperiment-method]{summarizeToGene()}}.}
 
 \item{write}{logical, should a JSON file be written out
 which documents the transcriptome digest and metadata? (default is TRUE)}
@@ -79,16 +80,19 @@ which documents the transcriptome digest and metadata? (default is TRUE)}
 nothing, the function is run for its side effects
 }
 \description{
-\code{makeLinkedTxome} reads the digest associated with a Salmon
-index at \code{indexDir}, and links it to key information
+\code{makeLinkedTxome()} reads the digest associated with a salmon
+index at \code{indexDir}, and persistently links it to metadata
+(alternatively the \code{digest} string itself and an
+\code{indexName} can be provided).
+Linked metadata includes key information
 about the transcriptome, including the \code{source}, \code{organism},
 \code{release}, and \code{genome} (these are custom character strings),
 as well as the locations (e.g. local, HTTP, or FTP) for one or more \code{fasta}
-files and one \code{gtf} file. \code{loadLinkedTxome} loads this
-information from a JSON file. See Details.
+files and one \code{gtf} file. \code{loadLinkedTxome()} loads this
+information from a JSON file. See \emph{Details}.
 }
 \details{
-\code{makeLinkedTxome} links the information about the transcriptome
+\code{makeLinkedTxome()} links the information about the transcriptome
 used for quantification in two ways:
 \enumerate{
 \item the function will store a record in tximeta's cache such that
@@ -98,7 +102,7 @@ detected by tximeta. Then all features of tximeta (e.g. summarization
 to gene, programmatic adding of IDs or metadata) will be available;
 \item it will by default write out a JSON file
 that can be shared, or posted online, and which can be read by
-\code{loadLinkedTxome} which will store the information in tximeta's
+\code{loadLinkedTxome()} which will store the information in tximeta's
 cache. This should make the full quantification-import pipeline
 computationally reproducible / auditable even for transcriptomes
 which differ from those provided by references (GENCODE, Ensembl,
@@ -107,16 +111,20 @@ RefSeq).
 
 For further details please see the "Linked transcriptomes"
 section of the tximeta vignette.
+
+This function can be used in combination with \code{tximixInspectDigests()}
+for use with \code{tximix()}-imported oarfish data, when multiple
+reference transcript sets have been indexed.
 }
 \examples{
 
-# point to a Salmon quantification file with an additional artificial transcript
+# point to a salmon quantification file with an additional artificial transcript
 dir <- system.file("extdata/salmon_dm", package="tximportData")
 file <- file.path(dir, "SRR1197474.plus", "quant.sf")
 coldata <- data.frame(files=file, names="SRR1197474", sample="1",
                       stringsAsFactors=FALSE)
 
-# now point to the Salmon index itself to create a linkedTxome
+# now point to the salmon index itself to create a linkedTxome
 # as the index will not match a known txome
 indexDir <- file.path(dir, "Dm.BDGP6.22.98.plus_salmon-0.14.1")
 
@@ -126,8 +134,8 @@ fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaste
               "extra_transcript.fa.gz")
 gtfPath <- file.path(dir, "Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz")
 
-# now create a linkedTxome, linking the Salmon index to its FASTA and GTF sources
-makeLinkedTxome(indexDir=indexDir, source="Ensembl", organism="Drosophila melanogaster",
+# now create a linkedTxome, linking the salmon index to its FASTA and GTF sources
+makeLinkedTxome(indexDir=indexDir, source="LocalEnsembl", organism="Drosophila melanogaster",
                 release="98", genome="BDGP6.22", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
 
 # to clear the entire linkedTxome table

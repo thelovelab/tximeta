@@ -25,6 +25,8 @@
 #' for inspecting digests and then updating transcript data. A user may 
 #' follow the workflow `tximix()` > `tximixInspectDigests()` > 
 #' `makeLinkedTxome()` > `tximixInspectDigests()` > `tximixUpdate()`.
+#' See also `makeLinkedTxpData()` for a lightweight alternative of linking
+#' _GRanges_ metadata to a digest.
 #' 
 #' @examples
 #' 
@@ -200,7 +202,6 @@ tximixInspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FAL
           txdb <- getTxDb(txomeInfo[[i]], useHub = FALSE, skipFtp = FALSE)
           txps <- getRanges(txdb = txdb, txomeInfo = txomeInfo[[i]], type = "txp")
         })
-        # TODO this assumes ranged, what about linkedTxpData
         out[match(i,out$index),"count"] <- sum(names(txps) %in% rownames(se))
       }
     }
@@ -225,7 +226,7 @@ tximixInspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FAL
 #' to use if there is not a match based on digest. 
 #' This is used on a one-time basis, and transcripts
 #' will be marked in metadata columns as `index = "user"``.
-#' See `linkedTxome` or `linkedTxpData` for persistent
+#' See `makeLinkedTxome()` or `makeLinkedTxpData()` for persistent
 #' metadata storage/retrieval
 #' @param ranges logical, whether to add `rowRanges` (or just `rowData`)
 #' @param order order in which to update the metadata, by default 
@@ -257,7 +258,7 @@ tximixInspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FAL
 #' \dontrun{
 #' # this requires connection to internet (will download GENCODE GTF via FTP)
 #' se_with_ranges <- tximixUpdate(
-#'   se, novel_gr, ranges=TRUE
+#'   se, txpData=novel_gr, ranges=TRUE
 #' )
 #' mcols(se_with_ranges)
 #' }
@@ -329,7 +330,7 @@ tximixUpdate <- function(
       # there was no linkedTxome to find
       message(
         paste0("--", i, " index: no transcript metadata found\n"),
-        "  consider to add a 'linkedTxome', or 'linkedTxpData'"
+        "  consider using `linkedTxome`, or `linkedTxpData` (see man pages)"
       )
     }
     # add the newly updated rowdata back to the SE

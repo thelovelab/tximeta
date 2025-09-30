@@ -18,7 +18,7 @@ tximixUpdate(
 \item{txpData}{either \emph{GRanges} or \emph{data.frame}-type object
 to use if there is not a match based on digest.
 This is used on a one-time basis, and transcripts
-will be marked in metadata columns as \verb{index = "user"``. See }linkedTxome\code{or}linkedTxpData` for persistent
+will be marked in metadata columns as \verb{index = "user"``. See }makeLinkedTxome()\code{or}makeLinkedTxpData()` for persistent
 metadata storage/retrieval}
 
 \item{ranges}{logical, whether to add \code{rowRanges} (or just \code{rowData})}
@@ -64,7 +64,7 @@ names(novel_gr) <- novel$tx_name
 \dontrun{
 # this requires connection to internet (will download GENCODE GTF via FTP)
 se_with_ranges <- tximixUpdate(
-  se, novel_gr, ranges=TRUE
+  se, txpData=novel_gr, ranges=TRUE
 )
 mcols(se_with_ranges)
 }

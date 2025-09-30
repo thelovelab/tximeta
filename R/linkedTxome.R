@@ -1,14 +1,17 @@
-#' Make and load linked transcriptomes, linking data to metadata
+#' Make and load linked transcriptomes (linked GTF and FASTA)
 #'
-#' \code{makeLinkedTxome} reads the digest associated with a Salmon
-#' index at \code{indexDir}, and links it to key information
-#' about the transcriptome, including the \code{source}, \code{organism},
-#' \code{release}, and \code{genome} (these are custom character strings),
-#' as well as the locations (e.g. local, HTTP, or FTP) for one or more \code{fasta}
-#' files and one \code{gtf} file. \code{loadLinkedTxome} loads this
-#' information from a JSON file. See Details.
+#' `makeLinkedTxome()` reads the digest associated with a salmon
+#' index at `indexDir`, and persistently links it to metadata
+#' (alternatively the `digest` string itself and an 
+#' `indexName` can be provided).
+#' Linked metadata includes key information
+#' about the transcriptome, including the `source`, `organism`,
+#' `release`, and `genome` (these are custom character strings),
+#' as well as the locations (e.g. local, HTTP, or FTP) for one or more `fasta`
+#' files and one `gtf` file. `loadLinkedTxome()` loads this
+#' information from a JSON file. See _Details_.
 #'
-#' \code{makeLinkedTxome} links the information about the transcriptome
+#' `makeLinkedTxome()` links the information about the transcriptome
 #' used for quantification in two ways:
 #' 1) the function will store a record in tximeta's cache such that
 #' future import of quantification data will automatically access and
@@ -17,7 +20,7 @@
 #' to gene, programmatic adding of IDs or metadata) will be available;
 #' 2) it will by default write out a JSON file
 #' that can be shared, or posted online, and which can be read by
-#' \code{loadLinkedTxome} which will store the information in tximeta's
+#' `loadLinkedTxome()` which will store the information in tximeta's
 #' cache. This should make the full quantification-import pipeline
 #' computationally reproducible / auditable even for transcriptomes
 #' which differ from those provided by references (GENCODE, Ensembl,
@@ -26,14 +29,18 @@
 #' For further details please see the "Linked transcriptomes"
 #' section of the tximeta vignette.
 #' 
-#' @param indexDir the local path to the Salmon index 
-#' (this or `digest` is required, only one should be specified)
+#' This function can be used in combination with `tximixInspectDigests()`
+#' for use with `tximix()`-imported oarfish data, when multiple
+#' reference transcript sets have been indexed.
+#' 
 #' @param digest the full digest as character string,
 #' (this or `indexDir` is required, only one should be specified)
 #' @param indexName a name for the `index` when storing the linkedTxome,
 #' required if providing the `digest` string, suggest using the
 #' basename of the FASTA file and the software used, 
 #' e.g. "gencode.vXX_salmon-0.XX.Y"
+#' @param indexDir the local path to the salmon index 
+#' (this or `digest` is required, only one should be specified)
 #' @param source the source of transcriptome (e.g. "de-novo").
 #' Note: if you specify "GENCODE" or "Ensembl", this will trigger
 #' behavior by tximeta that may not be desired: e.g. attempts to
@@ -54,16 +61,17 @@
 #' @param gtf location for the GTF/GFF file
 #' (of which the transcripts used to build the index is equal or a subset).
 #' This can be a local path, or an HTTP or FTP URL
-#' While the \code{fasta} argument can take a vector of length greater than one
+#' While the `fasta` argument can take a vector of length greater than one
 #' (more than one FASTA file containing transcripts used in indexing),
-#' the \code{gtf} argument has to be a single GTF/GFF file.
+#' the `gtf` argument has to be a single GTF/GFF file.
 #' This can also be a serialized GRanges object (location of a .rds file)
 #' imported with rtracklayer.
 #' If transcripts were added to a standard set of reference transcripts (e.g. fusion genes,
 #' or pathogen transcripts), it is recommended that the tximeta user would manually
 #' add these to the GTF/GFF file, and post the modified GTF/GFF publicly, such as
 #' on Zenodo. This enables consistent annotation and downstream annotation
-#' tasks, such as by \code{summarizeToGene}.
+#' tasks, such as by
+#' [`summarizeToGene()`][summarizeToGene,SummarizedExperiment-method].
 #' @param write logical, should a JSON file be written out
 #' which documents the transcriptome digest and metadata? (default is TRUE)
 #' @param jsonFile the path to the json file for the linkedTxome
@@ -75,13 +83,13 @@
 #'
 #' @examples
 #'
-#' # point to a Salmon quantification file with an additional artificial transcript
+#' # point to a salmon quantification file with an additional artificial transcript
 #' dir <- system.file("extdata/salmon_dm", package="tximportData")
 #' file <- file.path(dir, "SRR1197474.plus", "quant.sf")
 #' coldata <- data.frame(files=file, names="SRR1197474", sample="1",
 #'                       stringsAsFactors=FALSE)
 #'
-#' # now point to the Salmon index itself to create a linkedTxome
+#' # now point to the salmon index itself to create a linkedTxome
 #' # as the index will not match a known txome
 #' indexDir <- file.path(dir, "Dm.BDGP6.22.98.plus_salmon-0.14.1")
 #'
@@ -91,8 +99,8 @@
 #'               "extra_transcript.fa.gz")
 #' gtfPath <- file.path(dir, "Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz")
 #'
-#' # now create a linkedTxome, linking the Salmon index to its FASTA and GTF sources
-#' makeLinkedTxome(indexDir=indexDir, source="Ensembl", organism="Drosophila melanogaster",
+#' # now create a linkedTxome, linking the salmon index to its FASTA and GTF sources
+#' makeLinkedTxome(indexDir=indexDir, source="LocalEnsembl", organism="Drosophila melanogaster",
 #'                 release="98", genome="BDGP6.22", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
 #'
 #' # to clear the entire linkedTxome table
@@ -112,28 +120,31 @@ makeLinkedTxome <- function(
   
   # only one or the other is specified
   stopifnot(xor(is.null(digest), is.null(indexDir)))
-  
+
   if (!is.null(indexDir)) {
+    # `indexDir` was specified
+    message(paste0("reading digest from indexDir: ",indexDir))
     indexJson <- file.path(indexDir, "info.json")
     # backup spot for information...
     if (!file.exists(indexJson)) {
       indexJson <- file.path(indexDir, "header.json")
     }
     indexList <- fromJSON(indexJson)
-    # Salmon's SHA-256 hash of the index is called "SeqHash" in the index JSON
-    # Pre-Salmon 1.0.0 the header.json file has a "value0" sublist, 
-    # from Salmon 1.0.0 the info.json file doesn't
+    # salmon's SHA-256 hash of the index is called "SeqHash" in the index JSON
+    # Pre-salmon 1.0.0 the header.json file has a "value0" sublist, 
+    # from salmon 1.0.0 the info.json file doesn't
     if ("value0" %in% names(indexList)) {
       digest <- indexList$value0$SeqHash
     } else {
       digest <- indexList$SeqHash
     }
     # here and in the data frame where we record linkedTxome's,
-    # 'index' is just the basename of the Salmon index
+    # 'index' is just the basename of the salmon index
     index <- basename(indexDir)
   } else {
-    # digest was specified, so use the indexName provided
+    # `digest` was specified, so use the indexName provided
     stopifnot(!missing(indexName))
+    message(paste0("linking file-based metadata to digest: ",substr(1,6,digest),"..."))
     index <- indexName
   }
 
@@ -216,4 +227,23 @@ stashLinkedTxome <- function(lt) {
     saveRDS(linkedTxomeTbl, file=loadpath)
   }
   invisible()
+}
+
+### linkedTxpData -- a lightweight alternative ###
+
+#' Make linked transcript data (linked GRanges)
+#' 
+#' @param digest character string of the full digest of the 
+#' reference transcripts, see `tximixInspectDigests()` with `fullDigest=TRUE`
+#' @param txpData _GRanges_ providing information about ranges 
+#' representing the transcript sequences linked to `digest`
+#' 
+#' @return nothing, the function is run for its side effects
+#' 
+#' @name linkedTxpData
+#' @rdname linkedTxpData
+#' 
+#' @export
+makeLinkedTxpData <- function(digest, txpData) {
+    message(paste0("linking user-provided metadata to digest: ",substr(digest,1,6),"..."))
 }

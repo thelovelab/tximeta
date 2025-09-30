@@ -50,4 +50,6 @@ of inspecting digest matches and updating metadata, respectively.
 for inspecting digests and then updating transcript data. A user may
 follow the workflow \code{tximix()} > \code{tximixInspectDigests()} >
 \code{makeLinkedTxome()} > \code{tximixInspectDigests()} > \code{tximixUpdate()}.
+See also \code{makeLinkedTxpData()} for a lightweight alternative of linking
+\emph{GRanges} metadata to a digest.
 }

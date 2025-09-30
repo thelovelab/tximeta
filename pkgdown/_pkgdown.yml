@@ -22,7 +22,7 @@ reference:
       - starts_with("summarizeToGene")
   - title: "linkedTxome: linking data to metadata"
     contents:
-      - contains("linkedTxome")
+      - contains("linkedTx")
   - title: "tximix: mixed reference transcripts"
     contents:
       - starts_with("tximix")
