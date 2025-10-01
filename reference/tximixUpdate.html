@@ -24,7 +24,7 @@ and how to link data to local metadata."><!-- mathjax --><script src="https://cd
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tximeta</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.27.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.27.9</span>
       </span>
     </div>
 
@@ -91,7 +91,7 @@ and how to link data to local metadata.</p>
 <dd><p>either <em>GRanges</em> or <em>data.frame</em>-type object
 to use if there is not a match based on digest.
 This is used on a one-time basis, and transcripts
-will be marked in metadata columns as <code>index = "user"``. See </code>linkedTxome<code>or</code>linkedTxpData` for persistent
+will be marked in metadata columns as <code>index = "user"``. See </code>makeLinkedTxome()<code>or</code>makeLinkedTxpData()` for persistent
 metadata storage/retrieval</p></dd>
 
 
@@ -156,8 +156,9 @@ or a <em>RangedSummarizedExperiment</em> with new metadata</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># now update the metadata + ranges:</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># this requires connection to internet (will download GENCODE GTF via FTP)</span></span></span>
 <span class="r-in"><span><span class="va">se_with_ranges</span> <span class="op">&lt;-</span> <span class="fu">tximixUpdate</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">se</span>, <span class="va">novel_gr</span>, ranges<span class="op">=</span><span class="cn">TRUE</span></span></span>
+<span class="r-in"><span>  <span class="va">se</span>, txpData<span class="op">=</span><span class="va">novel_gr</span>, ranges<span class="op">=</span><span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html" class="external-link">mcols</a></span><span class="op">(</span><span class="va">se_with_ranges</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
