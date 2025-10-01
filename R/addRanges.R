@@ -121,3 +121,82 @@ see ?addCDS for more information about how CDS ranges are added")
   
   se
 }
+
+# non-exported function:
+
+# build or load ranges
+# either transcript, exon-by-transcript, or gene ranges
+getRanges <- function(txdb=txdb, txomeInfo=txomeInfo, type=c("txp","exon","cds","gene")) {
+  long <- c(txp="transcript",exon="exon",cds="CDS",gene="gene")
+  stopifnot(length(txomeInfo$gtf) == 1)
+  stopifnot(txomeInfo$gtf != "")
+
+  # TODO the entry in the BiocFileCache assumes that the GTF/GFF file
+  # has a distinctive naming structure... works for GENCODE/Ensembl/RefSeq 
+  rngsName <- paste0(type,"Rngs-",basename(txomeInfo$gtf))
+  
+  bfcloc <- getBFCLoc()
+  bfc <- BiocFileCache(bfcloc)
+  q <- bfcquery(bfc, rngsName)
+  if (bfccount(q) == 0) {
+    # now generate ranges
+    message(paste("generating",long[type],"ranges"))
+    # TODO what to do about warnings about out-of-bound ranges? pass along somewhere?
+
+    if (type == "txp") {
+      ################
+      ## txp ranges ##
+      ################
+
+      if (txomeInfo$source == "Ensembl") {
+        suppressWarnings({
+          rngs <- transcripts(txdb)
+        })
+      } else {
+        suppressWarnings({
+          rngs <- transcripts(txdb, columns=c("tx_id","gene_id","tx_name"))
+        })
+      }
+      names(rngs) <- rngs$tx_name
+      # dammit de novo transcript annotation will have
+      # the transcript names as seqnames (seqid in the GFF3)
+      if (tolower(txomeInfo$source) == "dammit") {
+        names(rngs) <- seqnames(rngs)
+      }
+    } else if (type == "exon") {
+      #################
+      ## exon ranges ##
+      #################
+
+      # TODO suppress warnings about out-of-bound ranges for now... how to pass this on
+      suppressWarnings({
+        rngs <- exonsBy(txdb, by="tx", use.names=TRUE)
+      })
+    } else if (type == "cds") {
+      #################
+      ## CDS ranges ##
+      #################
+
+      # TODO suppress warnings about out-of-bound ranges for now... how to pass this on
+      suppressWarnings({
+        rngs <- cdsBy(txdb, by="tx", use.names=TRUE)
+      })
+    } else if (type == "gene") {
+      #################
+      ## gene ranges ##
+      #################
+
+      # TODO suppress warnings about out-of-bound ranges for now... how to pass this on
+      suppressWarnings({
+        rngs <- genes(txdb)
+      })
+    }
+    savepath <- bfcnew(bfc, rngsName, ext=".rds")
+    saveRDS(rngs, file=savepath)
+  } else {
+    loadpath <- bfcrpath(bfc, rngsName)
+    message(paste("loading existing",long[type],"ranges created:",q$create_time[1]))
+    rngs <- readRDS(loadpath)
+  }
+  rngs
+}

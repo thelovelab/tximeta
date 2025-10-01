@@ -31,7 +31,8 @@
 #' 
 #' This function can be used in combination with `tximixInspectDigests()`
 #' for use with `tximix()`-imported oarfish data, when multiple
-#' reference transcript sets have been indexed.
+#' reference transcript sets have been indexed. See also 
+#' `makeLinkedTxpData()`.
 #' 
 #' @param digest the full digest as character string,
 #' (this or `indexDir` is required, only one should be specified)
@@ -148,23 +149,19 @@ makeLinkedTxome <- function(
     index <- indexName
   }
 
-  # standardize capitalization
-  std.sources <- c("GENCODE","Ensembl")
-  for (src in std.sources) {
-    if (tolower(source) == tolower(src)) {
-      source <- src
-    }
-  }
-  if (source %in% std.sources) {
+  std_sources <- c("GENCODE","Ensembl")
+  source <- standardizeCapitalization(source, std_sources)
+
+  if (source %in% std_sources) {
     if (source == "Ensembl") {
       message("NOTE: linkedTxome with source='Ensembl', ensembldb will be used to parse GTF.
 this may produce errors if the GTF is not from Ensembl, or has been modified.
 set useHub=FALSE in tximeta to avoid download of reference txome from AnnotationHub.
-alternatively use a different string for source argument")
+alternatively use a different string for source argument, e.g. LocalEnsembl")
     } else {
       message("NOTE: linkedTxome with source='GENCODE', set useHub=FALSE in tximeta
 to avoid download of reference txome from AnnotationHub.
-alternatively use a different string for source argument")
+alternatively use a different string for source argument, e.g. LocalGENCODE")
     }
   }
   # a single-row tibble for the linkedTxomeTbl
@@ -185,7 +182,7 @@ alternatively use a different string for source argument")
     # TODO be more careful about writing to a file (ask)
     write(toJSON(lt, pretty=TRUE), file=jsonFile)
   }
-  stashLinkedTxome(lt)
+  stashLinkedThing(lt, type="Txome")
 }
 
 #' @name linkedTxome
@@ -193,50 +190,82 @@ alternatively use a different string for source argument")
 #' 
 #' @export
 loadLinkedTxome <- function(jsonFile) {
-  stashLinkedTxome(do.call(tibble, fromJSON(jsonFile)))
+  stashLinkedThing(do.call(tibble, fromJSON(jsonFile)), type="Txome")
 }
 
-# given a single-row tibble 'lt', save this into the linkedTxomeTbl
-# (the linkedTxome tibble lives in the tximeta BiocFileCache)
-stashLinkedTxome <- function(lt) {
+# given a single-row tibble `lt`, 
+# either save this into the linkedTxomeTbl 
+# or linkedTxpDataTbl, based on `type`
+# (the linkedTxome/linkedTxpData tibbles lives in the tximeta BiocFileCache)
+stashLinkedThing <- function(lt, type=c("Txome","TxpData")) {
+  type <- match.arg(type)
+  tbl_name <- paste0("linked",type,"Tbl")
   stopifnot(is(lt, "tbl"))
   bfcloc <- getBFCLoc()
   bfc <- BiocFileCache(bfcloc)
-  q <- bfcquery(bfc, "linkedTxomeTbl")
+  q <- bfcquery(bfc, tbl_name)
   if (bfccount(q) == 0) {
-    message("saving linkedTxome in bfc (first time)")
-    savepath <- bfcnew(bfc, "linkedTxomeTbl", ext=".rds")
-    linkedTxomeTbl <- lt
-    saveRDS(linkedTxomeTbl, file=savepath)
+    message(paste0("saving linked",type," in bfc (first time)"))
+    savepath <- bfcnew(bfc, tbl_name, ext=".rds")
+    linkedThingTbl <- lt
+    saveRDS(linkedThingTbl, file=savepath)
   } else {
-    loadpath <- bfcrpath(bfc, "linkedTxomeTbl")
-    linkedTxomeTbl <- readRDS(loadpath)
-    if (lt$index %in% linkedTxomeTbl$index) {
-      m <- match(lt$index, linkedTxomeTbl$index)
+    loadpath <- bfcrpath(bfc, tbl_name)
+    linkedThingTbl <- readRDS(loadpath)
+    if (lt$index %in% linkedThingTbl$index) {
+      m <- match(lt$index, linkedThingTbl$index)
       stopifnot(length(m) == 1)
-      if (all(mapply(identical, lt, linkedTxomeTbl[m,]))) {
-        message("linkedTxome is same as already in bfc")
+      if (all(mapply(identical, lt, linkedThingTbl[m,]))) {
+        message(paste0("linked",type," is same as already in bfc"))
       } else {
-        message("linkedTxome was different than one in bfc, replacing")
-        linkedTxomeTbl[m,] <- lt
+        message(paste0("linked",type," was different than one in bfc, replacing"))
+        linkedThingTbl[m,] <- lt
       }
     } else {
-      message("saving linkedTxome in bfc")
-      linkedTxomeTbl <- rbind(linkedTxomeTbl, lt)
+      message(paste0("saving linked",type," in bfc"))
+      linkedThingTbl <- rbind(linkedThingTbl, lt)
     }
-    saveRDS(linkedTxomeTbl, file=loadpath)
+    saveRDS(linkedThingTbl, file=loadpath)
   }
   invisible()
+}
+
+standardizeCapitalization <- function(source, std_sources) {
+  for (src in std_sources) {
+    if (tolower(source) == tolower(src)) {
+      source <- src
+    }
+  }
+  source
 }
 
 ### linkedTxpData -- a lightweight alternative ###
 
 #' Make linked transcript data (linked GRanges)
 #' 
+#' `linkedTxpData` allows the user to save relevant _GRanges_ transcript data
+#' for identifying and updating transcript metadata in a persistent manner
+#' across R sessions. It can be used in combination with `tximixInspectDigests()`
+#' and `tximixUpdate()`.
+#' This is a lightweight version of `linkedTxome` (see
+#' `makeLinkedTxome()`), which requires specifying a GTF file for building a
+#' _TxDb_ and optionally a FASTA file for sequence retrieval.)
+#' 
+#' The `txpData` object is saved in the `getTximetaBFC()` location,
+#' appended with a 32-character substring of `digest`.
+#' The tibble listing all `linkedTxpData` is named
+#' `linkedTxpDataTbl` and is listed in the same location.
+#' 
 #' @param digest character string of the full digest of the 
 #' reference transcripts, see `tximixInspectDigests()` with `fullDigest=TRUE`
+#' @param indexName a name for the `index` when storing the linkedTxpData,
 #' @param txpData _GRanges_ providing information about ranges 
 #' representing the transcript sequences linked to `digest`
+#' @param source the source of transcriptome, e.g. `denovo`. 
+#' See `makeLinkedTxome()` for more information on specifying source
+#' @param organism organism (e.g. "Homo sapiens")
+#' @param release release number (e.g. "27")
+#' @param genome genome (e.g. "GRCh38", or "none")
 #' 
 #' @return nothing, the function is run for its side effects
 #' 
@@ -244,6 +273,58 @@ stashLinkedTxome <- function(lt) {
 #' @rdname linkedTxpData
 #' 
 #' @export
-makeLinkedTxpData <- function(digest, txpData) {
-    message(paste0("linking user-provided metadata to digest: ",substr(digest,1,6),"..."))
+makeLinkedTxpData <- function(
+  digest, 
+  indexName,
+  txpData,
+  source,
+  organism,
+  release,
+  genome
+) {
+
+  message(paste0("linking user-provided metadata to digest: ",substr(digest,1,6),"..."))
+
+  stopifnot(is(txpData, "GRanges"))
+
+  std_sources <- c("GENCODE","Ensembl")
+  source <- standardizeCapitalization(source, std_sources)
+  index <- indexName
+
+  short_digest <- substr(digest,1,6)
+  digest_32 <- substr(digest,1,32)
+  # a single-row tibble for the linkedTxpDataTbl
+  lt <- tibble(
+    index = index,
+    source = source,
+    organism = organism,
+    release = release,
+    genome = genome,
+    short_digest = short_digest,
+    digest_32 = digest_32,
+    digest = digest
+  )
+  
+  stopifnot(nrow(lt) == 1)
+
+  # need to save txpData in the BFC, then update the tibble
+  bfcloc <- getBFCLoc()
+  bfc <- BiocFileCache(bfcloc)
+
+  # the name to use when saving txpData in the BFC
+  # use the first 32 chars of the digest
+  txpDataName <- paste0("txpdata-",digest_32)
+  q <- bfcquery(bfc, txpDataName)
+  if (bfccount(q) > 0) {
+    message("txpData object was already saved in bfc, replacing")
+    savepath <- bfcrpath(bfc, txpDataName)
+  } else {
+    message("saving txpData object in bfc")
+    savepath <- bfcnew(bfc, txpDataName, ext=".rds")  
+  }
+  saveRDS(txpData, file=savepath)
+
+  # now update the tibble to record that this exists
+  stashLinkedThing(lt, type="TxpData")
+
 }

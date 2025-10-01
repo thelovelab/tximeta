@@ -114,7 +114,8 @@ section of the tximeta vignette.
 
 This function can be used in combination with \code{tximixInspectDigests()}
 for use with \code{tximix()}-imported oarfish data, when multiple
-reference transcript sets have been indexed.
+reference transcript sets have been indexed. See also
+\code{makeLinkedTxpData()}.
 }
 \examples{
 

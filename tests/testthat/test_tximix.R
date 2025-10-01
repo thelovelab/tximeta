@@ -88,7 +88,10 @@ test_that("tximix works as expected", {
   # try out makeLinkedTxpData
   makeLinkedTxpData(
     digest = "43158f2c8e88e3acd77c22aee557625a6f1b6a5038cfc7deb5e64903892d8070",
-    txpData = novel_gr
+    indexName = "my_novel_txps",
+    txpData = novel_gr,
+    source = "novel", organism="Homo sapience", 
+    release="v1", genome="GRCh38"
   )
 
 })

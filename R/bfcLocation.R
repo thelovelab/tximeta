@@ -56,9 +56,10 @@ setTximetaBFC <- function(dir, quiet=FALSE) {
 
 # not exported:
 
-# functions to read or edit the BiocFileCache location for tximeta (bfcloc)
-# this information is stored in the 'tximeta' default R_user_dir
-# under a file 'bfcloc.json'
+# Function to read the BiocFileCache location used by tximeta.
+# The path is stored in the `tximeta` location  by R_user_dir().
+# The file is 'bfcloc.json', and this simple file just records
+# tximeta’s BiocFileCache (for storing the rest of the data).
 bfclocFile <- function() {
   tximetaDir <- R_user_dir("tximeta", which="config")
   file.path(tximetaDir, "bfcloc.json")

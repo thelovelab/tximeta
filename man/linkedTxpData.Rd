@@ -5,18 +5,49 @@
 \alias{makeLinkedTxpData}
 \title{Make linked transcript data (linked GRanges)}
 \usage{
-makeLinkedTxpData(digest, txpData)
+makeLinkedTxpData(
+  digest,
+  indexName,
+  txpData,
+  source,
+  organism,
+  release,
+  genome
+)
 }
 \arguments{
 \item{digest}{character string of the full digest of the
 reference transcripts, see \code{tximixInspectDigests()} with \code{fullDigest=TRUE}}
 
+\item{indexName}{a name for the \code{index} when storing the linkedTxpData,}
+
 \item{txpData}{\emph{GRanges} providing information about ranges
 representing the transcript sequences linked to \code{digest}}
+
+\item{source}{the source of transcriptome, e.g. \code{denovo}.
+See \code{makeLinkedTxome()} for more information on specifying source}
+
+\item{organism}{organism (e.g. "Homo sapiens")}
+
+\item{release}{release number (e.g. "27")}
+
+\item{genome}{genome (e.g. "GRCh38", or "none")}
 }
 \value{
 nothing, the function is run for its side effects
 }
 \description{
-Make linked transcript data (linked GRanges)
+\code{linkedTxpData} allows the user to save relevant \emph{GRanges} transcript data
+for identifying and updating transcript metadata in a persistent manner
+across R sessions. It can be used in combination with \code{tximixInspectDigests()}
+and \code{tximixUpdate()}.
+This is a lightweight version of \code{linkedTxome} (see
+\code{makeLinkedTxome()}), which requires specifying a GTF file for building a
+\emph{TxDb} and optionally a FASTA file for sequence retrieval.)
+}
+\details{
+The \code{txpData} object is saved in the \code{getTximetaBFC()} location,
+appended with a 32-character substring of \code{digest}.
+The tibble listing all \code{linkedTxpData} is named
+\code{linkedTxpDataTbl} and is listed in the same location.
 }
