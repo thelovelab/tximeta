@@ -38,9 +38,11 @@ or even `retrieveCDNA()` (the transcripts used for quantification) or
 `retrieveDb()` (the correct *TxDb* or *EnsDb* to match the
 quantification data).
 
-For _oarfish_ quantification files: if a mix of `annotated` and `novel`
-reference transcript sets have been used, `tximix()` and related functions
-facilitate the import of data and addition of metadata from multiple sources.
+For _oarfish_ quantification files: `importData()` and associated functions
+can be used in the case that a mix of `--annotated` and `--novel`
+reference transcripts were used in indexing. These functions
+facilitate the import of data and addition of metadata from multiple 
+sources, including local files and range data.
 
 # How it works
 
