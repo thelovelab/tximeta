@@ -4,27 +4,27 @@
 #' `--annotated` reference transcripts (e.g. GENCODE, Ensembl) and 
 #' `--novel` or custom transcripts (e.g. de novo assembled transcripts not present 
 #' in the annotated set) to be used as the index for quantification.
-#' `tximix()` and associated `tximix*` functions facilitate import, reference identification, 
+#' `importData()` and associated functions facilitate import, reference identification, 
 #' and addition of metadata across `annotated` and/or `novel` transcripts.
-#' The `tximix()` function alone imports the data, while inspection of the 
+#' The `importData()` function alone imports the data, while inspection of the 
 #' recognized digests and updating of transcript metadata is handled by subsequent functions
 #' (listed in _See also_ section below).
 #'
 #' @param coldata data.frame with columns `files` and `names` as in `tximeta()`
 #' @param type what quantifier was used (see [tximport::tximport()]), for now 
-#' `tximix()` works for `"oarfish"` files
+#' `importData()` works for `"oarfish"` files
 #' @param quiet whether to suppress printed messages
 #' @param ... arguments passed to [tximport::tximport()]
 #'
 #' @return an un-ranged SummarizedExperiment (SE) object, for 
 #' use with subsequent functions described in _See also_ section
 #'
-#' @seealso `tximixInspectDigests()` and `tximixUpdate()` for subsequent tasks
+#' @seealso `inspectDigests()` and `updateMetadata()` for subsequent tasks
 #' of inspecting digest matches and updating metadata, respectively.
 #' `makeLinkedTxome()` can be used to add custom metadata into the registry used
 #' for inspecting digests and then updating transcript data. A user may 
-#' follow the workflow `tximix()` > `tximixInspectDigests()` > 
-#' `makeLinkedTxome()` > `tximixInspectDigests()` > `tximixUpdate()`.
+#' follow the workflow `importData()` > `inspectDigests()` > 
+#' `makeLinkedTxome()` > `inspectDigests()` > `updateMetadata()`.
 #' See also `makeLinkedTxpData()` for a lightweight alternative of linking
 #' _GRanges_ metadata to a digest.
 #' 
@@ -37,10 +37,10 @@
 #' coldata <- data.frame(files, names)
 #' 
 #' # returns an un-ranged SE object
-#' se <- tximix(coldata, type="oarfish")
+#' se <- importData(coldata, type="oarfish")
 #' 
 #' @export
-tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
+importData <- function(coldata, type="oarfish", quiet=FALSE, ...) {
   stopifnot(type == "oarfish")
   
   # tximeta metadata
@@ -77,7 +77,7 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
   digestList <- names(metaInfo[[1]]$digest)
   if (!all(paste0(c("annotated","novel"),"_transcripts_digest") %in% digestList))
       stop(
-      "tximix() is designed for mixed `annotated` and `novel` transcript references\n",
+      "importData() is designed for mixed `annotated` and `novel` transcript references\n",
       "otherwise use tximeta() which will prioritize the `annotated` transcript set\n",
       "or tximeta(..., skipMeta=TRUE) to import all transcripts"
     )
@@ -99,18 +99,18 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
   se <- makeUnrangedSE(assays, coldata, metadata)
   
   if (!quiet)
-    message("returning un-ranged SummarizedExperiment, other tximix functions:\n",
-            "-- tximixInspectDigests() to check matching digests\n",
+    message("returning un-ranged SummarizedExperiment, see functions:\n",
+            "-- inspectDigests() to check matching digests\n",
             "-- makeLinkedTxome/makeLinkedTxpData() to link digests to metadata\n",
-            "-- tximixUpdate() to update metadata and optionally add ranges"
+            "-- updateMetadata() to update metadata and optionally add ranges"
           )
 
   return(se)
 }
 
-#' Inspect digest matches from `tximix()` imported data
+#' Inspect digest matches from `importData()` imported data
 #' 
-#' This function expects a _SummarizedExperiment_ as output by `tximix()`
+#' This function expects a _SummarizedExperiment_ as output by `importData()`
 #' and returns a tibble with information about the two
 #' indices (`annotated` and `novel`) and their digests, 
 #' and potentially matching metadata found in _tximeta_ locations.
@@ -122,10 +122,10 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 #' Optional columns may be added if specified by 
 #' `expanded=TRUE` (include the full digest) and/or 
 #' `count=TRUE` (add matching transcript ID counts per index).
-#' Following inspection, one can run `tximixUpdate()` to automatically update
+#' Following inspection, one can run `updateMetadata()` to automatically update
 #' the transcript metadata using the sources indicated by this function.
 #'
-#' @param se the _SummarizedExperiment_ output by `tximix()`,
+#' @param se the _SummarizedExperiment_ output by `importData()`,
 #'  or alternatively just
 #' `metadata(se)$quantInfo`, a list of metadata
 #' information from the quantification tool 
@@ -144,13 +144,13 @@ tximix <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 #' 
 #' @examples
 #' 
-#' example(tximix)
-#' # now we have an `se` created by tximix()...
-#' tximixInspectDigests(se)
+#' example(importData)
+#' # now we have an `se` created by importData()...
+#' inspectDigests(se)
 #' # can then update the registry via makeLinkedTxome() and re-run inspection
 #' 
 #' @export
-tximixInspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FALSE) {
+inspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FALSE) {
   
   # take from first sample
   if (is(se, "SummarizedExperiment")) {
@@ -161,7 +161,7 @@ tximixInspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FAL
     digestList <- se$digest[,1]
   }
   
-  # need to check, even though tximix would have thrown error
+  # need to check, even though importData would have thrown error
   stopifnot(all(paste0(c("annotated","novel"),"_transcripts_digest") %in% names(digestList)))
 
   digests <- c(
@@ -210,18 +210,18 @@ tximixInspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FAL
   out
 }
 
-#' Update transcript metadatda for `tximix()` imported data
+#' Update transcript metadatda for `importData()` imported data
 #'
-#' This function expects a _SummarizedExperiment_ as output by `tximix()`,
+#' This function expects a _SummarizedExperiment_ as output by `importData()`,
 #' and if possible, it will update the metadata on the transcripts 
 #' (`rowData` and/or `rowRanges` depending on the value of `ranges`), 
 #' using metadata where the index digest matches those in _tximeta_ locations.
 #' Additionally, _GRanges_ or _data.frame_-type data can be provided directly to `txpData`,
 #' although this is not a persistent method for linking data to metadata.
-#' See `tximixInspectDigests()` for information on ascertaining which sources are present, 
+#' See `inspectDigests()` for information on ascertaining which sources are present, 
 #' and how to link data to local metadata.
 #'
-#' @param se the _SummarizedExperiment_ (SE) output by `tximix()`
+#' @param se the _SummarizedExperiment_ (SE) output by `importData()`
 #' @param txpData either _GRanges_ or _data.frame_-type object
 #' to use if there is not a match based on digest. 
 #' This is used on a one-time basis, and transcripts
@@ -241,7 +241,7 @@ tximixInspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FAL
 #'
 #' @examples
 #' 
-#' example(tximix)
+#' example(importData)
 #' 
 #' # build custom novel GRanges data
 #' library(GenomicRanges)
@@ -257,14 +257,14 @@ tximixInspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FAL
 #' # now update the metadata + ranges:
 #' \dontrun{
 #' # this requires connection to internet (will download GENCODE GTF via FTP)
-#' se_with_ranges <- tximixUpdate(
+#' se_with_ranges <- updateMetadata(
 #'   se, txpData=novel_gr, ranges=TRUE
 #' )
 #' mcols(se_with_ranges)
 #' }
 #' 
 #' @export
-tximixUpdate <- function(
+updateMetadata <- function(
   se,
   txpData = NULL,
   ranges = FALSE,

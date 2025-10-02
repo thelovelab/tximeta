@@ -210,8 +210,8 @@ section below for a demonstration. (The *makeLinkedTxome* function was used
 above to avoid downloading the GTF during the vignette building process.)
 
 For *oarfish* quantification [@oarfish] using the `--annotated` and `--novel`
-reference transcripts, use the `tximix()` function described
-[below](#tximix-with-mixed-reference-transcripts).
+reference transcripts, use the functions described
+[below](#mixed-reference-transcripts).
 
 # SummarizedExperiment output
 
@@ -443,17 +443,21 @@ str(metadata(se)[["tximetaInfo"]])
 str(metadata(se)[["txdbInfo"]])
 ```
 
-# `tximix` with mixed reference transcripts
+# Mixed reference transcripts
 
 The [oarfish](https://github.com/COMBINE-lab/oarfish) quantification tools
 allows specifying distinct *annotated* reference transcripts (e.g. GENCODE,
 Ensembl) and *novel* reference transcripts (e.g. *de novo* assemblies) which are
-combined together as the index for alignment and quantification. The newly
-introduced `tximix()` function can be used to import such data into
-R/Bioconductor. Other associated `tximix*` functions handle tasks like checking
-the digest status of the indices for imported data, and assisting in attaching
-metadata from matching reference transcriptomes (see the `tximix()` *See also*
-section and the associated man pages). A brief demonstration follows:
+combined together as the index for alignment and quantification. 
+
+Here we introduce a new workflow for importing data and linking data to metdata, 
+designed for this mixed reference transcript situation, but which may be generalized
+in the future for other transcript quantification settings.
+
+  - `importData()` - imports data as an un-ranged _SummarizedExperiment_
+  - `inspectDigests()` - inspect the digest status of the indices for imported data
+  - `updateMetadata()` - assists in attaching metadata from matching reference transcriptomes
+  - and _linkedTxpData_, a lightweight version of _linkedTxome_, described [below](#linked-transcriptomes)
 
 ```{r}
 # specify 3 oarfish .quant files, quantified against an index of two .fa files:
@@ -463,10 +467,10 @@ names <- paste0("rep", 2:4)
 files <- file.path(dir, paste0("sgnex_h9_", names, ".quant.gz"))
 coldata <- data.frame(files, names)
 # read in the quantification data
-se <- tximix(coldata, type="oarfish")
+se <- importData(coldata, type="oarfish")
 ```
 
-The `tximix()` function returns an un-ranged SummarizedExperiment, with no
+The `importData()` function returns an un-ranged SummarizedExperiment, with no
 metadata attached. This is similar to what `tximeta()` does with
 `skipMeta=TRUE`.
 
@@ -497,7 +501,7 @@ We can now inspect the digests of the two indices:
 ```{r}
 # returns a 2-row tibble
 # (here localGENCODE avoids downloading an ftp file)
-tximixInspectDigests(se)
+inspectDigests(se)
 ```
 
 We can see that the `source` and other annotation details were recognized for
@@ -512,7 +516,7 @@ We can also obtain the full digest (shown below) or ask for
 the count (`count=TRUE`) of matching transcripts per index.
 
 ```{r}
-tximixInspectDigests(se, fullDigest=TRUE)
+inspectDigests(se, fullDigest=TRUE)
 ```
 
 Inspection can be run iteratively, in combination with `makeLinkedTxome()` 
@@ -520,19 +524,19 @@ described [below](#linked-transcriptomes) or
 `makeLinkedTxpData()`, in order to match up missing digests with `gtf` files
 and/or range-based metadata.
 
-Then `tximixUpdate()` does what `tximeta` does by default for a single index, by
-adding available metadata and attaching to `rowData`. This `tximetaUpdate()`
-replaces also previous behavior by `addIds()`. Some options here are to add
+Then `updateMetadata()` does what `tximeta` does by default for a single index, by
+adding available metadata and attaching to `rowData`. This `updateMetadata()`
+overlaps with previous behavior by `addIds()`. Some options here are to add
 `ranges=TRUE` which populates `rowRanges` but necessitates removing transcripts
 (rows) without range information. Here, transcripts are preserved but `NA`
 filled in for columns where we don't have metadata.
 
 ```{r}
-se_update <- tximixUpdate(se)
+se_update <- updateMetadata(se)
 mcols(se_update)
 ```
 
-`tximixUpdate()` also allows adding metadata manually, for example:
+`updateMetadata()` also allows adding metadata manually, for example:
 
 ```{r}
 # define novel set so we can add metadata
@@ -555,13 +559,13 @@ Now with range information for `novel` we can ask for a
 *RangedSummarizedExperiment* without losing rows:
 
 ```{r}
-se_with_ranges <- tximixUpdate(se, txpData=novel_gr, ranges=TRUE)
+se_with_ranges <- updateMetadata(se, txpData=novel_gr, ranges=TRUE)
 rowRanges(se_with_ranges)
 ```
 
-`tximixUpdate()` also allows simple *data.frame*-type additional metadata.
+`updateMetadata()` also allows simple *data.frame*-type additional metadata.
 
-`tximix()` is under active development, feel free to post an
+This new workflow for data import is under active development, feel free to post an
 [Issue](https://github.com/thelovelab/tximeta/issues/new) 
 with any feedback.
 
@@ -882,29 +886,6 @@ python package. The hash value used by *salmon* is the SHA-256 hash value of the
 reference sequences stripped of the header lines, and concatenated together with
 the empty string (so only cDNA sequences combined without any new line
 characters). *FastaDigest* can be installed with `pip install fasta_digest`.
-
-# Automated analysis with ARMOR
-
-This vignette described the use of `tximeta` to import quantification data into
-R/Bioconductor with automatic detection and addition of metadata. The
-*SummarizedExperiment* produced by `tximeta` can then be provided to downstream
-statistical analysis packages as described above. The *tximeta* package does not
-contain any functionality for automated differential analysis.
-
-The [ARMOR](https://github.com/csoneson/ARMOR) workflow does automate a variety
-of differential analyses, and make use of `tximeta` for creation of a
-*SummarizedExperiment* with attached annotation metadata. ARMOR stands for
-\`\`An Automated Reproducible MOdular Workflow for Preprocessing and
-Differential Analysis of RNA-seq Data'' and is described in more detail in the
-article by @Orjuelag2019.
-
-# Default BiocFileCahce Caching Location Update
-
-*tximeta* makes use of the default BiocFileCache location, unless otherwise
-specified by the user. As of BiocFileCache version \> 1.15.1, the default
-caching location used by BiocFileCache has changed. In order to continue to use
-the same cache (without re-downloading files), please follow the steps in the
-BiocFileCache vignette, under the heading **Default Caching Location Update**.
 
 # Acknowledgments
 

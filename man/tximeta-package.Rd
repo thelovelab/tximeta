@@ -14,7 +14,7 @@ and automatically attach the transcript ranges to the
 SummarizedExperiment, to facilitate downstream integration with
 other datasets. The automatic identification of reference transcripts
 should work out-of-the-box for human or mouse transcriptomes from
-the sources: GENCODE, Ensembl, or RefSeq. See also \code{\link[=tximix]{tximix()}} for
+the sources: GENCODE, Ensembl, or RefSeq. See also \code{\link[=importData]{importData()}} for
 importing data when the reference transcripts were derived from
 a mix of annotated (e.g. GENCODE) and novel or custom transcripts.
 }
@@ -23,7 +23,7 @@ The main functions are:
 \itemize{
 \item \code{\link[=tximeta]{tximeta()}} - with key argument \code{coldata} specifying sample information
 \item \code{\link[=summarizeToGene,SummarizedExperiment-method]{summarizeToGene()}} - summarize quantification to gene-level
-\item \code{\link[=tximix]{tximix()}} - import quantification with mixed reference transcript sets
+\item \code{\link[=importData]{importData()}} - import quantification with mixed reference transcript sets
 }
 
 All software-related questions should be posted to the Bioconductor Support Site:

@@ -56,34 +56,38 @@ test_that("tximix works as expected", {
   seqinfo(novel_gr) <- seqinfo(se)
 
   # first step just returns an un-ranged SE
-  se_mix <- tximix(coldata, type="oarfish")
+  se_mix <- importData(coldata, type="oarfish")
   
   # shows the indices and their digests
-  tximixInspectDigests(se_mix)
+  inspectDigests(se_mix)
   # show full digest
-  tximixInspectDigests(se_mix, fullDigest=TRUE)
+  inspectDigests(se_mix, fullDigest=TRUE)
   # this is slower, requires loading the TxDb and ranges...
-  tximixInspectDigests(se_mix, count=TRUE)
+  inspectDigests(se_mix, count=TRUE)
 
   # populate what transcript metadata we can find:
-  se_update <- tximixUpdate(se_mix)
+  se_update <- updateMetadata(se_mix)
   mcols(se_update)
 
   # can add ranges, but that requires subsetting to a smaller object 
   # as we can't have a mix of ranges + no-range-data rows
-  se_update_w_ranges <- tximixUpdate(se_mix, ranges=TRUE)
+  se_update_w_ranges <- updateMetadata(se_mix, ranges=TRUE)
   mcols(se_update_w_ranges)
 
   # the user then can add metadata via:
   # linkedTxome() / linkedTxpData() -- they can go do this
   # GRanges or data.frame-like thing
-  se_update <- tximixUpdate(se_mix, txpData=novel[,-(1:4)])
+  se_update <- updateMetadata(se_mix, txpData=novel[,-(1:4)])
   mcols(se_update)
   table(mcols(se_update)$index)
 
-  se_update_w_ranges <- tximixUpdate(se_mix, txpData=novel_gr, ranges=TRUE)
+  se_update_w_ranges <- updateMetadata(se_mix, txpData=novel_gr, ranges=TRUE)
   mcols(se_update_w_ranges)
   table(mcols(se_update_w_ranges)$index)
+
+  library(BiocFileCache)
+  bfc <- BiocFileCache(getBFCLoc())
+  bfcinfo(bfc)
 
   # try out makeLinkedTxpData
   makeLinkedTxpData(

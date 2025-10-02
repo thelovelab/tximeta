@@ -145,7 +145,7 @@ makeLinkedTxome <- function(
   } else {
     # `digest` was specified, so use the indexName provided
     stopifnot(!missing(indexName))
-    message(paste0("linking file-based metadata to digest: ",substr(1,6,digest),"..."))
+    message(paste0("linking file-based metadata to digest: ",substr(digest,1,6),"..."))
     index <- indexName
   }
 

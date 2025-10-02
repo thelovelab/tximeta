@@ -9,14 +9,14 @@
 #' SummarizedExperiment, to facilitate downstream integration with
 #' other datasets. The automatic identification of reference transcripts
 #' should work out-of-the-box for human or mouse transcriptomes from
-#' the sources: GENCODE, Ensembl, or RefSeq. See also [tximix()] for
+#' the sources: GENCODE, Ensembl, or RefSeq. See also [importData()] for
 #' importing data when the reference transcripts were derived from 
 #' a mix of annotated (e.g. GENCODE) and novel or custom transcripts.
 #'
 #' The main functions are:
 #'   - [tximeta()] - with key argument `coldata` specifying sample information
 #'   - [`summarizeToGene()`][summarizeToGene,SummarizedExperiment-method] - summarize quantification to gene-level
-#'   - [tximix()] - import quantification with mixed reference transcript sets
+#'   - [importData()] - import quantification with mixed reference transcript sets
 #' 
 #' All software-related questions should be posted to the Bioconductor Support Site:
 #' 
@@ -281,7 +281,7 @@ tximeta <- function(coldata,
   # check the sequence digest (hash) of the transcriptome index with 1st sample
   # readIndexSeqHash() returns a list of functions.
   # note that for oarfish, we are only looking at the `annotated_transcripts_digest`
-  # for annotated + novel, use tximix...
+  # for annotated + novel, use importData...
   indexSeqHash <- readIndexSeqHash()[[hashType]](metaInfo[[1]])
   if (length(files) > 1) {
     hashes <- sapply(metaInfo, readIndexSeqHash()[[hashType]])
@@ -291,10 +291,10 @@ tximeta <- function(coldata,
     if (hashType == "oarfish") { 
       message("\nNote: tximeta() uses the `annotated` index digest to attach metadata,\n",
       "discarding transcripts not associated with the `annotated` index.")
-      # custom check: if user is importing oarfish data and using the 'novel' flag... prompt about tximix()
+      # custom check: if user is importing oarfish data and using the 'novel' flag... prompt about importData()
       if ("novel_transcripts_digest" %in% names(metaInfo[[1]]$digest)) {
         message("\nNote: `novel` digest detected in quantification files.\n",
-        "Use instead tximix(), which imports data and metadata from multiple indices.\n")
+        "Use instead importData(), which imports data and metadata from multiple indices.\n")
       }
     }
     checkInfReps(metaInfo)

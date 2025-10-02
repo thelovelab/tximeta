@@ -2,6 +2,9 @@ url: https://thelovelab.github.io/tximeta
 
 title: tximeta
 
+articles:
+  new_process: false
+
 authors:
   Michael Love:
     href: https://mikelove.github.io
@@ -23,9 +26,11 @@ reference:
   - title: "linkedTxome: linking data to metadata"
     contents:
       - contains("linkedTx")
-  - title: "tximix: mixed reference transcripts"
+  - title: "Mixed reference transcripts"
     contents:
-      - starts_with("tximix")
+      - importData
+      - inspectDigests
+      - updateMetadata
   - title: "Add information to object"
     contents:
       - starts_with("add")

@@ -1,3 +1,8 @@
+# tximeta 1.27.11
+
+* Addition of `makeLinkedTxpData()` a lightweight version
+  of `makeLinkedTxome()`.
+
 # tximeta 1.27.6
 
 * `makeLinkedTxome()` will now accept a `digest` and `indexName`,
@@ -5,7 +10,8 @@
 
 # tximeta 1.27.4
 
-* Addition of `tximix()` and associated functions, 
+* Addition of three new functions. 
+  `importData()`, `inspectDigests()`, `updateMetadata()` 
   allowing import of _oarfish_ (v0.9.0) quantification files 
   when `annotated` and `novel` reference transcript sets
   have been mixed. 
