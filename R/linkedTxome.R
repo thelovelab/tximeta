@@ -29,8 +29,8 @@
 #' For further details please see the "Linked transcriptomes"
 #' section of the tximeta vignette.
 #' 
-#' This function can be used in combination with `tximixInspectDigests()`
-#' for use with `tximix()`-imported oarfish data, when multiple
+#' This function can be used in combination with `inspectDigests()`
+#' and oarfish data from `importData()`, when multiple
 #' reference transcript sets have been indexed. See also 
 #' `makeLinkedTxpData()`.
 #' 
@@ -245,8 +245,8 @@ standardizeCapitalization <- function(source, std_sources) {
 #' 
 #' `linkedTxpData` allows the user to save relevant _GRanges_ transcript data
 #' for identifying and updating transcript metadata in a persistent manner
-#' across R sessions. It can be used in combination with `tximixInspectDigests()`
-#' and `tximixUpdate()`.
+#' across R sessions. It can be used in combination with `inspectDigests()`
+#' and `updateMetadata()`.
 #' This is a lightweight version of `linkedTxome` (see
 #' `makeLinkedTxome()`), which requires specifying a GTF file for building a
 #' _TxDb_ and optionally a FASTA file for sequence retrieval.)
@@ -257,7 +257,7 @@ standardizeCapitalization <- function(source, std_sources) {
 #' `linkedTxpDataTbl` and is listed in the same location.
 #' 
 #' @param digest character string of the full digest of the 
-#' reference transcripts, see `tximixInspectDigests()` with `fullDigest=TRUE`
+#' reference transcripts, see `inspectDigests()` with `fullDigest=TRUE`
 #' @param indexName a name for the `index` when storing the linkedTxpData,
 #' @param txpData _GRanges_ providing information about ranges 
 #' representing the transcript sequences linked to `digest`

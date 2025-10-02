@@ -112,8 +112,8 @@ RefSeq).
 For further details please see the "Linked transcriptomes"
 section of the tximeta vignette.
 
-This function can be used in combination with \code{tximixInspectDigests()}
-for use with \code{tximix()}-imported oarfish data, when multiple
+This function can be used in combination with \code{inspectDigests()}
+and oarfish data from \code{importData()}, when multiple
 reference transcript sets have been indexed. See also
 \code{makeLinkedTxpData()}.
 }

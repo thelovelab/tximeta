@@ -17,7 +17,7 @@ makeLinkedTxpData(
 }
 \arguments{
 \item{digest}{character string of the full digest of the
-reference transcripts, see \code{tximixInspectDigests()} with \code{fullDigest=TRUE}}
+reference transcripts, see \code{inspectDigests()} with \code{fullDigest=TRUE}}
 
 \item{indexName}{a name for the \code{index} when storing the linkedTxpData,}
 
@@ -39,8 +39,8 @@ nothing, the function is run for its side effects
 \description{
 \code{linkedTxpData} allows the user to save relevant \emph{GRanges} transcript data
 for identifying and updating transcript metadata in a persistent manner
-across R sessions. It can be used in combination with \code{tximixInspectDigests()}
-and \code{tximixUpdate()}.
+across R sessions. It can be used in combination with \code{inspectDigests()}
+and \code{updateMetadata()}.
 This is a lightweight version of \code{linkedTxome} (see
 \code{makeLinkedTxome()}), which requires specifying a GTF file for building a
 \emph{TxDb} and optionally a FASTA file for sequence retrieval.)
