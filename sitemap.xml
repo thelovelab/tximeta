@@ -10,7 +10,9 @@
 <url><loc>https://thelovelab.github.io/tximeta/reference/addExons.html</loc></url>
 <url><loc>https://thelovelab.github.io/tximeta/reference/addIds.html</loc></url>
 <url><loc>https://thelovelab.github.io/tximeta/reference/getTximetaBFC.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/importData.html</loc></url>
 <url><loc>https://thelovelab.github.io/tximeta/reference/index.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/inspectDigests.html</loc></url>
 <url><loc>https://thelovelab.github.io/tximeta/reference/linkedTxome.html</loc></url>
 <url><loc>https://thelovelab.github.io/tximeta/reference/linkedTxpData.html</loc></url>
 <url><loc>https://thelovelab.github.io/tximeta/reference/makeDGEList.html</loc></url>
@@ -20,8 +22,6 @@
 <url><loc>https://thelovelab.github.io/tximeta/reference/summarizeToGene.html</loc></url>
 <url><loc>https://thelovelab.github.io/tximeta/reference/tximeta-package.html</loc></url>
 <url><loc>https://thelovelab.github.io/tximeta/reference/tximeta.html</loc></url>
-<url><loc>https://thelovelab.github.io/tximeta/reference/tximix.html</loc></url>
-<url><loc>https://thelovelab.github.io/tximeta/reference/tximixInspectDigests.html</loc></url>
-<url><loc>https://thelovelab.github.io/tximeta/reference/tximixUpdate.html</loc></url>
+<url><loc>https://thelovelab.github.io/tximeta/reference/updateMetadata.html</loc></url>
 </urlset>
 
