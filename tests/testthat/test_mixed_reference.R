@@ -1,5 +1,5 @@
-context("tximix")
-test_that("tximix works as expected", {
+context("mixed reference")
+test_that("importing oarfish with mixed reference works as expected", {
 
   dir <- system.file("extdata/oarfish", package="tximportData")
   names <- paste0("rep", 2:4)
@@ -19,7 +19,7 @@ test_that("tximix works as expected", {
     digest = "6fc626c828b7a342ab0c6ff753055761989bf0e2306370e8766fedf45ad3adb3",
     indexName = "gencode.v48",
     source = "LocalGENCODE",
-    organism = "Homo sapeins",
+    organism = "Homo sapiens",
     release = "48",
     genome = "GRCh38",
     fasta = "/path/to/fasta.fa",
@@ -27,7 +27,7 @@ test_that("tximix works as expected", {
     write = FALSE
   )
 
-  # this prompts them to use tximix()
+  # this prompts them to use importData etc.
   expect_warning({
     se <- tximeta(coldata, type="oarfish")
   }, "the annotation is missing some transcripts")

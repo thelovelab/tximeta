@@ -487,7 +487,7 @@ makeLinkedTxome(
   digest = "6fc626c828b7a342ab0c6ff753055761989bf0e2306370e8766fedf45ad3adb3",
   indexName = "gencode.v48",
   source = "LocalGENCODE",
-  organism = "Homo sapeins",
+  organism = "Homo sapiens",
   release = "48",
   genome = "GRCh38",
   fasta = "/path/to/fasta.fa",
