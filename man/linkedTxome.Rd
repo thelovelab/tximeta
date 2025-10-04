@@ -14,6 +14,7 @@ makeLinkedTxome(
   organism,
   release,
   genome,
+  prefer = c("txome", "txpdata", "annotated"),
   fasta,
   gtf,
   write = TRUE,
@@ -51,6 +52,9 @@ with the Ensembl GTF.}
 \item{release}{release number (e.g. "27")}
 
 \item{genome}{genome (e.g. "GRCh38", or "none")}
+
+\item{prefer}{whether to prefer loading data from linkedTxome: \code{txome},
+linkedTxpData: \code{txpdata}, or the \code{annotated} version}
 
 \item{fasta}{location(s) for the FASTA transcript sequences
 (of which the transcripts used to build the index is equal or a subset).

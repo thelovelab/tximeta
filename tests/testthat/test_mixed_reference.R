@@ -95,7 +95,8 @@ test_that("importing oarfish with mixed reference works as expected", {
     indexName = "my_novel_txps",
     txpData = novel_gr,
     source = "novel", organism="Homo sapience", 
-    release="v1", genome="GRCh38"
+    release="v1", genome="GRCh38",
+    prefer="txpdata"
   )
 
 })

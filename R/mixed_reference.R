@@ -186,7 +186,7 @@ inspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FALSE) {
   }
 
   # columns to pull from the txomeInfo item
-  cols <- c("source","organism","release","genome","linkedTxome")
+  cols <- c("source","organism","release","genome","linkedTxome")#,"linkedTxpData","prefer")
   for (i in c("annotated","novel")) {
     # if there is a txomeInfo match, populate the outgoing tibble
     if (!is.null(txomeInfo[[i]])) {

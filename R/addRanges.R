@@ -29,7 +29,7 @@
 addExons <- function(se) {
 
   if (metadata(se)$level == "gene") {
-    stop("addExons() is design for transcript-level SummarizedExperiments, see ?addExons")
+    stop("addExons() is designed for transcript-level SummarizedExperiments, see ?addExons")
   }
   missingMetadata(se, summarize=FALSE)
 
@@ -194,7 +194,7 @@ getRanges <- function(txdb=txdb, txomeInfo=txomeInfo, type=c("txp","exon","cds",
     savepath <- bfcnew(bfc, rngsName, ext=".rds")
     saveRDS(rngs, file=savepath)
   } else {
-    loadpath <- bfcrpath(bfc, rngsName)
+    loadpath <- bfcrpath(bfc, rnames=rngsName)
     message(paste("loading existing",long[type],"ranges created:",q$create_time[1]))
     rngs <- readRDS(loadpath)
   }

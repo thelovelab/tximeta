@@ -12,7 +12,7 @@ getTxomeInfo <- function(indexSeqHash, quiet=FALSE) {
   if (bfccount(q) == 1) {
 
     # first check linkedTxomes, which should take priority over pre-computed
-    loadpath <- bfcrpath(bfc, "linkedTxomeTbl")
+    loadpath <- bfcrpath(bfc, rnames="linkedTxomeTbl")
     linkedTxomeTbl <- readRDS(loadpath)
     m <- match(indexSeqHash, linkedTxomeTbl$sha256)
     if (!is.na(m)) {
@@ -165,7 +165,7 @@ this may produce errors if the GTF is not from Ensembl, or has been modified")
 
   } else {
     ### Yes, TxDb was found in the BiocFilecache ###
-    loadpath <- bfcrpath(bfc, txdbName)
+    loadpath <- bfcrpath(bfc, rnames=txdbName)
     if (txomeInfo$source == "Ensembl") {
       message(paste("loading existing EnsDb created:",q$create_time[1]))
       txdb <- EnsDb(loadpath)
