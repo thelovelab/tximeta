@@ -12,8 +12,7 @@ makeLinkedTxpData(
   source,
   organism,
   release,
-  genome,
-  prefer = c("txome", "txpdata", "annotated")
+  genome
 )
 }
 \arguments{
@@ -33,9 +32,6 @@ See \code{makeLinkedTxome()} for more information on specifying source}
 \item{release}{release number (e.g. "27")}
 
 \item{genome}{genome (e.g. "GRCh38", or "none")}
-
-\item{prefer}{whether to prefer loading data from linkedTxome: \code{txome},
-linkedTxpData: \code{txpdata}, or the \code{annotated} version}
 }
 \value{
 nothing, the function is run for its side effects

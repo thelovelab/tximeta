@@ -56,8 +56,6 @@
 #' @param organism organism (e.g. "Homo sapiens")
 #' @param release release number (e.g. "27")
 #' @param genome genome (e.g. "GRCh38", or "none")
-#' @param prefer whether to prefer loading data from linkedTxome: `txome`,
-#' linkedTxpData: `txpdata`, or the `annotated` version
 #' @param fasta location(s) for the FASTA transcript sequences
 #' (of which the transcripts used to build the index is equal or a subset).
 #' This can be a local path, or an HTTP or FTP URL
@@ -97,9 +95,13 @@
 #' indexDir <- file.path(dir, "Dm.BDGP6.22.98.plus_salmon-0.14.1")
 #'
 #' # point to the source FASTA and GTF:
-#' fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
-#'               "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz",
-#'               "extra_transcript.fa.gz")
+#' baseFTP <- "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/"
+#' fastaFTP <- c(
+#'   paste0(baseFTP,
+#'     c("cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
+#'       "ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz")),
+#'   "extra_transcript.fa.gz"
+#' )
 #' gtfPath <- file.path(dir, "Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz")
 #'
 #' # now create a linkedTxome, linking the salmon index to its FASTA and GTF sources
@@ -121,7 +123,6 @@ makeLinkedTxome <- function(
   organism,
   release,
   genome,
-  prefer = c("txome", "txpdata", "annotated"),
   fasta,
   gtf,
   write = TRUE,
@@ -239,8 +240,6 @@ loadLinkedTxome <- function(jsonFile) {
 #' @param organism organism (e.g. "Homo sapiens")
 #' @param release release number (e.g. "27")
 #' @param genome genome (e.g. "GRCh38", or "none")
-#' @param prefer whether to prefer loading data from linkedTxome: `txome`, 
-#' linkedTxpData: `txpdata`, or the `annotated` version
 #' 
 #' @return nothing, the function is run for its side effects
 #' 
@@ -255,13 +254,10 @@ makeLinkedTxpData <- function(
   source,
   organism,
   release,
-  genome,
-  prefer = c("txome","txpdata","annotated")
+  genome
 ) {
 
   message(paste0("linking user-provided metadata to digest: ",substr(digest,1,6),"..."))
-
-  prefer <- match.arg(prefer)
 
   stopifnot(is(txpData, "GRanges"))
 
@@ -279,7 +275,6 @@ makeLinkedTxpData <- function(
     organism = organism,
     release = release,
     genome = genome,
-    prefer = prefer,
     short_digest = short_digest,
     digest_32 = digest_32,
     digest = digest
@@ -376,7 +371,6 @@ updateLinkedThingTbl <- function(type=c("Txome","TxpData")) {
       "organism",
       "release",
       "genome",
-      "prefer"
   )
   cols <- list(
     Txome = c(

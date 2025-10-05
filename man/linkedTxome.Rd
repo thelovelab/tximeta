@@ -14,7 +14,6 @@ makeLinkedTxome(
   organism,
   release,
   genome,
-  prefer = c("txome", "txpdata", "annotated"),
   fasta,
   gtf,
   write = TRUE,
@@ -52,9 +51,6 @@ with the Ensembl GTF.}
 \item{release}{release number (e.g. "27")}
 
 \item{genome}{genome (e.g. "GRCh38", or "none")}
-
-\item{prefer}{whether to prefer loading data from linkedTxome: \code{txome},
-linkedTxpData: \code{txpdata}, or the \code{annotated} version}
 
 \item{fasta}{location(s) for the FASTA transcript sequences
 (of which the transcripts used to build the index is equal or a subset).
@@ -134,9 +130,13 @@ coldata <- data.frame(files=file, names="SRR1197474", sample="1",
 indexDir <- file.path(dir, "Dm.BDGP6.22.98.plus_salmon-0.14.1")
 
 # point to the source FASTA and GTF:
-fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
-              "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz",
-              "extra_transcript.fa.gz")
+baseFTP <- "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/"
+fastaFTP <- c(
+  paste0(baseFTP,
+    c("cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
+      "ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz")),
+  "extra_transcript.fa.gz"
+)
 gtfPath <- file.path(dir, "Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz")
 
 # now create a linkedTxome, linking the salmon index to its FASTA and GTF sources
