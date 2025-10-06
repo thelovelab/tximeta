@@ -286,7 +286,8 @@ makeLinkedTxpData <- function(
   # the name to use when saving txpData in the BFC
   # use the first 32 chars of the digest
   txpDataName <- paste0("txpdata-",digest_32)
-  bfc_has <- existsInBFC(txpDataName)
+  bfc <- BiocFileCache(getBFCLoc())
+  bfc_has <- existsInBFC(txpDataName, bfc)
   if (bfc_has) {
     message("txpData object was already saved in bfc, replacing")
     savepath <- bfcrpath(bfc, rnames=txpDataName)
@@ -312,8 +313,8 @@ stashLinkedThing <- function(lt, type=c("Txome","TxpData")) {
   type <- match.arg(type)
   tbl_name <- paste0("linked",type,"Tbl")
   stopifnot(is(lt, "tbl"))
-  bfc_has_tbl <- existsInBFC(tbl_name)
-  # do we need 'q' though?
+  bfc <- BiocFileCache(getBFCLoc())
+  bfc_has_tbl <- existsInBFC(tbl_name, bfc)
   if (!bfc_has_tbl) {
     message(paste0("saving linked",type," in bfc (first time)"))
     savepath <- bfcnew(bfc, tbl_name, ext=".rds")
@@ -390,9 +391,7 @@ updateLinkedThingTbl <- function(type=c("Txome","TxpData")) {
   saveRDS(linkedThingTbl, file=loadpath)
 }
 
-existsInBFC <- function(query) {
-  bfcloc <- getBFCLoc()
-  bfc <- BiocFileCache(bfcloc)
+existsInBFC <- function(query, bfc) {
   q <- bfcquery(bfc, query)
   bfccount(q) > 0
 }
