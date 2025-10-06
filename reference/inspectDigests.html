@@ -30,7 +30,7 @@ the transcript metadata using the sources indicated by this function."><!-- math
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tximeta</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.27.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.27.13</span>
       </span>
     </div>
 
@@ -82,7 +82,13 @@ the transcript metadata using the sources indicated by this function.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">inspectDigests</span><span class="op">(</span><span class="va">se</span>, type <span class="op">=</span> <span class="st">"oarfish"</span>, fullDigest <span class="op">=</span> <span class="cn">FALSE</span>, count <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">inspectDigests</span><span class="op">(</span></span>
+<span>  <span class="va">se</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"oarfish"</span>,</span>
+<span>  prefer <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"txome"</span>, <span class="st">"txpdata"</span>, <span class="st">"precomputed"</span><span class="op">)</span>,</span>
+<span>  fullDigest <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  count <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -99,6 +105,14 @@ information from the quantification tool
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
 <dd><p>what quantifier was used (see <code><a href="https://rdrr.io/pkg/tximport/man/tximport.html" class="external-link">tximport::tximport()</a></code>)</p></dd>
+
+
+<dt id="arg-prefer">prefer<a class="anchor" aria-label="anchor" href="#arg-prefer"></a></dt>
+<dd><p>vector of length up to 3, giving the preferred order of
+<em>tximeta</em>'s transcript registries to when finding matches, with elements:
+<code>txome</code>: linkedTxome,
+<code>txpdata</code>: linkedTxpData,
+<code>precomputed</code>: the pre-computed digests in tximeta</p></dd>
 
 
 <dt id="arg-fulldigest">fullDigest<a class="anchor" aria-label="anchor" href="#arg-fulldigest"></a></dt>
@@ -147,11 +161,11 @@ and a small 6 character version of the digest itself.</p>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -- updateMetadata() to update metadata and optionally add ranges</span>
 <span class="r-in"><span><span class="co"># now we have an `se` created by importData()...</span></span></span>
 <span class="r-in"><span><span class="fu">inspectDigests</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   index     source  organism     release genome linkedTxome small_digest</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> annotated GENCODE Homo sapiens 48      GRCh38 FALSE       6fc626      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> novel     <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>           <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>          43158f      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 2 × 8</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   index    source organism release genome linkedTxome linkedTxpData small_digest</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> annotat… GENCO… Homo sa… 48      GRCh38 FALSE       FALSE         6fc626      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span> novel    <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>       <span style="color: #BB0000;">NA</span>      <span style="color: #BB0000;">NA</span>     <span style="color: #BB0000;">NA</span>          <span style="color: #BB0000;">NA</span>            43158f      </span>
 <span class="r-in"><span><span class="co"># can then update the registry via makeLinkedTxome() and re-run inspection</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

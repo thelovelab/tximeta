@@ -23,7 +23,7 @@ TxDb and optionally a FASTA file for sequence retrieval.)"><!-- mathjax --><scri
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">tximeta</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.27.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.27.13</span>
       </span>
     </div>
 
@@ -70,6 +70,7 @@ This is a lightweight version of <code>linkedTxome</code> (see
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">makeLinkedTxpData</span><span class="op">(</span></span>
 <span>  <span class="va">digest</span>,</span>
+<span>  digestType <span class="op">=</span> <span class="st">"sha256"</span>,</span>
 <span>  <span class="va">indexName</span>,</span>
 <span>  <span class="va">txpData</span>,</span>
 <span>  <span class="va">source</span>,</span>
@@ -86,6 +87,10 @@ This is a lightweight version of <code>linkedTxome</code> (see
 <dl><dt id="arg-digest">digest<a class="anchor" aria-label="anchor" href="#arg-digest"></a></dt>
 <dd><p>character string of the full digest of the
 reference transcripts, see <code><a href="inspectDigests.html">inspectDigests()</a></code> with <code>fullDigest=TRUE</code></p></dd>
+
+
+<dt id="arg-digesttype">digestType<a class="anchor" aria-label="anchor" href="#arg-digesttype"></a></dt>
+<dd><p>character string of the digest, default <code>"sha256"</code></p></dd>
 
 
 <dt id="arg-indexname">indexName<a class="anchor" aria-label="anchor" href="#arg-indexname"></a></dt>
