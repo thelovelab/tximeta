@@ -313,7 +313,7 @@ tximeta <- function(coldata,
 
   # use the reference seqeuence digest (hash) to try to find a match 
   # in the hash table of known and linked transcriptomes
-  txomeInfo <- getTxomeInfo(indexSeqHash)
+  txomeInfo <- getTxomeInfo(digest = indexSeqHash, prefer=c("txome","precomputed"))
   if (is.null(txomeInfo)) {
     message("couldn't find matching transcriptome, returning non-ranged SummarizedExperiment")
     se <- makeUnrangedSE(txi, coldata, metadata)

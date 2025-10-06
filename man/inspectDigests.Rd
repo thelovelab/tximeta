@@ -4,7 +4,13 @@
 \alias{inspectDigests}
 \title{Inspect digest matches from \code{importData()} imported data}
 \usage{
-inspectDigests(se, type = "oarfish", fullDigest = FALSE, count = FALSE)
+inspectDigests(
+  se,
+  type = "oarfish",
+  prefer = c("txome", "txpdata", "precomputed"),
+  fullDigest = FALSE,
+  count = FALSE
+)
 }
 \arguments{
 \item{se}{the \emph{SummarizedExperiment} output by \code{importData()},
@@ -14,6 +20,12 @@ information from the quantification tool
 (assuming \code{annotated} and \code{novel} indices both used)}
 
 \item{type}{what quantifier was used (see \code{\link[tximport:tximport]{tximport::tximport()}})}
+
+\item{prefer}{vector of length up to 3, giving the preferred order of
+\emph{tximeta}'s transcript registries to when finding matches, with elements:
+\code{txome}: linkedTxome,
+\code{txpdata}: linkedTxpData,
+\code{precomputed}: the pre-computed digests in tximeta}
 
 \item{fullDigest}{whether to include the full digest string in the output,
 in addition to the shortened 6-char version}

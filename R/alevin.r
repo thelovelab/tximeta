@@ -63,7 +63,7 @@ tximetaAlevin <- function(
   metadata$countsFromAbundance <- txi$countsFromAbundance
 
   # try and find a matching txome
-  txomeInfo <- getTxomeInfo(indexSeqHash)
+  txomeInfo <- getTxomeInfo(digest = indexSeqHash, prefer=c("txome","precomputed"))
   if (is.null(txomeInfo)) {
     message(
       "couldn't find matching transcriptome, returning non-ranged SummarizedExperiment"

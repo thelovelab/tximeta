@@ -232,6 +232,7 @@ loadLinkedTxome <- function(jsonFile) {
 #' 
 #' @param digest character string of the full digest of the 
 #' reference transcripts, see `inspectDigests()` with `fullDigest=TRUE`
+#' @param digestType character string of the digest, default `"sha256"`
 #' @param indexName a name for the `index` when storing the linkedTxpData,
 #' @param txpData _GRanges_ providing information about ranges 
 #' representing the transcript sequences linked to `digest`
@@ -249,6 +250,7 @@ loadLinkedTxome <- function(jsonFile) {
 #' @export
 makeLinkedTxpData <- function(
   digest, 
+  digestType="sha256",
   indexName,
   txpData,
   source,
@@ -265,8 +267,7 @@ makeLinkedTxpData <- function(
   source <- standardizeCapitalization(source, std_sources)
   index <- indexName
 
-  short_digest <- substr(digest,1,6)
-  digest_32 <- substr(digest,1,32)
+  digest32 <- substr(digest,1,32)
   # a single-row tibble for the linkedTxpDataTbl
   # matches conent below in updateLinkedThingTbl()
   lt <- tibble(
@@ -275,9 +276,8 @@ makeLinkedTxpData <- function(
     organism = organism,
     release = release,
     genome = genome,
-    short_digest = short_digest,
-    digest_32 = digest_32,
-    digest = digest
+    digest = digest,
+    digestType = digestType
   )
   
   stopifnot(nrow(lt) == 1)
@@ -285,7 +285,7 @@ makeLinkedTxpData <- function(
   # need to save txpData in the BFC, then update the tibble
   # the name to use when saving txpData in the BFC
   # use the first 32 chars of the digest
-  txpDataName <- paste0("txpdata-",digest_32)
+  txpDataName <- paste0("txpdata-",digest32)
   bfc <- BiocFileCache(getBFCLoc())
   bfc_has <- existsInBFC(txpDataName, bfc)
   if (bfc_has) {
@@ -382,9 +382,8 @@ updateLinkedThingTbl <- function(type=c("Txome","TxpData")) {
     ),
     TxpData = c(
       common_cols,
-      "short_digest",
-      "digest_32",
-      "digest"
+      "digest",
+      "digestType"
     )
   )
   linkedThingTbl <- ensureColumns(linkedThingTbl, cols[[type]])

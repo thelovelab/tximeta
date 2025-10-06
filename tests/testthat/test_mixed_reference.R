@@ -92,10 +92,15 @@ test_that("importing oarfish with mixed reference works as expected", {
   # try out makeLinkedTxpData
   makeLinkedTxpData(
     digest = "43158f2c8e88e3acd77c22aee557625a6f1b6a5038cfc7deb5e64903892d8070",
+    digestType = "sha256",
     indexName = "my_novel_txps",
     txpData = novel_gr,
-    source = "novel", organism="Homo sapience", 
+    source = "novel", organism="Homo sapiens", 
     release="v1", genome="GRCh38"
   )
+
+  inspectDigests(se_mix)
+
+  inspectDigests(se_mix, count=TRUE)
 
 })

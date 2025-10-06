@@ -1,38 +1,70 @@
-# identify the txome based on the indexSeqHash
-# - first look into the linkedTxomeTbl
+# identify the txome based on the digest
+# - first look into the linkedTxomeTbl or linkedTxpDataTbl
 # - secondly look into the pre-computed hash table in `extdata`
-getTxomeInfo <- function(indexSeqHash, quiet=FALSE) {
+getTxomeInfo <- function(digest, prefer=c("txome","txpdata","precomputed"), quiet=FALSE) {
+  stopifnot(all(prefer %in% c("txome","txpdata","precomputed")))
+  # look through these registries in the preferred order
+  for (which_registry in prefer) {
+    if (which_registry %in% c("txome","txpdata")) {
+      txomeInfo <- findDigestMatch(digest, which_registry, quiet)
+    } else {
+      txomeInfo <- findDigestMatchPrecomputed(digest, quiet)
+    }
+    # a non-null returned value indicates a match, return the txomeInfo
+    if (!is.null(txomeInfo))
+      return(txomeInfo)
+  }  
+  # at the end, return NULL = no match in any registry
+  return(NULL)
+}
 
-  # first try to find any linkedTxomes in the linkedTxomeTbl
-  bfcloc <- getBFCLoc()
-  bfc <- BiocFileCache(bfcloc)
-  q <- bfcquery(bfc, "linkedTxomeTbl")
+findDigestMatch <- function(digest, which_registry, quiet) {
+  type <- c(txome="Txome", txpdata="TxpData")[which_registry]
+  stopifnot(type %in% c("Txome","TxpData"))
+  bfc <- BiocFileCache(getBFCLoc())
+  linkedName <- paste0("linked",type,"Tbl")
+  q <- bfcquery(bfc, linkedName)
   # there should only be one such entry in the tximeta bfc
   stopifnot(bfccount(q) < 2)
   if (bfccount(q) == 1) {
-
-    # first check linkedTxomes, which should take priority over pre-computed
-    loadpath <- bfcrpath(bfc, rnames="linkedTxomeTbl")
-    linkedTxomeTbl <- readRDS(loadpath)
-    m <- match(indexSeqHash, linkedTxomeTbl$sha256)
+    # first check linkedTxome/TxpData, which should take priority over pre-computed
+    loadpath <- bfcrpath(bfc, rnames=linkedName)
+    linkedTbl <- readRDS(loadpath)
+    if (type == "Txome") {
+      m <- match(digest, linkedTbl$sha256)
+    } else if (type == "TxpData") {
+      m <- match(digest, linkedTbl$digest)
+    } else {
+      stop("type must be one of Txome or TxpData")
+    }
+    if (length(m) > 1) {
+      if (!quiet)
+        message("found multiple matching digests, using first match")
+      m <- m[1]
+    }
     if (!is.na(m)) {
-      txomeInfo <- as.list(linkedTxomeTbl[m,])
-      txomeInfo$linkedTxome <- TRUE
+      txomeInfo <- as.list(linkedTbl[m,])
+      txomeInfo$linkedTxome <- type == "Txome"
+      txomeInfo$linkedTxpData <- type == "TxpData"
       if (!quiet) {
-        message(paste0("found matching linked transcriptome:\n[ ",
+        message(paste0("found matching linked",type,":\n[ ",
                 txomeInfo$source, " - ", txomeInfo$organism,
                 " - release ", txomeInfo$release," ]"))
       }
       return(txomeInfo)
-      }
+    } else {
+      # no matching digest
+      return(NULL)
+    }
   }
+  # no linked table yet
+  return(NULL)
+}
 
-  # if not in linkedTxomes try the pre-computed hash table...
-
-  # TODO best this would be an external data package / future GA4GH RefGet API
+findDigestMatchPrecomputed <- function(digest, quiet) {
   hashfile <- file.path(system.file("extdata",package="tximeta"),"hashtable.csv")
   hashtable <- read.csv(hashfile,stringsAsFactors=FALSE)
-  m <- match(indexSeqHash, hashtable$sha256)
+  m <- match(digest, hashtable$sha256)
   if (!is.na(m)) {
     # now we can go get the GTF to annotate the ranges
     txomeInfo <- as.list(hashtable[m,])
@@ -40,16 +72,15 @@ getTxomeInfo <- function(indexSeqHash, quiet=FALSE) {
       txomeInfo$fasta <- strsplit(txomeInfo$fasta, " ")
     }
     txomeInfo$linkedTxome <- FALSE
+    txomeInfo$linkedTxpData <- FALSE
     if (!quiet) {
       message(paste0("found matching transcriptome:\n[ ",
                      txomeInfo$source, " - ", txomeInfo$organism,
                      " - release ", txomeInfo$release," ]"))
     }
-    
     return(txomeInfo)
-    
   }
-  
+  # no match in the pre-computed hash table
   return(NULL)
 }
 

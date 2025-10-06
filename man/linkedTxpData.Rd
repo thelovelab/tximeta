@@ -7,6 +7,7 @@
 \usage{
 makeLinkedTxpData(
   digest,
+  digestType = "sha256",
   indexName,
   txpData,
   source,
@@ -18,6 +19,8 @@ makeLinkedTxpData(
 \arguments{
 \item{digest}{character string of the full digest of the
 reference transcripts, see \code{inspectDigests()} with \code{fullDigest=TRUE}}
+
+\item{digestType}{character string of the digest, default \code{"sha256"}}
 
 \item{indexName}{a name for the \code{index} when storing the linkedTxpData,}
 

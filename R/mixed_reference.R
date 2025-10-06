@@ -131,6 +131,11 @@ importData <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 #' information from the quantification tool 
 #' (assuming `annotated` and `novel` indices both used)
 #' @param type what quantifier was used (see [tximport::tximport()])
+#' @param prefer vector of length up to 3, giving the preferred order of 
+#' _tximeta_'s transcript registries to when finding matches, with elements:
+#' `txome`: linkedTxome, 
+#' `txpdata`: linkedTxpData,
+#' `precomputed`: the pre-computed digests in tximeta
 #' @param fullDigest whether to include the full digest string in the output, 
 #' in addition to the shortened 6-char version
 #' @param count whether to count the number of matching transcripts ID to each index
@@ -150,7 +155,15 @@ importData <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 #' # can then update the registry via makeLinkedTxome() and re-run inspection
 #' 
 #' @export
-inspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FALSE) {
+inspectDigests <- function(
+  se, 
+  type="oarfish", 
+  prefer=c("txome","txpdata","precomputed"),
+  fullDigest=FALSE, 
+  count=FALSE
+) {
+
+  stopifnot(all(prefer %in% c("txome","txpdata","precomputed")))
   
   # take from first sample
   if (is(se, "SummarizedExperiment")) {
@@ -171,13 +184,13 @@ inspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FALSE) {
 
   small_digest <- substr(digests, 1, 6)
  
-  txomeInfo <- sapply(digests, getTxomeInfo, quiet=TRUE)
+  txomeInfo <- sapply(digests, getTxomeInfo, prefer, quiet=TRUE)
 
   # this is the tibble the function will return
   out <- tibble(
     index=c("annotated","novel"), 
     source=NA, organism=NA, release=NA, genome=NA,
-    linkedTxome=NA, small_digest
+    linkedTxome=NA, linkedTxpData=NA, small_digest
   )
 
   # put in the full digest if requested
@@ -186,7 +199,7 @@ inspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FALSE) {
   }
 
   # columns to pull from the txomeInfo item
-  cols <- c("source","organism","release","genome","linkedTxome")#,"linkedTxpData","prefer")
+  cols <- c("source","organism","release","genome","linkedTxome","linkedTxpData")
   for (i in c("annotated","novel")) {
     # if there is a txomeInfo match, populate the outgoing tibble
     if (!is.null(txomeInfo[[i]])) {
@@ -198,10 +211,23 @@ inspectDigests <- function(se, type="oarfish", fullDigest=FALSE, count=FALSE) {
     out$count <- 0
     for (i in c("annotated","novel")) {
       if (!is.null(txomeInfo[[i]])) {
-        suppressMessages({
-          txdb <- getTxDb(txomeInfo[[i]], useHub = FALSE, skipFtp = FALSE)
-          txps <- getRanges(txdb = txdb, txomeInfo = txomeInfo[[i]], type = "txp")
-        })
+        # digest match: we have txomeInfo...
+        if (!txomeInfo[[i]]$linkedTxpData) {
+          # get ranges typical way: linkedTxome GTF, or GTF from extdata/hashtable.csv
+          suppressMessages({
+            txdb <- getTxDb(txomeInfo[[i]], useHub = FALSE, skipFtp = FALSE)
+            txps <- getRanges(txdb = txdb, txomeInfo = txomeInfo[[i]], type = "txp")
+          })
+        } else {
+          # get ranges from TxpData
+          digest32 <- substr(txomeInfo[[i]]$digest,1,32)
+          txpDataName <- paste0("txpdata-",digest32)
+          bfc <- BiocFileCache(getBFCLoc())
+          if (!existsInBFC(txpDataName, bfc))
+            stop(paste0("TxpData of name: [",txpDataName,"] was expected in BFC"))
+          loadpath <- bfcrpath(bfc, rnames=txpDataName)
+          txps <- readRDS(loadpath)
+        }
         out[match(i,out$index),"count"] <- sum(names(txps) %in% rownames(se))
       }
     }
@@ -282,7 +308,7 @@ updateMetadata <- function(
   )
 
   # pull out the txomeInfo for each
-  txomeInfo <- sapply(digests, getTxomeInfo, quiet = TRUE)
+  txomeInfo <- sapply(digests, getTxomeInfo, prefer=c("txome","precomputed"), quiet = TRUE)
 
   ranges_to_add <- GenomicRanges::GRanges()
 
