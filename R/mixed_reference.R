@@ -211,23 +211,7 @@ inspectDigests <- function(
     out$count <- 0
     for (i in c("annotated","novel")) {
       if (!is.null(txomeInfo[[i]])) {
-        # digest match: we have txomeInfo...
-        if (!txomeInfo[[i]]$linkedTxpData) {
-          # get ranges typical way: linkedTxome GTF, or GTF from extdata/hashtable.csv
-          suppressMessages({
-            txdb <- getTxDb(txomeInfo[[i]], useHub = FALSE, skipFtp = FALSE)
-            txps <- getRanges(txdb = txdb, txomeInfo = txomeInfo[[i]], type = "txp")
-          })
-        } else {
-          # get ranges from TxpData
-          digest32 <- substr(txomeInfo[[i]]$digest,1,32)
-          txpDataName <- paste0("txpdata-",digest32)
-          bfc <- BiocFileCache(getBFCLoc())
-          if (!existsInBFC(txpDataName, bfc))
-            stop(paste0("TxpData of name: [",txpDataName,"] was expected in BFC"))
-          loadpath <- bfcrpath(bfc, rnames=txpDataName)
-          txps <- readRDS(loadpath)
-        }
+        txps <- getTxpsFromTxome(txomeInfo = txomeInfo[[i]])
         out[match(i,out$index),"count"] <- sum(names(txps) %in% rownames(se))
       }
     }
@@ -348,25 +332,13 @@ updateMetadata <- function(
     matches <- c()
     # first, annotated / novel index
     if (i %in% idx_nms) {
-      if (!is.null(txomeInfo[[i]])) { 
-        # we have a digest match so we are obtaining: 
-        # - TxDb (for linkedTxome)
-        # - GRanges for transcripts to add
-        
-        # if we have a linkedTxpData match...
-        if (txomeInfo$linkedTxpData) {
-          # do this....
-          txps <- readRDS()
-          # else we have a linkedTxome or pre-computed digest match
-        } else {
-          txdb <- getTxDb(txomeInfo[[i]], useHub = FALSE, skipFtp = FALSE)
-          txps <- getRanges(txdb = txdb, txomeInfo = txomeInfo[[i]], type = "txp")
-        }
+      if (!is.null(txomeInfo[[i]])) {
+        txps <- getTxpsFromTxome(txomeInfo = txomeInfo[[i]])
         names_txps <- names(txps) # used for matching later
         txpDataToAdd <- mcols(txps) # metadata columns to work with
         matches <- intersect(rownames(se), names_txps)
       } else {
-        # no match.......
+        # no match
         message(
           paste0("--", i, ": no transcript metadata found\n"),
           "  consider using `linkedTxome`, or `linkedTxpData` (see man pages)"
@@ -458,6 +430,8 @@ updateMetadata <- function(
   se
 }
 
+### un-exported helper functions ###
+
 # txpDataToAdd and matches are in same order, not true for rowdata
 mergeTxpDataIntoRowData <- function(rowdata, txpDataToAdd, matches, indexName) {
   # store the new transcript data back in the appropriate rows of the SE
@@ -474,4 +448,27 @@ mergeTxpDataIntoRowData <- function(rowdata, txpDataToAdd, matches, indexName) {
   }
   rowdata[idx_rowdata, "index"] <- indexName
   rowdata
+}
+
+# function to pull out GRanges txps from txomeInfo whether 
+# linkedTxome, pre-computed, or linkedTxpData
+getTxpsFromTxome <- function(txomeInfo) {
+  if (!txomeInfo$linkedTxpData) {
+    # we have a linkedTxome or pre-computed digest match
+    suppressMessages({
+      txdb <- getTxDb(txomeInfo, useHub = FALSE, skipFtp = FALSE)
+      txps <- getRanges(txdb = txdb, txomeInfo = txomeInfo, type = "txp")
+    })
+  } else if (txomeInfo$linkedTxpData) {
+    # we have a linkedTxpData match
+    digest32 <- substr(txomeInfo$digest, 1, 32)
+    txpDataName <- paste0("txpdata-", digest32)
+    bfc <- BiocFileCache(getBFCLoc())
+    if (!existsInBFC(txpDataName, bfc)) {
+      stop(paste0("TxpData of name: [", txpDataName, "] was expected in BFC"))
+    }
+    loadpath <- bfcrpath(bfc, rnames = txpDataName)
+    txps <- readRDS(loadpath)
+  }
+  txps
 }
