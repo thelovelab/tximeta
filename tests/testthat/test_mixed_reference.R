@@ -49,13 +49,12 @@ test_that("importing oarfish with mixed reference works as expected", {
     gene_id = paste0("novel_gene", rep(1:(22*10), each=50)),
     type = "protein_coding"
   )
-  head(novel)
   library(GenomicRanges)
   novel_gr <- as(novel, "GRanges")
   names(novel_gr) <- novel$tx_name
   seqinfo(novel_gr) <- seqinfo(se)
 
-  # first step just returns an un-ranged SE
+  # importData for mixed references: first step returns an un-ranged SE
   se_mix <- importData(coldata, type="oarfish")
   
   # shows the indices and their digests

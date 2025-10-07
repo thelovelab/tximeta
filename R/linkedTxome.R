@@ -247,6 +247,31 @@ loadLinkedTxome <- function(jsonFile) {
 #' @name linkedTxpData
 #' @rdname linkedTxpData
 #' 
+#' @examples
+#' 
+#' novel <- data.frame(seqnames = paste0("chr", rep(1:22, each=500)),
+#'   start = 1e6 + 1 + 0:499 * 1000, end = 1e6 + 1 + 0:499 * 1000 + 1000 - 1,
+#'   strand = "+", tx_name = paste0("novel", 1:(22*500)), 
+#'   gene_id = paste0("novel_gene", rep(1:(22*10), each=50)), 
+#' type = "protein_coding")
+#' novel_gr <- as(novel, "GRanges")
+#' names(novel_gr) <- novel$tx_name
+#' 
+#' makeLinkedTxpData(
+#'  digest = "43158f2c8e88e3acd77c22aee557625a6f1b6a5038cfc7deb5e64903892d8070",
+#'  digestType = "sha256",
+#'  indexName = "my_novel_txps",
+#'  txpData = novel_gr,
+#'  source = "novel", organism="Homo sapiens", 
+#'  release="v1", genome="GRCh38"
+#' )
+#' 
+#' # to clear the entire linkedTxome table
+#' # (don't run unless you want to clear this table!)
+#' # bfcloc <- getTximetaBFC()
+#' # bfc <- BiocFileCache(bfcloc)
+#' # bfcremove(bfc, bfcquery(bfc, "linkedTxpDataTbl")$rid)
+#' 
 #' @export
 makeLinkedTxpData <- function(
   digest, 
@@ -289,7 +314,7 @@ makeLinkedTxpData <- function(
   bfc <- BiocFileCache(getBFCLoc())
   bfc_has <- existsInBFC(txpDataName, bfc)
   if (bfc_has) {
-    message("txpData object was already saved in bfc, replacing")
+    message("a txpData GRanges object for this digest was already saved in bfc, replacing")
     savepath <- bfcrpath(bfc, rnames=txpDataName)
   } else {
     message("saving txpData object in bfc")
@@ -327,10 +352,11 @@ stashLinkedThing <- function(lt, type=c("Txome","TxpData")) {
     if (lt$index %in% linkedThingTbl$index) {
       m <- match(lt$index, linkedThingTbl$index)
       stopifnot(length(m) == 1)
+      # check if all the terms are the same, and message about that
       if (all(mapply(identical, lt, linkedThingTbl[m,]))) {
-        message(paste0("linked",type," is same as already in bfc"))
+        message(paste0("linked",type," metadata was same as already in bfc"))
       } else {
-        message(paste0("linked",type," was different than one in bfc, replacing"))
+        message(paste0("linked",type," metadata was different than that in bfc, replacing"))
         linkedThingTbl[m,] <- lt
       }
     } else {

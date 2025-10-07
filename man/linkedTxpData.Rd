@@ -54,3 +54,29 @@ appended with a 32-character substring of \code{digest}.
 The tibble listing all \code{linkedTxpData} is named
 \code{linkedTxpDataTbl} and is listed in the same location.
 }
+\examples{
+
+novel <- data.frame(seqnames = paste0("chr", rep(1:22, each=500)),
+  start = 1e6 + 1 + 0:499 * 1000, end = 1e6 + 1 + 0:499 * 1000 + 1000 - 1,
+  strand = "+", tx_name = paste0("novel", 1:(22*500)), 
+  gene_id = paste0("novel_gene", rep(1:(22*10), each=50)), 
+type = "protein_coding")
+novel_gr <- as(novel, "GRanges")
+names(novel_gr) <- novel$tx_name
+
+makeLinkedTxpData(
+ digest = "43158f2c8e88e3acd77c22aee557625a6f1b6a5038cfc7deb5e64903892d8070",
+ digestType = "sha256",
+ indexName = "my_novel_txps",
+ txpData = novel_gr,
+ source = "novel", organism="Homo sapiens", 
+ release="v1", genome="GRCh38"
+)
+
+# to clear the entire linkedTxome table
+# (don't run unless you want to clear this table!)
+# bfcloc <- getTximetaBFC()
+# bfc <- BiocFileCache(bfcloc)
+# bfcremove(bfc, bfcquery(bfc, "linkedTxpDataTbl")$rid)
+
+}

@@ -8,8 +8,9 @@ updateMetadata(
   se,
   txpData = NULL,
   ranges = FALSE,
-  order = c("annotated", "novel"),
-  key = "tx_name"
+  prefer = c("txome", "txpdata", "precomputed"),
+  order = c("annotated", "novel", "user"),
+  key = c(annotated = "tx_name", novel = "tx_name", user = "tx_name")
 )
 }
 \arguments{
@@ -23,12 +24,21 @@ metadata storage/retrieval}
 
 \item{ranges}{logical, whether to add \code{rowRanges} (or just \code{rowData})}
 
-\item{order}{order in which to update the metadata, by default
-\code{annotation} then \code{novel}}
+\item{prefer}{vector of length up to 3, giving the preferred order of
+\emph{tximeta}'s transcript registries to when finding matches, with elements:
+\code{txome}: linkedTxome,
+\code{txpdata}: linkedTxpData,
+\code{precomputed}: the pre-computed digests in tximeta}
 
-\item{key}{the name of the column to use as the key
-for merging metadata with \code{rownames(se)}.
-Defaults to \code{key="tx_name"} which often matches the transcript
+\item{order}{order of index, in which to update the metadata, by default
+the order is \code{annotation}, then \code{novel}, then \code{user}, info supplied
+here as \code{txpData}}
+
+\item{key}{a named character vector of length 3. For each index
+(annotated, novel, and user) \code{key} is the name of the column to
+use for merging metadata with \code{rownames(se)}.
+The \code{user} index corresponds to data provided here as \code{txpData}
+Defaults to \code{"tx_name"} which often matches the transcript
 names in GENCODE}
 }
 \value{
@@ -37,12 +47,13 @@ or a \emph{RangedSummarizedExperiment} with new metadata
 }
 \description{
 This function expects a \emph{SummarizedExperiment} as output by \code{importData()},
-and if possible, it will update the metadata on the transcripts
-(\code{rowData} and/or \code{rowRanges} depending on the value of \code{ranges}),
-using metadata where the index digest matches those in \emph{tximeta} locations.
-Additionally, \emph{GRanges} or \emph{data.frame}-type data can be provided directly to \code{txpData},
+and will update the metadata on the transcripts when possible
+(updating \code{rowData} and/or \code{rowRanges} depending on the value of \code{ranges})
+\code{importData()} uses metadata pulled from digest matches in registries used by \emph{tximeta}
+(\code{linkedTxome}, \code{linkedTxpData}, and the pre-computed digests).
+Additionally, \emph{GRanges} or \emph{data.frame}-type data can be provided directly as \code{txpData},
 although this is not a persistent method for linking data to metadata.
-See \code{inspectDigests()} for information on ascertaining which sources are present,
+See \code{inspectDigests()} for how to inspect which indices have matching digests,
 and how to link data to local metadata.
 }
 \examples{
