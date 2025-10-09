@@ -29,7 +29,7 @@ editor:
 The *tximeta* package [@Love2020] extends the *tximport* package [@Soneson2015]
 for import of transcript-level quantification data into R/Bioconductor. It
 automatically adds annotation metadata when the RNA-seq data has been quantified
-with *salmon* [@Patro2017] our related tools. To our knowledge, *tximeta* is the
+with *salmon* [@Patro2017] or related tools. To our knowledge, *tximeta* is the
 only package for RNA-seq data import that can automatically identify and attach
 transcriptome metadata based on the unique sequence collection of the reference
 transcripts. For more details on these packages -- including the motivation for
@@ -89,7 +89,7 @@ However, to avoid downloading remote GTF files during this vignette, we will
 point to a GTF file saved locally (in the *tximportData* package). We link the
 transcriptome of the *salmon* index to its locally saved GTF. The standard
 recommended usage of `tximeta()`,\
-in particular for quantifiction with reference transcripts with a [pre-computed
+in particular for quantification with reference transcripts with a [pre-computed
 digest](#pre-computed-digests), would be the code chunk above. If one were
 adding another set of reference transcripts, one would normally specify a remote
 GTF source, not a local one. **This following code is therefore not recommended
@@ -215,7 +215,9 @@ reference transcripts, use the functions described
 
 # SummarizedExperiment output
 
-We have our coldata from before. Note that we've removed `files`.
+The `SummarizedExperiment` object resulting from the data import contains 
+our coldata from before. Note that the `files` column was removed during the 
+import.
 
 ```{r}
 suppressPackageStartupMessages(library(SummarizedExperiment))
@@ -248,7 +250,7 @@ seqinfo(se)
 
 The `se` object has associated metadata that allows `tximeta` to link to locally
 stored cached databases and other Bioconductor objects. In further sections, we
-will show examples functions that leverage this databases for adding exon
+will show examples of functions that leverage these databases to add exon
 information, summarize transcript-level data to the gene level, or add
 identifiers. However, first we mention that the user can easily access the
 cached database with the following helper function. In this case, `tximeta` has
@@ -413,7 +415,7 @@ y <- scaleOffset(y, t(t(log(normMat)) + o))
 ```
 
 For *limma* with *voom* transformation we recommend, as in the *tximport*
-vignette to generate counts-from-abundance instead of providing an offset for
+vignette, to generate counts-from-abundance instead of providing an offset for
 average transcript length.
 
 ```{r}
@@ -450,12 +452,12 @@ allows specifying distinct *annotated* reference transcripts (e.g. GENCODE,
 Ensembl) and *novel* reference transcripts (e.g. *de novo* assemblies) which are
 combined together as the index for alignment and quantification. 
 
-Here we introduce a new workflow for importing data and linking data to metdata, 
+Here we introduce a new workflow for importing data and linking data to metadata, 
 designed for this mixed reference transcript situation, but which may be generalized
 in the future for other transcript quantification settings.
 
   - `importData()` - imports data as an un-ranged _SummarizedExperiment_
-  - `inspectDigests()` - inspect the digest status of the indices for imported data
+  - `inspectDigests()` - inspects the digest status of the indices for imported data
   - `updateMetadata()` - assists in attaching metadata from matching reference transcriptomes
   - and _linkedTxpData_, a lightweight version of _linkedTxome_, described [below](#linked-transcriptomes)
 
@@ -509,7 +511,7 @@ We can see that the `source` and other annotation details were recognized for
 [linkedTxome](#linked-transcriptomes) digests for the `novel` index. 
 If the index matches a `linkedTxome`
 then it will be indicated as `TRUE` otherwise `FALSE` for matches to 
-references with [pre-computed digests](#pre-computed-digests)
+references with [pre-computed digests](#pre-computed-digests).
 
 A small 6-character version of the digest is printed. 
 We can also obtain the full digest (shown below) or ask for

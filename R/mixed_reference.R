@@ -120,7 +120,7 @@ importData <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 #' standard annotated sets (e.g. GENCODE, Ensembl, see full listing in the package vignette) 
 #' or 2) digests added by the user to a local registry with `makeLinkedTxome()`. 
 #' Optional columns may be added if specified by 
-#' `expanded=TRUE` (include the full digest) and/or 
+#' `fullDigest=TRUE` (include the full digest) and/or 
 #' `count=TRUE` (add matching transcript ID counts per index).
 #' Following inspection, one can run `updateMetadata()` to automatically update
 #' the transcript metadata using the sources indicated by this function.
