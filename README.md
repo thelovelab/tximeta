@@ -1,4 +1,4 @@
-# tximeta <img id="tximeta_logo" src="man/figures/tximeta.png" align="right" width="125"/>
+# tximeta <img id="tximeta_logo" src="man/figures/tximeta.png" align="right" width="180"/>
 
 [![R build status](https://github.com/thelovelab/tximeta/actions/workflows/check-bioc.yml/badge.svg)](https://github.com/thelovelab/tximeta/actions/workflows/check-bioc.yml)
 

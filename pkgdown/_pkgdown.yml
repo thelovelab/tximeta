@@ -2,6 +2,9 @@ url: https://thelovelab.github.io/tximeta
 
 title: tximeta
 
+template:
+  bootstrap: 5
+
 authors:
   Michael Love:
     href: https://mikelove.github.io

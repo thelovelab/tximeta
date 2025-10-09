@@ -1,22 +1,22 @@
 ---
-title: "Tximeta: transcript quantification import with automatic metadata"
+title: "tximeta: transcript quantification import with automatic metadata"
 author: "Michael I. Love, Charlotte Soneson, Peter F. Hickey, Rob Patro"
 date: "`r format(Sys.time(), '%m/%d/%Y')`"
 output: 
-  rmarkdown::html_document:
-    highlight: tango
-    toc: true
-    toc_float: true
+  rmarkdown::html_vignette:
+    highlight: pygments
 abstract: >
-  Tximeta performs numerous annotation and metadata gathering tasks on
+  _tximeta_ performs numerous annotation and metadata gathering tasks on
   behalf of users during the import of transcript counts and abundance
   from quantification tools such as salmon. Data are imported as
   SummarizedExperiment objects with associated GenomicRanges metadata.
   Correct metadata is added automatically via reference sequence digests, 
   facilitating genomic analyses and assisting in computational reproducibility.
+  Addition functionality is now offered for quantification with mixed reference
+  transcripts, e.g. GENCODE plus novel transcripts.
 bibliography: library.bib
 vignette: |
-  %\VignetteIndexEntry{Transcript quantification import with automatic metadata}
+  %\VignetteIndexEntry{tximeta: transcript quantification import with automatic metadata}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 editor:
@@ -35,6 +35,11 @@ transcriptome metadata based on the unique sequence collection of the reference
 transcripts. For more details on these packages -- including the motivation for
 *tximeta* and description of similar work -- consult the **References** below.
 
+**Note:** For details of using _tximeta_ functions with 
+[oarfish](https://github.com/COMBINE-lab/oarfish), 
+in particular with separate `--annotated` and `--novel` reference transcripts, refer to 
+[this section](#mixed-reference-transcripts) below.
+
 **Note:** `tximeta()` requires that the **entire output** of the quantificaation
 tool is present in the output directories and unmodified in order to identify
 the provenance of the reference transcripts. In general, it's a good idea to not
@@ -48,7 +53,7 @@ quantifiers see the [other quantifiers](#other-quantifiers) section below.
 knitr::include_graphics("images/diagram.png")
 ```
 
-# `tximeta` import starts with sample table
+# Preparing `tximeta` input
 
 The first step using `tximeta()` is to read in the sample table, which will
 become the *column data*, `colData`, of the final object, a
@@ -148,7 +153,7 @@ only parsed to build a *TxDb* or *EnsDb* once: if `tximeta()` recognizes that it
 has seen this *salmon* index before, it will use a cached version of the
 metadata and transcript ranges.
 
-# TxDb, EnsDb, and AnnotationHub
+# Packages used for caching metadata
 
 `tximeta()` makes use of Bioconductor packages for storing transcript databases
 as *TxDb* or *EnsDb* objects, which both are connected by default to `sqlite`
@@ -430,7 +435,7 @@ counts-from-abundance status is then stored in the metadata:
 metadata(gse)$countsFromAbundance 
 ```
 
-# Additional metadata
+# Additional metadata slots
 
 The following information is attached to the *SummarizedExperiment* by
 `tximeta`:
@@ -445,7 +450,7 @@ str(metadata(se)[["txdbInfo"]])
 
 # Mixed reference transcripts
 
-The [oarfish](https://github.com/COMBINE-lab/oarfish) quantification tools
+The [oarfish](https://github.com/COMBINE-lab/oarfish) [@oarfish] quantification tools
 allows specifying distinct *annotated* reference transcripts (e.g. GENCODE,
 Ensembl) and *novel* reference transcripts (e.g. *de novo* assemblies) which are
 combined together as the index for alignment and quantification. 
@@ -504,28 +509,43 @@ We can now inspect the digests of the two indices:
 inspectDigests(se)
 ```
 
-We can see that the `source` and other annotation details were recognized for
-`annotated` but no match was found in the pre-computed digests or the
-[linkedTxome](#linked-transcriptomes) digests for the `novel` index. 
-If the index matches a `linkedTxome`
-then it will be indicated as `TRUE` otherwise `FALSE` for matches to 
-references with [pre-computed digests](#pre-computed-digests)
+We can see the `source` and other annotation details for
+`annotated` and for `novel`.
+If a match is found in the pre-computed digests, the
+[linkedTxome](#linked-transcriptomes) digests,
+or the `linkedTxpData` digests, it will populate the
+`source` to `genome` columns and will indicate if it is a 
+`linkedTxome` or `linkedTxpData` match. 
+
+**Note**: `linkedTxpData` is a newly developed, lightweight
+version of `linkedTxome`, which links quantification data
+to metadata in the form of a _GRanges_ object for a set of 
+transcripts. For more details see the man page for 
+`makeLinkedTxpData()`.
+
+If both `linkedTxome` and `linkedTxpData` are `FALSE`
+and the metadata is populated, the digest was a match among the
+[pre-computed digests](#pre-computed-digests).
 
 A small 6-character version of the digest is printed. 
-We can also obtain the full digest (shown below) or ask for
-the count (`count=TRUE`) of matching transcripts per index.
+One can also obtain the full digest (shown below). 
 
 ```{r}
 inspectDigests(se, fullDigest=TRUE)
 ```
 
+One can also obtain the count (`count=TRUE`) of matching transcripts per index,
+which involves loading transcript data from locally cached sources
+(or generating these from local or remote GTF as needed).
+
 Inspection can be run iteratively, in combination with `makeLinkedTxome()` 
 described [below](#linked-transcriptomes) or
-`makeLinkedTxpData()`, in order to match up missing digests with `gtf` files
+`makeLinkedTxpData()`, in order to match up missing digests with GTF files
 and/or range-based metadata.
 
-Then `updateMetadata()` does what `tximeta` does by default for a single index, by
-adding available metadata and attaching to `rowData`. This `updateMetadata()`
+The next step is to run `updateMetadata()`. 
+This function does what `tximeta()` does by default for a single index, by
+adding available metadata and attaching to `rowData`. Thus `updateMetadata()`
 overlaps with previous behavior by `addIds()`. Some options here are to add
 `ranges=TRUE` which populates `rowRanges` but necessitates removing transcripts
 (rows) without range information. Here, transcripts are preserved but `NA`
@@ -536,7 +556,9 @@ se_update <- updateMetadata(se)
 mcols(se_update)
 ```
 
-`updateMetadata()` also allows adding metadata manually, for example:
+`updateMetadata()` also allows adding metadata manually, either in the form 
+of a _GRanges_ object or _data.frame_-like object. Note that `makeLinkedTxpData()`
+can be used for persistent addition of _GRanges_ metadata across sessions.
 
 ```{r}
 # define novel set so we can add metadata
@@ -555,15 +577,21 @@ novel_gr <- as(novel, "GRanges")
 names(novel_gr) <- novel$tx_name
 ```
 
-Now with range information for `novel` we can ask for a
-*RangedSummarizedExperiment* without losing rows:
+Metadata specified via the `txpData` argument will be added to transcript labelled
+with `index="user"`.
 
 ```{r}
 se_with_ranges <- updateMetadata(se, txpData=novel_gr, ranges=TRUE)
 rowRanges(se_with_ranges)
 ```
 
-`updateMetadata()` also allows simple *data.frame*-type additional metadata.
+Two additional details for `inspectDigests()` and `updateMetadata()`:
+
+1. The argument `prefer` specifies the preferred order of digest match 
+   across various _tximeta_ registries. Default is `txome`: linkedTxome, 
+   then `txpdata`: linkedTxpData, finally `precomputed`.
+2. One can specify per index, the `key`, _i.e._ the name of the column 
+   used for matching metadata. By default `tx_name` is used.
 
 This new workflow for data import is under active development, feel free to post an
 [Issue](https://github.com/thelovelab/tximeta/issues/new) 

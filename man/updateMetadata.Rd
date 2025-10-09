@@ -46,15 +46,15 @@ a \emph{SummarizedExperiment} with new \code{rowData},
 or a \emph{RangedSummarizedExperiment} with new metadata
 }
 \description{
-This function expects a \emph{SummarizedExperiment} as output by \code{importData()},
+This function takes as input a \emph{SummarizedExperiment} as output by \code{importData()},
 and will update the metadata on the transcripts when possible
-(updating \code{rowData} and/or \code{rowRanges} depending on the value of \code{ranges})
+(updating \code{rowData} and/or \code{rowRanges} depending on the value of \code{ranges}).
 \code{importData()} uses metadata pulled from digest matches in registries used by \emph{tximeta}
 (\code{linkedTxome}, \code{linkedTxpData}, and the pre-computed digests).
-Additionally, \emph{GRanges} or \emph{data.frame}-type data can be provided directly as \code{txpData},
-although this is not a persistent method for linking data to metadata.
+Additionally, \emph{GRanges} or \emph{data.frame}-type data can be provided on a one-time basis
+via the argument \code{txpData}, which will annotate transcripts with \code{index="user"}.
 See \code{inspectDigests()} for how to inspect which indices have matching digests,
-and how to link data to local metadata.
+and how to link data to local metadata in a persistent manner.
 }
 \examples{
 

@@ -110,15 +110,16 @@ importData <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 
 #' Inspect digest matches from `importData()` imported data
 #' 
-#' This function expects a _SummarizedExperiment_ as output by `importData()`
-#' and returns a tibble with information about the two
-#' indices (`annotated` and `novel`) and their digests, 
-#' and potentially matching metadata found in _tximeta_ locations.
+#' This function takes as input a _SummarizedExperiment_ as output by `importData()`
+#' and returns a tibble with information about the digest-match status of two
+#' indices (`annotated` and `novel`), with respect to _tximeta_ metadata.
 #' Inspection of index digests can be run iteratively, checking if
 #' the digests used in the mixed reference transcript set 
 #' have a match against 1) pre-computed digests representing 
-#' standard annotated sets (e.g. GENCODE, Ensembl, see full listing in the package vignette) 
-#' or 2) digests added by the user to a local registry with `makeLinkedTxome()`. 
+#' standard annotated sets (e.g. GENCODE, Ensembl, etc.) 
+#' or 2) digests added by the user to a local registry with 
+#' `makeLinkedTxome()` (GTF file)
+#' or `makeLinkedTxpData` (_GRanges_-based metadata). 
 #' Optional columns may be added if specified by 
 #' `expanded=TRUE` (include the full digest) and/or 
 #' `count=TRUE` (add matching transcript ID counts per index).
@@ -139,12 +140,15 @@ importData <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 #' @param fullDigest whether to include the full digest string in the output, 
 #' in addition to the shortened 6-char version
 #' @param count whether to count the number of matching transcripts ID to each index
-#' (only possible for those indices that have matching metadata)
+#' (only possible for those indices that have matching metadata).
+#' Counting requires loading transcript data, either from locally cached databases
+#' or from GTF files.
 #' 
 #' @return a 2-row tibble of the `annotated` and `novel` index, 
 #' their matching information if available
 #' (source, organism, release), for matches, 
-#' whether it is a `linkedTxome` (FALSE for pre-computed), 
+#' whether it is a `linkedTxome` or a `linkedTxpData`
+#' (both `FALSE`` for pre-computed) 
 #' and a small 6 character version of the digest itself.
 #' 
 #' @examples
@@ -222,15 +226,15 @@ inspectDigests <- function(
 
 #' Update transcript metadatda for `importData()` imported data
 #'
-#' This function expects a _SummarizedExperiment_ as output by `importData()`,
+#' This function takes as input a _SummarizedExperiment_ as output by `importData()`,
 #' and will update the metadata on the transcripts when possible 
-#' (updating `rowData` and/or `rowRanges` depending on the value of `ranges`)
+#' (updating `rowData` and/or `rowRanges` depending on the value of `ranges`).
 #' `importData()` uses metadata pulled from digest matches in registries used by _tximeta_
 #' (`linkedTxome`, `linkedTxpData`, and the pre-computed digests).
-#' Additionally, _GRanges_ or _data.frame_-type data can be provided directly as `txpData`,
-#' although this is not a persistent method for linking data to metadata.
+#' Additionally, _GRanges_ or _data.frame_-type data can be provided on a one-time basis 
+#' via the argument `txpData`, which will annotate transcripts with `index="user"`.
 #' See `inspectDigests()` for how to inspect which indices have matching digests, 
-#' and how to link data to local metadata.
+#' and how to link data to local metadata in a persistent manner.
 #'
 #' @param se the _SummarizedExperiment_ (SE) output by `importData()`
 #' @param txpData either _GRanges_ or _data.frame_-type object

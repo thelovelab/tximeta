@@ -31,25 +31,29 @@ information from the quantification tool
 in addition to the shortened 6-char version}
 
 \item{count}{whether to count the number of matching transcripts ID to each index
-(only possible for those indices that have matching metadata)}
+(only possible for those indices that have matching metadata).
+Counting requires loading transcript data, either from locally cached databases
+or from GTF files.}
 }
 \value{
 a 2-row tibble of the \code{annotated} and \code{novel} index,
 their matching information if available
 (source, organism, release), for matches,
-whether it is a \code{linkedTxome} (FALSE for pre-computed),
+whether it is a \code{linkedTxome} or a \code{linkedTxpData}
+(both `FALSE`` for pre-computed)
 and a small 6 character version of the digest itself.
 }
 \description{
-This function expects a \emph{SummarizedExperiment} as output by \code{importData()}
-and returns a tibble with information about the two
-indices (\code{annotated} and \code{novel}) and their digests,
-and potentially matching metadata found in \emph{tximeta} locations.
+This function takes as input a \emph{SummarizedExperiment} as output by \code{importData()}
+and returns a tibble with information about the digest-match status of two
+indices (\code{annotated} and \code{novel}), with respect to \emph{tximeta} metadata.
 Inspection of index digests can be run iteratively, checking if
 the digests used in the mixed reference transcript set
 have a match against 1) pre-computed digests representing
-standard annotated sets (e.g. GENCODE, Ensembl, see full listing in the package vignette)
-or 2) digests added by the user to a local registry with \code{makeLinkedTxome()}.
+standard annotated sets (e.g. GENCODE, Ensembl, etc.)
+or 2) digests added by the user to a local registry with
+\code{makeLinkedTxome()} (GTF file)
+or \code{makeLinkedTxpData} (\emph{GRanges}-based metadata).
 Optional columns may be added if specified by
 \code{expanded=TRUE} (include the full digest) and/or
 \code{count=TRUE} (add matching transcript ID counts per index).
