@@ -121,7 +121,7 @@ importData <- function(coldata, type="oarfish", quiet=FALSE, ...) {
 #' `makeLinkedTxome()` (GTF file)
 #' or `makeLinkedTxpData` (_GRanges_-based metadata). 
 #' Optional columns may be added if specified by 
-#' `expanded=TRUE` (include the full digest) and/or 
+#' `fullDigest=TRUE` (include the full digest) and/or 
 #' `count=TRUE` (add matching transcript ID counts per index).
 #' Following inspection, one can run `updateMetadata()` to automatically update
 #' the transcript metadata using the sources indicated by this function.

@@ -55,7 +55,7 @@ or 2) digests added by the user to a local registry with
 \code{makeLinkedTxome()} (GTF file)
 or \code{makeLinkedTxpData} (\emph{GRanges}-based metadata).
 Optional columns may be added if specified by
-\code{expanded=TRUE} (include the full digest) and/or
+\code{fullDigest=TRUE} (include the full digest) and/or
 \code{count=TRUE} (add matching transcript ID counts per index).
 Following inspection, one can run \code{updateMetadata()} to automatically update
 the transcript metadata using the sources indicated by this function.
