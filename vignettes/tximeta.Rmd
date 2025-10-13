@@ -24,6 +24,10 @@ editor:
     wrap: 80
 ---
 
+If viewing vignette on Bioconductor, see 
+[here](https://thelovelab.github.io/tximeta/articles/tximeta.html)
+for a nicely rendered version.
+
 # Introduction
 
 The *tximeta* package [@Love2020] extends the *tximport* package [@Soneson2015]

@@ -1,3 +1,19 @@
+# tximeta 1.28.0
+
+* Addition of `makeLinkedTxpData()` a lightweight version
+  of `makeLinkedTxome()`.
+* `makeLinkedTxome()` will now accept a `digest` and `indexName`,
+  as an alternative to pointing to a `indexDir`.
+* Addition of three new functions. 
+  `importData()`, `inspectDigests()`, `updateMetadata()` 
+  allowing import of _oarfish_ (v0.9.0) quantification files 
+  when `annotated` and `novel` reference transcript sets
+  have been mixed.
+* TODO: As of _tximeta_ v1.28.0, some more work 
+  is needed to resolve how the `add*()` and `retrieve*()` 
+  functions will work, as well as `summarizeToGene()`
+  for data imported with `importData()`.
+
 # tximeta 1.27.11
 
 * Addition of `makeLinkedTxpData()` a lightweight version
@@ -15,11 +31,10 @@
   allowing import of _oarfish_ (v0.9.0) quantification files 
   when `annotated` and `novel` reference transcript sets
   have been mixed. 
-  TODO: As of _tximeta_ v1.27.4, some more work 
+  TODO: As of _tximeta_ v1.28.0, some more work 
   to do is the development of linkedTxpData and resolving
   how the `add*()` and `retrieve*()` functions will work,
-  as well as `summarizeToGene()`. In addition, `makeLinkedTxome()`
-  should be changed to read in a simple digest string.
+  as well as `summarizeToGene()`.
 * Major code reorganiziation, splitting out alevin-processing 
   code and moving a number of metadata sub-routines to `metadata_helpers.R`.
 
