@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tximeta</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.27.16</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.27.17</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,6 +38,8 @@
 <ul><li>Addition of <code><a href="../reference/linkedTxpData.html">makeLinkedTxpData()</a></code> a lightweight version of <code><a href="../reference/linkedTxome.html">makeLinkedTxome()</a></code>.</li>
 <li>
 <code><a href="../reference/linkedTxome.html">makeLinkedTxome()</a></code> will now accept a <code>digest</code> and <code>indexName</code>, as an alternative to pointing to a <code>indexDir</code>.</li>
+<li>
+<code>makeLinkedTxome/TxpData</code> both now prompt if a <code>digest</code> matches one in the pre-computed digest table.</li>
 <li>Addition of three new functions. <code><a href="../reference/importData.html">importData()</a></code>, <code><a href="../reference/inspectDigests.html">inspectDigests()</a></code>, <code><a href="../reference/updateMetadata.html">updateMetadata()</a></code> allowing import of <em>oarfish</em> (v0.9.0) quantification files when <code>annotated</code> and <code>novel</code> reference transcript sets have been mixed.</li>
 <li>TODO: As of <em>tximeta</em> v1.28.0, some more work is needed to resolve how the <code>add*()</code> and <code>retrieve*()</code> functions will work, as well as <code>summarizeToGene()</code> for data imported with <code><a href="../reference/importData.html">importData()</a></code>.</li>
 </ul></div>
