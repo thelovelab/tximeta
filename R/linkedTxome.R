@@ -133,7 +133,7 @@ makeLinkedTxome <- function(
 
   if (!is.null(indexDir)) {
     # `indexDir` was specified
-    message(paste0("reading digest from indexDir: ", indexDir))
+    message(paste0("reading digest from indexDir: .../", basename(indexDir)))
     indexJson <- file.path(indexDir, "info.json")
     # backup spot for information...
     if (!file.exists(indexJson)) {
@@ -160,6 +160,11 @@ makeLinkedTxome <- function(
       "..."
     ))
     index <- indexName
+  }
+
+  checkPrecomputedMatch <- findDigestMatchPrecomputed(digest, quiet=TRUE)
+  if (!is.null(checkPrecomputedMatch)) {
+    message("NOTE: this digest matches one in the pre-computed digest table")
   }
 
   std_sources <- c("GENCODE", "Ensembl")
@@ -287,6 +292,11 @@ makeLinkedTxpData <- function(
   message(paste0("linking user-provided metadata to digest: ",substr(digest,1,6),"..."))
 
   stopifnot(is(txpData, "GRanges"))
+
+  checkPrecomputedMatch <- findDigestMatchPrecomputed(digest, quiet=TRUE)
+  if (!is.null(checkPrecomputedMatch)) {
+    message("NOTE: this digest matches one in the pre-computed digest table")
+  }
 
   std_sources <- c("GENCODE","Ensembl")
   source <- standardizeCapitalization(source, std_sources)

@@ -113,13 +113,21 @@ updateTxpsSeqinfo <- function(txps, txomeInfo, skipSeqinfo) {
 }
 
 missingMetadata <- function(se, summarize=FALSE) {
-  msg <- "use of this function requires transcriptome metadata which is missing.
-  either: (1) the object was not produced by tximeta, or
+  msg <- "transcriptome metadata is missing: `metadata(se)$txomeInfo`
+  either: 
+    
+  (1) the object was not produced by tximeta.
+      Note that importData() is not supported yet, 
+      see updateMetadata() instead, or
   (2) tximeta could not recognize the digest of the transcriptome.
-  If (2), use a linkedTxome to provide the missing metadata and rerun tximeta"
+  
+  If (2), use a linkedTxome to provide the missing metadata and re-run tximeta()"
+
   if (summarize) {
     msg <- paste0(msg, "
   or provide a `tx2gene` data.frame and set `skipRanges=TRUE`")
   }
+
   if (is.null(metadata(se)$txomeInfo)) stop(msg)
+  
 }

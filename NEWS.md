@@ -4,6 +4,8 @@
   of `makeLinkedTxome()`.
 * `makeLinkedTxome()` will now accept a `digest` and `indexName`,
   as an alternative to pointing to a `indexDir`.
+* `makeLinkedTxome/TxpData` both now prompt if a `digest` matches 
+  one in the pre-computed digest table.
 * Addition of three new functions. 
   `importData()`, `inspectDigests()`, `updateMetadata()` 
   allowing import of _oarfish_ (v0.9.0) quantification files 

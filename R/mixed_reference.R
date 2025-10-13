@@ -41,7 +41,10 @@
 #' 
 #' @export
 importData <- function(coldata, type="oarfish", quiet=FALSE, ...) {
-  stopifnot(type == "oarfish")
+
+  if (!type == "oarfish") {
+    warning("importData() supports oarfish files; broader support is planned in future updates")
+  }
   
   # tximeta metadata
   metadata <- makeMetadata(type)
