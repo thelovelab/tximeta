@@ -462,11 +462,15 @@ allows specifying distinct *annotated* reference transcripts (e.g. GENCODE,
 Ensembl) and *novel* reference transcripts (e.g. *de novo* assemblies) which are
 combined together as the index for alignment and quantification. 
 
-For example, indexing and quantification could be accomplished with:
+For example, indexing and quantification could be accomplished with, e.g.:
 
 ```
-oarfish --only-index --annotated gencode.v48.transcripts.fa.gz --novel my_novel_txps.fa.gz --seq-tech ont-cdna --threads 32 --index-out gencode_plus_novel
-oarfish --reads reads/experiment_rep1.fastq.gz --index gencode_plus_novel --output quants/experiment_rep1 --seq-tech ont-cdna --filter-group no-filters --threads 32
+oarfish --only-index --annotated gencode.v48.transcripts.fa.gz \
+  --novel my_novel_txps.fa.gz --seq-tech ont-cdna --threads 32 \
+  --index-out gencode_plus_novel
+oarfish --reads reads/experiment_rep1.fastq.gz --index gencode_plus_novel \
+  --output quants/experiment_rep1 --seq-tech ont-cdna \
+  --filter-group no-filters --threads 32
 ```
 
 Here we introduce a new workflow for importing data and linking data to metadata, 
