@@ -378,6 +378,7 @@ The following code chunk demonstrates how to build a *DESeqDataSet* and begin a
 differential expression analysis.
 
 ```{r}
+#| eval: false
 suppressPackageStartupMessages(library(DESeq2))
 # here there is a single sample so we use ~1.
 # expect a warning that there is only a single sample...
@@ -391,8 +392,8 @@ analysis on transcript expression taking into account inferential replicates,
 e.g. bootstrap or Gibbs samples, which are imported and arranged by `tximeta` if
 these were generated during quantification.
 
-```{r eval=FALSE}
-# un-evaluated code
+```{r}
+#| eval: false
 library(fishpond)
 y <- se
 y <- scaleInfReps(y)
