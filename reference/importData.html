@@ -23,7 +23,7 @@ recognized digests and updating of transcript metadata is handled by subsequent 
 
     <a class="navbar-brand me-2" href="../index.html">tximeta</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.27.17</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.27.19</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,6 +94,19 @@ recognized digests and updating of transcript metadata is handled by subsequent 
 use with subsequent functions described in <em>See also</em> section</p>
     </div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>oarfish with mixed reference transcript sets may have been generated with e.g.</p>
+<div class="sourceCode"><pre><code>
+oarfish --only-index --annotated gencode.v48.transcripts.fa.gz \
+  --novel my_novel_txps.fa.gz --seq-tech ont-cdna --threads 32 \
+  --index-out gencode_plus_novel
+oarfish --reads reads/experiment_rep1.fastq.gz --index gencode_plus_novel \
+  --output quants/experiment_rep1 --seq-tech ont-cdna \
+  --filter-group no-filters --threads 32
+</code></pre></div>
+
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="inspectDigests.html">inspectDigests()</a></code> and <code><a href="updateMetadata.html">updateMetadata()</a></code> for subsequent tasks
 of inspecting digest matches and updating metadata, respectively.
@@ -137,7 +150,7 @@ See also <code><a href="linkedTxpData.html">makeLinkedTxpData()</a></code> for a
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.9000.</p>
 </div>
 
     </footer></div>
