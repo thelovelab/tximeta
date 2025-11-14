@@ -42,7 +42,9 @@ For _oarfish_ quantification files: `importData()` and associated functions
 can be used in the case that a mix of `--annotated` and `--novel`
 reference transcripts were used in indexing. These functions
 facilitate the import of data and addition of metadata from multiple 
-sources, including local files and range data.
+sources, including local files and range data. 
+See [the mixed reference vignette section](https://thelovelab.github.io/tximeta/articles/tximeta.html#mixed-reference-transcripts)
+for more details.
 
 # How it works
 

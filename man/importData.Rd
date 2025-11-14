@@ -31,6 +31,18 @@ The \code{importData()} function alone imports the data, while inspection of the
 recognized digests and updating of transcript metadata is handled by subsequent functions
 (listed in \emph{See also} section below).
 }
+\details{
+oarfish with mixed reference transcript sets may have been generated with e.g.
+
+\preformatted{
+oarfish --only-index --annotated gencode.v48.transcripts.fa.gz \
+  --novel my_novel_txps.fa.gz --seq-tech ont-cdna --threads 32 \
+  --index-out gencode_plus_novel
+oarfish --reads reads/experiment_rep1.fastq.gz --index gencode_plus_novel \
+  --output quants/experiment_rep1 --seq-tech ont-cdna \
+  --filter-group no-filters --threads 32
+}
+}
 \examples{
 
 # oarfish files using a mix of --annotated and --novel transcripts

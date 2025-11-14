@@ -461,6 +461,13 @@ allows specifying distinct *annotated* reference transcripts (e.g. GENCODE,
 Ensembl) and *novel* reference transcripts (e.g. *de novo* assemblies) which are
 combined together as the index for alignment and quantification. 
 
+For example, indexing and quantification could be accomplished with:
+
+```
+oarfish --only-index --annotated gencode.v48.transcripts.fa.gz --novel my_novel_txps.fa.gz --seq-tech ont-cdna --threads 32 --index-out gencode_plus_novel
+oarfish --reads reads/experiment_rep1.fastq.gz --index gencode_plus_novel --output quants/experiment_rep1 --seq-tech ont-cdna --filter-group no-filters --threads 32
+```
+
 Here we introduce a new workflow for importing data and linking data to metadata, 
 designed for this mixed reference transcript situation, but which may be generalized
 in the future for other transcript quantification settings.
@@ -470,9 +477,25 @@ in the future for other transcript quantification settings.
   - `updateMetadata()` - assists in attaching metadata from matching reference transcriptomes
   - and _linkedTxpData_, a lightweight version of _linkedTxome_, described [below](#linked-transcriptomes)
 
+Below is an un-evaluated code chunk with typical code you may use 
+for an experiment called `experiment` with samples `rep1` to `rep4`:
+
 ```{r}
-# specify 3 oarfish .quant files, quantified against an index of two .fa files:
-# `--annotated gencode.v48.transcripts.fa.gz --novel novel.fa.gz`
+#| eval: false
+# specify oarfish .quant files
+# quantified against an index of two .fa files, e.g.:
+# `--annotated gencode.v48.transcripts.fa.gz --novel my_novel_txps.fa.gz`
+names <- paste0("rep", 1:4)
+files <- file.path(dir, paste0("experiment_", names, ".quant.gz"))
+coldata <- data.frame(files, names) # the sample info table
+se <- importData(coldata, type="oarfish")
+```
+
+Below is an evaluated code chunk which first points to the location of 
+the dataset used for the vignette. The above code chunk is more typical 
+for a user however.
+
+```{r}
 dir <- system.file("extdata/oarfish", package="tximportData")
 names <- paste0("rep", 2:4)
 files <- file.path(dir, paste0("sgnex_h9_", names, ".quant.gz"))
