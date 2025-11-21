@@ -24,9 +24,9 @@ makeDGEList <- function(se, estimateDispersion=FALSE, ...) {
   y <- edgeR::DGEList(cts, samples=as.data.frame(colData(se)),
                       genes=as.data.frame(rowData(se)))
   y <- edgeR::scaleOffset(y, t(t(log(normMat)) + o))
-  y
   if (estimateDispersion) {
     # TODO need to check that `se` aligns with the `files`
-	  y$genes$Overdispersion <- edgeR::estimateRTADisp(...)
+    # y$genes$Overdispersion <- edgeR::estimateRTADisp(...)
   }
+  return(y)
 }
