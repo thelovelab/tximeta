@@ -13,7 +13,7 @@
 #' @return a DGEList
 #'
 #' @export
-makeDGEList <- function(se, ...) {
+makeDGEList <- function(se, estimateDispersion=FALSE, ...) {
   if (!requireNamespace("edgeR", quietly=TRUE)) {
     stop("this function requires the edgeR package is installed")
   }

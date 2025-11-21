@@ -4,16 +4,16 @@
 \alias{makeDGEList}
 \title{Make a DGEList from tximeta output}
 \usage{
-makeDGEList(se, ...)
+makeDGEList(se, estimateDispersion = FALSE, ...)
 }
 \arguments{
 \item{se}{a SummarizedExperiment produced by tximeta}
 
-\item{...}{arguments passed to \code{edgeR::estimateRTADisp},
-e.g. \code{files} and \code{type}}
-
 \item{estimateDispersion}{logical, whether to add read-transcript
 ambiguity based dispersion via edgeR}
+
+\item{...}{arguments passed to \code{edgeR::estimateRTADisp},
+e.g. \code{files} and \code{type}}
 }
 \value{
 a DGEList
