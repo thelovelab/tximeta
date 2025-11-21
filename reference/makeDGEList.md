@@ -7,7 +7,7 @@ from Bioconductor.
 ## Usage
 
 ``` r
-makeDGEList(se)
+makeDGEList(se, estimateDispersion = FALSE, ...)
 ```
 
 ## Arguments
@@ -15,6 +15,15 @@ makeDGEList(se)
 - se:
 
   a SummarizedExperiment produced by tximeta
+
+- estimateDispersion:
+
+  logical, whether to add read-transcript ambiguity based dispersion via
+  edgeR
+
+- ...:
+
+  arguments passed to `edgeR::estimateRTADisp`, e.g. `files` and `type`
 
 ## Value
 

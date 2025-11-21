@@ -46,7 +46,7 @@ package from Bioconductor.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">makeDGEList</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">makeDGEList</span><span class="op">(</span><span class="va">se</span>, estimateDispersion <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -55,6 +55,16 @@ package from Bioconductor.</p>
 
 <dl><dt id="arg-se">se<a class="anchor" aria-label="anchor" href="#arg-se"></a></dt>
 <dd><p>a SummarizedExperiment produced by tximeta</p></dd>
+
+
+<dt id="arg-estimatedispersion">estimateDispersion<a class="anchor" aria-label="anchor" href="#arg-estimatedispersion"></a></dt>
+<dd><p>logical, whether to add read-transcript
+ambiguity based dispersion via edgeR</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>arguments passed to <code>edgeR::estimateRTADisp</code>,
+e.g. <code>files</code> and <code>type</code></p></dd>
 
 </dl></div>
     <div class="section level2">
