@@ -5,15 +5,11 @@
 #' package from Bioconductor.
 #'
 #' @param se a SummarizedExperiment produced by tximeta
-#' @param estimateDispersion logical, whether to add read-transcript 
-#' ambiguity based dispersion via edgeR
-#' @param ... arguments passed to `edgeR::estimateRTADisp`, 
-#' e.g. `files` and `type`
 #'
 #' @return a DGEList
 #'
 #' @export
-makeDGEList <- function(se, estimateDispersion=FALSE, ...) {
+makeDGEList <- function(se) {
   if (!requireNamespace("edgeR", quietly=TRUE)) {
     stop("this function requires the edgeR package is installed")
   }
@@ -24,9 +20,5 @@ makeDGEList <- function(se, estimateDispersion=FALSE, ...) {
   y <- edgeR::DGEList(cts, samples=as.data.frame(colData(se)),
                       genes=as.data.frame(rowData(se)))
   y <- edgeR::scaleOffset(y, t(t(log(normMat)) + o))
-  if (estimateDispersion) {
-    # TODO need to check that `se` aligns with the `files`
-    # y$genes$Overdispersion <- edgeR::estimateRTADisp(...)
-  }
-  return(y)
+  y
 }

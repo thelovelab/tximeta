@@ -187,7 +187,6 @@ alternatively use a different string for source argument, e.g. LocalGENCODE"
     }
   }
   # a single-row tibble for the linkedTxomeTbl
-  # matches conent below in updateLinkedThingTbl()
   lt <- tibble(
     index = index,
     source = source,
@@ -304,7 +303,6 @@ makeLinkedTxpData <- function(
 
   digest32 <- substr(digest,1,32)
   # a single-row tibble for the linkedTxpDataTbl
-  # matches conent below in updateLinkedThingTbl()
   lt <- tibble(
     index = index,
     source = source,
@@ -393,37 +391,6 @@ ensureColumns <- function(tbl, col_names) {
     tbl[[m]] <- NA
   }
   tbl[col_names]
-}
-
-# this function ensures that linkedTxomes and linkedTxpData tibbles
-# in the BFC have the expected columns for this version of _tximeta_
-updateLinkedThingTbl <- function(type=c("Txome","TxpData")) {
-  name <- paste0("linked",type,"Tbl")
-  loadpath <- bfcrpath(bfc, rnames=name)
-  stopifnot(length(loadpath) == 1) # only one linkedThingTbl in BFC
-  linkedThingTbl <- readRDS(loadpath)
-  common_cols <- c(
-      "index",
-      "source",
-      "organism",
-      "release",
-      "genome",
-  )
-  cols <- list(
-    Txome = c(
-      common_cols,
-      "fasta",
-      "gtf",
-      "sha256"
-    ),
-    TxpData = c(
-      common_cols,
-      "digest",
-      "digestType"
-    )
-  )
-  linkedThingTbl <- ensureColumns(linkedThingTbl, cols[[type]])
-  saveRDS(linkedThingTbl, file=loadpath)
 }
 
 existsInBFC <- function(query, bfc) {

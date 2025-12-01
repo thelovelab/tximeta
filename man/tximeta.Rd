@@ -142,8 +142,12 @@ coldata <- data.frame(files, names="SRR1197474", condition="A", stringsAsFactors
 # for this example, we instead point to a local path where the GTF can be found
 # by making a linkedTxome:
 indexDir <- file.path(dir, "Dm.BDGP6.22.98_salmon-0.14.1")
-fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
-              "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz")
+dmFTP <- "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/"
+fastaFTP <- paste0(
+  dmFTP,
+  c("cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
+    "ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz")
+)
 gtfPath <- file.path(dir, "Drosophila_melanogaster.BDGP6.22.98.gtf.gz")
 makeLinkedTxome(indexDir=indexDir, source="LocalEnsembl", organism="Drosophila melanogaster",
                 release="98", genome="BDGP6.22", fasta=fastaFTP, gtf=gtfPath, write=FALSE)
