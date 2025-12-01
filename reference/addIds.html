@@ -17,7 +17,7 @@ on use of multiVals.'></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">tximeta</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.29.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.29.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,8 +113,13 @@ then it will try to use a <code>gene_id</code> column to map IDs to <code>column
 <span class="r-out co"><span class="r-pr">#&gt;</span> tximet&gt; # by making a linkedTxome:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tximet&gt; indexDir &lt;- file.path(dir, "Dm.BDGP6.22.98_salmon-0.14.1")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tximet&gt; fastaFTP &lt;- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> tximet+               "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tximet&gt; dmFTP &lt;- "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tximet&gt; fastaFTP &lt;- paste0(</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tximet+   dmFTP,</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tximet+   c("cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tximet+     "ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz")</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> tximet+ )</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> tximet&gt; gtfPath &lt;- file.path(dir, "Drosophila_melanogaster.BDGP6.22.98.gtf.gz")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>

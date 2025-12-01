@@ -43,8 +43,13 @@ example(tximeta)
 #> tximet> # by making a linkedTxome:
 #> tximet> indexDir <- file.path(dir, "Dm.BDGP6.22.98_salmon-0.14.1")
 #> 
-#> tximet> fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
-#> tximet+               "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz")
+#> tximet> dmFTP <- "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/"
+#> 
+#> tximet> fastaFTP <- paste0(
+#> tximet+   dmFTP,
+#> tximet+   c("cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
+#> tximet+     "ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz")
+#> tximet+ )
 #> 
 #> tximet> gtfPath <- file.path(dir, "Drosophila_melanogaster.BDGP6.22.98.gtf.gz")
 #> 
@@ -61,11 +66,11 @@ example(tximeta)
 #> 
 #> found matching linkedTxome:
 #> [ LocalEnsembl - Drosophila melanogaster - release 98 ]
-#> loading existing TxDb created: 2025-11-21 20:12:49
+#> loading existing TxDb created: 2025-12-01 13:43:06
 #> Loading required package: GenomicFeatures
 #> Loading required package: Seqinfo
 #> Loading required package: GenomicRanges
-#> loading existing transcript ranges created: 2025-11-21 20:12:49
+#> loading existing transcript ranges created: 2025-12-01 13:43:06
 #> Warning: 
 #> 
 #> Warning: the annotation is missing some transcripts that were quantified.
@@ -86,5 +91,5 @@ example(tximeta)
 #> tximet> 
 #> tximet> 
 edb <- retrieveDb(se)
-#> loading existing TxDb created: 2025-11-21 20:12:49
+#> loading existing TxDb created: 2025-12-01 13:43:06
 ```

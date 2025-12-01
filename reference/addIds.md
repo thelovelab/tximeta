@@ -65,8 +65,13 @@ example(tximeta)
 #> tximet> # by making a linkedTxome:
 #> tximet> indexDir <- file.path(dir, "Dm.BDGP6.22.98_salmon-0.14.1")
 #> 
-#> tximet> fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
-#> tximet+               "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz")
+#> tximet> dmFTP <- "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/"
+#> 
+#> tximet> fastaFTP <- paste0(
+#> tximet+   dmFTP,
+#> tximet+   c("cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
+#> tximet+     "ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz")
+#> tximet+ )
 #> 
 #> tximet> gtfPath <- file.path(dir, "Drosophila_melanogaster.BDGP6.22.98.gtf.gz")
 #> 
