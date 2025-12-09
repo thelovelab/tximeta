@@ -1,8 +1,7 @@
-# cleaning duplicate txps
+# cleaning duplicate txps -- i.e. swapping txp names to match those in GTF
 duplicateTxpsClean <- function(assays, txps, txomeInfo, markDuplicateTxps, cleanDuplicateTxps) {
   assay.nms <- rownames(assays[["counts"]])
   txps.missing <- !assay.nms %in% names(txps) # logical vector
-  # either we want to mark duplicates, or clean up duplicates (if we can)
   if (sum(txps.missing) > 0) {
     dup.list <- makeDuplicateTxpsList(txomeInfo)
     # this function swaps out rows missing in `txps`
@@ -19,8 +18,8 @@ duplicateTxpsClean <- function(assays, txps, txomeInfo, markDuplicateTxps, clean
       m <- match(dup.table$dups.to.fix, assay.nms)
       stopifnot(all(!is.na(m)))
       # change the rownames to alternatives that are in `txps`
+      assay.nms[m] <- dup.table$alts
       for (nm in names(assays)) {
-        assay.nms[m] <- dup.table$alts
         rownames(assays[[nm]]) <- assay.nms
       }
     }
@@ -35,12 +34,17 @@ duplicateTxpsMark <- function(assays, txps, txomeInfo, markDuplicateTxps, cleanD
   # assay names could have changed due to cleanDuplicateTxps
   assay.nms <- rownames(assays[["counts"]])
   dups.in.rownms <- unlist(dup.list) %in% assay.nms
+  # a ragged list, with logical value: whether the transcript name is in assay rownames
+  # this list has the same structure as the `dup.list`
   dups.in.rownms <- LogicalList(split(
     dups.in.rownms,
     rep(seq_along(dup.list), lengths(dup.list))
   ))
   names(dups.in.rownms) <- NULL
+  # there can be 0, 1, or 2+ of the duplicates present in the rownames
   num.dups.in.rownms <- sapply(dups.in.rownms, sum)
+  # subset to sets where only a single duplicate per set is in the rownames
+  # other situations are too complex to handle here
   just.one <- num.dups.in.rownms == 1
   if (!all(just.one)) {
     dup.list <- dup.list[just.one]
@@ -51,7 +55,7 @@ duplicateTxpsMark <- function(assays, txps, txomeInfo, markDuplicateTxps, cleanD
   mcols(txps)$hasDuplicate <- FALSE
   mcols(txps)$duplicates <- CharacterList(as.list(rep("", length(txps))))
   if (length(duplicates) > 0) {
-    message(paste(length(duplicates), "duplicate set founds"))
+    message(paste("marking",length(duplicates),"transcript sets as duplicate sets"))
     mcols(txps)$hasDuplicate[names(txps) %in% duplicates.id] <- TRUE
     # if necessary remove any of these not in txps
     duplicates <- duplicates[duplicates.id %in% names(txps)]
@@ -114,7 +118,9 @@ makeDuplicateTxpsTable <- function(missing.txps, dup.list, txp.nms) {
   # we want to try to fix those duplicate txps that are
   # in rownames of the assays but not in `txps`
   dups.to.fix <- intersect(all.dups, missing.txps)
-  dups.to.fix.list <- LogicalList(split(all.dups %in% dups.to.fix, rep(seq_along(dup.list), lengths(dup.list))))
+  dups.to.fix.list <- LogicalList(
+    split(all.dups %in% dups.to.fix, rep(seq_along(dup.list), lengths(dup.list)))
+  )
   dup.list <- dup.list[any(dups.to.fix.list)]
   dups.to.fix.list <- dups.to.fix.list[any(dups.to.fix.list)]
   names(dups.to.fix.list) <- NULL
@@ -132,7 +138,9 @@ makeDuplicateTxpsTable <- function(missing.txps, dup.list, txp.nms) {
   
   # is there an alternative in `txps`?
   dups.with.alt <- intersect(all.dups, txp.nms)
-  dups.with.alt.list <- LogicalList(split(all.dups %in% dups.with.alt, rep(seq_along(dup.list), lengths(dup.list))))
+  dups.with.alt.list <- LogicalList(
+    split(all.dups %in% dups.with.alt, rep(seq_along(dup.list), lengths(dup.list)))
+  )
   dup.list <- dup.list[any(dups.with.alt.list)]
   dups.with.alt.list <- dups.with.alt.list[any(dups.with.alt.list)]
 

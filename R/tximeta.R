@@ -329,6 +329,7 @@ tximeta <- function(coldata,
 
   # build or load transcript ranges
   txps <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="txp")
+
   metadata$level <- "txp" # this marks the level of summarization of the SE: txp / gene
 
   # package up the assays from the list `txi`
@@ -359,6 +360,7 @@ tximeta <- function(coldata,
 
   # the following function modifies assays and txps to clean duplicate txps 
   # (this occurs when salmon collapses identical transcripts during indexing)
+  # cleaning means swapping one transcript name for another, if it is in the GTF
   if (cleanDuplicateTxps) {
     dup.output.list <- duplicateTxpsClean(
       assays, txps, txomeInfo,
@@ -375,7 +377,7 @@ tximeta <- function(coldata,
   # check concordance
   assays <- checkAssays2Txps(assays, txps)
   
-  # TODO we could give a warning here if there are txps in TxDb not in index
+  # put transcripts in order of the assay matrices
   txps <- txps[rownames(assays[["counts"]])]
 
   # another pass to mark duplicate transcripts
