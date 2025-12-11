@@ -33,3 +33,5 @@ biocViews: Annotation, GenomeAnnotation, DataImport, Preprocessing,
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Encoding: UTF-8
+Config/Needs/website:
+    r-lib/pkgdown
