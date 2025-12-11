@@ -56,12 +56,14 @@ force \code{tximeta} to download and parse the GTF}
 (\code{hasDuplicate}) and names of duplicate transcripts
 (\code{duplicates}) in the rowData of the SummarizedExperiment output.
 Subsequent summarization to gene level will keep track
-of the number of transcripts sets per gene (\code{numDupSets})}
+of the number of transcripts sets per gene (\code{numDupSets}).
+see Details}
 
-\item{cleanDuplicateTxps}{whether to try to clean
-duplicate transcripts (exact sequence duplicates) by replacing
-the transcript names that do not appear in the GTF
-with those that do appear in the GTF}
+\item{cleanDuplicateTxps}{whether to "clean"
+duplicate transcripts (exact sequence duplicates) by
+replacing, when possible, transcript names that do not
+appear in the GTF with those that do appear in the GTF.
+see Details}
 
 \item{customMetaInfo}{the relative path to a custom metadata
 information JSON file, relative to the paths in \code{files} of
@@ -121,13 +123,21 @@ Multiple users can point to the same BiocFileCache, such that
 transcript databases (TxDb or EnsDb) associated with certain salmon indices
 and linkedTxomes can be accessed by different users without additional
 effort or time spent downloading and building the relevant TxDb / EnsDb.
+In order to allow that multiple users can read and write to the
+same location, one should set the BiocFileCache directory to
+have group write permissions (g+w).
 Note that, if the TxDb or EnsDb is present in AnnotationHub, tximeta will
 use this object instead of downloading and building a TxDb/EnsDb from GTF
 (to disable this set \code{useHub=FALSE}).
 
-In order to allow that multiple users can read and write to the
-same location, one should set the BiocFileCache directory to
-have group write permissions (g+w).
+Regarding \code{markDuplicateTxps} and \code{cleanDuplicateTxps}: these functions
+may be used when salmon has been run in default mode (where it reduces
+exact sequence duplicates in the index by replacing them with a single
+representative). These won't make sense (and the latter will give an error)
+when \code{--keepDuplicates} has been used by salmon during indexing.
+They help by either adding metadata ("marking") regarding transcript
+duplicates to the rowData, or changing names of transcripts ("cleaning")
+where possible to provide better alignment with GTF.
 }
 \examples{
 

@@ -13,6 +13,14 @@ duplicateTxpsClean <- function(assays, txps, txomeInfo, markDuplicateTxps, clean
     if (is.null(dup.table)) {
       message("no duplicated transcripts to clean")
     } else {
+      if (any(dup.table$alts %in% assay.nms)) {
+        stop(
+          "error from `cleanDuplicateTxps=TRUE`:\n",
+          "duplicate transcript names are already present in the assay rownames,\n",
+          "which may occur if `--keepDuplicates` was used during indexing,\n",
+          "see ?tximeta Details section"
+        )
+      }
       message(paste("cleaning",nrow(dup.table),"duplicate transcript names"))
       # which rownames to fix
       m <- match(dup.table$dups.to.fix, assay.nms)
