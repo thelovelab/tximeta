@@ -119,6 +119,10 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
 
+      ## quarto
+      - name: Install quarto
+        uses: r-lib/actions/setup-quarto@v2
+
       ## pandoc is already included in the Bioconductor docker images
       - name: Setup pandoc from r-lib
         if: runner.os != 'Linux'
