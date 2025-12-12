@@ -191,6 +191,9 @@ jobs:
           remotes::install_cran("BiocManager")
         shell: Rscript {0}
 
+      - name: Install Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        
       - name: Set BiocVersion
         run: |
           BiocManager::install(version = "${{ matrix.config.bioc }}", ask = FALSE, force = TRUE)
@@ -234,9 +237,6 @@ jobs:
         run: |
           remotes::install_cran("covr")
         shell: Rscript {0}
-
-      - name: Install Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
 
       - name: Install pkgdown
         if: github.ref == 'refs/heads/devel' && env.run_pkgdown == 'true' && runner.os == 'Linux'
