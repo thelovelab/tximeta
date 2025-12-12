@@ -192,8 +192,11 @@ jobs:
         shell: Rscript {0}
 
       - name: Install Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
-        
+        if: github.ref == 'refs/heads/devel' && env.run_pkgdown == 'true' && runner.os == 'Linux'
+        run: |
+          wget https://quarto.org/download/latest/quarto-linux-amd64.deb
+          sudo dpkg -i quarto-linux-amd64.deb
+
       - name: Set BiocVersion
         run: |
           BiocManager::install(version = "${{ matrix.config.bioc }}", ask = FALSE, force = TRUE)
