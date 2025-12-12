@@ -197,9 +197,11 @@ jobs:
           wget -q https://quarto.org/download/latest/quarto-linux-amd64.deb
           sudo dpkg -i quarto-linux-amd64.deb
 
-      - name: Add quarto to PATH for R
-        run: echo "PATH=/usr/local/bin:/usr/bin:$PATH" >> $GITHUB_ENV
-          
+      - name: Install R package 'quarto'
+        if: github.ref == 'refs/heads/devel' && env.run_pkgdown == 'true' && runner.os == 'Linux'
+        run: install.packages("quarto")
+        shell: Rscript {0}
+
       - name: Set BiocVersion
         run: |
           BiocManager::install(version = "${{ matrix.config.bioc }}", ask = FALSE, force = TRUE)
