@@ -34,7 +34,7 @@ name: R-CMD-check-bioc
 ## Note that you can always run a GHA test without the cache by using the word
 ## "/nocache" in the commit message.
 env:
-  has_testthat: 'false'
+  has_testthat: 'true'
   run_covr: 'false'
   run_pkgdown: 'true'
   has_RUnit: 'false'
@@ -85,7 +85,7 @@ jobs:
          fi
          echo "Found these settings:"
          echo "Bioconductor version: $biocversion, R version: $rversion, Bioconductor docker name: $bioccont"
-         echo "matrix={ \"config\": [{\"os\" : \"ubuntu-latest\", \"r\" : \"${rversion}\", \"bioc\" : \"${biocversion}\", \"cont\" : \"${bioccont}\"}] }" >> "$GITHUB_OUTPUT"
+         echo "matrix={ \"config\": [ {\"os\" : \"ubuntu-latest\", \"r\" : \"${rversion}\", \"bioc\" : \"${biocversion}\", \"cont\" : \"${bioccont}\"} ] }" >> "$GITHUB_OUTPUT"
          ## If an OS is failing and you don't want to test it, manually remove it from the 'matrix' JSON entries above
 
   build-check:
@@ -118,9 +118,6 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-
-      - name: Setup R dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
 
       ## pandoc is already included in the Bioconductor docker images
       - name: Setup pandoc from r-lib
@@ -276,17 +273,17 @@ jobs:
           BiocGenerics:::testPackage()
         shell: Rscript {0}
 
-      # - name: Run BiocCheck
-      #   env:
-      #     DISPLAY: 99.0
-      #   run: |
-      #     BiocCheck::BiocCheck(
-      #         dir('check', 'tar.gz$', full.names = TRUE),
-      #         `quit-with-status` = TRUE,
-      #         `no-check-R-ver` = TRUE,
-      #         `no-check-bioc-help` = TRUE
-      #     )
-      #   shell: Rscript {0}
+      - name: Run BiocCheck
+        env:
+          DISPLAY: 99.0
+        run: |
+          BiocCheck::BiocCheck(
+              dir('check', 'tar.gz$', full.names = TRUE),
+              `quit-with-status` = TRUE,
+              `no-check-R-ver` = TRUE,
+              `no-check-bioc-help` = TRUE
+          )
+        shell: Rscript {0}
 
       - name: Test coverage
         if: github.ref == 'refs/heads/devel' && env.run_covr == 'true' && runner.os == 'Linux'
