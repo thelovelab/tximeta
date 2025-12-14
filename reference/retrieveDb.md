@@ -66,11 +66,11 @@ example(tximeta)
 #> 
 #> found matching linkedTxome:
 #> [ LocalEnsembl - Drosophila melanogaster - release 98 ]
-#> loading existing TxDb created: 2025-12-14 19:21:52
+#> loading existing TxDb created: 2025-12-14 20:14:36
 #> Loading required package: GenomicFeatures
 #> Loading required package: Seqinfo
 #> Loading required package: GenomicRanges
-#> loading existing transcript ranges created: 2025-12-14 19:21:52
+#> loading existing transcript ranges created: 2025-12-14 20:14:36
 #> Warning: 
 #> 
 #> Warning: the annotation is missing some transcripts that were quantified.
@@ -91,5 +91,5 @@ example(tximeta)
 #> tximet> 
 #> tximet> 
 edb <- retrieveDb(se)
-#> loading existing TxDb created: 2025-12-14 19:21:52
+#> loading existing TxDb created: 2025-12-14 20:14:36
 ```
