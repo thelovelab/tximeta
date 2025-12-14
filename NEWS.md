@@ -1,3 +1,7 @@
+# tximeta 1.29.3
+
+* Fixing github actions workflow re quarto issue.
+
 # tximeta 1.28.0
 
 * Addition of `makeLinkedTxpData()` a lightweight version
