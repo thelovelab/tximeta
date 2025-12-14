@@ -104,8 +104,8 @@ example(tximeta)
 #> 
 #> found matching linkedTxome:
 #> [ LocalEnsembl - Drosophila melanogaster - release 98 ]
-#> loading existing TxDb created: 2025-12-01 13:43:06
-#> loading existing transcript ranges created: 2025-12-01 13:43:06
+#> loading existing TxDb created: 2025-12-14 19:21:52
+#> loading existing transcript ranges created: 2025-12-14 19:21:52
 #> Warning: 
 #> 
 #> Warning: the annotation is missing some transcripts that were quantified.
@@ -126,7 +126,7 @@ example(tximeta)
 #> tximet> 
 #> tximet> 
 gse <- summarizeToGene(se)
-#> loading existing TxDb created: 2025-12-01 13:43:06
+#> loading existing TxDb created: 2025-12-14 19:21:52
 #> obtaining transcript-to-gene mapping from database
 #> generating gene ranges
 #> assignRanges='range': gene ranges assigned by total range of isoforms
