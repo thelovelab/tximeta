@@ -202,7 +202,7 @@ inspectDigests <- function(
 
   small_digest <- substr(digests, 1, 6)
  
-  txomeInfo <- sapply(digests, getTxomeInfo, prefer, quiet=TRUE)
+  txomeInfo <- lapply(digests, getTxomeInfo, prefer, quiet=TRUE)
 
   # this is the tibble the function will return
   out <- tibble(
