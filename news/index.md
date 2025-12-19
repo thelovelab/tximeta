@@ -1,5 +1,9 @@
 # Changelog
 
+## tximeta 1.29.4
+
+- Fixing sapply bug in inspectDigests and updateMetadata.
+
 ## tximeta 1.29.3
 
 - Fixing github actions workflow re quarto issue.
