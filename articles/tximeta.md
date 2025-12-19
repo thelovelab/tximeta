@@ -370,7 +370,7 @@ we can retrieve and use in our R session:
 edb <- retrieveDb(se)
 ```
 
-    ## loading existing TxDb created: 2025-12-19 14:58:08
+    ## loading existing TxDb created: 2025-12-19 15:36:55
 
 ``` r
 
@@ -411,7 +411,7 @@ particular transcript).
 se.exons <- addExons(se)
 ```
 
-    ## loading existing TxDb created: 2025-12-19 14:58:08
+    ## loading existing TxDb created: 2025-12-19 15:36:55
 
     ## generating exon ranges
 
@@ -465,7 +465,7 @@ table which is passed to `tximport`.
 gse <- summarizeToGene(se)
 ```
 
-    ## loading existing TxDb created: 2025-12-19 14:58:08
+    ## loading existing TxDb created: 2025-12-19 15:36:55
 
     ## obtaining transcript-to-gene mapping from database
 
@@ -655,11 +655,11 @@ providing an offset for average transcript length.
 gse <- summarizeToGene(se, countsFromAbundance="lengthScaledTPM")
 ```
 
-    ## loading existing TxDb created: 2025-12-19 14:58:08
+    ## loading existing TxDb created: 2025-12-19 15:36:55
 
     ## obtaining transcript-to-gene mapping from database
 
-    ## loading existing gene ranges created: 2025-12-19 14:58:12
+    ## loading existing gene ranges created: 2025-12-19 15:36:58
 
     ## assignRanges='range': gene ranges assigned by total range of isoforms
     ##   see details at: ?summarizeToGene,SummarizedExperiment-method
@@ -768,7 +768,7 @@ str(metadata(se)[["tximetaInfo"]])
     ##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1
     ##   ..$ : int [1:3] 1 29 3
     ##  $ type      : chr "salmon"
-    ##  $ importTime: POSIXct[1:1], format: "2025-12-19 14:58:00"
+    ##  $ importTime: POSIXct[1:1], format: "2025-12-19 15:36:47"
 
 ``` r
 
@@ -1324,7 +1324,7 @@ makeLinkedTxome(indexDir=indexDir,
 
     ## reading digest from indexDir: .../Dm.BDGP6.22.98.plus_salmon-0.14.1
 
-    ## writing linkedTxome to /tmp/RtmpVUJvNh/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
+    ## writing linkedTxome to /tmp/RtmpK99Q9L/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
 
     ## saving linkedTxome in bfc
 
@@ -1527,8 +1527,8 @@ se <- tximeta(coldata)
     ## 1 
     ## found matching linkedTxome:
     ## [ LocalEnsembl - Drosophila melanogaster - release 98 ]
-    ## loading existing TxDb created: 2025-12-19 14:59:55
-    ## loading existing transcript ranges created: 2025-12-19 14:59:55
+    ## loading existing TxDb created: 2025-12-19 15:38:34
+    ## loading existing transcript ranges created: 2025-12-19 15:38:35
 
     ## Warning in checkAssays2Txps(assays, txps): 
     ## 
