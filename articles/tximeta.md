@@ -370,7 +370,7 @@ we can retrieve and use in our R session:
 edb <- retrieveDb(se)
 ```
 
-    ## loading existing TxDb created: 2025-12-19 15:49:59
+    ## loading existing TxDb created: 2026-01-09 21:52:18
 
 ``` r
 
@@ -411,7 +411,7 @@ particular transcript).
 se.exons <- addExons(se)
 ```
 
-    ## loading existing TxDb created: 2025-12-19 15:49:59
+    ## loading existing TxDb created: 2026-01-09 21:52:18
 
     ## generating exon ranges
 
@@ -465,7 +465,7 @@ table which is passed to `tximport`.
 gse <- summarizeToGene(se)
 ```
 
-    ## loading existing TxDb created: 2025-12-19 15:49:59
+    ## loading existing TxDb created: 2026-01-09 21:52:18
 
     ## obtaining transcript-to-gene mapping from database
 
@@ -655,11 +655,11 @@ providing an offset for average transcript length.
 gse <- summarizeToGene(se, countsFromAbundance="lengthScaledTPM")
 ```
 
-    ## loading existing TxDb created: 2025-12-19 15:49:59
+    ## loading existing TxDb created: 2026-01-09 21:52:18
 
     ## obtaining transcript-to-gene mapping from database
 
-    ## loading existing gene ranges created: 2025-12-19 15:50:02
+    ## loading existing gene ranges created: 2026-01-09 21:52:21
 
     ## assignRanges='range': gene ranges assigned by total range of isoforms
     ##   see details at: ?summarizeToGene,SummarizedExperiment-method
@@ -766,9 +766,9 @@ str(metadata(se)[["tximetaInfo"]])
 
     ## List of 3
     ##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1
-    ##   ..$ : int [1:3] 1 29 4
+    ##   ..$ : int [1:3] 1 29 5
     ##  $ type      : chr "salmon"
-    ##  $ importTime: POSIXct[1:1], format: "2025-12-19 15:49:51"
+    ##  $ importTime: POSIXct[1:1], format: "2026-01-09 21:52:10"
 
 ``` r
 
@@ -965,7 +965,7 @@ mcols(se_update)
 
     ## DataFrame with 423044 rows and 4 columns
     ##                             tx_name     tx_id           gene_id       index
-    ##                         <character> <integer>            <list> <character>
+    ##                         <character> <integer>       <character> <character>
     ## ENST00000832824.1 ENST00000832824.1         1 ENSG00000290825.2   annotated
     ## ENST00000832825.1 ENST00000832825.1         2 ENSG00000290825.2   annotated
     ## ENST00000832826.1 ENST00000832826.1         3 ENSG00000290825.2   annotated
@@ -1054,7 +1054,7 @@ rowRanges(se_with_ranges)
     ##          novel10999    chr22 1498001-1499000      + |        novel10999
     ##          novel11000    chr22 1499001-1500000      + |        novel11000
     ##                         tx_id           gene_id       index           type
-    ##                     <integer>            <list> <character>    <character>
+    ##                     <integer>       <character> <character>    <character>
     ##   ENST00000832824.1         1 ENSG00000290825.2   annotated           <NA>
     ##   ENST00000832825.1         2 ENSG00000290825.2   annotated           <NA>
     ##   ENST00000832826.1         3 ENSG00000290825.2   annotated           <NA>
@@ -1324,7 +1324,7 @@ makeLinkedTxome(indexDir=indexDir,
 
     ## reading digest from indexDir: .../Dm.BDGP6.22.98.plus_salmon-0.14.1
 
-    ## writing linkedTxome to /tmp/RtmpIcdksb/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
+    ## writing linkedTxome to /tmp/RtmpeQsSS7/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
 
     ## saving linkedTxome in bfc
 
@@ -1460,15 +1460,15 @@ bfcinfo(bfc)
     ## # A tibble: 9 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC1  link… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 2 BFC2  Dros… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 3 BFC3  txpR… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 4 BFC4  exon… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 5 BFC5  gene… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 6 BFC6  genc… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 7 BFC7  txpR… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 8 BFC8  Dros… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 9 BFC9  txpR… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
+    ## 1 BFC1  link… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 2 BFC2  Dros… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 3 BFC3  txpR… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 4 BFC4  exon… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 5 BFC5  gene… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 6 BFC6  genc… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 7 BFC7  txpR… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 8 BFC8  Dros… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 9 BFC9  txpR… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ``` r
@@ -1481,14 +1481,14 @@ bfcinfo(bfc)
     ## # A tibble: 8 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 2 BFC3  txpR… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 3 BFC4  exon… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 4 BFC5  gene… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 5 BFC6  genc… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 6 BFC7  txpR… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 7 BFC8  Dros… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 8 BFC9  txpR… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
+    ## 1 BFC2  Dros… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 2 BFC3  txpR… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 3 BFC4  exon… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 4 BFC5  gene… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 5 BFC6  genc… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 6 BFC7  txpR… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 7 BFC8  Dros… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 8 BFC9  txpR… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ## Loading *linkedTxome* JSON files
@@ -1527,8 +1527,8 @@ se <- tximeta(coldata)
     ## 1 
     ## found matching linkedTxome:
     ## [ LocalEnsembl - Drosophila melanogaster - release 98 ]
-    ## loading existing TxDb created: 2025-12-19 15:51:37
-    ## loading existing transcript ranges created: 2025-12-19 15:51:37
+    ## loading existing TxDb created: 2026-01-09 21:54:03
+    ## loading existing transcript ranges created: 2026-01-09 21:54:03
 
     ## Warning in checkAssays2Txps(assays, txps): 
     ## 
@@ -1564,15 +1564,15 @@ bfcinfo(bfc)
     ## # A tibble: 9 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 2 BFC3  txpR… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 3 BFC4  exon… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 4 BFC5  gene… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 5 BFC6  genc… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 6 BFC7  txpR… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 7 BFC8  Dros… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 8 BFC9  txpR… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 9 BFC10 link… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
+    ## 1 BFC2  Dros… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 2 BFC3  txpR… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 3 BFC4  exon… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 4 BFC5  gene… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 5 BFC6  genc… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 6 BFC7  txpR… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 7 BFC8  Dros… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 8 BFC9  txpR… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 9 BFC10 link… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ``` r
@@ -1585,14 +1585,14 @@ bfcinfo(bfc)
     ## # A tibble: 8 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 2 BFC3  txpR… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 3 BFC4  exon… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 4 BFC5  gene… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 5 BFC6  genc… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 6 BFC7  txpR… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 7 BFC8  Dros… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
-    ## 8 BFC9  txpR… 2025-12-19… 2025-12-19… /tmp… rela… 1625…                 NA NA   
+    ## 1 BFC2  Dros… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 2 BFC3  txpR… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 3 BFC4  exon… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 4 BFC5  gene… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 5 BFC6  genc… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 6 BFC7  txpR… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 7 BFC8  Dros… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
+    ## 8 BFC9  txpR… 2026-01-09… 2026-01-09… /tmp… rela… 1676…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ## alevin details
@@ -1656,7 +1656,7 @@ session_info()
 
     ## ─ Session info ───────────────────────────────────────────────────────────────
     ##  setting  value
-    ##  version  R Under development (unstable) (2025-12-13 r89166)
+    ##  version  R Under development (unstable) (2026-01-08 r89289)
     ##  os       Ubuntu 24.04.3 LTS
     ##  system   x86_64, linux-gnu
     ##  ui       X11
@@ -1664,7 +1664,7 @@ session_info()
     ##  collate  en_US.UTF-8
     ##  ctype    en_US.UTF-8
     ##  tz       UTC
-    ##  date     2025-12-19
+    ##  date     2026-01-09
     ##  pandoc   3.8.3 @ /usr/bin/ (via rmarkdown)
     ##  quarto   1.8.26 @ /usr/local/bin/quarto
     ## 
@@ -1682,7 +1682,7 @@ session_info()
     ##  BiocParallel           1.45.0     2025-10-30 [1] Bioconductor 3.23 (R 4.6.0)
     ##  BiocVersion            3.23.1     2025-10-30 [2] Bioconductor 3.23 (R 4.6.0)
     ##  biomaRt                2.67.0     2025-10-31 [1] Bioconductor 3.23 (R 4.6.0)
-    ##  Biostrings             2.79.3     2025-12-17 [1] Bioconductor 3.23 (R 4.6.0)
+    ##  Biostrings             2.79.4     2026-01-07 [1] Bioconductor 3.23 (R 4.6.0)
     ##  bit                    4.6.0      2025-03-06 [1] CRAN (R 4.6.0)
     ##  bit64                  4.6.0-1    2025-01-16 [1] CRAN (R 4.6.0)
     ##  bitops                 1.0-9      2024-10-03 [1] CRAN (R 4.6.0)
@@ -1701,7 +1701,7 @@ session_info()
     ##  devtools             * 2.4.6      2025-10-03 [2] CRAN (R 4.6.0)
     ##  digest                 0.6.39     2025-11-19 [2] CRAN (R 4.6.0)
     ##  dplyr                  1.1.4      2023-11-17 [1] CRAN (R 4.6.0)
-    ##  edgeR                * 4.9.1      2025-12-07 [1] Bioconductor 3.23 (R 4.6.0)
+    ##  edgeR                * 4.9.2      2025-12-23 [1] Bioconductor 3.23 (R 4.6.0)
     ##  ellipsis               0.3.2      2021-04-29 [2] CRAN (R 4.6.0)
     ##  ensembldb              2.35.0     2025-11-04 [1] Bioconductor 3.23 (R 4.6.0)
     ##  evaluate               1.0.5      2025-08-27 [2] CRAN (R 4.6.0)
@@ -1723,10 +1723,10 @@ session_info()
     ##  jquerylib              0.1.4      2021-04-26 [2] CRAN (R 4.6.0)
     ##  jsonlite               2.0.0      2025-03-27 [2] CRAN (R 4.6.0)
     ##  KEGGREST               1.51.1     2025-11-17 [1] Bioconductor 3.23 (R 4.6.0)
-    ##  knitr                  1.50       2025-03-16 [2] CRAN (R 4.6.0)
+    ##  knitr                  1.51       2025-12-20 [2] CRAN (R 4.6.0)
     ##  lattice                0.22-7     2025-04-02 [3] CRAN (R 4.6.0)
     ##  lazyeval               0.2.2      2019-03-15 [1] CRAN (R 4.6.0)
-    ##  lifecycle              1.0.4      2023-11-07 [2] CRAN (R 4.6.0)
+    ##  lifecycle              1.0.5      2026-01-08 [2] CRAN (R 4.6.0)
     ##  limma                * 3.67.0     2025-10-30 [1] Bioconductor 3.23 (R 4.6.0)
     ##  locfit                 1.5-9.12   2025-03-05 [1] CRAN (R 4.6.0)
     ##  magrittr               2.0.4      2025-09-12 [2] CRAN (R 4.6.0)
@@ -1739,13 +1739,13 @@ session_info()
     ##  pillar                 1.11.1     2025-09-17 [2] CRAN (R 4.6.0)
     ##  pkgbuild               1.4.8      2025-05-26 [2] CRAN (R 4.6.0)
     ##  pkgconfig              2.0.3      2019-09-22 [2] CRAN (R 4.6.0)
-    ##  pkgdown                2.2.0.9000 2025-12-19 [1] Github (r-lib/pkgdown@c07d935)
+    ##  pkgdown                2.2.0.9000 2026-01-09 [1] Github (r-lib/pkgdown@c07d935)
     ##  pkgload                1.4.1      2025-09-23 [2] CRAN (R 4.6.0)
     ##  png                    0.1-8      2022-11-29 [1] CRAN (R 4.6.0)
     ##  prettyunits            1.2.0      2023-09-24 [2] CRAN (R 4.6.0)
     ##  progress               1.2.3      2023-12-06 [1] CRAN (R 4.6.0)
     ##  ProtGenerics           1.43.0     2025-10-30 [1] Bioconductor 3.23 (R 4.6.0)
-    ##  purrr                  1.2.0      2025-11-04 [2] CRAN (R 4.6.0)
+    ##  purrr                  1.2.1      2026-01-09 [2] CRAN (R 4.6.0)
     ##  R6                     2.6.1      2025-02-15 [2] CRAN (R 4.6.0)
     ##  ragg                   1.5.0      2025-09-02 [2] CRAN (R 4.6.0)
     ##  rappdirs               0.3.3      2021-01-31 [2] CRAN (R 4.6.0)
@@ -1753,7 +1753,7 @@ session_info()
     ##  remotes                2.5.0      2024-03-17 [1] CRAN (R 4.6.0)
     ##  restfulr               0.0.16     2025-06-27 [1] CRAN (R 4.6.0)
     ##  rjson                  0.2.23     2024-09-16 [1] CRAN (R 4.6.0)
-    ##  rlang                  1.1.6      2025-04-11 [2] CRAN (R 4.6.0)
+    ##  rlang                  1.1.7      2026-01-09 [2] CRAN (R 4.6.0)
     ##  rmarkdown              2.30       2025-09-28 [2] CRAN (R 4.6.0)
     ##  Rsamtools              2.27.0     2025-10-31 [1] Bioconductor 3.23 (R 4.6.0)
     ##  RSQLite                2.4.5      2025-11-30 [1] CRAN (R 4.6.0)
@@ -1773,7 +1773,7 @@ session_info()
     ##  tibble                 3.3.0      2025-06-08 [2] CRAN (R 4.6.0)
     ##  tidyselect             1.2.1      2024-03-11 [1] CRAN (R 4.6.0)
     ##  txdbmaker              1.7.3      2025-12-09 [1] Bioconductor 3.23 (R 4.6.0)
-    ##  tximeta              * 1.29.4     2025-12-19 [1] Bioconductor
+    ##  tximeta              * 1.29.5     2026-01-09 [1] Bioconductor
     ##  tximport               1.39.1     2025-11-06 [1] Bioconductor 3.23 (R 4.6.0)
     ##  UCSC.utils             1.7.1      2025-12-09 [1] Bioconductor 3.23 (R 4.6.0)
     ##  usethis              * 3.2.1      2025-09-06 [2] CRAN (R 4.6.0)
