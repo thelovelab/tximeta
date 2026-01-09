@@ -460,6 +460,13 @@ mergeTxpDataIntoRowData <- function(rowdata, txpDataToAdd, matches, indexName) {
     if (!col %in% colnames(rowdata)) {
       rowdata[col] <- NA
     }
+    # an issue here with CharacterLists and the insertion step below...
+    # for now, forcing to these columns to plain character vectors
+    if (is(txpDataToAdd[, col], "CharacterList")) {
+      # check that there is a single entry per list element
+      stopifnot(all(lengths(txpDataToAdd[, col]) == 1))
+      txpDataToAdd[, col] <- unlist(txpDataToAdd[, col])
+    }
     rowdata[idx_rowdata, col] <- txpDataToAdd[, col]
   }
   # add the 'index' column and the indexName to the matching rows

@@ -1,3 +1,8 @@
+# tixmeta 1.29.5
+
+* Working on updateMetadata, `gene_id` had issues as 
+  CharacterList type. Now downgrading to character.
+
 # tximeta 1.29.4
 
 * Fixing sapply bug in inspectDigests and updateMetadata.
