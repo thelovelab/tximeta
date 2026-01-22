@@ -458,14 +458,10 @@ mergeTxpDataIntoRowData <- function(rowdata, txpDataToAdd, matches, indexName) {
   idx_rowdata <- match(matches, rownames(rowdata)) # index of the matches in the SE
   for (col in colnames(txpDataToAdd)) {
     if (!col %in% colnames(rowdata)) {
-      rowdata[col] <- NA
-    }
-    # an issue here with CharacterLists and the insertion step below...
-    # for now, forcing to these columns to plain character vectors
-    if (is(txpDataToAdd[, col], "CharacterList")) {
-      # check that there is a single entry per list element
-      stopifnot(all(lengths(txpDataToAdd[, col]) == 1))
-      txpDataToAdd[, col] <- unlist(txpDataToAdd[, col])
+      # initialize with NA
+      vector <- txpDataToAdd[, col]
+      vector <- endoapply(vector, \(x) NA)
+      rowdata[col] <- rep(vector, length.out = nrow(rowdata))
     }
     rowdata[idx_rowdata, col] <- txpDataToAdd[, col]
   }
