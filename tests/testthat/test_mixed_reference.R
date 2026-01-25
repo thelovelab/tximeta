@@ -103,3 +103,34 @@ test_that("importing oarfish with mixed reference works as expected", {
   inspectDigests(se_mix, count=TRUE)
 
 })
+
+test_that("mergeTxpDataIntoRowData() works with list-types from S4Vectors", {
+
+  # mergeTxpDataIntoRowData() adds missing columns and fills in data for updating rowData
+  # initializing list-type vectors from S4Vectors with NA is tested here
+
+  library(S4Vectors)
+  rowdata <- DataFrame(test=1:4, row.names=letters[1:4])
+  txpDataToAdd <- DataFrame(
+    foo=11:12,
+    row.names=letters[2:3]
+  )
+  out <- mergeTxpDataIntoRowData(
+    rowdata, txpDataToAdd,
+    matches=c("b","c"), indexName="foobar"
+  )
+  out
+  expect_equal(out$foo, c(NA,11,12,NA))
+
+  # again, with list-like vector, `charlist`
+  txpDataToAdd2 <- DataFrame(
+    charlist = CharacterList("a","c","d"),
+    row.names=letters[c(1,3,4)]
+  )
+  out2 <- mergeTxpDataIntoRowData(
+    out, txpDataToAdd2,
+    matches=c("a","c","d"), indexName="foobar"
+  )
+  expect_equal(out2$charlist, CharacterList("a",NA,"c","d"))
+  
+})
