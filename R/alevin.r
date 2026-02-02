@@ -53,7 +53,7 @@ tximetaAlevin <- function(
   indexSeqHash <- metaInfo[[1]]$index_seq_hash # first sample
 
   # reshape
-  metaInfo <- reshapeMetaInfo(metaInfo)
+  metaInfo <- reshapeMetaInfo(metaInfo, hashType="salmon")
   # add to metadata list
   metadata$quantInfo <- metaInfo
 

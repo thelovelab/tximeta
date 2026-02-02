@@ -68,7 +68,7 @@ customAuxDir <- function(dir, auxDir) {
   auxDir
 }
 
-# reshape metadata info from Salmon
+# reshape metadata info from salmon or other quantifiers
 reshapeMetaInfo <- function(metaInfo, hashType) {
   unionTags <- unique(unlist(lapply(metaInfo, names)))
   # re-order by tag t, then sample i
@@ -81,6 +81,7 @@ reshapeMetaInfo <- function(metaInfo, hashType) {
   if (all(out$eq_class_properties == list())) {
     out$eq_class_properties <- NULL
   }
+  # TODO have alternate testing for piscem or oarfish?
   if (hashType == "salmon") {
     stopifnot(all(out$index_seq_hash == out$index_seq_hash[1]))
     stopifnot(all(out$index_name_hash == out$index_name_hash[1]))

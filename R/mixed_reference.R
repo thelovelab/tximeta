@@ -460,7 +460,7 @@ mergeTxpDataIntoRowData <- function(rowdata, txpDataToAdd, matches, indexName) {
     if (!col %in% colnames(rowdata)) {
       # initialize with NA
       vector <- txpDataToAdd[, col]
-      vector <- endoapply(vector, \(x) NA)
+      vector <- S4Vectors::endoapply(vector, \(x) NA)
       rowdata[col] <- rep(vector, length.out = nrow(rowdata))
     }
     rowdata[idx_rowdata, col] <- txpDataToAdd[, col]
