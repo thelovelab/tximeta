@@ -195,7 +195,8 @@
 #' @importFrom GenomicRanges seqnames strand start end start<- end<-
 #' @importFrom tximport tximport summarizeToGene
 #' @importFrom jsonlite fromJSON toJSON
-#' @importFrom AnnotationDbi loadDb saveDb select keys mapIds
+#' @importFrom AnnotationDbi loadDb saveDb select keys mapIds dbconn
+#' @importFrom DBI dbDisconnect dbIsValid
 #' @importFrom GenomicFeatures transcripts genes exonsBy cdsBy
 #' @importFrom txdbmaker makeTxDbFromGFF makeTxDbFromGRanges
 #' @importFrom ensembldb ensDbFromGtf EnsDb
@@ -336,6 +337,12 @@ tximeta <- function(coldata,
 
   # build or load a TxDb using the GTF filename as the identifier
   txdb <- getTxDb(txomeInfo, useHub=useHub, skipFtp=skipFtp)
+
+  # disconnect on exit
+  on.exit({
+    con <- AnnotationDbi::dbconn(txdb)
+    if (DBI::dbIsValid(con)) DBI::dbDisconnect(con)
+  }, add = TRUE)
 
   # build or load transcript ranges
   txps <- getRanges(txdb=txdb, txomeInfo=txomeInfo, type="txp")
