@@ -1,5 +1,10 @@
 # Changelog
 
+## tximeta 1.29.10
+
+- Attempting to fix the ‘call dbDisconnect() when finished’ message by
+  explicitly doing it on exit. Thanks to Gordon Smyth for noting this.
+
 ## tximeta 1.29.4
 
 - Fixing sapply bug in inspectDigests and updateMetadata.
