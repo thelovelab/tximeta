@@ -420,12 +420,14 @@ y <- swish(y, x="condition")
 # ... see Swish vignette in fishpond package
 ```
 
-The `DGEListFromTximeta` function uses the inferential replicates found in `se` or `gse`
+The `edgeR::DGEListFromTximeta` function uses the inferential replicates found in `se` or `gse`
 to estimate the overdispersion for each transcript or gene arising from the fact that reads have
 to be assigned probabilistically to transcripts by the quantification software (*salmon*
 in this case).
+The `DGEListFromTximeta` function is available in *edgeR* as of version 4.10.0 
+(Bioconductor release 3.23, Spring 2026).
 Differential analyses of transcript expression can be conducted in *edgeR* or *limma*
-using "divided counts", whereby the overdispersion is divided out of the counts.
+using "divided counts", whereby the overdispersion is divided out of the counts [@baldoni2024dividing].
 The following code produces a *DGEList* object suitable for transcript-level analysis
 in *edgeR* or *limma*.
 
@@ -948,15 +950,16 @@ characters). *FastaDigest* can be installed with `pip install fasta_digest`.
 The development of *tximeta* has benefited from suggestions from these and other
 individuals in the community:
 
--   Vincent Carey
--   Lori Shepherd
--   Martin Morgan
--   Koen Van den Berge
--   Johannes Rainer
+-   Vincent Carey (hashing concept)
+-   Lori Shepherd (package development, *BiocFileCache*)
+-   Martin Morgan (package development)
+-   Koen Van den Berge 
+-   Johannes Rainer (integration with *ensembldb*)
 -   James Ashmore
 -   Ben Johnson
 -   Tim Triche
 -   Kristoffer Vitting-Seerup
+-   Gordon Smyth and Pedro Baldoni (*edgeR* and *limma* functions and docs)
 
 # Session info
 

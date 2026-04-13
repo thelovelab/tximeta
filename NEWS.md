@@ -1,6 +1,8 @@
-# tximeta 1.29.10
+# tximeta 1.30.0
 
-* Attempting to fix the 'call dbDisconnect() when finished'
+* Updates to vignette to mention edgeR's new
+  function `DGEListFromTximeta`.
+* Fix the 'call dbDisconnect() when finished'
   message by explicitly doing it on exit. Thanks to 
   Gordon Smyth for noting this.
 
