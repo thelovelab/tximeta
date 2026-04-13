@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">tximeta</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.29.11</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.29.12</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -406,7 +406,7 @@ database with the following helper function. In this case,
 retrieve and use in our R session:</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">edb</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/retrieveDb.html">retrieveDb</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## loading existing TxDb created: 2026-04-13 17:27:36</span></span></code></pre>
+<pre><code><span><span class="co">## loading existing TxDb created: 2026-04-13 17:42:44</span></span></code></pre>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">edb</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "TxDb"</span></span>
@@ -439,7 +439,7 @@ out the transcript <em>GRanges</em> for exons-by-transcript
 element of the list gives the exons for a particular transcript).</p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">se.exons</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/addExons.html">addExons</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## loading existing TxDb created: 2026-04-13 17:27:36</span></span></code></pre>
+<pre><code><span><span class="co">## loading existing TxDb created: 2026-04-13 17:42:44</span></span></code></pre>
 <pre><code><span><span class="co">## generating exon ranges</span></span></code></pre>
 <div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">rowRanges</span><span class="op">(</span><span class="va">se.exons</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
@@ -483,7 +483,7 @@ does not have ranges or an associated <em>TxDb</em> by setting
 table which is passed to <code>tximport</code>.</p>
 <div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gse</span> <span class="op">&lt;-</span> <span class="fu">summarizeToGene</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## loading existing TxDb created: 2026-04-13 17:27:36</span></span></code></pre>
+<pre><code><span><span class="co">## loading existing TxDb created: 2026-04-13 17:42:44</span></span></code></pre>
 <pre><code><span><span class="co">## obtaining transcript-to-gene mapping from database</span></span></code></pre>
 <pre><code><span><span class="co">## generating gene ranges</span></span></code></pre>
 <pre><code><span><span class="co">## assignRanges='range': gene ranges assigned by total range of isoforms</span></span>
@@ -621,16 +621,18 @@ if these were generated during quantification.</p>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">labelKeep</span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
 <span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">swish</span><span class="op">(</span><span class="va">y</span>, x<span class="op">=</span><span class="st">"condition"</span><span class="op">)</span></span>
 <span><span class="co"># ... see Swish vignette in fishpond package</span></span></code></pre></div>
-<p>The <code>DGEListFromTximeta</code> function uses the inferential
-replicates found in <code>se</code> or <code>gse</code> to estimate the
-overdispersion for each transcript or gene arising from the fact that
-reads have to be assigned probabilistically to transcripts by the
-quantification software (<em>salmon</em> in this case). Differential
-analyses of transcript expression can be conducted in <em>edgeR</em> or
-<em>limma</em> using “divided counts”, whereby the overdispersion is
-divided out of the counts. The following code produces a
-<em>DGEList</em> object suitable for transcript-level analysis in
-<em>edgeR</em> or <em>limma</em>.</p>
+<p>The <code><a href="https://rdrr.io/pkg/edgeR/man/DGEListFromTximport.html" class="external-link">edgeR::DGEListFromTximeta</a></code> function uses the
+inferential replicates found in <code>se</code> or <code>gse</code> to
+estimate the overdispersion for each transcript or gene arising from the
+fact that reads have to be assigned probabilistically to transcripts by
+the quantification software (<em>salmon</em> in this case). The
+<code>DGEListFromTximeta</code> function is available in <em>edgeR</em>
+as of version 4.10.0 (Bioconductor release 3.23, Spring 2026).
+Differential analyses of transcript expression can be conducted in
+<em>edgeR</em> or <em>limma</em> using “divided counts”, whereby the
+overdispersion is divided out of the counts <span class="citation">(Baldoni et al. 2024)</span>. The following code
+produces a <em>DGEList</em> object suitable for transcript-level
+analysis in <em>edgeR</em> or <em>limma</em>.</p>
 <div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/edgeR/man/DGEListFromTximport.html" class="external-link">DGEListFromTximeta</a></span><span class="op">(</span><span class="va">se</span>, divide <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co"># ... see edgeR or limma User's Guide for further steps</span></span></code></pre></div>
@@ -699,9 +701,9 @@ divided out of the counts. The following code produces a
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html" class="external-link">metadata</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">[[</span><span class="st">"tximetaInfo"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## List of 3</span></span>
 <span><span class="co">##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1</span></span>
-<span><span class="co">##   ..$ : int [1:3] 1 29 11</span></span>
+<span><span class="co">##   ..$ : int [1:3] 1 29 12</span></span>
 <span><span class="co">##  $ type      : chr "salmon"</span></span>
-<span><span class="co">##  $ importTime: POSIXct[1:1], format: "2026-04-13 17:27:28"</span></span></code></pre>
+<span><span class="co">##  $ importTime: POSIXct[1:1], format: "2026-04-13 17:42:35"</span></span></code></pre>
 <div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html" class="external-link">metadata</a></span><span class="op">(</span><span class="va">se</span><span class="op">)</span><span class="op">[[</span><span class="st">"txdbInfo"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  Named chr [1:12] "TxDb" "GenomicFeatures" ...</span></span>
@@ -1144,7 +1146,7 @@ the <code>digest</code> itself and an <code>indexName</code>.</p>
 <span>                fasta<span class="op">=</span><span class="va">fastaFTP</span>, gtf<span class="op">=</span><span class="va">gtfPath</span>,</span>
 <span>                jsonFile<span class="op">=</span><span class="va">jsonFile</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## reading digest from indexDir: .../Dm.BDGP6.22.98.plus_salmon-0.14.1</span></span></code></pre>
-<pre><code><span><span class="co">## writing linkedTxome to /tmp/Rtmpkoa6o7/Dm.BDGP6.22.98.plus_salmon-0.14.1.json</span></span></code></pre>
+<pre><code><span><span class="co">## writing linkedTxome to /tmp/Rtmp93jpNd/Dm.BDGP6.22.98.plus_salmon-0.14.1.json</span></span></code></pre>
 <pre><code><span><span class="co">## saving linkedTxome in bfc</span></span></code></pre>
 <p>After running <code>makeLinkedTxome</code>, the connection between
 this <em>salmon</em> index (and its digest) with the sources is saved
@@ -1256,15 +1258,15 @@ clear this table!</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 9 × 10</span></span></span>
 <span><span class="co">##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC1  link… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC2  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC3  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC4  exon… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC5  gene… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC6  genc… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC7  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC8  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">9</span> BFC9  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC1  link… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC2  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC3  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC4  exon… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC5  gene… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC6  genc… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC7  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC8  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">9</span> BFC9  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: expires &lt;dbl&gt;</span></span></span></code></pre>
 <div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># only run the next line if you want to remove your linkedTxome table!</span></span>
@@ -1273,14 +1275,14 @@ clear this table!</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 10</span></span></span>
 <span><span class="co">##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC2  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC3  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC4  exon… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC5  gene… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC6  genc… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC7  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC8  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC9  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC2  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC3  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC4  exon… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC5  gene… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC6  genc… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC7  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC8  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC9  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: expires &lt;dbl&gt;</span></span></span></code></pre>
 </div>
 <div class="section level2">
@@ -1310,8 +1312,8 @@ the user’s behalf.</p>
 <pre><code><span><span class="co">## 1 </span></span>
 <span><span class="co">## found matching linkedTxome:</span></span>
 <span><span class="co">## [ LocalEnsembl - Drosophila melanogaster - release 98 ]</span></span>
-<span><span class="co">## loading existing TxDb created: 2026-04-13 17:29:23</span></span>
-<span><span class="co">## loading existing transcript ranges created: 2026-04-13 17:29:23</span></span></code></pre>
+<span><span class="co">## loading existing TxDb created: 2026-04-13 17:44:28</span></span>
+<span><span class="co">## loading existing transcript ranges created: 2026-04-13 17:44:28</span></span></code></pre>
 <pre><code><span><span class="co">## Warning in checkAssays2Txps(assays, txps): </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## Warning: the annotation is missing some transcripts that were quantified.</span></span>
@@ -1342,15 +1344,15 @@ clear this table!</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 9 × 10</span></span></span>
 <span><span class="co">##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC2  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC3  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC4  exon… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC5  gene… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC6  genc… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC7  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC8  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC9  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">9</span> BFC10 link… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC2  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC3  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC4  exon… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC5  gene… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC6  genc… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC7  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC8  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC9  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">9</span> BFC10 link… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: expires &lt;dbl&gt;</span></span></span></code></pre>
 <div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># only run the next line if you want to remove your linkedTxome table!</span></span>
@@ -1359,14 +1361,14 @@ clear this table!</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 8 × 10</span></span></span>
 <span><span class="co">##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag </span></span>
 <span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC2  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC3  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC4  exon… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC5  gene… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC6  genc… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC7  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC8  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC9  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2dc5…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> BFC2  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> BFC3  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> BFC4  exon… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> BFC5  gene… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> BFC6  genc… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> BFC7  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">7</span> BFC8  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">8</span> BFC9  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 <span style="color: #BB0000;">NA</span> <span style="color: #BB0000;">NA</span>   </span></span>
 <span><span class="co">## <span style="color: #949494;"># ℹ 1 more variable: expires &lt;dbl&gt;</span></span></span></code></pre>
 </div>
 <div class="section level2">
@@ -1407,15 +1409,17 @@ installed with <code>pip install fasta_digest</code>.</p>
 <p>The development of <em>tximeta</em> has benefited from suggestions
 from these and other individuals in the community:</p>
 <ul>
-<li>Vincent Carey</li>
-<li>Lori Shepherd</li>
-<li>Martin Morgan</li>
+<li>Vincent Carey (hashing concept)</li>
+<li>Lori Shepherd (package development, <em>BiocFileCache</em>)</li>
+<li>Martin Morgan (package development)</li>
 <li>Koen Van den Berge</li>
-<li>Johannes Rainer</li>
+<li>Johannes Rainer (integration with <em>ensembldb</em>)</li>
 <li>James Ashmore</li>
 <li>Ben Johnson</li>
 <li>Tim Triche</li>
 <li>Kristoffer Vitting-Seerup</li>
+<li>Gordon Smyth and Pedro Baldoni (<em>edgeR</em> and <em>limma</em>
+functions and docs)</li>
 </ul>
 </div>
 <div class="section level2">
@@ -1499,7 +1503,7 @@ from these and other individuals in the community:</p>
 <span><span class="co">##  lattice                0.22-9     <span style="color: #555555;">2026-02-09</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.7.0)</span></span></span>
 <span><span class="co">##  lazyeval               0.2.3      <span style="color: #555555;">2026-04-04</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.7.0)</span></span></span>
 <span><span class="co">##  lifecycle              1.0.5      <span style="color: #555555;">2026-01-08</span> <span style="color: #555555;">[2]</span> <span style="color: #555555;">CRAN (R 4.7.0)</span></span></span>
-<span><span class="co">##  limma                * 3.67.0     <span style="color: #555555;">2025-10-30</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.23 (R 4.6.0)</span></span></span>
+<span><span class="co">##  limma                * 3.67.1     <span style="color: #555555;">2026-04-12</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.23 (R 4.7.0)</span></span></span>
 <span><span class="co">##  locfit                 1.5-9.12   <span style="color: #555555;">2025-03-05</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.6.0)</span></span></span>
 <span><span class="co">##  magrittr               2.0.5      <span style="color: #555555;">2026-04-04</span> <span style="color: #555555;">[2]</span> <span style="color: #555555;">CRAN (R 4.7.0)</span></span></span>
 <span><span class="co">##  Matrix                 1.7-5      <span style="color: #555555;">2026-03-21</span> <span style="color: #555555;">[3]</span> <span style="color: #555555;">CRAN (R 4.7.0)</span></span></span>
@@ -1544,7 +1548,7 @@ from these and other individuals in the community:</p>
 <span><span class="co">##  tibble                 3.3.1      <span style="color: #555555;">2026-01-11</span> <span style="color: #555555;">[2]</span> <span style="color: #555555;">CRAN (R 4.7.0)</span></span></span>
 <span><span class="co">##  tidyselect             1.2.1      <span style="color: #555555;">2024-03-11</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">CRAN (R 4.6.0)</span></span></span>
 <span><span class="co">##  txdbmaker              1.7.3      <span style="color: #555555;">2025-12-09</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.23 (R 4.6.0)</span></span></span>
-<span><span class="co">##  tximeta              * 1.29.11    <span style="color: #555555;">2026-04-13</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
+<span><span class="co">##  tximeta              * 1.29.12    <span style="color: #555555;">2026-04-13</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor</span></span></span>
 <span><span class="co">##  tximport               1.39.1     <span style="color: #555555;">2025-11-06</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.23 (R 4.6.0)</span></span></span>
 <span><span class="co">##  UCSC.utils             1.7.1      <span style="color: #555555;">2025-12-09</span> <span style="color: #555555;">[1]</span> <span style="color: #555555;">Bioconductor 3.23 (R 4.6.0)</span></span></span>
 <span><span class="co">##  usethis              * 3.2.1      <span style="color: #555555;">2025-09-06</span> <span style="color: #555555;">[2]</span> <span style="color: #555555;">CRAN (R 4.7.0)</span></span></span>
@@ -1567,6 +1571,12 @@ from these and other individuals in the community:</p>
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-baldoni2024dividing" class="csl-entry">
+Baldoni, Pedro L., Yunshun Chen, Soroor Hediyeh-zadeh, et al. 2024.
+<span>“Dividing Out Quantification Uncertainty Allows Efficient
+Assessment of Differential Transcript Expression with <span class="nocase">edgeR</span>.”</span> <em>Nucleic Acids Research</em> 52
+(3): e13. <a href="https://doi.org/10.1093/nar/gkad1167" class="external-link">https://doi.org/10.1093/nar/gkad1167</a>.
+</div>
 <div id="ref-Love2020" class="csl-entry">
 Love, Michael I., Charlotte Soneson, Peter F. Hickey, et al. 2020.
 <span>“<span class="nocase">Tximeta: Reference sequence checksums for
