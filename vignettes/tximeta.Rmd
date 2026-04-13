@@ -372,10 +372,10 @@ gse <- addIds(gse, "REFSEQ", gene=TRUE)
 mcols(gse)
 ```
 
-# Differential expression analysis
+# Differential gene expression analysis
 
 The following code chunk demonstrates how to build a *DESeqDataSet* and begin a
-differential expression analysis.
+differential expression analysis with genewise counts.
 
 ```{r}
 #| eval: false
@@ -385,6 +385,24 @@ suppressPackageStartupMessages(library(DESeq2))
 suppressWarnings({dds <- DESeqDataSet(gse, ~1)})
 # ... see DESeq2 vignette
 ```
+
+The following code demonstrates how build a *DGEList* object for use
+with *edgeR* or *limma-voom*.
+
+```{r}
+suppressPackageStartupMessages(library(edgeR))
+y <- DGEListFromTximeta(gse)
+# ... see edgeR or limma User's Guide for further steps
+```
+
+Above we generated counts-from-abundance when calling `summarizeToGene`. The
+counts-from-abundance status is then stored in the metadata:
+
+```{r}
+metadata(gse)$countsFromAbundance 
+```
+
+# Differential transcript expression analysis
 
 The *Swish* method in the *fishpond* package directly works with the
 *SummarizedExperiment* output from *tximeta*, and can perform differential
@@ -402,44 +420,18 @@ y <- swish(y, x="condition")
 # ... see Swish vignette in fishpond package
 ```
 
-We have a convenient wrapper function that will build a *DGEList* object for use
-with *edgeR*.
+The `DGEListFromTximeta` function uses the inferential replicates found in `se` or `gse`
+to estimate the overdispersion for each transcript or gene arising from the fact that reads have
+to be assigned probabilistically to transcripts by the quantification software (*salmon*
+in this case).
+Differential analyses of transcript expression can be conducted in *edgeR* or *limma*
+using "divided counts", whereby the overdispersion is divided out of the counts.
+The following code produces a *DGEList* object suitable for transcript-level analysis
+in *edgeR* or *limma*.
 
 ```{r}
-suppressPackageStartupMessages(library(edgeR))
-y <- makeDGEList(gse)
-# ... see edgeR User's Guide for further steps
-```
-
-The following code chunk demonstrates the code inside of the above wrapper
-function, and produces the same output.
-
-```{r}
-cts <- assays(gse)[["counts"]]
-normMat <- assays(gse)[["length"]]
-normMat <- normMat / exp(rowMeans(log(normMat)))
-o <- log(calcNormFactors(cts/normMat)) + log(colSums(cts/normMat))
-y <- DGEList(cts)
-y <- scaleOffset(y, t(t(log(normMat)) + o))
-# ... see edgeR User's Guide for further steps
-```
-
-For *limma* with *voom* transformation we recommend, as in the *tximport*
-vignette, to generate counts-from-abundance instead of providing an offset for
-average transcript length.
-
-```{r}
-gse <- summarizeToGene(se, countsFromAbundance="lengthScaledTPM")
-library(limma)
-y <- DGEList(assays(gse)[["counts"]])
-# see limma User's Guide for further steps
-```
-
-Above we generated counts-from-abundance when calling `summarizeToGene`. The
-counts-from-abundance status is then stored in the metadata:
-
-```{r}
-metadata(gse)$countsFromAbundance 
+y <- DGEListFromTximeta(se, divide = TRUE)
+# ... see edgeR or limma User's Guide for further steps
 ```
 
 # Additional metadata slots
