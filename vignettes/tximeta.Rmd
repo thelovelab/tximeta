@@ -402,7 +402,7 @@ counts-from-abundance status is then stored in the metadata:
 metadata(gse)$countsFromAbundance 
 ```
 
-# Differential transcript expression analysis
+# Differential transcript expression and usage analysis
 
 The *Swish* method in the *fishpond* package directly works with the
 *SummarizedExperiment* output from *tximeta*, and can perform differential
@@ -426,8 +426,8 @@ to be assigned probabilistically to transcripts by the quantification software (
 in this case).
 The `DGEListFromTximeta` function is available in *edgeR* as of version 4.10.0 
 (Bioconductor release 3.23, Spring 2026).
-Differential analyses of transcript expression can be conducted in *edgeR* or *limma*
-using "divided counts", whereby the overdispersion is divided out of the counts [@baldoni2024dividing].
+Differential analyses of transcript expression or usage can be conducted in *edgeR* or *limma*
+using "divided counts", whereby the overdispersion is divided out of the counts [@baldoni2024dividing; @baldoni2025dtu].
 The following code produces a *DGEList* object suitable for transcript-level analysis
 in *edgeR* or *limma*.
 
