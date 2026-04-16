@@ -198,8 +198,8 @@ se <- tximeta(coldata)
 #> 
 #> found matching linkedTxome:
 #> [ LocalEnsembl - Drosophila melanogaster - release 98 ]
-#> loading existing TxDb created: 2026-04-16 14:25:36
-#> loading existing transcript ranges created: 2026-04-16 14:25:36
+#> loading existing TxDb created: 2026-04-16 14:26:19
+#> loading existing transcript ranges created: 2026-04-16 14:26:20
 #> Warning: 
 #> 
 #> Warning: the annotation is missing some transcripts that were quantified.
