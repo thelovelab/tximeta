@@ -370,7 +370,7 @@ we can retrieve and use in our R session:
 edb <- retrieveDb(se)
 ```
 
-    ## loading existing TxDb created: 2026-04-13 17:42:44
+    ## loading existing TxDb created: 2026-04-16 14:26:25
 
 ``` r
 
@@ -411,7 +411,7 @@ particular transcript).
 se.exons <- addExons(se)
 ```
 
-    ## loading existing TxDb created: 2026-04-13 17:42:44
+    ## loading existing TxDb created: 2026-04-16 14:26:25
 
     ## generating exon ranges
 
@@ -465,7 +465,7 @@ table which is passed to `tximport`.
 gse <- summarizeToGene(se)
 ```
 
-    ## loading existing TxDb created: 2026-04-13 17:42:44
+    ## loading existing TxDb created: 2026-04-16 14:26:25
 
     ## obtaining transcript-to-gene mapping from database
 
@@ -625,7 +625,7 @@ metadata(gse)$countsFromAbundance
 
     ## [1] "no"
 
-## Differential transcript expression analysis
+## Differential transcript expression and usage analysis
 
 The *Swish* method in the *fishpond* package directly works with the
 *SummarizedExperiment* output from *tximeta*, and can perform
@@ -652,10 +652,11 @@ fact that reads have to be assigned probabilistically to transcripts by
 the quantification software (*salmon* in this case). The
 `DGEListFromTximeta` function is available in *edgeR* as of version
 4.10.0 (Bioconductor release 3.23, Spring 2026). Differential analyses
-of transcript expression can be conducted in *edgeR* or *limma* using
-“divided counts”, whereby the overdispersion is divided out of the
-counts (Baldoni et al. 2024). The following code produces a *DGEList*
-object suitable for transcript-level analysis in *edgeR* or *limma*.
+of transcript expression or usage can be conducted in *edgeR* or *limma*
+using “divided counts”, whereby the overdispersion is divided out of the
+counts (Baldoni et al. 2024, 2025). The following code produces a
+*DGEList* object suitable for transcript-level analysis in *edgeR* or
+*limma*.
 
 ``` r
 
@@ -744,7 +745,7 @@ str(metadata(se)[["tximetaInfo"]])
     ##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1
     ##   ..$ : int [1:3] 1 29 12
     ##  $ type      : chr "salmon"
-    ##  $ importTime: POSIXct[1:1], format: "2026-04-13 17:42:35"
+    ##  $ importTime: POSIXct[1:1], format: "2026-04-16 14:26:16"
 
 ``` r
 
@@ -1303,7 +1304,7 @@ makeLinkedTxome(indexDir=indexDir,
 
     ## reading digest from indexDir: .../Dm.BDGP6.22.98.plus_salmon-0.14.1
 
-    ## writing linkedTxome to /tmp/Rtmp93jpNd/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
+    ## writing linkedTxome to /tmp/RtmpZTMrDP/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
 
     ## saving linkedTxome in bfc
 
@@ -1439,15 +1440,15 @@ bfcinfo(bfc)
     ## # A tibble: 9 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC1  link… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 2 BFC2  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 3 BFC3  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 4 BFC4  exon… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 5 BFC5  gene… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 6 BFC6  genc… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 7 BFC7  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 8 BFC8  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 9 BFC9  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
+    ## 1 BFC1  link… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 2 BFC2  Dros… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 3 BFC3  txpR… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 4 BFC4  exon… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 5 BFC5  gene… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 6 BFC6  genc… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 7 BFC7  txpR… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 8 BFC8  Dros… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 9 BFC9  txpR… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ``` r
@@ -1460,14 +1461,14 @@ bfcinfo(bfc)
     ## # A tibble: 8 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 2 BFC3  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 3 BFC4  exon… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 4 BFC5  gene… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 5 BFC6  genc… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 6 BFC7  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 7 BFC8  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 8 BFC9  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
+    ## 1 BFC2  Dros… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 2 BFC3  txpR… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 3 BFC4  exon… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 4 BFC5  gene… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 5 BFC6  genc… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 6 BFC7  txpR… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 7 BFC8  Dros… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 8 BFC9  txpR… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ## Loading *linkedTxome* JSON files
@@ -1506,8 +1507,8 @@ se <- tximeta(coldata)
     ## 1 
     ## found matching linkedTxome:
     ## [ LocalEnsembl - Drosophila melanogaster - release 98 ]
-    ## loading existing TxDb created: 2026-04-13 17:44:28
-    ## loading existing transcript ranges created: 2026-04-13 17:44:28
+    ## loading existing TxDb created: 2026-04-16 14:28:11
+    ## loading existing transcript ranges created: 2026-04-16 14:28:11
 
     ## Warning in checkAssays2Txps(assays, txps): 
     ## 
@@ -1543,15 +1544,15 @@ bfcinfo(bfc)
     ## # A tibble: 9 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 2 BFC3  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 3 BFC4  exon… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 4 BFC5  gene… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 5 BFC6  genc… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 6 BFC7  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 7 BFC8  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 8 BFC9  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 9 BFC10 link… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
+    ## 1 BFC2  Dros… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 2 BFC3  txpR… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 3 BFC4  exon… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 4 BFC5  gene… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 5 BFC6  genc… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 6 BFC7  txpR… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 7 BFC8  Dros… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 8 BFC9  txpR… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 9 BFC10 link… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ``` r
@@ -1564,14 +1565,14 @@ bfcinfo(bfc)
     ## # A tibble: 8 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 2 BFC3  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 3 BFC4  exon… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 4 BFC5  gene… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 5 BFC6  genc… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 6 BFC7  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 7 BFC8  Dros… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
-    ## 8 BFC9  txpR… 2026-04-13… 2026-04-13… /tmp… rela… 2e11…                 NA NA   
+    ## 1 BFC2  Dros… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 2 BFC3  txpR… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 3 BFC4  exon… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 4 BFC5  gene… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 5 BFC6  genc… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 6 BFC7  txpR… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 7 BFC8  Dros… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
+    ## 8 BFC9  txpR… 2026-04-16… 2026-04-16… /tmp… rela… 1b4a…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ## alevin details
@@ -1645,7 +1646,7 @@ session_info()
     ##  collate  en_US.UTF-8
     ##  ctype    en_US.UTF-8
     ##  tz       UTC
-    ##  date     2026-04-13
+    ##  date     2026-04-16
     ##  pandoc   3.9.0.2 @ /usr/bin/ (via rmarkdown)
     ##  quarto   1.9.37 @ /usr/local/bin/quarto
     ## 
@@ -1682,7 +1683,7 @@ session_info()
     ##  devtools             * 2.5.0      2026-03-14 [2] CRAN (R 4.7.0)
     ##  digest                 0.6.39     2025-11-19 [2] CRAN (R 4.7.0)
     ##  dplyr                  1.2.1      2026-04-03 [1] CRAN (R 4.7.0)
-    ##  edgeR                * 4.9.5      2026-04-08 [1] Bioconductor 3.23 (R 4.7.0)
+    ##  edgeR                * 4.9.7      2026-04-14 [1] Bioconductor 3.23 (R 4.7.0)
     ##  ellipsis               0.3.3      2026-04-04 [2] CRAN (R 4.7.0)
     ##  ensembldb              2.35.0     2025-11-04 [1] Bioconductor 3.23 (R 4.6.0)
     ##  evaluate               1.0.5      2025-08-27 [2] CRAN (R 4.7.0)
@@ -1739,7 +1740,7 @@ session_info()
     ##  RSQLite                2.4.6      2026-02-06 [1] CRAN (R 4.6.0)
     ##  rtracklayer            1.71.3     2025-12-14 [1] Bioconductor 3.23 (R 4.6.0)
     ##  S4Arrays               1.11.1     2025-11-25 [1] Bioconductor 3.23 (R 4.6.0)
-    ##  S4Vectors            * 0.49.1     2026-04-05 [1] Bioconductor 3.23 (R 4.7.0)
+    ##  S4Vectors            * 0.49.1-1   2026-04-05 [1] Bioconductor 3.23 (R 4.7.0)
     ##  sass                   0.4.10     2025-04-11 [2] CRAN (R 4.7.0)
     ##  Seqinfo              * 1.1.0      2025-10-31 [1] Bioconductor 3.23 (R 4.6.0)
     ##  sessioninfo            1.2.3      2025-02-05 [2] CRAN (R 4.7.0)
@@ -1753,8 +1754,8 @@ session_info()
     ##  tibble                 3.3.1      2026-01-11 [2] CRAN (R 4.7.0)
     ##  tidyselect             1.2.1      2024-03-11 [1] CRAN (R 4.6.0)
     ##  txdbmaker              1.7.3      2025-12-09 [1] Bioconductor 3.23 (R 4.6.0)
-    ##  tximeta              * 1.29.12    2026-04-13 [1] Bioconductor
-    ##  tximport               1.39.1     2025-11-06 [1] Bioconductor 3.23 (R 4.6.0)
+    ##  tximeta              * 1.29.12    2026-04-16 [1] Bioconductor
+    ##  tximport               1.39.2     2026-04-13 [1] Bioconductor 3.23 (R 4.7.0)
     ##  UCSC.utils             1.7.1      2025-12-09 [1] Bioconductor 3.23 (R 4.6.0)
     ##  usethis              * 3.2.1      2025-09-06 [2] CRAN (R 4.7.0)
     ##  utf8                   1.2.6      2025-06-08 [2] CRAN (R 4.7.0)
@@ -1773,6 +1774,11 @@ session_info()
     ## ──────────────────────────────────────────────────────────────────────────────
 
 ## References
+
+Baldoni, Pedro L., Lizhong Chen, Mengbo Li, Yunshun Chen, and Gordon K.
+Smyth. 2025. “Dividing Out Quantification Uncertainty Enables Assessment
+of Differential Transcript Usage with limma and edgeR.” *Nucleic Acids
+Research* 53 (22): gkaf1305. <https://doi.org/10.1093/nar/gkaf1305>.
 
 Baldoni, Pedro L., Yunshun Chen, Soroor Hediyeh-zadeh, et al. 2024.
 “Dividing Out Quantification Uncertainty Allows Efficient Assessment of
