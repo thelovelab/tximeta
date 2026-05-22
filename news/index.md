@@ -1,5 +1,15 @@
 # Changelog
 
+## tximeta 1.31.0
+
+- New argument `gencode_gtf_prefix` in
+  [`tximeta()`](https://thelovelab.github.io/tximeta/reference/tximeta.md)
+  allows users to specify a non-default GTF file for GENCODE
+  transcriptomes. The prefix refers to the string between `gencode.vXX.`
+  and `.annotation.gtf.gz` in the GENCODE FTP filename,
+  e.g. `"primary_assembly"`, `"basic"`, or `"chr_patch_hapl_scaff"`
+  (comprehensive annotation on all regions).
+
 ## tximeta 1.30.0
 
 - Updates to vignette to mention edgeR’s new function

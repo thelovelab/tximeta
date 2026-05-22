@@ -22,6 +22,7 @@ tximeta(
   cleanDuplicateTxps = FALSE,
   customMetaInfo = NULL,
   skipFtp = FALSE,
+  gencode_gtf_prefix = NULL,
   ...
 )
 ```
@@ -98,6 +99,15 @@ tximeta(
 - skipFtp:
 
   whether to avoid `ftp://` in case of firewall, default is FALSE
+
+- gencode_gtf_prefix:
+
+  for GENCODE transcriptomes, optionally specify a non-default GTF file
+  by providing the prefix that appears between `gencode.vXX.` and
+  `.annotation.gtf.gz` in the GENCODE FTP filename. For example,
+  `"primary_assembly"`, `"basic"`, `"chr_patch_hapl_scaff"`,
+  `"primary_assembly.basic"`, `"chr_patch_hapl_scaff.basic"`. Has no
+  effect for non-GENCODE transcriptomes.
 
 - ...:
 
@@ -198,8 +208,8 @@ se <- tximeta(coldata)
 #> 
 #> found matching linkedTxome:
 #> [ LocalEnsembl - Drosophila melanogaster - release 98 ]
-#> loading existing TxDb created: 2026-05-04 19:10:44
-#> loading existing transcript ranges created: 2026-05-04 19:10:44
+#> loading existing TxDb created: 2026-05-22 15:09:13
+#> loading existing transcript ranges created: 2026-05-22 15:09:14
 #> Warning: 
 #> 
 #> Warning: the annotation is missing some transcripts that were quantified.
