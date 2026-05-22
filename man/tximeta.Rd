@@ -15,6 +15,7 @@ tximeta(
   cleanDuplicateTxps = FALSE,
   customMetaInfo = NULL,
   skipFtp = FALSE,
+  gencode_gtf_prefix = NULL,
   ...
 )
 }
@@ -77,6 +78,13 @@ reference transcripts with the \code{index_seq_hash} tag
 \item{skipFtp}{whether to avoid \verb{ftp://} in case of
 firewall, default is FALSE}
 
+\item{gencode_gtf_prefix}{for GENCODE transcriptomes, optionally specify
+a non-default GTF file by providing the prefix that appears between
+\code{gencode.vXX.} and \code{.annotation.gtf.gz} in the GENCODE FTP filename.
+For example, \code{"primary_assembly"}, \code{"basic"}, \code{"chr_patch_hapl_scaff"},
+\code{"primary_assembly.basic"}, \code{"chr_patch_hapl_scaff.basic"}.
+Has no effect for non-GENCODE transcriptomes.}
+
 \item{...}{arguments passed to \code{tximport}}
 }
 \value{
@@ -115,7 +123,7 @@ the genome with correct chromosome lengths, and connect the SE object to locally
 cached derived metadata. tximeta also facilitates automatic summarization of
 transcript-level quantifications to the gene-level via \verb{summarizeToGene`` without the need to  manually build the correct }tx2gene` table for the reference used for indexing.
 
-tximeta on the first run will ask where the \code{\link[BiocFileCache:BiocFileCache-class]{BiocFileCache::BiocFileCache()}}
+tximeta on the first run will ask where the \code{\link[BiocFileCache:BiocFileCache]{BiocFileCache::BiocFileCache()}}
 location for this package (\emph{tximeta}) should be kept, either using a default location or a temporary
 directory. At any point, the user can specify a location using
 \code{\link[=setTximetaBFC]{setTximetaBFC()}} and this choice will be saved for future sessions.

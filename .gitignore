@@ -4,3 +4,5 @@ docs
 inst/script/newrows.csv
 .Rproj.user
 **/.DS_Store
+CLAUDE.md
+*.txt

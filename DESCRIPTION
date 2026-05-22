@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 1.31.0
+Version: 1.31.1
 Title: Transcript Quantification Import with Automatic Metadata
 Description: Transcript quantification import from Salmon and
     other quantifiers with automatic attachment of transcript ranges
@@ -33,7 +33,7 @@ biocViews: Annotation, GenomeAnnotation, DataImport, Preprocessing,
     FunctionalGenomics, ReproducibleResearch, ReportWriting,
     ImmunoOncology
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Encoding: UTF-8
 Config/Needs/website:
     r-lib/pkgdown
+Config/roxygen2/version: 8.0.0

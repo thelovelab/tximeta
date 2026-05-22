@@ -103,6 +103,10 @@ test_that("tximeta can import GENCODE and Ensembl", {
     # without AnnotationHub
     se <- tximeta(coldata, useHub=FALSE)
 
+    # chr_patch_hapl_scaff = comprehensive gene annotation on ALL regions (GENCODE)
+    se <- tximeta(coldata, useHub=FALSE, gencode_gtf_prefix="chr_patch_hapl_scaff")
+    expect_true(metadata(se)$txomeInfo$source == "GENCODE")
+
     ### Ensembl ###
     dir <- system.file("extdata", package="tximportData")
     samples <- read.table(file.path(dir,"samples.txt"), header=TRUE)

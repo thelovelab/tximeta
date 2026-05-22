@@ -152,6 +152,12 @@
 #' (see details in vignette).
 #' @param skipFtp whether to avoid `ftp://` in case of
 #' firewall, default is FALSE
+#' @param gencode_gtf_prefix for GENCODE transcriptomes, optionally specify
+#' a non-default GTF file by providing the prefix that appears between
+#' `gencode.vXX.` and `.annotation.gtf.gz` in the GENCODE FTP filename.
+#' For example, `"primary_assembly"`, `"basic"`, `"chr_patch_hapl_scaff"`,
+#' `"primary_assembly.basic"`, `"chr_patch_hapl_scaff.basic"`.
+#' Has no effect for non-GENCODE transcriptomes.
 #' @param ... arguments passed to `tximport`
 #' 
 #' @return a SummarizedExperiment with metadata on the `rowRanges`.
@@ -220,6 +226,7 @@ tximeta <- function(coldata,
                     cleanDuplicateTxps=FALSE,
                     customMetaInfo=NULL,
                     skipFtp=FALSE,
+                    gencode_gtf_prefix=NULL,
                     ...) {
 
   if (is(coldata, "vector")) {
@@ -333,6 +340,16 @@ tximeta <- function(coldata,
     message("couldn't find matching transcriptome, returning non-ranged SummarizedExperiment")
     se <- makeUnrangedSE(txi, coldata, metadata)
     return(se)
+  }
+
+  # optionally swap in a non-default GENCODE GTF (e.g. primary_assembly.annotation)
+  if (!is.null(gencode_gtf_prefix) && txomeInfo$source == "GENCODE") {
+    txomeInfo$gtf <- sub(
+      "(gencode\\.v[^.]+\\.).*\\.gtf\\.gz$",
+      paste0("\\1", gencode_gtf_prefix, ".annotation.gtf.gz"),
+      txomeInfo$gtf
+    )
+    message("using GENCODE GTF: ", basename(txomeInfo$gtf))
   }
 
   # build or load a TxDb using the GTF filename as the identifier

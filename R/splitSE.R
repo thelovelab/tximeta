@@ -26,8 +26,7 @@
 #'   output object. The row names are set to the feature IDs in the 
 #'   first column of \code{splitDf}. 
 #' 
-#' @importFrom SummarizedExperiment assayNames assay SummarizedExperiment
-#'   colData
+#' @importFrom SummarizedExperiment assayNames assay SummarizedExperiment colData
 #' @importFrom Matrix sparseMatrix
 #' @importFrom S4Vectors SimpleList metadata
 #'   
