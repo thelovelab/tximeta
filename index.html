@@ -48,7 +48,7 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="tximeta-">tximeta <img id="tximeta_logo" src="reference/figures/tximeta.png" align="right" width="180"><a class="anchor" aria-label="anchor" href="#tximeta-"></a>
+<div class="page-header"><h1 id="tximeta-">tximeta <img id="tximeta_logo" src="reference/figures/tximeta.png" align="right" width="180" alt="tximeta logo"><a class="anchor" aria-label="anchor" href="#tximeta-"></a>
 </h1></div>
 <p><a href="https://github.com/thelovelab/tximeta/actions/workflows/check-bioc.yml" class="external-link"><img src="https://github.com/thelovelab/tximeta/actions/workflows/check-bioc.yml/badge.svg" alt="R build status"></a></p>
 </div>
@@ -60,13 +60,18 @@
 <p>This metadata is attached to the <em>SummarizedExperiment</em> in the <code>metadata()</code> and <code>rowRanges()</code> or <code>rowData()</code> slots.</p>
 <p>For a list of the reference transcriptomes supported by <code><a href="reference/tximeta.html">tximeta()</a></code>, see the “Pre-computed digests” section of the vignette in the <code>Get started</code> tab. Note that in <em>tximeta</em> documentation, we call the computed identifier for the reference transcriptome a “digest” or sometimes a “checksum”, which is produced by hash function(s) employed by upstream software.</p>
 <p>Further steps are also facilitated, e.g. <code>summarizeToGene()</code>, <code><a href="reference/addIds.html">addIds()</a></code>, or even <code><a href="reference/retrieveCDNA.html">retrieveCDNA()</a></code> (the transcripts used for quantification) or <code><a href="reference/retrieveDb.html">retrieveDb()</a></code> (the correct <em>TxDb</em> or <em>EnsDb</em> to match the quantification data).</p>
-<p>For <em>oarfish</em> quantification files: <code><a href="reference/importData.html">importData()</a></code> and associated functions can be used in the case that a mix of <code>--annotated</code> and <code>--novel</code> reference transcripts were used in indexing. These functions facilitate the import of data and addition of metadata from multiple sources, including local files and range data. See <a href="https://thelovelab.github.io/tximeta/articles/tximeta.html#mixed-reference-transcripts">the mixed reference vignette section</a> for more details.</p>
 </div>
 <div class="section level1">
 <h1 id="how-it-works">How it works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
 </h1>
 <p>The key idea behind <em>tximeta</em> is that <em>Salmon</em>, <em>alevin</em>, and <em>piscem-infer</em> propagate a hash value summarizing the reference transcripts into each quantification directory it outputs. <em>tximeta</em> can be used with other tools as long as the <a href="https://github.com/COMBINE-lab/FastaDigest" class="external-link">hash of the transcripts</a> is also included in the output directories. See <code>customMetaInfo</code> argument of <code><a href="reference/tximeta.html">tximeta()</a></code> for more details.</p>
-<p><img src="reference/figures/diagram.png"></p>
+<div class="float">
+<img src="reference/figures/diagram.png" alt="Diagram of tximeta workflow"><div class="figcaption">Diagram of tximeta workflow</div>
+</div>
+<p>In the Bioconductor 3.22 release (October 2025), tximeta’s long read import pipeline was updated to support mixed reference transcripts, where <a href="https://github.com/COMBINE-lab/oarfish" class="external-link">oarfish</a> is used to quantify against a combination of <code>--annotated</code> (e.g. GENCODE, Ensembl) and <code>--novel</code> (e.g. <em>de novo</em> assembled) reference transcripts. New functions <code><a href="reference/importData.html">importData()</a></code>, <code><a href="reference/inspectDigests.html">inspectDigests()</a></code>, and <code><a href="reference/updateMetadata.html">updateMetadata()</a></code> facilitate import and automatic metadata attachment across both reference sets. See the <a href="https://thelovelab.github.io/tximeta/articles/tximeta.html#mixed-reference-transcripts">mixed reference transcripts</a> section of the vignette for details.</p>
+<div class="float">
+<img src="reference/figures/mixed-ref-diagram.png" alt="Diagram of tximeta mixed reference workflow"><div class="figcaption">Diagram of tximeta mixed reference workflow</div>
+</div>
 </div>
 <div class="section level1">
 <h1 id="reference">Reference<a class="anchor" aria-label="anchor" href="#reference"></a>
@@ -86,7 +91,9 @@
 </h1>
 <p>tximeta was developed as part of NIH NHGRI R01-HG009937.</p>
 <p>tximeta was also supported by the Chan Zuckerberg Initiative as part of the EOSS grants.</p>
-<p><img src="reference/figures/czi.png"></p>
+<div class="float">
+<img src="reference/figures/czi.png" alt="CZI logo"><div class="figcaption">CZI logo</div>
+</div>
 </div>
 
   </main><aside class="col-md-3"><div class="links">

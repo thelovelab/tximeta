@@ -132,6 +132,9 @@ library(org.Dm.eg.db)
 #> The following objects are masked from 'package:stats':
 #> 
 #>     IQR, mad, sd, var, xtabs
+#> The following object is masked from 'package:utils':
+#> 
+#>     data
 #> The following objects are masked from 'package:base':
 #> 
 #>     Filter, Find, Map, Position, Reduce, anyDuplicated, aperm, append,
