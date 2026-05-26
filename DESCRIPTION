@@ -26,7 +26,7 @@ Imports:
     tibble, Seqinfo, tools, utils, methods, Matrix
 Suggests: knitr, rmarkdown, testthat, tximportData (>= 1.37.5), 
     org.Dm.eg.db, DESeq2, edgeR (>= 4.9.2), limma, devtools, macrophage
-URL: https://github.com/thelovelab/tximeta
+URL: https://thelovelab.github.io/tximeta, https://github.com/thelovelab/tximeta
 biocViews: Annotation, GenomeAnnotation, DataImport, Preprocessing,
     RNASeq, LongRead, SingleCell,
     Transcriptomics, Transcription, GeneExpression,
