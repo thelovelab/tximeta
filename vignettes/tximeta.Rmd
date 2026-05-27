@@ -455,7 +455,7 @@ The [oarfish](https://github.com/COMBINE-lab/oarfish) [@oarfish] quantification 
 allows specifying distinct *annotated* reference transcripts (e.g. GENCODE,
 Ensembl) and *novel* reference transcripts (e.g. *de novo* assemblies) which are
 combined together as the index for alignment and quantification. As with quantification
-from _salmon_, _tximeta_ can now automatically recognize the provenance of 
+from _salmon_, _tximeta_ can now automatically recognize the provenance of
 reference transcripts even when sets from different sources are combined.
 
 For example, _oarfish_ code for indexing and quantification follows the paradigm:
@@ -467,6 +467,10 @@ oarfish --only-index --annotated gencode.v48.transcripts.fa.gz \
 oarfish --reads reads/experiment_rep1.fastq.gz --index gencode_plus_novel \
   --output quants/experiment_rep1 --seq-tech ont-cdna \
   --filter-group no-filters --threads 32
+```
+
+```{r echo=FALSE, fig.alt="Diagram of tximeta mixed reference workflow"}
+knitr::include_graphics("images/mixed-ref-diagram.png")
 ```
 
 Here we introduce a new workflow for importing data and linking quantification data to metadata, 

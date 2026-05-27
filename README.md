@@ -1,4 +1,4 @@
-# tximeta <img id="tximeta_logo" src="man/figures/tximeta.png" align="right" width="180"/>
+# tximeta <img id="tximeta_logo" src="man/figures/tximeta.png" align="right" width="180" alt="tximeta logo"/>
 
 [![R build status](https://github.com/thelovelab/tximeta/actions/workflows/check-bioc.yml/badge.svg)](https://github.com/thelovelab/tximeta/actions/workflows/check-bioc.yml)
 
@@ -38,14 +38,6 @@ or even `retrieveCDNA()` (the transcripts used for quantification) or
 `retrieveDb()` (the correct *TxDb* or *EnsDb* to match the
 quantification data).
 
-For _oarfish_ quantification files: `importData()` and associated functions
-can be used in the case that a mix of `--annotated` and `--novel`
-reference transcripts were used in indexing. These functions
-facilitate the import of data and addition of metadata from multiple 
-sources, including local files and range data. 
-See [the mixed reference vignette section](https://thelovelab.github.io/tximeta/articles/tximeta.html#mixed-reference-transcripts)
-for more details.
-
 # How it works
 
 The key idea behind *tximeta* is that *Salmon*, *alevin*, and
@@ -57,7 +49,19 @@ as the
 is also included in the output directories. See `customMetaInfo`
 argument of `tximeta()` for more details.
 
-![](man/figures/diagram.png)
+![Diagram of tximeta workflow](man/figures/diagram.png)
+
+In the Bioconductor 3.22 release (October 2025), tximeta's long read import
+pipeline was updated to support mixed reference transcripts, where
+[oarfish](https://github.com/COMBINE-lab/oarfish) is used to quantify against
+a combination of `--annotated` (e.g. GENCODE, Ensembl) and `--novel`
+(e.g. *de novo* assembled) reference transcripts. New functions `importData()`,
+`inspectDigests()`, and `updateMetadata()` facilitate import and automatic
+metadata attachment across both reference sets.
+See the [mixed reference transcripts](https://thelovelab.github.io/tximeta/articles/tximeta.html#mixed-reference-transcripts)
+section of the vignette for details.
+
+![Diagram of tximeta mixed reference workflow](man/figures/mixed-ref-diagram.png)
 
 # Reference
 
@@ -84,4 +88,4 @@ tximeta was developed as part of NIH NHGRI R01-HG009937.
 tximeta was also supported by the Chan Zuckerberg Initiative as part
 of the EOSS grants.
 
-![](man/figures/czi.png)
+![CZI logo](man/figures/czi.png)
