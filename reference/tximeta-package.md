@@ -60,6 +60,8 @@ gene-level inferences*. F1000Research.
 
 Useful links:
 
+- <https://thelovelab.github.io/tximeta>
+
 - <https://github.com/thelovelab/tximeta>
 
 ## Author

@@ -141,8 +141,8 @@ library(org.Dm.eg.db)
 #>     as.data.frame, basename, cbind, colnames, dirname, do.call,
 #>     duplicated, eval, evalq, get, grep, grepl, is.unsorted, lapply,
 #>     mapply, match, mget, order, paste, pmax, pmax.int, pmin, pmin.int,
-#>     rank, rbind, rownames, sapply, saveRDS, table, tapply, unique,
-#>     unsplit, which.max, which.min
+#>     rank, rbind, rownames, sapply, saveRDS, scale, sequence, table,
+#>     tapply, transform, unique, unsplit, which.max, which.min
 #> Loading required package: Biobase
 #> Welcome to Bioconductor
 #> 

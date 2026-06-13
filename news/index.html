@@ -35,7 +35,8 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.31.0" id="tximeta-1310">tximeta 1.31.0<a class="anchor" aria-label="anchor" href="#tximeta-1310"></a></h2>
-<ul><li>New argument <code>gencode_gtf_prefix</code> in <code><a href="../reference/tximeta.html">tximeta()</a></code> allows users to specify a non-default GTF file for GENCODE transcriptomes. The prefix refers to the string between <code>gencode.vXX.</code> and <code>.annotation.gtf.gz</code> in the GENCODE FTP filename, e.g. <code>"primary_assembly"</code>, <code>"basic"</code>, or <code>"chr_patch_hapl_scaff"</code> (comprehensive annotation on all regions).</li>
+<ul><li><p><code><a href="../reference/importData.html">importData()</a></code> now supports <code>type="salmon"</code> for mixed reference transcript workflows. A new <code>mixedDigest</code> argument accepts the filename (relative to each sample’s quantification directory) of a JSON file containing per-sub-index sha256 digests, produced by a companion Snakemake rule using <code>compute_fasta_digest</code>. The digest structure is compatible with the existing <code><a href="../reference/inspectDigests.html">inspectDigests()</a></code> and <code><a href="../reference/updateMetadata.html">updateMetadata()</a></code> functions.</p></li>
+<li><p>New argument <code>gencode_gtf_prefix</code> in <code><a href="../reference/tximeta.html">tximeta()</a></code> allows users to specify a non-default GTF file for GENCODE transcriptomes. The prefix refers to the string between <code>gencode.vXX.</code> and <code>.annotation.gtf.gz</code> in the GENCODE FTP filename, e.g. <code>"primary_assembly"</code>, <code>"basic"</code>, or <code>"chr_patch_hapl_scaff"</code> (comprehensive annotation on all regions).</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.30.0" id="tximeta-1300">tximeta 1.30.0<a class="anchor" aria-label="anchor" href="#tximeta-1300"></a></h2>

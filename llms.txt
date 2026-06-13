@@ -71,7 +71,11 @@ functions
 and
 [`updateMetadata()`](https://thelovelab.github.io/tximeta/reference/updateMetadata.md)
 facilitate import and automatic metadata attachment across both
-reference sets. See the [mixed reference
+reference sets. Support for *salmon* mixed reference workflows is also
+available via the `mixedDigest` argument of
+[`importData()`](https://thelovelab.github.io/tximeta/reference/importData.md),
+using a companion Snakemake rule to record per-sub-index digests at
+index time. See the [mixed reference
 transcripts](https://thelovelab.github.io/tximeta/articles/tximeta.html#mixed-reference-transcripts)
 section of the vignette for details.
 

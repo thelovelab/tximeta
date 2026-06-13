@@ -2,6 +2,18 @@
 
 ## tximeta 1.31.0
 
+- [`importData()`](https://thelovelab.github.io/tximeta/reference/importData.md)
+  now supports `type="salmon"` for mixed reference transcript workflows.
+  A new `mixedDigest` argument accepts the filename (relative to each
+  sample’s quantification directory) of a JSON file containing
+  per-sub-index sha256 digests, produced by a companion Snakemake rule
+  using `compute_fasta_digest`. The digest structure is compatible with
+  the existing
+  [`inspectDigests()`](https://thelovelab.github.io/tximeta/reference/inspectDigests.md)
+  and
+  [`updateMetadata()`](https://thelovelab.github.io/tximeta/reference/updateMetadata.md)
+  functions.
+
 - New argument `gencode_gtf_prefix` in
   [`tximeta()`](https://thelovelab.github.io/tximeta/reference/tximeta.md)
   allows users to specify a non-default GTF file for GENCODE
