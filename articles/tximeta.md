@@ -370,7 +370,7 @@ we can retrieve and use in our R session:
 edb <- retrieveDb(se)
 ```
 
-    ## loading existing TxDb created: 2026-06-13 16:49:21
+    ## loading existing TxDb created: 2026-06-13 17:46:06
 
 ``` r
 
@@ -411,7 +411,7 @@ particular transcript).
 se.exons <- addExons(se)
 ```
 
-    ## loading existing TxDb created: 2026-06-13 16:49:21
+    ## loading existing TxDb created: 2026-06-13 17:46:06
 
     ## generating exon ranges
 
@@ -465,7 +465,7 @@ table which is passed to `tximport`.
 gse <- summarizeToGene(se)
 ```
 
-    ## loading existing TxDb created: 2026-06-13 16:49:21
+    ## loading existing TxDb created: 2026-06-13 17:46:06
 
     ## obtaining transcript-to-gene mapping from database
 
@@ -745,7 +745,7 @@ str(metadata(se)[["tximetaInfo"]])
     ##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1
     ##   ..$ : int [1:3] 1 31 2
     ##  $ type      : chr "salmon"
-    ##  $ importTime: POSIXct[1:1], format: "2026-06-13 16:49:12"
+    ##  $ importTime: POSIXct[1:1], format: "2026-06-13 17:45:58"
 
 ``` r
 
@@ -1337,7 +1337,7 @@ makeLinkedTxome(indexDir=indexDir,
 
     ## reading digest from indexDir: .../Dm.BDGP6.22.98.plus_salmon-0.14.1
 
-    ## writing linkedTxome to /tmp/RtmprBcE5o/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
+    ## writing linkedTxome to /tmp/RtmpUcd6OP/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
 
     ## saving linkedTxome in bfc
 
@@ -1473,15 +1473,15 @@ bfcinfo(bfc)
     ## # A tibble: 9 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC1  link… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 2 BFC2  Dros… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 3 BFC3  txpR… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 4 BFC4  exon… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 5 BFC5  gene… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 6 BFC6  genc… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 7 BFC7  txpR… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 8 BFC8  Dros… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 9 BFC9  txpR… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
+    ## 1 BFC1  link… 2026-06-13… 2026-06-13… /tmp… rela… b3d7…                 NA NA   
+    ## 2 BFC2  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b3d2…                 NA NA   
+    ## 3 BFC3  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b3d5…                 NA NA   
+    ## 4 BFC4  exon… 2026-06-13… 2026-06-13… /tmp… rela… b3d1…                 NA NA   
+    ## 5 BFC5  gene… 2026-06-13… 2026-06-13… /tmp… rela… b3d3…                 NA NA   
+    ## 6 BFC6  genc… 2026-06-13… 2026-06-13… /tmp… rela… b3d1…                 NA NA   
+    ## 7 BFC7  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b3d1…                 NA NA   
+    ## 8 BFC8  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b3d3…                 NA NA   
+    ## 9 BFC9  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b3d5…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ``` r
@@ -1494,14 +1494,14 @@ bfcinfo(bfc)
     ## # A tibble: 8 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 2 BFC3  txpR… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 3 BFC4  exon… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 4 BFC5  gene… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 5 BFC6  genc… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 6 BFC7  txpR… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 7 BFC8  Dros… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 8 BFC9  txpR… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
+    ## 1 BFC2  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b3d2…                 NA NA   
+    ## 2 BFC3  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b3d5…                 NA NA   
+    ## 3 BFC4  exon… 2026-06-13… 2026-06-13… /tmp… rela… b3d1…                 NA NA   
+    ## 4 BFC5  gene… 2026-06-13… 2026-06-13… /tmp… rela… b3d3…                 NA NA   
+    ## 5 BFC6  genc… 2026-06-13… 2026-06-13… /tmp… rela… b3d1…                 NA NA   
+    ## 6 BFC7  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b3d1…                 NA NA   
+    ## 7 BFC8  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b3d3…                 NA NA   
+    ## 8 BFC9  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b3d5…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ## Loading *linkedTxome* JSON files
@@ -1540,8 +1540,8 @@ se <- tximeta(coldata)
     ## 1 
     ## found matching linkedTxome:
     ## [ LocalEnsembl - Drosophila melanogaster - release 98 ]
-    ## loading existing TxDb created: 2026-06-13 16:51:16
-    ## loading existing transcript ranges created: 2026-06-13 16:51:16
+    ## loading existing TxDb created: 2026-06-13 17:47:50
+    ## loading existing transcript ranges created: 2026-06-13 17:47:50
 
     ## Warning in checkAssays2Txps(assays, txps): 
     ## 
@@ -1577,15 +1577,15 @@ bfcinfo(bfc)
     ## # A tibble: 9 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 2 BFC3  txpR… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 3 BFC4  exon… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 4 BFC5  gene… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 5 BFC6  genc… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 6 BFC7  txpR… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 7 BFC8  Dros… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 8 BFC9  txpR… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 9 BFC10 link… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
+    ## 1 BFC2  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b3d2…                 NA NA   
+    ## 2 BFC3  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b3d5…                 NA NA   
+    ## 3 BFC4  exon… 2026-06-13… 2026-06-13… /tmp… rela… b3d1…                 NA NA   
+    ## 4 BFC5  gene… 2026-06-13… 2026-06-13… /tmp… rela… b3d3…                 NA NA   
+    ## 5 BFC6  genc… 2026-06-13… 2026-06-13… /tmp… rela… b3d1…                 NA NA   
+    ## 6 BFC7  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b3d1…                 NA NA   
+    ## 7 BFC8  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b3d3…                 NA NA   
+    ## 8 BFC9  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b3d5…                 NA NA   
+    ## 9 BFC10 link… 2026-06-13… 2026-06-13… /tmp… rela… b3d3…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ``` r
@@ -1598,14 +1598,14 @@ bfcinfo(bfc)
     ## # A tibble: 8 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 2 BFC3  txpR… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 3 BFC4  exon… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 4 BFC5  gene… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 5 BFC6  genc… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 6 BFC7  txpR… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 7 BFC8  Dros… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
-    ## 8 BFC9  txpR… 2026-06-13… 2026-06-13… /tmp… rela… 1523…                 NA NA   
+    ## 1 BFC2  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b3d2…                 NA NA   
+    ## 2 BFC3  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b3d5…                 NA NA   
+    ## 3 BFC4  exon… 2026-06-13… 2026-06-13… /tmp… rela… b3d1…                 NA NA   
+    ## 4 BFC5  gene… 2026-06-13… 2026-06-13… /tmp… rela… b3d3…                 NA NA   
+    ## 5 BFC6  genc… 2026-06-13… 2026-06-13… /tmp… rela… b3d1…                 NA NA   
+    ## 6 BFC7  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b3d1…                 NA NA   
+    ## 7 BFC8  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b3d3…                 NA NA   
+    ## 8 BFC9  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b3d5…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ## alevin details
