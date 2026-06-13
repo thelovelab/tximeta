@@ -1,6 +1,6 @@
 # Changelog
 
-## tximeta 1.31.0
+## tximeta 1.31.3
 
 - [`importData()`](https://thelovelab.github.io/tximeta/reference/importData.md)
   now supports `type="salmon"` for mixed reference transcript workflows.
@@ -13,6 +13,8 @@
   and
   [`updateMetadata()`](https://thelovelab.github.io/tximeta/reference/updateMetadata.md)
   functions.
+
+## tximeta 1.31.2
 
 - New argument `gencode_gtf_prefix` in
   [`tximeta()`](https://thelovelab.github.io/tximeta/reference/tximeta.md)
