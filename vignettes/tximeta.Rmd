@@ -452,11 +452,11 @@ str(metadata(se)[["txdbInfo"]])
 # Mixed reference transcripts
 
 The [oarfish](https://github.com/COMBINE-lab/oarfish) [@oarfish] quantification tool
-allows specifying distinct *annotated* reference transcripts (e.g. GENCODE,
+and *salmon* allow specifying distinct *annotated* reference transcripts (e.g. GENCODE,
 Ensembl) and *novel* reference transcripts (e.g. *de novo* assemblies) which are
-combined together as the index for alignment and quantification. As with quantification
-from _salmon_, _tximeta_ can now automatically recognize the provenance of
-reference transcripts even when sets from different sources are combined.
+combined together as the index for alignment and quantification. _tximeta_ can now
+automatically recognize the provenance of reference transcripts even when sets from
+different sources are combined.
 
 For example, _oarfish_ code for indexing and quantification follows the paradigm:
 
@@ -482,7 +482,7 @@ in the future for other transcript quantification settings.
   - `updateMetadata()` - assists in attaching metadata from matching reference transcriptomes
   - and _linkedTxpData_, a lightweight version of _linkedTxome_, described [below](#linked-transcriptomes)
 
-Below is an un-evaluated code chunk with typical code you may use 
+Below is an un-evaluated code chunk with typical code you may use
 for an experiment called `experiment` with samples `rep1` to `rep4`:
 
 ```{r}
@@ -496,8 +496,34 @@ coldata <- data.frame(files, names) # the sample info table
 se <- importData(coldata, type="oarfish")
 ```
 
-Below is an evaluated code chunk which first points to the location of 
-the dataset used for the vignette. The above code chunk is more typical 
+## salmon mixed reference
+
+*salmon* does not record per-sub-index digests natively. To enable the same
+mixed reference workflow, a companion Snakemake rule runs
+[`compute_fasta_digest`](https://github.com/COMBINE-lab/FastaDigest) on the
+annotated and novel FASTAs at index time and writes a `mixed_ref_digests.json`
+file into each quantification output directory alongside `quant.sf`. The
+Snakemake rules and further details are available at
+[thelovelab/salmon-with-mixed-ref](https://github.com/thelovelab/salmon-with-mixed-ref).
+
+Pass the digest filename to `importData()` via the `mixedDigest` argument:
+
+```{r}
+#| eval: false
+# specify salmon quant.sf files, quantified against a combined annotated + novel index
+names <- paste0("rep", 1:4)
+files <- file.path(dir, paste0("experiment_", names, "/quant.sf"))
+coldata <- data.frame(files, names)
+se <- importData(coldata, type="salmon", mixedDigest="mixed_ref_digests.json")
+```
+
+The returned object and all subsequent steps (`inspectDigests()`,
+`updateMetadata()`) are identical to the oarfish workflow described below.
+
+## Importing oarfish data
+
+Below is an evaluated code chunk which first points to the location of
+the dataset used for the vignette. The above code chunk is more typical
 for a user however.
 
 ```{r}

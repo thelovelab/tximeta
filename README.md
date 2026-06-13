@@ -57,7 +57,10 @@ pipeline was updated to support mixed reference transcripts, where
 a combination of `--annotated` (e.g. GENCODE, Ensembl) and `--novel`
 (e.g. *de novo* assembled) reference transcripts. New functions `importData()`,
 `inspectDigests()`, and `updateMetadata()` facilitate import and automatic
-metadata attachment across both reference sets.
+metadata attachment across both reference sets. Support for *salmon* mixed
+reference workflows is also available via the `mixedDigest` argument of
+`importData()`, using a companion Snakemake rule to record per-sub-index digests
+at index time.
 See the [mixed reference transcripts](https://thelovelab.github.io/tximeta/articles/tximeta.html#mixed-reference-transcripts)
 section of the vignette for details.
 

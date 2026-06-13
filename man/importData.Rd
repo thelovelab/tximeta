@@ -4,13 +4,21 @@
 \alias{importData}
 \title{Import quantification across mixed reference transcripts}
 \usage{
-importData(coldata, type = "oarfish", quiet = FALSE, ...)
+importData(coldata, type = "oarfish", mixedDigest = NULL, quiet = FALSE, ...)
 }
 \arguments{
 \item{coldata}{data.frame with columns \code{files} and \code{names} as in \code{tximeta()}}
 
-\item{type}{what quantifier was used (see \code{\link[tximport:tximport]{tximport::tximport()}}), for now
-\code{importData()} works for \code{"oarfish"} files}
+\item{type}{what quantifier was used (see \code{\link[tximport:tximport]{tximport::tximport()}});
+\code{importData()} supports \code{"oarfish"} and \code{"salmon"} (with \code{mixedDigest})}
+
+\item{mixedDigest}{for \code{type="salmon"}, the filename (relative to each
+sample's quantification directory) of the JSON file containing per-sub-index
+sha256 digests, e.g. \code{"mixed_ref_digests.json"}. This file is produced by
+the companion Snakemake rule that runs \code{compute_fasta_digest} on the
+annotated and novel FASTAs at index time and writes the results in
+a structure compatible with \code{inspectDigests()} and \code{updateMetadata()}.
+Not needed for \code{type="oarfish"}, which records digests natively.}
 
 \item{quiet}{whether to suppress printed messages}
 
@@ -21,7 +29,7 @@ an un-ranged SummarizedExperiment (SE) object, for
 use with subsequent functions described in \emph{See also} section
 }
 \description{
-The \emph{oarfish} quantification tools allows a mix of
+The \emph{oarfish} and \emph{salmon} quantification tools allow a mix of
 \code{--annotated} reference transcripts (e.g. GENCODE, Ensembl) and
 \code{--novel} or custom transcripts (e.g. de novo assembled transcripts not present
 in the annotated set) to be used as the index for quantification.
@@ -41,6 +49,15 @@ oarfish --only-index --annotated gencode.v48.transcripts.fa.gz \
 oarfish --reads reads/experiment_rep1.fastq.gz --index gencode_plus_novel \
   --output quants/experiment_rep1 --seq-tech ont-cdna \
   --filter-group no-filters --threads 32
+}
+
+For \emph{salmon}, per-sub-index digests are not recorded natively. Instead, a
+companion Snakemake rule runs \code{compute_fasta_digest} on each FASTA at index
+time and writes \code{mixed_ref_digests.json} into each quantification directory.
+Pass the filename via \code{mixedDigest} so that \code{importData()} can find it:
+
+\preformatted{
+se <- importData(coldata, type="salmon", mixedDigest="mixed_ref_digests.json")
 }
 }
 \examples{

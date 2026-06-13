@@ -1,5 +1,12 @@
 # tximeta 1.31.0
 
+* `importData()` now supports `type="salmon"` for mixed reference transcript
+  workflows. A new `mixedDigest` argument accepts the filename (relative to
+  each sample's quantification directory) of a JSON file containing per-sub-index
+  sha256 digests, produced by a companion Snakemake rule using
+  `compute_fasta_digest`. The digest structure is compatible with the existing
+  `inspectDigests()` and `updateMetadata()` functions.
+
 * New argument `gencode_gtf_prefix` in `tximeta()` allows users to
   specify a non-default GTF file for GENCODE transcriptomes. The prefix
   refers to the string between `gencode.vXX.` and `.annotation.gtf.gz`

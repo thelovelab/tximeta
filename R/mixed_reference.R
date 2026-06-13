@@ -1,17 +1,17 @@
 #' Import quantification across mixed reference transcripts
 #'
-#' The _oarfish_ quantification tools allows a mix of 
-#' `--annotated` reference transcripts (e.g. GENCODE, Ensembl) and 
-#' `--novel` or custom transcripts (e.g. de novo assembled transcripts not present 
+#' The _oarfish_ and _salmon_ quantification tools allow a mix of
+#' `--annotated` reference transcripts (e.g. GENCODE, Ensembl) and
+#' `--novel` or custom transcripts (e.g. de novo assembled transcripts not present
 #' in the annotated set) to be used as the index for quantification.
-#' `importData()` and associated functions facilitate import, reference identification, 
+#' `importData()` and associated functions facilitate import, reference identification,
 #' and addition of metadata across `annotated` and/or `novel` transcripts.
-#' The `importData()` function alone imports the data, while inspection of the 
+#' The `importData()` function alone imports the data, while inspection of the
 #' recognized digests and updating of transcript metadata is handled by subsequent functions
 #' (listed in _See also_ section below).
-#' 
+#'
 #' oarfish with mixed reference transcript sets may have been generated with e.g.
-#' 
+#'
 #' \preformatted{
 #' oarfish --only-index --annotated gencode.v48.transcripts.fa.gz \
 #'   --novel my_novel_txps.fa.gz --seq-tech ont-cdna --threads 32 \
@@ -21,9 +21,25 @@
 #'   --filter-group no-filters --threads 32
 #' }
 #'
+#' For _salmon_, per-sub-index digests are not recorded natively. Instead, a
+#' companion Snakemake rule runs `compute_fasta_digest` on each FASTA at index
+#' time and writes `mixed_ref_digests.json` into each quantification directory.
+#' Pass the filename via `mixedDigest` so that `importData()` can find it:
+#'
+#' \preformatted{
+#' se <- importData(coldata, type="salmon", mixedDigest="mixed_ref_digests.json")
+#' }
+#'
 #' @param coldata data.frame with columns `files` and `names` as in `tximeta()`
-#' @param type what quantifier was used (see [tximport::tximport()]), for now 
-#' `importData()` works for `"oarfish"` files
+#' @param type what quantifier was used (see [tximport::tximport()]);
+#' `importData()` supports `"oarfish"` and `"salmon"` (with `mixedDigest`)
+#' @param mixedDigest for `type="salmon"`, the filename (relative to each
+#' sample's quantification directory) of the JSON file containing per-sub-index
+#' sha256 digests, e.g. `"mixed_ref_digests.json"`. This file is produced by
+#' the companion Snakemake rule that runs `compute_fasta_digest` on the
+#' annotated and novel FASTAs at index time and writes the results in
+#' a structure compatible with `inspectDigests()` and `updateMetadata()`.
+#' Not needed for `type="oarfish"`, which records digests natively.
 #' @param quiet whether to suppress printed messages
 #' @param ... arguments passed to [tximport::tximport()]
 #'
@@ -51,10 +67,13 @@
 #' se <- importData(coldata, type="oarfish")
 #' 
 #' @export
-importData <- function(coldata, type="oarfish", quiet=FALSE, ...) {
+importData <- function(coldata, type="oarfish", mixedDigest=NULL, quiet=FALSE, ...) {
 
-  if (!type == "oarfish") {
-    warning("importData() supports oarfish files; broader support is planned in future updates")
+  if (!type %in% c("oarfish", "salmon")) {
+    warning("importData() supports oarfish and salmon files; broader support is planned in future updates")
+  }
+  if (type == "salmon" && is.null(mixedDigest)) {
+    stop("for type='salmon', provide `mixedDigest` with the filename of the per-sub-index digest JSON (e.g. 'mixed_ref_digests.json')")
   }
   
   # tximeta metadata
@@ -70,7 +89,8 @@ importData <- function(coldata, type="oarfish", quiet=FALSE, ...) {
   metaInfo <- lapply(
     files,
     getMetaInfo,
-    type=type
+    type=type,
+    mixedDigest=mixedDigest
   )
 
   # different styles of storing hash value by method

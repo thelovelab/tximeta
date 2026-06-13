@@ -57,6 +57,7 @@ improve gene-level inferences}. F1000Research.
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://thelovelab.github.io/tximeta}
   \item \url{https://github.com/thelovelab/tximeta}
 }
 

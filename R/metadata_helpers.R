@@ -8,7 +8,7 @@ makeMetadata <- function(type) {
 
 # read metadata files from Salmon/piscem/oarfish output
 # customMetaInfo = path of the custom metadata info file
-getMetaInfo <- function(file, type, customMetaInfo=NULL) {
+getMetaInfo <- function(file, type, customMetaInfo=NULL, mixedDigest=NULL) {
   dir <- dirname(file)
 
   # users can specify any arbitrary location for the metadata,
@@ -51,7 +51,17 @@ getMetaInfo <- function(file, type, customMetaInfo=NULL) {
   critical metadata for tximeta to work. Alternatively, you can set
   skipMeta=TRUE or use tximport \n\n") 
   }
-  fromJSON(jsonPath)
+  result <- fromJSON(jsonPath)
+
+  if (!is.null(mixedDigest)) {
+    digestPath <- file.path(dir, mixedDigest)
+    if (!file.exists(digestPath)) {
+      stop("mixed digest file not found: ", digestPath)
+    }
+    result$digest <- fromJSON(digestPath)
+  }
+
+  result
 }
 
 # Salmon allows users to change the name of the auxiliary directory
