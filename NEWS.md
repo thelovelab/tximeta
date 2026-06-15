@@ -1,3 +1,8 @@
+# tximeta 1.31.4
+
+* GENCODE 50 (H.s.), M39 (M.m), and Ensembl 116 (June 2026).
+  (except for Drosophila which has a GTF issue)
+
 # tximeta 1.31.3
 
 * `importData()` now supports `type="salmon"` for mixed reference transcript
