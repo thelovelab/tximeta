@@ -237,10 +237,10 @@ transcripts are supported in this version of
 
 | source  | organism                | releases |
 |:--------|:------------------------|:---------|
-| GENCODE | Homo sapiens            | 23-49    |
-| GENCODE | Mus musculus            | M6-M38   |
-| Ensembl | Homo sapiens            | 76-115   |
-| Ensembl | Mus musculus            | 76-115   |
+| GENCODE | Homo sapiens            | 23-50    |
+| GENCODE | Mus musculus            | M6-M39   |
+| Ensembl | Homo sapiens            | 76-116   |
+| Ensembl | Mus musculus            | 76-116   |
 | Ensembl | Drosophila melanogaster | 79-115   |
 | RefSeq  | Homo sapiens            | p1-p13   |
 | RefSeq  | Mus musculus            | p2-p6    |
@@ -370,7 +370,7 @@ we can retrieve and use in our R session:
 edb <- retrieveDb(se)
 ```
 
-    ## loading existing TxDb created: 2026-06-13 18:03:01
+    ## loading existing TxDb created: 2026-06-15 18:41:39
 
 ``` r
 
@@ -411,7 +411,7 @@ particular transcript).
 se.exons <- addExons(se)
 ```
 
-    ## loading existing TxDb created: 2026-06-13 18:03:01
+    ## loading existing TxDb created: 2026-06-15 18:41:39
 
     ## generating exon ranges
 
@@ -465,7 +465,7 @@ table which is passed to `tximport`.
 gse <- summarizeToGene(se)
 ```
 
-    ## loading existing TxDb created: 2026-06-13 18:03:01
+    ## loading existing TxDb created: 2026-06-15 18:41:39
 
     ## obtaining transcript-to-gene mapping from database
 
@@ -743,9 +743,9 @@ str(metadata(se)[["tximetaInfo"]])
 
     ## List of 3
     ##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1
-    ##   ..$ : int [1:3] 1 31 3
+    ##   ..$ : int [1:3] 1 31 4
     ##  $ type      : chr "salmon"
-    ##  $ importTime: POSIXct[1:1], format: "2026-06-13 18:02:53"
+    ##  $ importTime: POSIXct[1:1], format: "2026-06-15 18:41:31"
 
 ``` r
 
@@ -1337,7 +1337,7 @@ makeLinkedTxome(indexDir=indexDir,
 
     ## reading digest from indexDir: .../Dm.BDGP6.22.98.plus_salmon-0.14.1
 
-    ## writing linkedTxome to /tmp/Rtmpqypv2i/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
+    ## writing linkedTxome to /tmp/RtmpkEljDK/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
 
     ## saving linkedTxome in bfc
 
@@ -1473,15 +1473,15 @@ bfcinfo(bfc)
     ## # A tibble: 9 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC1  link… 2026-06-13… 2026-06-13… /tmp… rela… b9cf…                 NA NA   
-    ## 2 BFC2  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b9c3…                 NA NA   
-    ## 3 BFC3  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b9c3…                 NA NA   
-    ## 4 BFC4  exon… 2026-06-13… 2026-06-13… /tmp… rela… b9c7…                 NA NA   
-    ## 5 BFC5  gene… 2026-06-13… 2026-06-13… /tmp… rela… b9c6…                 NA NA   
-    ## 6 BFC6  genc… 2026-06-13… 2026-06-13… /tmp… rela… b9c6…                 NA NA   
-    ## 7 BFC7  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b9c7…                 NA NA   
-    ## 8 BFC8  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b9c4…                 NA NA   
-    ## 9 BFC9  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b9c4…                 NA NA   
+    ## 1 BFC1  link… 2026-06-15… 2026-06-15… /tmp… rela… b9d4…                 NA NA   
+    ## 2 BFC2  Dros… 2026-06-15… 2026-06-15… /tmp… rela… b9d4…                 NA NA   
+    ## 3 BFC3  txpR… 2026-06-15… 2026-06-15… /tmp… rela… b9d4…                 NA NA   
+    ## 4 BFC4  exon… 2026-06-15… 2026-06-15… /tmp… rela… b9d7…                 NA NA   
+    ## 5 BFC5  gene… 2026-06-15… 2026-06-15… /tmp… rela… b9d1…                 NA NA   
+    ## 6 BFC6  genc… 2026-06-15… 2026-06-15… /tmp… rela… b9d1…                 NA NA   
+    ## 7 BFC7  txpR… 2026-06-15… 2026-06-15… /tmp… rela… b9d6…                 NA NA   
+    ## 8 BFC8  Dros… 2026-06-15… 2026-06-15… /tmp… rela… b9d5…                 NA NA   
+    ## 9 BFC9  txpR… 2026-06-15… 2026-06-15… /tmp… rela… b9d7…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ``` r
@@ -1494,14 +1494,14 @@ bfcinfo(bfc)
     ## # A tibble: 8 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b9c3…                 NA NA   
-    ## 2 BFC3  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b9c3…                 NA NA   
-    ## 3 BFC4  exon… 2026-06-13… 2026-06-13… /tmp… rela… b9c7…                 NA NA   
-    ## 4 BFC5  gene… 2026-06-13… 2026-06-13… /tmp… rela… b9c6…                 NA NA   
-    ## 5 BFC6  genc… 2026-06-13… 2026-06-13… /tmp… rela… b9c6…                 NA NA   
-    ## 6 BFC7  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b9c7…                 NA NA   
-    ## 7 BFC8  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b9c4…                 NA NA   
-    ## 8 BFC9  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b9c4…                 NA NA   
+    ## 1 BFC2  Dros… 2026-06-15… 2026-06-15… /tmp… rela… b9d4…                 NA NA   
+    ## 2 BFC3  txpR… 2026-06-15… 2026-06-15… /tmp… rela… b9d4…                 NA NA   
+    ## 3 BFC4  exon… 2026-06-15… 2026-06-15… /tmp… rela… b9d7…                 NA NA   
+    ## 4 BFC5  gene… 2026-06-15… 2026-06-15… /tmp… rela… b9d1…                 NA NA   
+    ## 5 BFC6  genc… 2026-06-15… 2026-06-15… /tmp… rela… b9d1…                 NA NA   
+    ## 6 BFC7  txpR… 2026-06-15… 2026-06-15… /tmp… rela… b9d6…                 NA NA   
+    ## 7 BFC8  Dros… 2026-06-15… 2026-06-15… /tmp… rela… b9d5…                 NA NA   
+    ## 8 BFC9  txpR… 2026-06-15… 2026-06-15… /tmp… rela… b9d7…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ## Loading *linkedTxome* JSON files
@@ -1540,8 +1540,8 @@ se <- tximeta(coldata)
     ## 1 
     ## found matching linkedTxome:
     ## [ LocalEnsembl - Drosophila melanogaster - release 98 ]
-    ## loading existing TxDb created: 2026-06-13 18:04:44
-    ## loading existing transcript ranges created: 2026-06-13 18:04:45
+    ## loading existing TxDb created: 2026-06-15 18:43:23
+    ## loading existing transcript ranges created: 2026-06-15 18:43:23
 
     ## Warning in checkAssays2Txps(assays, txps): 
     ## 
@@ -1577,15 +1577,15 @@ bfcinfo(bfc)
     ## # A tibble: 9 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b9c3…                 NA NA   
-    ## 2 BFC3  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b9c3…                 NA NA   
-    ## 3 BFC4  exon… 2026-06-13… 2026-06-13… /tmp… rela… b9c7…                 NA NA   
-    ## 4 BFC5  gene… 2026-06-13… 2026-06-13… /tmp… rela… b9c6…                 NA NA   
-    ## 5 BFC6  genc… 2026-06-13… 2026-06-13… /tmp… rela… b9c6…                 NA NA   
-    ## 6 BFC7  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b9c7…                 NA NA   
-    ## 7 BFC8  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b9c4…                 NA NA   
-    ## 8 BFC9  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b9c4…                 NA NA   
-    ## 9 BFC10 link… 2026-06-13… 2026-06-13… /tmp… rela… b9c4…                 NA NA   
+    ## 1 BFC2  Dros… 2026-06-15… 2026-06-15… /tmp… rela… b9d4…                 NA NA   
+    ## 2 BFC3  txpR… 2026-06-15… 2026-06-15… /tmp… rela… b9d4…                 NA NA   
+    ## 3 BFC4  exon… 2026-06-15… 2026-06-15… /tmp… rela… b9d7…                 NA NA   
+    ## 4 BFC5  gene… 2026-06-15… 2026-06-15… /tmp… rela… b9d1…                 NA NA   
+    ## 5 BFC6  genc… 2026-06-15… 2026-06-15… /tmp… rela… b9d1…                 NA NA   
+    ## 6 BFC7  txpR… 2026-06-15… 2026-06-15… /tmp… rela… b9d6…                 NA NA   
+    ## 7 BFC8  Dros… 2026-06-15… 2026-06-15… /tmp… rela… b9d5…                 NA NA   
+    ## 8 BFC9  txpR… 2026-06-15… 2026-06-15… /tmp… rela… b9d7…                 NA NA   
+    ## 9 BFC10 link… 2026-06-15… 2026-06-15… /tmp… rela… b9d4…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ``` r
@@ -1598,14 +1598,14 @@ bfcinfo(bfc)
     ## # A tibble: 8 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b9c3…                 NA NA   
-    ## 2 BFC3  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b9c3…                 NA NA   
-    ## 3 BFC4  exon… 2026-06-13… 2026-06-13… /tmp… rela… b9c7…                 NA NA   
-    ## 4 BFC5  gene… 2026-06-13… 2026-06-13… /tmp… rela… b9c6…                 NA NA   
-    ## 5 BFC6  genc… 2026-06-13… 2026-06-13… /tmp… rela… b9c6…                 NA NA   
-    ## 6 BFC7  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b9c7…                 NA NA   
-    ## 7 BFC8  Dros… 2026-06-13… 2026-06-13… /tmp… rela… b9c4…                 NA NA   
-    ## 8 BFC9  txpR… 2026-06-13… 2026-06-13… /tmp… rela… b9c4…                 NA NA   
+    ## 1 BFC2  Dros… 2026-06-15… 2026-06-15… /tmp… rela… b9d4…                 NA NA   
+    ## 2 BFC3  txpR… 2026-06-15… 2026-06-15… /tmp… rela… b9d4…                 NA NA   
+    ## 3 BFC4  exon… 2026-06-15… 2026-06-15… /tmp… rela… b9d7…                 NA NA   
+    ## 4 BFC5  gene… 2026-06-15… 2026-06-15… /tmp… rela… b9d1…                 NA NA   
+    ## 5 BFC6  genc… 2026-06-15… 2026-06-15… /tmp… rela… b9d1…                 NA NA   
+    ## 6 BFC7  txpR… 2026-06-15… 2026-06-15… /tmp… rela… b9d6…                 NA NA   
+    ## 7 BFC8  Dros… 2026-06-15… 2026-06-15… /tmp… rela… b9d5…                 NA NA   
+    ## 8 BFC9  txpR… 2026-06-15… 2026-06-15… /tmp… rela… b9d7…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ## alevin details
@@ -1679,7 +1679,7 @@ session_info()
     ##  collate  en_US.UTF-8
     ##  ctype    en_US.UTF-8
     ##  tz       UTC
-    ##  date     2026-06-13
+    ##  date     2026-06-15
     ##  pandoc   3.9.0.2 @ /usr/bin/ (via rmarkdown)
     ##  quarto   1.9.38 @ /usr/local/bin/quarto
     ## 
@@ -1788,7 +1788,7 @@ session_info()
     ##  tibble                 3.3.1      2026-01-11 [2] RSPM (R 4.6.0)
     ##  tidyselect             1.2.1      2024-03-11 [1] RSPM (R 4.6.0)
     ##  txdbmaker              1.9.0      2026-04-28 [1] Bioconductor 3.24 (R 4.6.0)
-    ##  tximeta              * 1.31.3     2026-06-13 [1] Bioconductor
+    ##  tximeta              * 1.31.4     2026-06-15 [1] Bioconductor
     ##  tximport               1.41.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.0)
     ##  UCSC.utils             1.9.0      2026-04-28 [1] Bioconductor 3.24 (R 4.6.0)
     ##  usethis              * 3.2.1      2025-09-06 [2] RSPM (R 4.6.0)
