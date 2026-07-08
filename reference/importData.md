@@ -63,7 +63,6 @@ functions described in *See also* section
 oarfish with mixed reference transcript sets may have been generated
 with e.g.
 
-
     oarfish --only-index --annotated gencode.v48.transcripts.fa.gz \
       --novel my_novel_txps.fa.gz --seq-tech ont-cdna --threads 32 \
       --index-out gencode_plus_novel
@@ -76,7 +75,6 @@ a companion Snakemake rule runs `compute_fasta_digest` on each FASTA at
 index time and writes `mixed_ref_digests.json` into each quantification
 directory. Pass the filename via `mixedDigest` so that `importData()`
 can find it:
-
 
     se <- importData(coldata, type="salmon", mixedDigest="mixed_ref_digests.json")
 

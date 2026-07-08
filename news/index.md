@@ -1,5 +1,9 @@
 # Changelog
 
+## tximeta 1.31.6
+
+- Fix bug in internal function checkViaAHub()
+
 ## tximeta 1.31.4
 
 - GENCODE 50 (H.s.), M39 (M.m), and Ensembl 116 (June 2026). (except for
