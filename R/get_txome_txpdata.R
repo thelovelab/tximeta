@@ -107,7 +107,7 @@ getTxDb <- function(txomeInfo, useHub=TRUE, skipFtp=FALSE) {
       ensSrc <- srcName == "Ensembl"
       dbType <- if (ensSrc) "EnsDb" else "TxDb"
       if (useHub) {
-        txdb <- checkViaAHub(txomeInfo, bfc, srcName, ensSrc, dbType)
+        txdb <- checkViaAHub(txomeInfo, bfc, txdbName, srcName, ensSrc, dbType)
         hubWorked <- !is.null(txdb)
       }
       # if check on AnnotationHub failed (or wasn't attempted)
@@ -140,7 +140,7 @@ locateTxDb <- function(txomeInfo, bfc) {
   q[q$rname==txdbName,]
 }
 
-checkViaAHub <- function(txomeInfo, bfc, srcName, ensSrc, dbType) {
+checkViaAHub <- function(txomeInfo, bfc, txdbName, srcName, ensSrc, dbType) {
   # first check for database on AnnotationHub
   message(paste("useHub=TRUE: checking for", dbType, "via 'AnnotationHub'"))
   ah <- AnnotationHub()

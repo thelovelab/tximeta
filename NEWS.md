@@ -1,4 +1,4 @@
-# tximeta 1.31.5
+# tximeta 1.31.6
 
 * Fix bug in internal function checkViaAHub()
 
