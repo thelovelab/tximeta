@@ -370,7 +370,7 @@ we can retrieve and use in our R session:
 edb <- retrieveDb(se)
 ```
 
-    ## loading existing TxDb created: 2026-07-20 07:46:19
+    ## loading existing TxDb created: 2026-07-20 08:01:54
 
 ``` r
 
@@ -411,7 +411,7 @@ particular transcript).
 se.exons <- addExons(se)
 ```
 
-    ## loading existing TxDb created: 2026-07-20 07:46:19
+    ## loading existing TxDb created: 2026-07-20 08:01:54
 
     ## generating exon ranges
 
@@ -465,7 +465,7 @@ table which is passed to `tximport`.
 gse <- summarizeToGene(se)
 ```
 
-    ## loading existing TxDb created: 2026-07-20 07:46:19
+    ## loading existing TxDb created: 2026-07-20 08:01:54
 
     ## obtaining transcript-to-gene mapping from database
 
@@ -743,9 +743,9 @@ str(metadata(se)[["tximetaInfo"]])
 
     ## List of 3
     ##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1
-    ##   ..$ : int [1:3] 1 31 7
+    ##   ..$ : int [1:3] 1 31 8
     ##  $ type      : chr "salmon"
-    ##  $ importTime: POSIXct[1:1], format: "2026-07-20 07:46:10"
+    ##  $ importTime: POSIXct[1:1], format: "2026-07-20 08:01:46"
 
 ``` r
 
@@ -1337,7 +1337,7 @@ makeLinkedTxome(indexDir=indexDir,
 
     ## reading digest from indexDir: .../Dm.BDGP6.22.98.plus_salmon-0.14.1
 
-    ## writing linkedTxome to /tmp/RtmpBAFt0H/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
+    ## writing linkedTxome to /tmp/RtmpLGOJNf/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
 
     ## saving linkedTxome in bfc
 
@@ -1540,8 +1540,8 @@ se <- tximeta(coldata)
     ## 1 
     ## found matching linkedTxome:
     ## [ LocalEnsembl - Drosophila melanogaster - release 98 ]
-    ## loading existing TxDb created: 2026-07-20 07:48:05
-    ## loading existing transcript ranges created: 2026-07-20 07:48:05
+    ## loading existing TxDb created: 2026-07-20 08:03:33
+    ## loading existing transcript ranges created: 2026-07-20 08:03:33
 
     ## Warning in checkAssays2Txps(assays, txps): 
     ## 
@@ -1788,7 +1788,7 @@ session_info()
     ##  tibble                 3.3.1      2026-01-11 [2] RSPM (R 4.6.0)
     ##  tidyselect             1.2.1      2024-03-11 [1] RSPM (R 4.6.0)
     ##  txdbmaker              1.9.0      2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
-    ##  tximeta              * 1.31.7     2026-07-20 [1] Bioconductor
+    ##  tximeta              * 1.31.8     2026-07-20 [1] Bioconductor
     ##  tximport               1.41.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
     ##  UCSC.utils             1.9.0      2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
     ##  usethis              * 3.2.1      2025-09-06 [2] RSPM (R 4.6.0)

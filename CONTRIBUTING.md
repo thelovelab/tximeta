@@ -32,6 +32,6 @@ See also:
 
 ## Code of conduct
 
-Please note that this project follows the [Bioconductor Code of
+Please note that this project follows a [Code of
 Conduct](https://thelovelab.github.io/tximeta/CODE_OF_CONDUCT.md). By
 participating you agree to abide by its terms.
