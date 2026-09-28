@@ -1,5 +1,5 @@
 Package: tximeta
-Version: 1.31.8
+Version: 1.31.9
 Title: Transcript Quantification Import with Automatic Metadata
 Description: Transcript quantification import from Salmon and
     other quantifiers with automatic attachment of transcript ranges
@@ -24,7 +24,7 @@ Imports:
     GenomicFeatures, txdbmaker, ensembldb, 
     BiocFileCache, AnnotationHub, Biostrings,
     tibble, Seqinfo, tools, utils, methods, Matrix
-Suggests: knitr, rmarkdown, testthat, tximportData (>= 1.37.5), 
+Suggests: knitr, rmarkdown, testthat, tximportData (>= 1.41.1), 
     org.Dm.eg.db, DESeq2, edgeR (>= 4.9.2), limma, devtools, macrophage
 URL: https://thelovelab.github.io/tximeta, https://github.com/thelovelab/tximeta
 biocViews: Annotation, GenomeAnnotation, DataImport, Preprocessing,

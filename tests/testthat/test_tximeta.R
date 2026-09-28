@@ -89,7 +89,7 @@ test_that("tximeta can import GENCODE and Ensembl", {
     dir <- system.file("extdata", package="tximportData")
     samples <- read.table(file.path(dir,"samples.txt"), header=TRUE)
     files <- file.path(dir,"salmon", samples$run, "quant.sf.gz")
-    coldata <- data.frame(files, names=paste0("sample",1:6))
+    coldata <- data.frame(files, names=paste0("sample", seq_along(files)))
 
     # with AnnotationHub (default)
     se <- tximeta(coldata)
@@ -106,20 +106,6 @@ test_that("tximeta can import GENCODE and Ensembl", {
     # chr_patch_hapl_scaff = comprehensive gene annotation on ALL regions (GENCODE)
     se <- tximeta(coldata, useHub=FALSE, gencode_gtf_prefix="chr_patch_hapl_scaff")
     expect_true(metadata(se)$txomeInfo$source == "GENCODE")
-
-    ### Ensembl ###
-    dir <- system.file("extdata", package="tximportData")
-    samples <- read.table(file.path(dir,"samples.txt"), header=TRUE)
-    files <- file.path(dir,"salmon_gibbs", samples$run, "quant.sf.gz")
-    coldata <- data.frame(files, names=paste0("sample",1:6))
-
-    # with AnnotationHub (default)
-    se <- tximeta(coldata, dropInfReps=TRUE, useHub=TRUE)
-    
-    # without AnnotationHub
-    se <- tximeta(coldata, dropInfReps=TRUE, useHub=FALSE)
-
-    gse <- summarizeToGene(se)
 
     # test the mark duplicate code
     
@@ -141,13 +127,16 @@ test_that("tximeta can import inferential replicates", {
   if (FALSE) {
     library(SummarizedExperiment)
 
-    # check the GEUVADIS samples with Salmon Gibbs samples
-    dir <- system.file("extdata", package="tximportData")
-    samples <- read.table(file.path(dir,"samples.txt"), header=TRUE)
-    files <- file.path(dir,"salmon_gibbs", samples$run, "quant.sf.gz")
-    coldata <- data.frame(files, names=paste0("sample",1:6))
+    # check the macrophage dataset with Salmon Gibbs samples
+    # (salmon_gibbs was removed from tximportData >= 1.41.1)
+
+    dir <- system.file("extdata", package="macrophage")
+    coldata <- read.csv(file.path(dir, "coldata.csv"))
+    coldata$files <- file.path(dir, "quants", coldata$names, "quant.sf.gz")
+    coldata <- coldata[1:2,]
     se <- tximeta(coldata)
     expect_true("infRep1" %in% assayNames(se))
+    se <- tximeta(coldata, skipSeqinfo=TRUE)
 
     se2 <- tximeta(coldata, varReduce=TRUE)
     expect_true("variance" %in% assayNames(se2))
@@ -157,15 +146,6 @@ test_that("tximeta can import inferential replicates", {
 
     gse <- summarizeToGene(se, varReduce=TRUE)
     expect_true("variance" %in% assayNames(gse))
-
-    # check the macrophage dataset with Salmon Gibbs samples
-
-    dir <- system.file("extdata", package="macrophage")
-    coldata <- read.csv(file.path(dir, "coldata.csv"))
-    coldata$files <- file.path(dir, "quants", coldata$names, "quant.sf.gz")
-    coldata <- coldata[1:2,]
-    se <- tximeta(coldata)
-    se <- tximeta(coldata, skipSeqinfo=TRUE)
     
   }
   
@@ -187,22 +167,14 @@ test_that("tximeta can import inferential replicates", {
 
 test_that("tximeta can import kallisto", {
 
-  # test requires rhdf5...
+  # breaks with no internet
   if (FALSE) {
     dir <- system.file("extdata", package="tximportData")
     samples <- read.table(file.path(dir,"samples.txt"), header=TRUE)
     files <- file.path(dir,"kallisto", samples$run, "abundance.tsv.gz")
-    coldata <- data.frame(files, names=paste0("sample",1:6))
+    coldata <- data.frame(files, names=paste0("sample", seq_along(files)))
     se <- tximeta(coldata, type="kallisto", txOut=TRUE)
-    
-    # inferential replicates as well
-    library(SummarizedExperiment)
-    files <- file.path(dir,"kallisto_boot", samples$run, "abundance.h5")
-    coldata <- data.frame(files, names=paste0("sample",1:6))
-    se <- tximeta(coldata, type="kallisto", txOut=TRUE)
-    expect_true("infRep1" %in% assayNames(se))
-    se <- tximeta(coldata, type="kallisto", txOut=TRUE, varReduce=TRUE)
-    expect_true("variance" %in% assayNames(se))
+
   }
   
 })

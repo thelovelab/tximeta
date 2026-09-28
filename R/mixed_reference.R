@@ -335,6 +335,7 @@ updateMetadata <- function(
   all_idx_nms <- c(idx_nms, "user")
   stopifnot(all(order %in% all_idx_nms))
   stopifnot(all(names(key) %in% all_idx_nms))
+  stopifnot(all(prefer %in% c("txome","txpdata","precomputed")))
 
   # pull out our digest's list of info:
   # this lives in metadata as information coming from the quantification tool
@@ -349,7 +350,7 @@ updateMetadata <- function(
   )
 
   # pull out the txomeInfo for each index
-  txomeInfo <- lapply(digests, getTxomeInfo, prefer=c("txome","txpdata","precomputed"), quiet = TRUE)
+  txomeInfo <- lapply(digests, getTxomeInfo, prefer=prefer, quiet = TRUE)
 
   # empty GRanges, add to this per index / txpData in loop below
   if (ranges) {
@@ -480,7 +481,13 @@ mergeTxpDataIntoRowData <- function(rowdata, txpDataToAdd, matches, indexName) {
     if (!col %in% colnames(rowdata)) {
       # initialize with NA
       vector <- txpDataToAdd[, col]
-      vector <- S4Vectors::endoapply(vector, \(x) NA)
+      if (is(vector, "List")) {
+        # list-like vectors from S4Vectors, e.g. CharacterList
+        vector <- S4Vectors::endoapply(vector, \(x) NA)
+      } else {
+        # atomic vectors: NA of the same type (endoapply would give "NA" for character)
+        vector <- vector[NA_integer_]
+      }
       rowdata[col] <- rep(vector, length.out = nrow(rowdata))
     }
     rowdata[idx_rowdata, col] <- txpDataToAdd[, col]

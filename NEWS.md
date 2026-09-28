@@ -1,3 +1,13 @@
+# tximeta 1.31.9
+
+* Fix bug where `updateMetadata()` ignored its `prefer` argument,
+  always using the default order of registries.
+* Fix bug in `updateMetadata()` where character columns added to
+  `rowData` were filled with the string `"NA"` instead of `NA`
+  for transcripts without metadata.
+* Tests and vignette updated for the reduced tximportData (>= 1.41.1),
+  which no longer contains the GENCODE v48 GTF.
+
 # tximeta 1.31.6
 
 * Fix bug in internal function checkViaAHub()

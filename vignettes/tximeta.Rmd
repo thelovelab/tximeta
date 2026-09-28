@@ -544,20 +544,37 @@ class(se)
 rowData(se)
 ```
 
-```{r echo=FALSE, message=FALSE}
-# this chunk is required to avoiding downloading GTF file from FTP
-gtf_dir <- system.file("extdata/gencode", package="tximportData")
-gtf <- file.path(gtf_dir, "gencode.v48.annotation.gtf.gz")
-makeLinkedTxome(
+The `annotated` transcripts here are GENCODE v48, which is among the
+[pre-computed digests](#pre-computed-digests), and so _tximeta_ would
+typically download the GENCODE GTF to obtain transcript metadata. To avoid
+the download for this vignette, we instead build a dummy _GRanges_ object
+from the `|`-delimited metadata in the GENCODE transcript names (the IDs
+and lengths are real, while the genomic locations are not), and link it
+to the `annotated` digest using `makeLinkedTxpData()`.
+
+```{r message=FALSE}
+library(GenomicRanges)
+tnames <- read.delim(files[1])$tname
+tnames <- tnames[grepl("|", tnames, fixed=TRUE)]
+info <- do.call(rbind, strsplit(tnames, "|", fixed=TRUE))
+annotated_gr <- GRanges(
+  seqnames = "chrUn", # dummy location
+  ranges = IRanges(start=1, width=as.integer(info[,7])),
+  tx_name = info[,1],
+  gene_id = info[,2],
+  gene_name = info[,6],
+  tx_type = info[,8]
+)
+names(annotated_gr) <- annotated_gr$tx_name
+makeLinkedTxpData(
   digest = "6fc626c828b7a342ab0c6ff753055761989bf0e2306370e8766fedf45ad3adb3",
+  digestType = "sha256",
   indexName = "gencode.v48",
+  txpData = annotated_gr,
   source = "LocalGENCODE",
   organism = "Homo sapiens",
   release = "48",
-  genome = "GRCh38",
-  fasta = "/path/to/fasta.fa",
-  gtf = gtf,
-  write = FALSE
+  genome = "GRCh38"
 )
 ```
 
@@ -565,7 +582,6 @@ We can now inspect the digests of the two indices:
 
 ```{r}
 # returns a 2-row tibble
-# (here localGENCODE avoids downloading an ftp file)
 inspectDigests(se)
 ```
 
@@ -632,9 +648,10 @@ novel <- data.frame(
   type = "protein_coding"
 )
 head(novel)
-library(GenomicRanges)
 novel_gr <- as(novel, "GRanges")
 names(novel_gr) <- novel$tx_name
+# include the dummy `chrUn` from above
+seqlevels(novel_gr) <- c(seqlevels(novel_gr), "chrUn")
 ```
 
 Metadata specified via the `txpData` argument will be added to transcript labelled
