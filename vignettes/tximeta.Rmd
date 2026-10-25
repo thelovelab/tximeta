@@ -53,7 +53,7 @@ For sharing multiple samples, one can use, for example, `tar -czf` to bundle up
 a set of *salmon* output directories. For tips on using `tximeta()` with other
 quantifiers see the [other quantifiers](#other-quantifiers) section below.
 
-```{r echo=FALSE, fig.alt="How tximeta works"}
+```{r echo=FALSE, out.width="100%", fig.alt="How tximeta works"}
 knitr::include_graphics("images/diagram.png")
 ```
 
@@ -354,7 +354,7 @@ feature. However, the blue feature is the most abundant isoform (the brown
 features are the next most abundant isoforms). The pink feature is therefore not
 a good representation for the locus.
 
-```{r echo=FALSE, fig.alt="Transcripts compared to whole gene extent"}
+```{r echo=FALSE, out.width="100%", fig.alt="Transcripts compared to whole gene extent"}
 knitr::include_graphics("images/assignRanges-abundant.png")
 ```
 
@@ -469,7 +469,7 @@ oarfish --reads reads/experiment_rep1.fastq.gz --index gencode_plus_novel \
   --filter-group no-filters --threads 32
 ```
 
-```{r echo=FALSE, fig.alt="Diagram of tximeta mixed reference workflow"}
+```{r echo=FALSE, out.width="100%", fig.alt="Diagram of tximeta mixed reference workflow"}
 knitr::include_graphics("images/mixed-ref-diagram.png")
 ```
 

@@ -38,7 +38,7 @@ env:
   run_covr: 'false'
   run_pkgdown: 'true'
   has_RUnit: 'false'
-  cache-version: 'cache-v1'
+  cache-version: 'cache-v2'
   run_docker: 'false'
   bioc_version: 'bioc-devel'
   ## Valid options are:
@@ -138,8 +138,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ env.R_LIBS_USER }}
-          key: ${{ matrix.config.os }}-${{ matrix.config.r }}-${{ matrix.config.bioc }}-${{ inputs.cache-version }}
-          restore-keys: ${{ matrix.config.os }}-${{ matrix.config.r }}-${{ matrix.config.bioc }}--${{ inputs.cache-version }}
+          key: ${{ matrix.config.os }}-${{ matrix.config.r }}-${{ matrix.config.bioc }}-${{ env.cache-version }}
+          restore-keys: ${{ matrix.config.os }}-${{ matrix.config.r }}-${{ matrix.config.bioc }}-${{ env.cache-version }}
 
       ## remotes is needed for isntalling the Linux system dependencies
       ## as well as other R packages later on.
@@ -231,6 +231,34 @@ jobs:
           ## Pass #2 at installing dependencies
           message(paste('****', Sys.time(), 'pass number 2 at installing dependencies: any remaining dependencies ****'))
           remotes::install_local(dependencies = TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE, upgrade = TRUE, force = TRUE)
+        shell: Rscript {0}
+
+      - name: Verify dependencies
+        run: |
+          ## Fail early (with a clear message) if any Imports/Suggests are
+          ## missing or below the required version, e.g. from a stale cache
+          d <- read.dcf("DESCRIPTION", fields = c("Imports", "Suggests"))
+          d <- trimws(unlist(strsplit(paste(d[!is.na(d)], collapse = ","), ",")))
+          d <- d[d != ""]
+          pkg <- sub("[[:space:]]*\\(.*", "", d)
+          ver <- ifelse(grepl(">=", d), sub(".*>=[[:space:]]*([^)[:space:]]+).*", "\\1", d), NA)
+          base <- rownames(installed.packages(priority = "base"))
+          keep <- !pkg %in% base
+          pkg <- pkg[keep]; ver <- ver[keep]
+          unsatisfied <- function() {
+            ok <- vapply(seq_along(pkg), function(i) {
+              requireNamespace(pkg[i], quietly = TRUE) &&
+                (is.na(ver[i]) || packageVersion(pkg[i]) >= ver[i])
+            }, logical(1))
+            pkg[!ok]
+          }
+          bad <- unsatisfied()
+          if (length(bad)) {
+            message("Installing/upgrading: ", paste(bad, collapse = ", "))
+            BiocManager::install(bad, ask = FALSE, update = FALSE, force = TRUE)
+            bad <- unsatisfied()
+          }
+          if (length(bad)) stop("Unsatisfied dependencies: ", paste(bad, collapse = ", "))
         shell: Rscript {0}
 
       - name: Install BiocGenerics
