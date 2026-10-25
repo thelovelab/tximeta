@@ -25,13 +25,13 @@ Tessa Pierce, Lori Shepherd, Martin Morgan, Rob Patro Tximeta: Reference
 sequence checksums for provenance identification in RNA-seq PLOS
 Computational Biology 16(2): e1007664
 
-    @Article{,
-      title = {Tximeta: Reference sequence checksums for provenance identification in RNA-seq},
-      author = {Michael I. Love and Charlotte Soneson and Peter F. Hickey and Lisa K. Johnson and N. Tessa Pierce and Lori Shepherd and Martin Morgan and Rob Patro},
-      year = {2020},
-      volume = {16},
-      issue = {2},
-      pages = {e1007664},
-      journal = {PLOS Computational Biology},
-      doi = {10.1371/journal.pcbi.1007664},
-    }
+@Article{,\
+  title = {Tximeta: Reference sequence checksums for provenance identification in RNA-seq},\
+  author = {Michael I. Love and Charlotte Soneson and Peter F. Hickey and Lisa K. Johnson and N. Tessa Pierce and Lori Shepherd and Martin Morgan and Rob Patro},\
+  year = {2020},\
+  volume = {16},\
+  issue = {2},\
+  pages = {e1007664},\
+  journal = {PLOS Computational Biology},\
+  doi = {10.1371/journal.pcbi.1007664},\
+}

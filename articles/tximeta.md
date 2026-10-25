@@ -65,20 +65,16 @@ table, so we construct one in R. It is recommended to keep a sample
 table as a CSV or TSV file while working on an RNA-seq project with
 multiple samples.
 
-``` r
-
-dir <- system.file("extdata/salmon_dm", package="tximportData")
-files <- file.path(dir, "SRR1197474", "quant.sf") 
-file.exists(files)
-```
+\
+`dir`` ``<-`` `[`system.file`](https://rdrr.io/r/base/system.file.html)`(``"extdata/salmon_dm"``, package``=``"tximportData"``)`\
+`files`` ``<-`` `[`file.path`](https://rdrr.io/r/base/file.path.html)`(``dir``, ``"SRR1197474"``, ``"quant.sf"``)`` `\
+[`file.exists`](https://rdrr.io/r/base/files.html)`(``files``)`
 
     ## [1] TRUE
 
-``` r
-
-coldata <- data.frame(files, names="SRR1197474", condition="A", stringsAsFactors=FALSE)
-coldata
-```
+\
+`coldata`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(``files``, names``=``"SRR1197474"``, condition``=``"A"``, stringsAsFactors``=``FALSE``)`\
+`coldata`
 
     ##                                                                   files
     ## 1 /__w/_temp/Library/tximportData/extdata/salmon_dm/SRR1197474/quant.sf
@@ -98,11 +94,9 @@ Other columns will be propagated to `colData` of the
 
 Normally, we would just run `tximeta` like so:
 
-``` r
-
-library(tximeta)
-se <- tximeta(coldata)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`tximeta`](https://thelovelab.github.io/tximeta)`)`\
+`se`` ``<-`` `[`tximeta`](https://thelovelab.github.io/tximeta/reference/tximeta.md)`(``coldata``)`
 
 However, to avoid downloading remote GTF files during this vignette, we
 will point to a GTF file saved locally (in the *tximportData* package).
@@ -116,22 +110,20 @@ would normally specify a remote GTF source, not a local one. **This
 following code is therefore not recommended for a typical workflow, but
 is particular to the vignette code.**
 
-``` r
-
-indexDir <- file.path(dir, "Dm.BDGP6.22.98_salmon-0.14.1")
-fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
-              "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz")
-gtfPath <- file.path(dir,"Drosophila_melanogaster.BDGP6.22.98.gtf.gz")
-suppressPackageStartupMessages(library(tximeta))
-makeLinkedTxome(indexDir=indexDir,
-                source="LocalEnsembl",
-                organism="Drosophila melanogaster",
-                release="98",
-                genome="BDGP6.22",
-                fasta=fastaFTP,
-                gtf=gtfPath,
-                write=FALSE)
-```
+\
+`indexDir`` ``<-`` `[`file.path`](https://rdrr.io/r/base/file.path.html)`(``dir``, ``"Dm.BDGP6.22.98_salmon-0.14.1"``)`\
+`fastaFTP`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``"ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz"``,`\
+`              ``"ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz"``)`\
+`gtfPath`` ``<-`` `[`file.path`](https://rdrr.io/r/base/file.path.html)`(``dir``,``"Drosophila_melanogaster.BDGP6.22.98.gtf.gz"``)`\
+[`suppressPackageStartupMessages`](https://rdrr.io/r/base/message.html)`(`[`library`](https://rdrr.io/r/base/library.html)`(`[`tximeta`](https://thelovelab.github.io/tximeta)`)``)`\
+[`makeLinkedTxome`](https://thelovelab.github.io/tximeta/reference/linkedTxome.md)`(``indexDir``=``indexDir``,`\
+`                source``=``"LocalEnsembl"``,`\
+`                organism``=``"Drosophila melanogaster"``,`\
+`                release``=``"98"``,`\
+`                genome``=``"BDGP6.22"``,`\
+`                fasta``=``fastaFTP``,`\
+`                gtf``=``gtfPath``,`\
+`                write``=``FALSE``)`
 
     ## reading digest from indexDir: .../Dm.BDGP6.22.98_salmon-0.14.1
 
@@ -139,15 +131,11 @@ makeLinkedTxome(indexDir=indexDir,
 
     ## saving linkedTxome in bfc (first time)
 
-``` r
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`tximeta`](https://thelovelab.github.io/tximeta)`)`
 
-library(tximeta)
-```
-
-``` r
-
-se <- tximeta(coldata)
-```
+\
+`se`` ``<-`` `[`tximeta`](https://thelovelab.github.io/tximeta/reference/tximeta.md)`(``coldata``)`
 
     ## importing salmon quantification files
 
@@ -270,11 +258,9 @@ The `SummarizedExperiment` object resulting from the data import
 contains our coldata from before. Note that the `files` column was
 removed during the import.
 
-``` r
-
-suppressPackageStartupMessages(library(SummarizedExperiment))
-colData(se)
-```
+\
+[`suppressPackageStartupMessages`](https://rdrr.io/r/base/message.html)`(`[`library`](https://rdrr.io/r/base/library.html)`(`[`SummarizedExperiment`](https://bioconductor.org/packages/SummarizedExperiment)`)``)`\
+[`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)`(``se``)`
 
     ## DataFrame with 1 row and 2 columns
     ##                  names   condition
@@ -283,10 +269,8 @@ colData(se)
 
 Here we show the three matrices that were imported.
 
-``` r
-
-assayNames(se)
-```
+\
+[`assayNames`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)`(``se``)`
 
     ## [1] "counts"    "abundance" "length"
 
@@ -297,10 +281,8 @@ samples), these would be imported as additional assays named
 [`tximeta()`](https://thelovelab.github.io/tximeta/reference/tximeta.md)
 has imported the correct ranges for the transcripts:
 
-``` r
-
-rowRanges(se)
-```
+\
+`rowRanges``(``se``)`
 
     ## GRanges object with 33701 ranges and 3 metadata columns:
     ##               seqnames            ranges strand |     tx_id         gene_id
@@ -335,24 +317,22 @@ rowRanges(se)
 We have appropriate genome information, which prevents us from making
 bioinformatic mistakes:
 
-``` r
-
-seqinfo(se)
-```
+\
+[`seqinfo`](https://rdrr.io/pkg/Seqinfo/man/seqinfo.html)`(``se``)`
 
     ## Seqinfo object with 25 sequences from an unspecified genome; no seqlengths:
-    ##   seqnames             seqlengths isCircular genome
-    ##   2L                         <NA>       <NA>   <NA>
-    ##   2R                         <NA>       <NA>   <NA>
-    ##   3L                         <NA>       <NA>   <NA>
-    ##   3R                         <NA>       <NA>   <NA>
-    ##   4                          <NA>       <NA>   <NA>
-    ##   ...                         ...        ...    ...
-    ##   211000022280481            <NA>       <NA>   <NA>
-    ##   211000022280494            <NA>       <NA>   <NA>
-    ##   211000022280703            <NA>       <NA>   <NA>
-    ##   mitochondrion_genome       <NA>       <NA>   <NA>
-    ##   rDNA                       <NA>       <NA>   <NA>
+    ##   seqnames             seqnames seqlengths isCircular genome
+    ##   1                          2L       <NA>       <NA>   <NA>
+    ##   2                          2R       <NA>       <NA>   <NA>
+    ##   3                          3L       <NA>       <NA>   <NA>
+    ##   4                          3R       <NA>       <NA>   <NA>
+    ##   5                           4       <NA>       <NA>   <NA>
+    ##   ...                       ...        ...        ...    ...
+    ##   21            211000022280481       <NA>       <NA>   <NA>
+    ##   22            211000022280494       <NA>       <NA>   <NA>
+    ##   23            211000022280703       <NA>       <NA>   <NA>
+    ##   24       mitochondrion_genome       <NA>       <NA>   <NA>
+    ##   25                       rDNA       <NA>       <NA>   <NA>
 
 ## Retrieve the transcript database
 
@@ -365,17 +345,13 @@ user can easily access the cached database with the following helper
 function. In this case, `tximeta` has an associated *EnsDb* object that
 we can retrieve and use in our R session:
 
-``` r
+\
+`edb`` ``<-`` `[`retrieveDb`](https://thelovelab.github.io/tximeta/reference/retrieveDb.md)`(``se``)`
 
-edb <- retrieveDb(se)
-```
+    ## loading existing TxDb created: 2026-10-25 20:42:57
 
-    ## loading existing TxDb created: 2026-07-20 08:01:54
-
-``` r
-
-class(edb)
-```
+\
+[`class`](https://rdrr.io/r/base/class.html)`(``edb``)`
 
     ## [1] "TxDb"
     ## attr(,"package")
@@ -406,19 +382,15 @@ information for each transcript. Here, we swap out the transcript
 *GRanges*, where each element of the list gives the exons for a
 particular transcript).
 
-``` r
+\
+`se.exons`` ``<-`` `[`addExons`](https://thelovelab.github.io/tximeta/reference/addExons.md)`(``se``)`
 
-se.exons <- addExons(se)
-```
-
-    ## loading existing TxDb created: 2026-07-20 08:01:54
+    ## loading existing TxDb created: 2026-10-25 20:42:57
 
     ## generating exon ranges
 
-``` r
-
-rowRanges(se.exons)[[1]]
-```
+\
+`rowRanges``(``se.exons``)``[[``1``]``]`
 
     ## GRanges object with 2 ranges and 3 metadata columns:
     ##       seqnames        ranges strand |   exon_id      exon_name exon_rank
@@ -460,12 +432,10 @@ cached locally for repeated usage. The transcript IDs are stored as a
 *TxDb* by setting `skipRanges=TRUE` and providing your own `tx2gene`
 table which is passed to `tximport`.
 
-``` r
+\
+`gse`` ``<-`` ``summarizeToGene``(``se``)`
 
-gse <- summarizeToGene(se)
-```
-
-    ## loading existing TxDb created: 2026-07-20 08:01:54
+    ## loading existing TxDb created: 2026-10-25 20:42:57
 
     ## obtaining transcript-to-gene mapping from database
 
@@ -480,10 +450,8 @@ gse <- summarizeToGene(se)
 
     ## summarizing length
 
-``` r
-
-rowRanges(gse)
-```
+\
+`rowRanges``(``gse``)`
 
     ## GRanges object with 17208 ranges and 2 metadata columns:
     ##               seqnames            ranges strand |     gene_id
@@ -523,11 +491,9 @@ isoform rather than the leftmost to rightmost coordinate. See the
 isoform arguably will reflect more accurate genomic distances than the
 default option.
 
-``` r
-
-# unevaluated code chunk
-gse <- summarizeToGene(se, assignRanges="abundant")
-```
+\
+`# unevaluated code chunk`\
+`gse`` ``<-`` ``summarizeToGene``(``se``, assignRanges``=``"abundant"``)`
 
 For more explanation about why this may be a better choice, see the
 following tutorial chapter:
@@ -553,17 +519,13 @@ know the organism and the source of the transcriptome. (This function
 currently only works for GENCODE and Ensembl gene or transcript IDs but
 could be extended to work for arbitrary sources.)
 
-``` r
-
-library(org.Dm.eg.db)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(``org.Dm.eg.db``)`
 
     ## 
 
-``` r
-
-gse <- addIds(gse, "REFSEQ", gene=TRUE)
-```
+\
+`gse`` ``<-`` `[`addIds`](https://thelovelab.github.io/tximeta/reference/addIds.md)`(``gse``, ``"REFSEQ"``, gene``=``TRUE``)`
 
     ## mapping to new IDs using org.Dm.eg.db
     ## if all matching IDs are desired, and '1:many mappings' are reported,
@@ -571,10 +533,8 @@ gse <- addIds(gse, "REFSEQ", gene=TRUE)
 
     ## 'select()' returned 1:many mapping between keys and columns
 
-``` r
-
-mcols(gse)
-```
+\
+[`mcols`](https://rdrr.io/pkg/S4Vectors/man/Vector-class.html)`(``gse``)`
 
     ## DataFrame with 17208 rows and 3 columns
     ##                 gene_id                                  tx_ids       REFSEQ
@@ -596,32 +556,26 @@ mcols(gse)
 The following code chunk demonstrates how to build a *DESeqDataSet* and
 begin a differential expression analysis with genewise counts.
 
-``` r
-
-suppressPackageStartupMessages(library(DESeq2))
-# here there is a single sample so we use ~1.
-# expect a warning that there is only a single sample...
-suppressWarnings({dds <- DESeqDataSet(gse, ~1)})
-# ... see DESeq2 vignette
-```
+\
+[`suppressPackageStartupMessages`](https://rdrr.io/r/base/message.html)`(`[`library`](https://rdrr.io/r/base/library.html)`(`[`DESeq2`](https://github.com/thelovelab/DESeq2)`)``)`\
+`# here there is a single sample so we use ~1.`\
+`# expect a warning that there is only a single sample...`\
+[`suppressWarnings`](https://rdrr.io/r/base/warning.html)`(``{``dds`` ``<-`` `[`DESeqDataSet`](https://rdrr.io/pkg/DESeq2/man/DESeqDataSet.html)`(``gse``, ``~``1``)``}``)`\
+`# ... see DESeq2 vignette`
 
 The following code demonstrates how build a *DGEList* object for use
 with *edgeR* or *limma-voom*.
 
-``` r
-
-suppressPackageStartupMessages(library(edgeR))
-y <- DGEListFromTximeta(gse)
-# ... see edgeR or limma User's Guide for further steps
-```
+\
+[`suppressPackageStartupMessages`](https://rdrr.io/r/base/message.html)`(`[`library`](https://rdrr.io/r/base/library.html)`(`[`edgeR`](https://bioinf.wehi.edu.au/edgeR/)`)``)`\
+`y`` ``<-`` `[`DGEListFromTximeta`](https://rdrr.io/pkg/edgeR/man/DGEListFromTximport.html)`(``gse``)`\
+`# ... see edgeR or limma User's Guide for further steps`
 
 Above we generated counts-from-abundance when calling `summarizeToGene`.
 The counts-from-abundance status is then stored in the metadata:
 
-``` r
-
-metadata(gse)$countsFromAbundance 
-```
+\
+[`metadata`](https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html)`(``gse``)``$``countsFromAbundance`` `
 
     ## [1] "no"
 
@@ -634,15 +588,13 @@ inferential replicates, e.g. bootstrap or Gibbs samples, which are
 imported and arranged by `tximeta` if these were generated during
 quantification.
 
-``` r
-
-library(fishpond)
-y <- se
-y <- scaleInfReps(y)
-y <- labelKeep(y)
-y <- swish(y, x="condition")
-# ... see Swish vignette in fishpond package
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(``fishpond``)`\
+`y`` ``<-`` ``se`\
+`y`` ``<-`` ``scaleInfReps``(``y``)`\
+`y`` ``<-`` ``labelKeep``(``y``)`\
+`y`` ``<-`` ``swish``(``y``, x``=``"condition"``)`\
+`# ... see Swish vignette in fishpond package`
 
 The
 [`edgeR::DGEListFromTximeta`](https://rdrr.io/pkg/edgeR/man/DGEListFromTximport.html)
@@ -658,29 +610,23 @@ counts (Baldoni et al. 2024, 2025). The following code produces a
 *DGEList* object suitable for transcript-level analysis in *edgeR* or
 *limma*.
 
-``` r
-
-y <- DGEListFromTximeta(se, divide = TRUE)
-# ... see edgeR or limma User's Guide for further steps
-```
+\
+`y`` ``<-`` `[`DGEListFromTximeta`](https://rdrr.io/pkg/edgeR/man/DGEListFromTximport.html)`(``se``, divide ``=`` ``TRUE``)`\
+`# ... see edgeR or limma User's Guide for further steps`
 
 ## Additional metadata slots
 
 The following information is attached to the *SummarizedExperiment* by
 `tximeta`:
 
-``` r
-
-names(metadata(se))
-```
+\
+[`names`](https://rdrr.io/r/base/names.html)`(`[`metadata`](https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html)`(``se``)``)`
 
     ## [1] "tximetaInfo"         "quantInfo"           "countsFromAbundance"
     ## [4] "level"               "txomeInfo"           "txdbInfo"
 
-``` r
-
-str(metadata(se)[["quantInfo"]])
-```
+\
+[`str`](https://rdrr.io/r/utils/str.html)`(`[`metadata`](https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html)`(``se``)``[[``"quantInfo"``]``]``)`
 
     ## List of 31
     ##  $ salmon_version                                        : chr "0.14.1"
@@ -716,10 +662,8 @@ str(metadata(se)[["quantInfo"]])
     ##  $ start_time                                            : chr "Sat Oct 12 13:55:01 2019"
     ##  $ end_time                                              : chr "Sat Oct 12 14:08:11 2019"
 
-``` r
-
-str(metadata(se)[["txomeInfo"]])
-```
+\
+[`str`](https://rdrr.io/r/utils/str.html)`(`[`metadata`](https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html)`(``se``)``[[``"txomeInfo"``]``]``)`
 
     ## List of 10
     ##  $ index        : chr "Dm.BDGP6.22.98_salmon-0.14.1"
@@ -736,21 +680,17 @@ str(metadata(se)[["txomeInfo"]])
     ##  $ linkedTxpData: Named logi FALSE
     ##   ..- attr(*, "names")= chr "txome"
 
-``` r
-
-str(metadata(se)[["tximetaInfo"]])
-```
+\
+[`str`](https://rdrr.io/r/utils/str.html)`(`[`metadata`](https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html)`(``se``)``[[``"tximetaInfo"``]``]``)`
 
     ## List of 3
     ##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1
-    ##   ..$ : int [1:3] 1 31 8
+    ##   ..$ : int [1:3] 1 31 9
     ##  $ type      : chr "salmon"
-    ##  $ importTime: POSIXct[1:1], format: "2026-07-20 08:01:46"
+    ##  $ importTime: POSIXct[1:1], format: "2026-10-25 20:42:49"
 
-``` r
-
-str(metadata(se)[["txdbInfo"]])
-```
+\
+[`str`](https://rdrr.io/r/utils/str.html)`(`[`metadata`](https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html)`(``se``)``[[``"txdbInfo"``]``]``)`
 
     ##  Named chr [1:12] "TxDb" "GenomicFeatures" ...
     ##  - attr(*, "names")= chr [1:12] "Db type" "Supporting package" "Data source" "Organism" ...
@@ -795,16 +735,14 @@ other transcript quantification settings.
 Below is an un-evaluated code chunk with typical code you may use for an
 experiment called `experiment` with samples `rep1` to `rep4`:
 
-``` r
-
-# specify oarfish .quant files
-# quantified against an index of two .fa files, e.g.:
-# `--annotated gencode.v48.transcripts.fa.gz --novel my_novel_txps.fa.gz`
-names <- paste0("rep", 1:4)
-files <- file.path(dir, paste0("experiment_", names, ".quant.gz"))
-coldata <- data.frame(files, names) # the sample info table
-se <- importData(coldata, type="oarfish")
-```
+\
+`# specify oarfish .quant files`\
+`# quantified against an index of two .fa files, e.g.:`\
+`` # `--annotated gencode.v48.transcripts.fa.gz --novel my_novel_txps.fa.gz` ``\
+`names`` ``<-`` `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"rep"``, ``1``:``4``)`\
+`files`` ``<-`` `[`file.path`](https://rdrr.io/r/base/file.path.html)`(``dir``, `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"experiment_"``, ``names``, ``".quant.gz"``)``)`\
+`coldata`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(``files``, ``names``)`` ``# the sample info table`\
+`se`` ``<-`` `[`importData`](https://thelovelab.github.io/tximeta/reference/importData.md)`(``coldata``, type``=``"oarfish"``)`
 
 ### salmon mixed reference
 
@@ -821,14 +759,12 @@ Pass the digest filename to
 [`importData()`](https://thelovelab.github.io/tximeta/reference/importData.md)
 via the `mixedDigest` argument:
 
-``` r
-
-# specify salmon quant.sf files, quantified against a combined annotated + novel index
-names <- paste0("rep", 1:4)
-files <- file.path(dir, paste0("experiment_", names, "/quant.sf"))
-coldata <- data.frame(files, names)
-se <- importData(coldata, type="salmon", mixedDigest="mixed_ref_digests.json")
-```
+\
+`# specify salmon quant.sf files, quantified against a combined annotated + novel index`\
+`names`` ``<-`` `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"rep"``, ``1``:``4``)`\
+`files`` ``<-`` `[`file.path`](https://rdrr.io/r/base/file.path.html)`(``dir``, `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"experiment_"``, ``names``, ``"/quant.sf"``)``)`\
+`coldata`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(``files``, ``names``)`\
+`se`` ``<-`` `[`importData`](https://thelovelab.github.io/tximeta/reference/importData.md)`(``coldata``, type``=``"salmon"``, mixedDigest``=``"mixed_ref_digests.json"``)`
 
 The returned object and all subsequent steps
 ([`inspectDigests()`](https://thelovelab.github.io/tximeta/reference/inspectDigests.md),
@@ -841,15 +777,13 @@ Below is an evaluated code chunk which first points to the location of
 the dataset used for the vignette. The above code chunk is more typical
 for a user however.
 
-``` r
-
-dir <- system.file("extdata/oarfish", package="tximportData")
-names <- paste0("rep", 2:4)
-files <- file.path(dir, paste0("sgnex_h9_", names, ".quant.gz"))
-coldata <- data.frame(files, names)
-# read in the quantification data
-se <- importData(coldata, type="oarfish")
-```
+\
+`dir`` ``<-`` `[`system.file`](https://rdrr.io/r/base/system.file.html)`(``"extdata/oarfish"``, package``=``"tximportData"``)`\
+`names`` ``<-`` `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"rep"``, ``2``:``4``)`\
+`files`` ``<-`` `[`file.path`](https://rdrr.io/r/base/file.path.html)`(``dir``, `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"sgnex_h9_"``, ``names``, ``".quant.gz"``)``)`\
+`coldata`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(``files``, ``names``)`\
+`# read in the quantification data`\
+`se`` ``<-`` `[`importData`](https://thelovelab.github.io/tximeta/reference/importData.md)`(``coldata``, type``=``"oarfish"``)`
 
     ## reading in files with read.delim (install 'readr' package for speed up)
 
@@ -866,35 +800,62 @@ attached. This is similar to what
 [`tximeta()`](https://thelovelab.github.io/tximeta/reference/tximeta.md)
 does with `skipMeta=TRUE`.
 
-``` r
-
-class(se)
-```
+\
+[`class`](https://rdrr.io/r/base/class.html)`(``se``)`
 
     ## [1] "SummarizedExperiment"
     ## attr(,"package")
     ## [1] "SummarizedExperiment"
 
-``` r
-
-rowData(se)
-```
+\
+[`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)`(``se``)`
 
     ## DataFrame with 423044 rows and 0 columns
 
+The `annotated` transcripts here are GENCODE v48, which is among the
+[pre-computed digests](#pre-computed-digests), and so *tximeta* would
+typically download the GENCODE GTF to obtain transcript metadata. To
+avoid the download for this vignette, we instead build a dummy *GRanges*
+object from the `|`-delimited metadata in the GENCODE transcript names
+(the IDs and lengths are real, while the genomic locations are not), and
+link it to the `annotated` digest using
+[`makeLinkedTxpData()`](https://thelovelab.github.io/tximeta/reference/linkedTxpData.md).
+
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`GenomicRanges`](https://bioconductor.org/packages/GenomicRanges)`)`\
+`tnames`` ``<-`` `[`read.delim`](https://rdrr.io/r/utils/read.table.html)`(``files``[``1``]``)``$``tname`\
+`tnames`` ``<-`` ``tnames``[`[`grepl`](https://rdrr.io/pkg/BiocGenerics/man/grep.html)`(``"|"``, ``tnames``, fixed``=``TRUE``)``]`\
+`info`` ``<-`` `[`do.call`](https://rdrr.io/pkg/BiocGenerics/man/do.call.html)`(``rbind``, `[`strsplit`](https://rdrr.io/r/base/strsplit.html)`(``tnames``, ``"|"``, fixed``=``TRUE``)``)`\
+`annotated_gr`` ``<-`` `[`GRanges`](https://rdrr.io/pkg/GenomicRanges/man/GRanges-class.html)`(`\
+`  seqnames ``=`` ``"chrUn"``, ``# dummy location`\
+`  ranges ``=`` `[`IRanges`](https://rdrr.io/pkg/IRanges/man/IRanges-constructor.html)`(``start``=``1``, width``=`[`as.integer`](https://rdrr.io/r/base/integer.html)`(``info``[``,``7``]``)``)``,`\
+`  tx_name ``=`` ``info``[``,``1``]``,`\
+`  gene_id ``=`` ``info``[``,``2``]``,`\
+`  gene_name ``=`` ``info``[``,``6``]``,`\
+`  tx_type ``=`` ``info``[``,``8``]`\
+`)`\
+[`names`](https://rdrr.io/r/base/names.html)`(``annotated_gr``)`` ``<-`` ``annotated_gr``$``tx_name`\
+[`makeLinkedTxpData`](https://thelovelab.github.io/tximeta/reference/linkedTxpData.md)`(`\
+`  digest ``=`` ``"6fc626c828b7a342ab0c6ff753055761989bf0e2306370e8766fedf45ad3adb3"``,`\
+`  digestType ``=`` ``"sha256"``,`\
+`  indexName ``=`` ``"gencode.v48"``,`\
+`  txpData ``=`` ``annotated_gr``,`\
+`  source ``=`` ``"LocalGENCODE"``,`\
+`  organism ``=`` ``"Homo sapiens"``,`\
+`  release ``=`` ``"48"``,`\
+`  genome ``=`` ``"GRCh38"`\
+`)`
+
 We can now inspect the digests of the two indices:
 
-``` r
-
-# returns a 2-row tibble
-# (here localGENCODE avoids downloading an ftp file)
-inspectDigests(se)
-```
+\
+`# returns a 2-row tibble`\
+[`inspectDigests`](https://thelovelab.github.io/tximeta/reference/inspectDigests.md)`(``se``)`
 
     ## # A tibble: 2 × 8
     ##   index    source organism release genome linkedTxome linkedTxpData small_digest
     ##   <chr>    <chr>  <chr>    <chr>   <chr>  <lgl>       <lgl>         <chr>       
-    ## 1 annotat… Local… Homo sa… 48      GRCh38 TRUE        FALSE         6fc626      
+    ## 1 annotat… Local… Homo sa… 48      GRCh38 FALSE       TRUE          6fc626      
     ## 2 novel    NA     NA       NA      NA     NA          NA            43158f
 
 We can see the `source` and other annotation details for `annotated` and
@@ -916,15 +877,13 @@ digests](#pre-computed-digests).
 A small 6-character version of the digest is printed. One can also
 obtain the full digest (shown below).
 
-``` r
-
-inspectDigests(se, fullDigest=TRUE)
-```
+\
+[`inspectDigests`](https://thelovelab.github.io/tximeta/reference/inspectDigests.md)`(``se``, fullDigest``=``TRUE``)`
 
     ## # A tibble: 2 × 9
     ##   index    source organism release genome linkedTxome linkedTxpData small_digest
     ##   <chr>    <chr>  <chr>    <chr>   <chr>  <lgl>       <lgl>         <chr>       
-    ## 1 annotat… Local… Homo sa… 48      GRCh38 TRUE        FALSE         6fc626      
+    ## 1 annotat… Local… Homo sa… 48      GRCh38 FALSE       TRUE          6fc626      
     ## 2 novel    NA     NA       NA      NA     NA          NA            43158f      
     ## # ℹ 1 more variable: digest <chr>
 
@@ -953,43 +912,46 @@ but necessitates removing transcripts (rows) without range information.
 Here, transcripts are preserved but `NA` filled in for columns where we
 don’t have metadata.
 
-``` r
+\
+`se_update`` ``<-`` `[`updateMetadata`](https://thelovelab.github.io/tximeta/reference/updateMetadata.md)`(``se``)`
 
-se_update <- updateMetadata(se)
-```
-
-    ## Warning in .get_cds_IDX(mcols0$type, mcols0$phase): The "phase" metadata column contains non-NA values for features of type
-    ##   stop_codon. This information was ignored.
-
-    ## Warning in .makeTxDb_normarg_chrominfo(chrominfo): genome version information
-    ## is not available for this TxDb object
-
-    ## --annotated: adding metadata for 385669 transcripts
+    ## --annotated: adding metadata for 412044 transcripts
 
     ## --novel: no transcript metadata found
     ##   consider using `linkedTxome`, or `linkedTxpData` (see man pages)
 
     ## --novel: no matching transcripts
 
-``` r
+\
+[`mcols`](https://rdrr.io/pkg/S4Vectors/man/Vector-class.html)`(``se_update``)`
 
-mcols(se_update)
-```
-
-    ## DataFrame with 423044 rows and 4 columns
-    ##                             tx_name     tx_id           gene_id       index
-    ##                         <character> <integer>   <CharacterList> <character>
-    ## ENST00000832824.1 ENST00000832824.1         1 ENSG00000290825.2   annotated
-    ## ENST00000832825.1 ENST00000832825.1         2 ENSG00000290825.2   annotated
-    ## ENST00000832826.1 ENST00000832826.1         3 ENSG00000290825.2   annotated
-    ## ENST00000832827.1 ENST00000832827.1         4 ENSG00000290825.2   annotated
-    ## ENST00000832828.1 ENST00000832828.1         5 ENSG00000290825.2   annotated
-    ## ...                             ...       ...               ...         ...
-    ## novel10996               novel10996        NA                NA          NA
-    ## novel10997               novel10997        NA                NA          NA
-    ## novel10998               novel10998        NA                NA          NA
-    ## novel10999               novel10999        NA                NA          NA
-    ## novel11000               novel11000        NA                NA          NA
+    ## DataFrame with 423044 rows and 5 columns
+    ##                             tx_name           gene_id   gene_name     tx_type
+    ##                         <character>       <character> <character> <character>
+    ## ENST00000832824.1 ENST00000832824.1 ENSG00000290825.2    DDX11L16      lncRNA
+    ## ENST00000832825.1 ENST00000832825.1 ENSG00000290825.2    DDX11L16      lncRNA
+    ## ENST00000832826.1 ENST00000832826.1 ENSG00000290825.2    DDX11L16      lncRNA
+    ## ENST00000832827.1 ENST00000832827.1 ENSG00000290825.2    DDX11L16      lncRNA
+    ## ENST00000832828.1 ENST00000832828.1 ENSG00000290825.2    DDX11L16      lncRNA
+    ## ...                             ...               ...         ...         ...
+    ## novel10996               novel10996                NA          NA          NA
+    ## novel10997               novel10997                NA          NA          NA
+    ## novel10998               novel10998                NA          NA          NA
+    ## novel10999               novel10999                NA          NA          NA
+    ## novel11000               novel11000                NA          NA          NA
+    ##                         index
+    ##                   <character>
+    ## ENST00000832824.1   annotated
+    ## ENST00000832825.1   annotated
+    ## ENST00000832826.1   annotated
+    ## ENST00000832827.1   annotated
+    ## ENST00000832828.1   annotated
+    ## ...                       ...
+    ## novel10996                 NA
+    ## novel10997                 NA
+    ## novel10998                 NA
+    ## novel10999                 NA
+    ## novel11000                 NA
 
 [`updateMetadata()`](https://thelovelab.github.io/tximeta/reference/updateMetadata.md)
 also allows adding metadata manually, either in the form of a *GRanges*
@@ -998,20 +960,18 @@ object or *data.frame*-like object. Note that
 can be used for persistent addition of *GRanges* metadata across
 sessions.
 
-``` r
-
-# define novel set so we can add metadata
-novel <- data.frame(
-  seqnames = paste0("chr", rep(1:22, each = 500)),
-  start = 1e6 + 1 + 0:499 * 1000,
-  end = 1e6 + 1 + 0:499 * 1000 + 1000 - 1,
-  strand = "+",
-  tx_name = paste0("novel", 1:(22 * 500)),
-  gene_id = paste0("novel_gene", rep(1:(22 * 10), each = 50)),
-  type = "protein_coding"
-)
-head(novel)
-```
+\
+`# define novel set so we can add metadata`\
+`novel`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(`\
+`  seqnames ``=`` `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"chr"``, `[`rep`](https://rdrr.io/r/base/rep.html)`(``1``:``22``, each ``=`` ``500``)``)``,`\
+`  start ``=`` ``1e6`` ``+`` ``1`` ``+`` ``0``:``499`` ``*`` ``1000``,`\
+`  end ``=`` ``1e6`` ``+`` ``1`` ``+`` ``0``:``499`` ``*`` ``1000`` ``+`` ``1000`` ``-`` ``1``,`\
+`  strand ``=`` ``"+"``,`\
+`  tx_name ``=`` `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"novel"``, ``1``:``(``22`` ``*`` ``500``)``)``,`\
+`  gene_id ``=`` `[`paste0`](https://rdrr.io/r/base/paste.html)`(``"novel_gene"``, `[`rep`](https://rdrr.io/r/base/rep.html)`(``1``:``(``22`` ``*`` ``10``)``, each ``=`` ``50``)``)``,`\
+`  type ``=`` ``"protein_coding"`\
+`)`\
+[`head`](https://rdrr.io/r/utils/head.html)`(``novel``)`
 
     ##   seqnames   start     end strand tx_name     gene_id           type
     ## 1     chr1 1000001 1001000      +  novel1 novel_gene1 protein_coding
@@ -1021,22 +981,19 @@ head(novel)
     ## 5     chr1 1004001 1005000      +  novel5 novel_gene1 protein_coding
     ## 6     chr1 1005001 1006000      +  novel6 novel_gene1 protein_coding
 
-``` r
-
-library(GenomicRanges)
-novel_gr <- as(novel, "GRanges")
-names(novel_gr) <- novel$tx_name
-```
+\
+`novel_gr`` ``<-`` `[`as`](https://rdrr.io/r/methods/as.html)`(``novel``, ``"GRanges"``)`\
+[`names`](https://rdrr.io/r/base/names.html)`(``novel_gr``)`` ``<-`` ``novel``$``tx_name`\
+`` # include the dummy `chrUn` from above ``\
+[`seqlevels`](https://rdrr.io/pkg/Seqinfo/man/seqinfo.html)`(``novel_gr``)`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(`[`seqlevels`](https://rdrr.io/pkg/Seqinfo/man/seqinfo.html)`(``novel_gr``)``, ``"chrUn"``)`
 
 Metadata specified via the `txpData` argument will be added to
 transcript labelled with `index="user"`.
 
-``` r
+\
+`se_with_ranges`` ``<-`` `[`updateMetadata`](https://thelovelab.github.io/tximeta/reference/updateMetadata.md)`(``se``, txpData``=``novel_gr``, ranges``=``TRUE``)`
 
-se_with_ranges <- updateMetadata(se, txpData=novel_gr, ranges=TRUE)
-```
-
-    ## --annotated: adding metadata for 385669 transcripts
+    ## --annotated: adding metadata for 412044 transcripts
 
     ## --novel: no transcript metadata found
     ##   consider using `linkedTxome`, or `linkedTxpData` (see man pages)
@@ -1045,42 +1002,51 @@ se_with_ranges <- updateMetadata(se, txpData=novel_gr, ranges=TRUE)
 
     ## --user: adding metadata for 11000 transcripts
 
-    ## building RangedSE: subsetting to 396669 out of 423044 rows with range data
+\
+`rowRanges``(``se_with_ranges``)`
 
-``` r
-
-rowRanges(se_with_ranges)
-```
-
-    ## GRanges object with 396669 ranges and 5 metadata columns:
+    ## GRanges object with 423044 ranges and 6 metadata columns:
     ##                     seqnames          ranges strand |           tx_name
     ##                        <Rle>       <IRanges>  <Rle> |       <character>
-    ##   ENST00000832824.1     chr1     11121-14413      + | ENST00000832824.1
-    ##   ENST00000832825.1     chr1     11125-14405      + | ENST00000832825.1
-    ##   ENST00000832826.1     chr1     11410-14413      + | ENST00000832826.1
-    ##   ENST00000832827.1     chr1     11411-14413      + | ENST00000832827.1
-    ##   ENST00000832828.1     chr1     11426-14409      + | ENST00000832828.1
+    ##   ENST00000832824.1    chrUn          1-1379      * | ENST00000832824.1
+    ##   ENST00000832825.1    chrUn          1-1417      * | ENST00000832825.1
+    ##   ENST00000832826.1    chrUn          1-1538      * | ENST00000832826.1
+    ##   ENST00000832827.1    chrUn          1-1519      * | ENST00000832827.1
+    ##   ENST00000832828.1    chrUn          1-1762      * | ENST00000832828.1
     ##                 ...      ...             ...    ... .               ...
     ##          novel10996    chr22 1495001-1496000      + |        novel10996
     ##          novel10997    chr22 1496001-1497000      + |        novel10997
     ##          novel10998    chr22 1497001-1498000      + |        novel10998
     ##          novel10999    chr22 1498001-1499000      + |        novel10999
     ##          novel11000    chr22 1499001-1500000      + |        novel11000
-    ##                         tx_id           gene_id       index           type
-    ##                     <integer>   <CharacterList> <character>    <character>
-    ##   ENST00000832824.1         1 ENSG00000290825.2   annotated             NA
-    ##   ENST00000832825.1         2 ENSG00000290825.2   annotated             NA
-    ##   ENST00000832826.1         3 ENSG00000290825.2   annotated             NA
-    ##   ENST00000832827.1         4 ENSG00000290825.2   annotated             NA
-    ##   ENST00000832828.1         5 ENSG00000290825.2   annotated             NA
-    ##                 ...       ...               ...         ...            ...
-    ##          novel10996      <NA>     novel_gene220        user protein_coding
-    ##          novel10997      <NA>     novel_gene220        user protein_coding
-    ##          novel10998      <NA>     novel_gene220        user protein_coding
-    ##          novel10999      <NA>     novel_gene220        user protein_coding
-    ##          novel11000      <NA>     novel_gene220        user protein_coding
+    ##                               gene_id   gene_name     tx_type       index
+    ##                           <character> <character> <character> <character>
+    ##   ENST00000832824.1 ENSG00000290825.2    DDX11L16      lncRNA   annotated
+    ##   ENST00000832825.1 ENSG00000290825.2    DDX11L16      lncRNA   annotated
+    ##   ENST00000832826.1 ENSG00000290825.2    DDX11L16      lncRNA   annotated
+    ##   ENST00000832827.1 ENSG00000290825.2    DDX11L16      lncRNA   annotated
+    ##   ENST00000832828.1 ENSG00000290825.2    DDX11L16      lncRNA   annotated
+    ##                 ...               ...         ...         ...         ...
+    ##          novel10996     novel_gene220        <NA>        <NA>        user
+    ##          novel10997     novel_gene220        <NA>        <NA>        user
+    ##          novel10998     novel_gene220        <NA>        <NA>        user
+    ##          novel10999     novel_gene220        <NA>        <NA>        user
+    ##          novel11000     novel_gene220        <NA>        <NA>        user
+    ##                               type
+    ##                        <character>
+    ##   ENST00000832824.1           <NA>
+    ##   ENST00000832825.1           <NA>
+    ##   ENST00000832826.1           <NA>
+    ##   ENST00000832827.1           <NA>
+    ##   ENST00000832828.1           <NA>
+    ##                 ...            ...
+    ##          novel10996 protein_coding
+    ##          novel10997 protein_coding
+    ##          novel10998 protein_coding
+    ##          novel10999 protein_coding
+    ##          novel11000 protein_coding
     ##   -------
-    ##   seqinfo: 25 sequences (1 circular) from an unspecified genome; no seqlengths
+    ##   seqinfo: 23 sequences from an unspecified genome; no seqlengths
 
 Two additional details for
 [`inspectDigests()`](https://thelovelab.github.io/tximeta/reference/inspectDigests.md)
@@ -1112,17 +1078,13 @@ other missing database.
 If you have used the default cache location, then you can obtain access
 to your BiocFileCache with:
 
-``` r
-
-library(BiocFileCache)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(``BiocFileCache``)`
 
     ## Loading required package: dbplyr
 
-``` r
-
-bfc <- BiocFileCache()
-```
+\
+`bfc`` ``<-`` `[`BiocFileCache`](https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html)`(``)`
 
 Otherwise, you can recall your particular `tximeta` cache location with
 [`getTximetaBFC()`](https://thelovelab.github.io/tximeta/reference/getTximetaBFC.md).
@@ -1172,29 +1134,23 @@ quantified against a transcriptome that included the coding and
 non-coding *Drosophila melanogaster* transcripts, as well as an
 artificial transcript of 960 bp (for demonstration purposes only).
 
-``` r
-
-dir <- system.file("extdata/salmon_dm", package="tximportData")
-file <- file.path(dir, "SRR1197474.plus", "quant.sf")
-file.exists(file)
-```
+\
+`dir`` ``<-`` `[`system.file`](https://rdrr.io/r/base/system.file.html)`(``"extdata/salmon_dm"``, package``=``"tximportData"``)`\
+`file`` ``<-`` `[`file.path`](https://rdrr.io/r/base/file.path.html)`(``dir``, ``"SRR1197474.plus"``, ``"quant.sf"``)`\
+[`file.exists`](https://rdrr.io/r/base/files.html)`(``file``)`
 
     ## [1] TRUE
 
-``` r
-
-coldata <- data.frame(files=file, names="SRR1197474", sample="1",
-                      stringsAsFactors=FALSE)
-```
+\
+`coldata`` ``<-`` `[`data.frame`](https://rdrr.io/r/base/data.frame.html)`(``files``=``file``, names``=``"SRR1197474"``, sample``=``"1"``,`\
+`                      stringsAsFactors``=``FALSE``)`
 
 Trying to import the files gives a message that `tximeta` couldn’t find
 a matching transcriptome, so it returns an non-ranged
 *SummarizedExperiment*.
 
-``` r
-
-se <- tximeta(coldata)
-```
+\
+`se`` ``<-`` `[`tximeta`](https://thelovelab.github.io/tximeta/reference/tximeta.md)`(``coldata``)`
 
     ## importing salmon quantification files
 
@@ -1271,10 +1227,8 @@ because we have included parts of a *salmon* index directory in the
 *tximeta* package itself for demonstration of functionality in this
 vignette.
 
-``` r
-
-indexDir <- file.path(dir, "Dm.BDGP6.22.98.plus_salmon-0.14.1")
-```
+\
+`indexDir`` ``<-`` `[`file.path`](https://rdrr.io/r/base/file.path.html)`(``dir``, ``"Dm.BDGP6.22.98.plus_salmon-0.14.1"``)`
 
 Now we provide the location of the FASTA files and the GTF file for this
 transcriptome.
@@ -1289,13 +1243,11 @@ e.g. `Drosophila_melanogaster.BDGP6.22.98.gtf.gz`.
 The recommended usage of `tximeta` would be to specify a remote GTF
 source, as seen in the commented-out line below:
 
-``` r
-
-fastaFTP <- c("ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz",
-              "ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz",
-              "extra_transcript.fa.gz")
-#gtfFTP <- "ftp://path/to/custom/Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz"
-```
+\
+`fastaFTP`` ``<-`` `[`c`](https://rdrr.io/r/base/c.html)`(``"ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/cdna/Drosophila_melanogaster.BDGP6.22.cdna.all.fa.gz"``,`\
+`              ``"ftp://ftp.ensembl.org/pub/release-98/fasta/drosophila_melanogaster/ncrna/Drosophila_melanogaster.BDGP6.22.ncrna.fa.gz"``,`\
+`              ``"extra_transcript.fa.gz"``)`\
+`#gtfFTP <- "ftp://path/to/custom/Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz"`
 
 Instead of the above commented-out FTP location for the GTF file, we
 specify a location within an R package. This step is just to avoid
@@ -1306,10 +1258,8 @@ file is a modified version of the release 98 from Ensembl, which
 includes description of a one transcript, one exon artificial gene which
 was inserted into the transcriptome (for demonstration purposes only).
 
-``` r
-
-gtfPath <- file.path(dir,"Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz")
-```
+\
+`gtfPath`` ``<-`` `[`file.path`](https://rdrr.io/r/base/file.path.html)`(``dir``,``"Drosophila_melanogaster.BDGP6.22.98.plus.gtf.gz"``)`
 
 Finally, we create a *linkedTxome*. In this vignette, we point to a
 temporary directory for the JSON file, but a more typical workflow would
@@ -1324,20 +1274,18 @@ index to its sources, and (2) it creates a JSON file such that this
 Here we can either specify `indexDir` or alternatively, the `digest`
 itself and an `indexName`.
 
-``` r
-
-tmp <- tempdir() # just for vignette demo, make temp directory
-jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
-makeLinkedTxome(indexDir=indexDir,
-                source="LocalEnsembl", organism="Drosophila melanogaster",
-                release="98", genome="BDGP6.22",
-                fasta=fastaFTP, gtf=gtfPath,
-                jsonFile=jsonFile)
-```
+\
+`tmp`` ``<-`` `[`tempdir`](https://rdrr.io/r/base/tempfile.html)`(``)`` ``# just for vignette demo, make temp directory`\
+`jsonFile`` ``<-`` `[`file.path`](https://rdrr.io/r/base/file.path.html)`(``tmp``, `[`paste0`](https://rdrr.io/r/base/paste.html)`(`[`basename`](https://rdrr.io/pkg/BiocGenerics/man/path.html)`(``indexDir``)``, ``".json"``)``)`\
+[`makeLinkedTxome`](https://thelovelab.github.io/tximeta/reference/linkedTxome.md)`(``indexDir``=``indexDir``,`\
+`                source``=``"LocalEnsembl"``, organism``=``"Drosophila melanogaster"``,`\
+`                release``=``"98"``, genome``=``"BDGP6.22"``,`\
+`                fasta``=``fastaFTP``, gtf``=``gtfPath``,`\
+`                jsonFile``=``jsonFile``)`
 
     ## reading digest from indexDir: .../Dm.BDGP6.22.98.plus_salmon-0.14.1
 
-    ## writing linkedTxome to /tmp/RtmpLGOJNf/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
+    ## writing linkedTxome to /tmp/Rtmp9rJsBa/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
 
     ## saving linkedTxome in bfc
 
@@ -1358,10 +1306,8 @@ Note the warning that 5 of the transcripts are missing from the GTF file
 and so are dropped from the final output. This is a problem coming from
 the annotation source, and not easily avoided by `tximeta`.
 
-``` r
-
-se <- tximeta(coldata)
-```
+\
+`se`` ``<-`` `[`tximeta`](https://thelovelab.github.io/tximeta/reference/tximeta.md)`(``coldata``)`
 
     ## importing salmon quantification files
 
@@ -1394,10 +1340,8 @@ se <- tximeta(coldata)
 We can see that the appropriate metadata and transcript ranges are
 attached.
 
-``` r
-
-rowRanges(se)
-```
+\
+`rowRanges``(``se``)`
 
     ## GRanges object with 33702 ranges and 3 metadata columns:
     ##               seqnames            ranges strand |     tx_id         gene_id
@@ -1429,24 +1373,22 @@ rowRanges(se)
     ##   -------
     ##   seqinfo: 25 sequences from an unspecified genome; no seqlengths
 
-``` r
-
-seqinfo(se)
-```
+\
+[`seqinfo`](https://rdrr.io/pkg/Seqinfo/man/seqinfo.html)`(``se``)`
 
     ## Seqinfo object with 25 sequences from an unspecified genome; no seqlengths:
-    ##   seqnames             seqlengths isCircular genome
-    ##   2L                         <NA>       <NA>   <NA>
-    ##   2R                         <NA>       <NA>   <NA>
-    ##   3L                         <NA>       <NA>   <NA>
-    ##   3R                         <NA>       <NA>   <NA>
-    ##   4                          <NA>       <NA>   <NA>
-    ##   ...                         ...        ...    ...
-    ##   211000022280481            <NA>       <NA>   <NA>
-    ##   211000022280494            <NA>       <NA>   <NA>
-    ##   211000022280703            <NA>       <NA>   <NA>
-    ##   mitochondrion_genome       <NA>       <NA>   <NA>
-    ##   rDNA                       <NA>       <NA>   <NA>
+    ##   seqnames             seqnames seqlengths isCircular genome
+    ##   1                          2L       <NA>       <NA>   <NA>
+    ##   2                          2R       <NA>       <NA>   <NA>
+    ##   3                          3L       <NA>       <NA>   <NA>
+    ##   4                          3R       <NA>       <NA>   <NA>
+    ##   5                           4       <NA>       <NA>   <NA>
+    ##   ...                       ...        ...        ...    ...
+    ##   21            211000022280481       <NA>       <NA>   <NA>
+    ##   22            211000022280494       <NA>       <NA>   <NA>
+    ##   23            211000022280703       <NA>       <NA>   <NA>
+    ##   24       mitochondrion_genome       <NA>       <NA>   <NA>
+    ##   25                       rDNA       <NA>       <NA>   <NA>
 
 ## Clear *linkedTxomes*
 
@@ -1458,50 +1400,46 @@ to load a JSON file below.
 *linkedTxomes*. Don’t run this unless you really want to clear this
 table!
 
-``` r
-
-library(BiocFileCache)
-if (interactive()) {
-  bfcloc <- getTximetaBFC()
-} else {
-  bfcloc <- tempdir()
-}
-bfc <- BiocFileCache(bfcloc)
-bfcinfo(bfc)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(``BiocFileCache``)`\
+`if`` ``(`[`interactive`](https://rdrr.io/r/base/interactive.html)`(``)``)`` ``{`\
+`  ``bfcloc`` ``<-`` `[`getTximetaBFC`](https://thelovelab.github.io/tximeta/reference/getTximetaBFC.md)`(``)`\
+`}`` ``else`` ``{`\
+`  ``bfcloc`` ``<-`` `[`tempdir`](https://rdrr.io/r/base/tempfile.html)`(``)`\
+`}`\
+`bfc`` ``<-`` `[`BiocFileCache`](https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html)`(``bfcloc``)`\
+[`bfcinfo`](https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html)`(``bfc``)`
 
     ## # A tibble: 9 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC1  link… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 2 BFC2  Dros… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 3 BFC3  txpR… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 4 BFC4  exon… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 5 BFC5  gene… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 6 BFC6  genc… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 7 BFC7  txpR… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 8 BFC8  Dros… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 9 BFC9  txpR… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
+    ## 1 BFC1  link… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 2 BFC2  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 3 BFC3  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 4 BFC4  exon… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 5 BFC5  gene… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 6 BFC6  txpd… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 7 BFC7  link… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 8 BFC8  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 9 BFC9  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
-``` r
-
-# only run the next line if you want to remove your linkedTxome table!
-bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
-bfcinfo(bfc)
-```
+\
+`# only run the next line if you want to remove your linkedTxome table!`\
+[`bfcremove`](https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html)`(``bfc``, `[`bfcquery`](https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html)`(``bfc``, ``"linkedTxomeTbl"``)``$``rid``)`\
+[`bfcinfo`](https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html)`(``bfc``)`
 
     ## # A tibble: 8 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 2 BFC3  txpR… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 3 BFC4  exon… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 4 BFC5  gene… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 5 BFC6  genc… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 6 BFC7  txpR… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 7 BFC8  Dros… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 8 BFC9  txpR… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
+    ## 1 BFC2  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 2 BFC3  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 3 BFC4  exon… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 4 BFC5  gene… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 5 BFC6  txpd… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 6 BFC7  link… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 7 BFC8  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 8 BFC9  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ## Loading *linkedTxome* JSON files
@@ -1517,21 +1455,17 @@ We point to the JSON file and use `loadLinkedTxome` and then the
 relevant metadata is saved for persistent usage. In this case, we saved
 the JSON file in a temporary directory.
 
-``` r
-
-jsonFile <- file.path(tmp, paste0(basename(indexDir), ".json"))
-loadLinkedTxome(jsonFile)
-```
+\
+`jsonFile`` ``<-`` `[`file.path`](https://rdrr.io/r/base/file.path.html)`(``tmp``, `[`paste0`](https://rdrr.io/r/base/paste.html)`(`[`basename`](https://rdrr.io/pkg/BiocGenerics/man/path.html)`(``indexDir``)``, ``".json"``)``)`\
+[`loadLinkedTxome`](https://thelovelab.github.io/tximeta/reference/linkedTxome.md)`(``jsonFile``)`
 
     ## saving linkedTxome in bfc (first time)
 
 Again, using `tximeta` figures out whether it needs to access the remote
 GTF or not, and assembles the appropriate object on the user’s behalf.
 
-``` r
-
-se <- tximeta(coldata)
-```
+\
+`se`` ``<-`` `[`tximeta`](https://thelovelab.github.io/tximeta/reference/tximeta.md)`(``coldata``)`
 
     ## importing salmon quantification files
 
@@ -1540,8 +1474,8 @@ se <- tximeta(coldata)
     ## 1 
     ## found matching linkedTxome:
     ## [ LocalEnsembl - Drosophila melanogaster - release 98 ]
-    ## loading existing TxDb created: 2026-07-20 08:03:33
-    ## loading existing transcript ranges created: 2026-07-20 08:03:33
+    ## loading existing TxDb created: 2026-10-25 20:43:30
+    ## loading existing transcript ranges created: 2026-10-25 20:43:30
 
     ## Warning in checkAssays2Txps(assays, txps): 
     ## 
@@ -1563,49 +1497,45 @@ typical workflow.
 *linkedTxomes*. Don’t run this unless you really want to clear this
 table!
 
-``` r
-
-if (interactive()) {
-  bfcloc <- getTximetaBFC()
-} else {
-  bfcloc <- tempdir()
-}
-bfc <- BiocFileCache(bfcloc)
-bfcinfo(bfc)
-```
+\
+`if`` ``(`[`interactive`](https://rdrr.io/r/base/interactive.html)`(``)``)`` ``{`\
+`  ``bfcloc`` ``<-`` `[`getTximetaBFC`](https://thelovelab.github.io/tximeta/reference/getTximetaBFC.md)`(``)`\
+`}`` ``else`` ``{`\
+`  ``bfcloc`` ``<-`` `[`tempdir`](https://rdrr.io/r/base/tempfile.html)`(``)`\
+`}`\
+`bfc`` ``<-`` `[`BiocFileCache`](https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html)`(``bfcloc``)`\
+[`bfcinfo`](https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html)`(``bfc``)`
 
     ## # A tibble: 9 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 2 BFC3  txpR… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 3 BFC4  exon… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 4 BFC5  gene… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 5 BFC6  genc… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 6 BFC7  txpR… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 7 BFC8  Dros… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 8 BFC9  txpR… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 9 BFC10 link… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
+    ## 1 BFC2  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 2 BFC3  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 3 BFC4  exon… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 4 BFC5  gene… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 5 BFC6  txpd… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 6 BFC7  link… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 7 BFC8  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 8 BFC9  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 9 BFC10 link… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
-``` r
-
-# only run the next line if you want to remove your linkedTxome table!
-bfcremove(bfc, bfcquery(bfc, "linkedTxomeTbl")$rid)
-bfcinfo(bfc)
-```
+\
+`# only run the next line if you want to remove your linkedTxome table!`\
+[`bfcremove`](https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html)`(``bfc``, `[`bfcquery`](https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html)`(``bfc``, ``"linkedTxomeTbl"``)``$``rid``)`\
+[`bfcinfo`](https://rdrr.io/pkg/BiocFileCache/man/BiocFileCache-class.html)`(``bfc``)`
 
     ## # A tibble: 8 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 2 BFC3  txpR… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 3 BFC4  exon… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 4 BFC5  gene… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 5 BFC6  genc… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 6 BFC7  txpR… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 7 BFC8  Dros… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
-    ## 8 BFC9  txpR… 2026-07-20… 2026-07-20… /tmp… rela… 1199…                 NA NA   
+    ## 1 BFC2  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 2 BFC3  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 3 BFC4  exon… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 4 BFC5  gene… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 5 BFC6  txpd… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 6 BFC7  link… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 7 BFC8  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 8 BFC9  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ## alevin details
@@ -1657,67 +1587,63 @@ and other individuals in the community:
 
 ## Session info
 
-``` r
-
-library(devtools)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`devtools`](https://devtools.r-lib.org/)`)`
 
     ## Loading required package: usethis
 
-``` r
-
-session_info()
-```
+\
+[`session_info`](https://sessioninfo.r-lib.org/reference/session_info.html)`(``)`
 
     ## ─ Session info ───────────────────────────────────────────────────────────────
     ##  setting  value
     ##  version  R version 4.6.1 (2026-06-24)
-    ##  os       Ubuntu 24.04.4 LTS
+    ##  os       Ubuntu 24.04.5 LTS
     ##  system   x86_64, linux-gnu
     ##  ui       X11
     ##  language en
     ##  collate  en_US.UTF-8
     ##  ctype    en_US.UTF-8
     ##  tz       UTC
-    ##  date     2026-07-20
-    ##  pandoc   3.10 @ /usr/bin/ (via rmarkdown)
-    ##  quarto   1.9.38 @ /usr/local/bin/quarto
+    ##  date     2026-10-25
+    ##  pandoc   3.12.1 @ /usr/bin/ (via rmarkdown)
+    ##  quarto   1.10.19 @ /usr/local/bin/quarto
     ## 
     ## ─ Packages ───────────────────────────────────────────────────────────────────
     ##  package              * version    date (UTC) lib source
     ##  abind                  1.4-8      2024-09-12 [1] RSPM (R 4.6.0)
-    ##  AnnotationDbi        * 1.75.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  AnnotationDbi        * 1.75.2     2026-07-21 [1] Bioconductor 3.24 (R 4.6.1)
     ##  AnnotationFilter       1.37.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
-    ##  AnnotationHub          4.3.2      2026-06-30 [1] Bioconductor 3.24 (R 4.6.1)
-    ##  Biobase              * 2.73.1     2026-04-29 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  AnnotationHub          4.3.3      2026-10-23 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  Biobase              * 2.73.2     2026-07-29 [1] Bioconductor 3.24 (R 4.6.1)
     ##  BiocBaseUtils          1.15.1     2026-05-10 [1] Bioconductor 3.24 (R 4.6.1)
     ##  BiocFileCache        * 3.3.0      2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
-    ##  BiocGenerics         * 0.59.10    2026-07-07 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  BiocGenerics         * 0.59.12    2026-08-11 [1] Bioconductor 3.24 (R 4.6.1)
     ##  BiocIO                 1.23.3     2026-04-29 [1] Bioconductor 3.24 (R 4.6.1)
     ##  BiocManager            1.30.27    2025-11-14 [2] CRAN (R 4.6.1)
     ##  BiocParallel           1.47.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
     ##  BiocVersion            3.24.0     2026-04-28 [2] Bioconductor 3.24 (R 4.6.1)
-    ##  biomaRt                2.69.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
-    ##  Biostrings             2.81.5     2026-07-05 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  biomaRt                2.69.3     2026-09-20 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  Biostrings             2.81.9     2026-09-06 [1] Bioconductor 3.24 (R 4.6.1)
     ##  bit                    4.6.0      2025-03-06 [1] RSPM (R 4.6.0)
-    ##  bit64                  4.8.2      2026-05-19 [1] RSPM (R 4.6.0)
-    ##  bitops                 1.0-9      2024-10-03 [1] RSPM (R 4.6.0)
+    ##  bit64                  4.8.6      2026-09-01 [1] RSPM (R 4.6.0)
+    ##  bitops                 1.1-0      2026-07-30 [1] RSPM (R 4.6.0)
     ##  blob                   1.3.0      2026-01-14 [1] RSPM (R 4.6.0)
-    ##  bslib                  0.11.0     2026-05-16 [2] RSPM (R 4.6.0)
+    ##  bslib                  0.12.0     2026-08-04 [2] RSPM (R 4.6.0)
     ##  cachem                 1.1.0      2024-05-16 [2] RSPM (R 4.6.0)
     ##  cigarillo              1.3.1      2026-07-13 [1] Bioconductor 3.24 (R 4.6.1)
     ##  cli                    3.6.6      2026-04-09 [2] RSPM (R 4.6.0)
     ##  codetools              0.2-20     2024-03-31 [3] CRAN (R 4.6.1)
     ##  crayon                 1.5.3      2024-06-20 [2] RSPM (R 4.6.0)
-    ##  curl                   7.1.0      2026-04-22 [2] RSPM (R 4.6.0)
+    ##  curl                   8.1.0      2026-10-14 [2] RSPM (R 4.6.0)
     ##  DBI                    1.3.0      2026-02-25 [1] RSPM (R 4.6.0)
     ##  dbplyr               * 2.6.0      2026-06-17 [1] RSPM (R 4.6.0)
-    ##  DelayedArray           0.39.3     2026-06-01 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  DelayedArray           0.39.8     2026-09-30 [1] Bioconductor 3.24 (R 4.6.1)
     ##  desc                   1.4.3      2023-12-10 [2] RSPM (R 4.6.0)
     ##  devtools             * 2.5.2      2026-04-30 [2] RSPM (R 4.6.0)
     ##  digest                 0.6.39     2025-11-19 [2] RSPM (R 4.6.0)
     ##  dplyr                  1.2.1      2026-04-03 [1] RSPM (R 4.6.0)
-    ##  edgeR                * 4.11.4     2026-06-28 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  edgeR                * 4.99.10    2026-10-18 [1] Bioconductor 3.24 (R 4.6.1)
     ##  ellipsis               0.3.3      2026-04-04 [2] RSPM (R 4.6.0)
     ##  ensembldb              2.37.3     2026-06-07 [1] Bioconductor 3.24 (R 4.6.1)
     ##  evaluate               1.0.5      2025-08-27 [2] RSPM (R 4.6.0)
@@ -1726,36 +1652,36 @@ session_info()
     ##  fs                     2.1.0      2026-04-18 [2] RSPM (R 4.6.0)
     ##  generics             * 0.1.4      2025-05-09 [1] RSPM (R 4.6.0)
     ##  GenomeInfoDb           1.49.1     2026-05-24 [1] Bioconductor 3.24 (R 4.6.1)
-    ##  GenomicAlignments      1.49.1     2026-07-08 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  GenomicAlignments      1.49.2     2026-09-02 [1] Bioconductor 3.24 (R 4.6.1)
     ##  GenomicFeatures      * 1.65.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
-    ##  GenomicRanges        * 1.65.1     2026-07-08 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  GenomicRanges        * 1.65.4     2026-09-02 [1] Bioconductor 3.24 (R 4.6.1)
     ##  glue                   1.8.1      2026-04-17 [2] RSPM (R 4.6.0)
     ##  hms                    1.1.4      2025-10-17 [1] RSPM (R 4.6.0)
     ##  htmltools              0.5.9      2025-12-04 [2] RSPM (R 4.6.0)
     ##  htmlwidgets            1.6.4      2023-12-06 [2] RSPM (R 4.6.0)
-    ##  httr                   1.4.8      2026-02-13 [1] RSPM (R 4.6.0)
+    ##  httr                   1.4.9      2026-09-01 [1] RSPM (R 4.6.0)
     ##  httr2                  1.3.0      2026-07-13 [2] RSPM (R 4.6.0)
-    ##  IRanges              * 2.47.2     2026-06-01 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  IRanges              * 2.47.5     2026-08-27 [1] Bioconductor 3.24 (R 4.6.1)
     ##  jquerylib              0.1.4      2021-04-26 [2] RSPM (R 4.6.0)
     ##  jsonlite               2.0.0      2025-03-27 [2] RSPM (R 4.6.0)
-    ##  KEGGREST               1.53.1     2026-06-16 [1] Bioconductor 3.24 (R 4.6.1)
-    ##  knitr                  1.51       2025-12-20 [2] RSPM (R 4.6.0)
-    ##  lattice                0.22-9     2026-02-09 [3] CRAN (R 4.6.1)
+    ##  KEGGREST               1.53.6     2026-07-23 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  knitr                  1.52       2026-09-06 [2] RSPM (R 4.6.0)
+    ##  lattice                0.23-1     2026-08-12 [2] RSPM (R 4.6.1)
     ##  lazyeval               0.2.3      2026-04-04 [1] RSPM (R 4.6.0)
     ##  lifecycle              1.0.5      2026-01-08 [2] RSPM (R 4.6.0)
-    ##  limma                * 3.69.2     2026-06-01 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  limma                * 3.99.3     2026-10-22 [1] Bioconductor 3.24 (R 4.6.1)
     ##  locfit                 1.5-9.12   2025-03-05 [1] RSPM (R 4.6.0)
     ##  magrittr               2.0.5      2026-04-04 [2] RSPM (R 4.6.0)
-    ##  Matrix                 1.7-5      2026-03-21 [3] CRAN (R 4.6.1)
+    ##  Matrix                 1.7-6      2026-07-25 [2] RSPM (R 4.6.1)
     ##  MatrixGenerics       * 1.25.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
     ##  matrixStats          * 1.5.0      2025-01-07 [1] RSPM (R 4.6.0)
     ##  memoise                2.0.1      2021-11-26 [2] RSPM (R 4.6.0)
-    ##  org.Dm.eg.db         * 3.22.0     2026-07-17 [1] Bioconductor
+    ##  org.Dm.eg.db         * 3.22.0     2026-07-20 [1] Bioconductor
     ##  otel                   0.2.0      2025-08-29 [2] RSPM (R 4.6.0)
     ##  pillar                 1.11.1     2025-09-17 [2] RSPM (R 4.6.0)
     ##  pkgbuild               1.4.8      2025-05-26 [2] RSPM (R 4.6.0)
     ##  pkgconfig              2.0.3      2019-09-22 [2] RSPM (R 4.6.0)
-    ##  pkgdown                2.2.1.9000 2026-07-20 [1] Github (r-lib/pkgdown@179cfae)
+    ##  pkgdown                2.2.1.9000 2026-10-25 [1] Github (r-lib/pkgdown@f69b62a)
     ##  pkgload                1.5.3      2026-06-15 [2] RSPM (R 4.6.0)
     ##  png                    0.1-9      2026-03-15 [1] RSPM (R 4.6.0)
     ##  prettyunits            1.2.0      2023-09-24 [2] RSPM (R 4.6.0)
@@ -1765,22 +1691,22 @@ session_info()
     ##  R6                     2.6.1      2025-02-15 [2] RSPM (R 4.6.0)
     ##  ragg                   1.5.2      2026-03-23 [2] RSPM (R 4.6.0)
     ##  rappdirs               0.3.4      2026-01-17 [2] RSPM (R 4.6.0)
-    ##  RCurl                  1.98-1.19  2026-06-03 [1] RSPM (R 4.6.0)
+    ##  RCurl                  1.98-1.20  2026-08-21 [1] RSPM (R 4.6.0)
     ##  restfulr               0.0.17     2026-06-11 [1] RSPM (R 4.6.0)
     ##  rjson                  0.2.23     2024-09-16 [1] RSPM (R 4.6.0)
     ##  rlang                  1.3.0      2026-07-05 [2] RSPM (R 4.6.0)
-    ##  rmarkdown              2.31       2026-03-26 [2] RSPM (R 4.6.0)
+    ##  rmarkdown              2.32       2026-09-01 [2] RSPM (R 4.6.0)
     ##  Rsamtools              2.29.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
     ##  RSQLite                3.53.3     2026-06-30 [1] RSPM (R 4.6.0)
     ##  rtracklayer            1.73.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
-    ##  S4Arrays               1.13.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
-    ##  S4Vectors            * 0.51.5     2026-06-29 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  S4Arrays               1.13.2     2026-09-30 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  S4Vectors            * 0.51.10    2026-09-16 [1] Bioconductor 3.24 (R 4.6.1)
     ##  sass                   0.4.10     2025-04-11 [2] RSPM (R 4.6.0)
-    ##  Seqinfo              * 1.3.0      2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  Seqinfo              * 1.3.2      2026-08-27 [1] Bioconductor 3.24 (R 4.6.1)
     ##  sessioninfo            1.2.4      2026-06-04 [2] RSPM (R 4.6.0)
-    ##  SparseArray            1.13.2     2026-05-01 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  SparseArray            1.13.4     2026-09-30 [1] Bioconductor 3.24 (R 4.6.1)
     ##  statmod                1.5.2      2026-05-17 [1] RSPM (R 4.6.0)
-    ##  stringi                1.8.7      2025-03-27 [2] RSPM (R 4.6.0)
+    ##  stringi                1.8.9      2026-08-04 [2] RSPM (R 4.6.0)
     ##  stringr                1.6.0      2025-11-04 [1] RSPM (R 4.6.0)
     ##  SummarizedExperiment * 1.43.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
     ##  systemfonts            1.3.2      2026-03-05 [2] RSPM (R 4.6.0)
@@ -1788,15 +1714,15 @@ session_info()
     ##  tibble                 3.3.1      2026-01-11 [2] RSPM (R 4.6.0)
     ##  tidyselect             1.2.1      2024-03-11 [1] RSPM (R 4.6.0)
     ##  txdbmaker              1.9.0      2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
-    ##  tximeta              * 1.31.8     2026-07-20 [1] Bioconductor
-    ##  tximport               1.41.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
+    ##  tximeta              * 1.31.9     2026-10-25 [1] Bioconductor
+    ##  tximport               1.41.1     2026-09-29 [1] Bioconductor 3.24 (R 4.6.1)
     ##  UCSC.utils             1.9.0      2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
-    ##  usethis              * 3.2.1      2025-09-06 [2] RSPM (R 4.6.0)
+    ##  usethis              * 3.2.2      2026-09-10 [2] RSPM (R 4.6.0)
     ##  utf8                   1.2.6      2025-06-08 [2] RSPM (R 4.6.0)
     ##  vctrs                  0.7.3      2026-04-11 [2] RSPM (R 4.6.0)
     ##  withr                  3.0.3      2026-06-19 [2] RSPM (R 4.6.0)
-    ##  xfun                   0.60       2026-07-09 [2] RSPM (R 4.6.0)
-    ##  XML                    3.99-0.23  2026-03-20 [1] RSPM (R 4.6.0)
+    ##  xfun                   0.62       2026-10-16 [2] RSPM (R 4.6.0)
+    ##  XML                    3.99-0.25  2026-09-27 [1] RSPM (R 4.6.0)
     ##  XVector                0.53.0     2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
     ##  yaml                   2.3.12     2025-12-10 [2] RSPM (R 4.6.0)
     ## 
