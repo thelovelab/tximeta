@@ -348,7 +348,7 @@ we can retrieve and use in our R session:
 \
 `edb`` ``<-`` `[`retrieveDb`](https://thelovelab.github.io/tximeta/reference/retrieveDb.md)`(``se``)`
 
-    ## loading existing TxDb created: 2026-10-25 20:42:57
+    ## loading existing TxDb created: 2026-10-25 20:43:30
 
 \
 [`class`](https://rdrr.io/r/base/class.html)`(``edb``)`
@@ -385,7 +385,7 @@ particular transcript).
 \
 `se.exons`` ``<-`` `[`addExons`](https://thelovelab.github.io/tximeta/reference/addExons.md)`(``se``)`
 
-    ## loading existing TxDb created: 2026-10-25 20:42:57
+    ## loading existing TxDb created: 2026-10-25 20:43:30
 
     ## generating exon ranges
 
@@ -435,7 +435,7 @@ table which is passed to `tximport`.
 \
 `gse`` ``<-`` ``summarizeToGene``(``se``)`
 
-    ## loading existing TxDb created: 2026-10-25 20:42:57
+    ## loading existing TxDb created: 2026-10-25 20:43:30
 
     ## obtaining transcript-to-gene mapping from database
 
@@ -685,9 +685,9 @@ The following information is attached to the *SummarizedExperiment* by
 
     ## List of 3
     ##  $ version   :Classes 'package_version', 'numeric_version'  hidden list of 1
-    ##   ..$ : int [1:3] 1 31 9
+    ##   ..$ : int [1:3] 1 31 10
     ##  $ type      : chr "salmon"
-    ##  $ importTime: POSIXct[1:1], format: "2026-10-25 20:42:49"
+    ##  $ importTime: POSIXct[1:1], format: "2026-10-25 20:43:21"
 
 \
 [`str`](https://rdrr.io/r/utils/str.html)`(`[`metadata`](https://rdrr.io/pkg/S4Vectors/man/Annotated-class.html)`(``se``)``[[``"txdbInfo"``]``]``)`
@@ -1285,7 +1285,7 @@ itself and an `indexName`.
 
     ## reading digest from indexDir: .../Dm.BDGP6.22.98.plus_salmon-0.14.1
 
-    ## writing linkedTxome to /tmp/Rtmp9rJsBa/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
+    ## writing linkedTxome to /tmp/Rtmpuh70L7/Dm.BDGP6.22.98.plus_salmon-0.14.1.json
 
     ## saving linkedTxome in bfc
 
@@ -1413,15 +1413,15 @@ table!
     ## # A tibble: 9 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC1  link… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 2 BFC2  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 3 BFC3  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 4 BFC4  exon… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 5 BFC5  gene… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 6 BFC6  txpd… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 7 BFC7  link… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 8 BFC8  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 9 BFC9  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 1 BFC1  link… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 2 BFC2  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 3 BFC3  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 4 BFC4  exon… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 5 BFC5  gene… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 6 BFC6  txpd… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 7 BFC7  link… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 8 BFC8  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 9 BFC9  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 \
@@ -1432,14 +1432,14 @@ table!
     ## # A tibble: 8 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 2 BFC3  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 3 BFC4  exon… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 4 BFC5  gene… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 5 BFC6  txpd… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 6 BFC7  link… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 7 BFC8  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 8 BFC9  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 1 BFC2  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 2 BFC3  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 3 BFC4  exon… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 4 BFC5  gene… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 5 BFC6  txpd… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 6 BFC7  link… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 7 BFC8  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 8 BFC9  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ## Loading *linkedTxome* JSON files
@@ -1474,8 +1474,8 @@ GTF or not, and assembles the appropriate object on the user’s behalf.
     ## 1 
     ## found matching linkedTxome:
     ## [ LocalEnsembl - Drosophila melanogaster - release 98 ]
-    ## loading existing TxDb created: 2026-10-25 20:43:30
-    ## loading existing transcript ranges created: 2026-10-25 20:43:30
+    ## loading existing TxDb created: 2026-10-25 20:44:04
+    ## loading existing transcript ranges created: 2026-10-25 20:44:05
 
     ## Warning in checkAssays2Txps(assays, txps): 
     ## 
@@ -1509,15 +1509,15 @@ table!
     ## # A tibble: 9 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 2 BFC3  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 3 BFC4  exon… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 4 BFC5  gene… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 5 BFC6  txpd… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 6 BFC7  link… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 7 BFC8  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 8 BFC9  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 9 BFC10 link… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 1 BFC2  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 2 BFC3  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 3 BFC4  exon… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 4 BFC5  gene… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 5 BFC6  txpd… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 6 BFC7  link… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 7 BFC8  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 8 BFC9  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 9 BFC10 link… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 \
@@ -1528,14 +1528,14 @@ table!
     ## # A tibble: 8 × 10
     ##   rid   rname create_time access_time rpath rtype fpath last_modified_time etag 
     ##   <chr> <chr> <chr>       <chr>       <chr> <chr> <chr>              <dbl> <chr>
-    ## 1 BFC2  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 2 BFC3  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 3 BFC4  exon… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 4 BFC5  gene… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 5 BFC6  txpd… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 6 BFC7  link… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 7 BFC8  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
-    ## 8 BFC9  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182e…                 NA NA   
+    ## 1 BFC2  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 2 BFC3  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 3 BFC4  exon… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 4 BFC5  gene… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 5 BFC6  txpd… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 6 BFC7  link… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 7 BFC8  Dros… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
+    ## 8 BFC9  txpR… 2026-10-25… 2026-10-25… /tmp… rela… 182f…                 NA NA   
     ## # ℹ 1 more variable: expires <dbl>
 
 ## alevin details
@@ -1714,7 +1714,7 @@ and other individuals in the community:
     ##  tibble                 3.3.1      2026-01-11 [2] RSPM (R 4.6.0)
     ##  tidyselect             1.2.1      2024-03-11 [1] RSPM (R 4.6.0)
     ##  txdbmaker              1.9.0      2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
-    ##  tximeta              * 1.31.9     2026-10-25 [1] Bioconductor
+    ##  tximeta              * 1.31.10    2026-10-25 [1] Bioconductor
     ##  tximport               1.41.1     2026-09-29 [1] Bioconductor 3.24 (R 4.6.1)
     ##  UCSC.utils             1.9.0      2026-04-28 [1] Bioconductor 3.24 (R 4.6.1)
     ##  usethis              * 3.2.2      2026-09-10 [2] RSPM (R 4.6.0)
